@@ -6,6 +6,10 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '
 // Em produção, você deve colocar a chave da OpenAI nas variáveis de ambiente do Supabase Edge Functions
 const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY') ?? ''
 
+// URL do novo Webhook do n8n para disparo de e-mail (Coloque o endereço real do seu n8n aqui)
+// Exemplo: http://seu-ip:5678/webhook/lead-triado
+const N8N_WEBHOOK_URL = Deno.env.get('N8N_WEBHOOK_URL') ?? 'http://SEU_IP_N8N:5678/webhook/lead-triado'
+
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
 const SYSTEM_PROMPT = `
@@ -101,20 +105,50 @@ serve(async (req) => {
         }
     }
 
+    const leadAtualizado = {
+        ...lead,
+        tipo_servico: analise.tipo_servico,
+        mensagem: `[Triagem IA]:\nEstratégia: ${analise.estrategia_abordagem}\nEncaminhar para: ${analise.email_encaminhamento}\n\n[Mensagem Original]:\n${lead.mensagem}`,
+        status: 'triado',
+        email_encaminhamento: analise.email_encaminhamento
+    }
+
     // Atualiza o lead no Supabase
     const { error: updateError } = await supabase
         .from('leads')
         .update({
-            tipo_servico: analise.tipo_servico,
-            mensagem: `[Triagem IA]:\nEstratégia: ${analise.estrategia_abordagem}\nEncaminhar para: ${analise.email_encaminhamento}\n\n[Mensagem Original]:\n${lead.mensagem}`,
-            status: 'triado',
-            email_encaminhamento: analise.email_encaminhamento
+            tipo_servico: leadAtualizado.tipo_servico,
+            mensagem: leadAtualizado.mensagem,
+            status: leadAtualizado.status,
+            email_encaminhamento: leadAtualizado.email_encaminhamento
         })
         .eq('id', lead.id)
 
     if (updateError) {
         console.error("Erro ao atualizar lead:", updateError)
         throw updateError
+    }
+
+    // Após atualizar com sucesso, notifica o n8n para enviar o e-mail
+    try {
+        const n8nResponse = await fetch(N8N_WEBHOOK_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                event: 'lead_triado',
+                lead: leadAtualizado
+            })
+        });
+
+        if (!n8nResponse.ok) {
+             console.error("Erro ao enviar webhook para o n8n:", await n8nResponse.text());
+        } else {
+             console.log("n8n notificado com sucesso!");
+        }
+    } catch(err) {
+        console.error("Erro de conexão com o n8n:", err);
     }
 
     return new Response(

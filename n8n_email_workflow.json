@@ -1,0 +1,56 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "lead-triado",
+        "options": {}
+      },
+      "id": "abc12345-def6-7890-gh12-ijklmnopqrst",
+      "name": "Webhook Supabase (Lead Triado)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "0b15e3cc-a75d-4076-90a6-5fae3e4a3b84"
+    },
+    {
+      "parameters": {
+        "fromEmail": "=\"Sistema DL Nexus\" <notificacoes@dlsolucoescondominiais.com.br>",
+        "toEmail": "={{ $json.body.lead.email_encaminhamento }}",
+        "subject": "=[DL Nexus] Novo Lead Triado - Serviço: {{ $json.body.lead.tipo_servico }}",
+        "text": "=Olá Equipe,\n\nUm novo lead foi triado pela Aninha/Diego e precisa da sua atenção!\n\n📋 DADOS DO CLIENTE\n- Nome: {{ $json.body.lead.nome_contato }}\n- Condomínio: {{ $json.body.lead.nome_condominio }}\n- Telefone: {{ $json.body.lead.telefone }}\n- Unidades: {{ $json.body.lead.num_unidades }}\n\n🧠 ANÁLISE DA IA\n- Serviço Identificado: {{ $json.body.lead.tipo_servico }}\n- Encaminhado para a caixa: {{ $json.body.lead.email_encaminhamento }}\n\n💬 MENSAGEM / ESTRATÉGIA:\n{{ $json.body.lead.mensagem }}\n\nAcessem o Dashboard Administrativo do DL Nexus para mais detalhes.\n\nAtenciosamente,\nDL Nexus (Automação de Inteligência Artificial)",
+        "options": {}
+      },
+      "id": "zyx98765-wvu4-3210-ts98-rqponmlkjihg",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        450,
+        300
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "COLOQUE_A_CREDENTIAL_SMTP_AQUI",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Supabase (Lead Triado)": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

@@ -1,0 +1,2 @@
+ALTER TABLE leads
+ADD COLUMN IF NOT EXISTS email_encaminhamento VARCHAR(255);

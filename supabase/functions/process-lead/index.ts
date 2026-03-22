@@ -13,6 +13,15 @@ Você é a Aninha e o Diego, agentes de inteligência artificial da DL Soluçõe
 Sua missão é atuar como Triagem e Coordenação de Leads.
 O foco principal da empresa é a conversão para contratos de receita recorrente através dos planos "DL Partner" (Basic, Master, Premium).
 
+Estrutura de Roteamento de E-mails (DL Nexus):
+Baseado na intenção do cliente, você deve classificar para qual e-mail este lead deve ser encaminhado:
+- orcamento@dlsolucoescondominiais.com.br : Pedidos de orçamento, avaliação técnica para serviços, projetos novos (Máquina de Vendas).
+- suporte@dlsolucoescondominiais.com.br : Dúvidas técnicas sobre obras em andamento, envio de plantas, chamados de emergência ou coordenação de visitas técnicas (Operação e Atendimento).
+- sac@dlsolucoescondominiais.com.br : Gestão de garantias, dúvidas contratuais após obra concluída, atritos com administradoras (Pós-Venda).
+- vagaconsultor@dlsolucoescondominiais.com.br : Envio de currículos, portfólios, eletricistas ou consultores buscando vagas (Recrutamento/RH).
+- contato@dlsolucoescondominiais.com.br : Assuntos gerais ou não classificados.
+- diogo@dlsolucoescondominiais.com.br : Assuntos de altíssimo nível, parcerias B2B estratégicas ou laudos técnicos.
+
 Serviços e Portfólio de Implantação (CAPEX):
 1. DL Guardião™ e Observer™: CFTV IP, Segurança Pública, Integração com 190.
 2. Eixo DL Volt™: Retrofit de PC de Luz, Elétrica, Mobilidade (CVE/Carregadores).
@@ -25,12 +34,14 @@ Módulos DL Partner (OPEX / Recorrente):
 Você DEVE SEMPRE sugerir o atrelamento de um plano DL Partner para garantir a gestão contínua, manutenção e SLA.
 
 Regras de Triagem:
-- Analise a mensagem do cliente (lead) e classifique em qual serviço primário se encaixa.
+- Analise a mensagem do cliente (lead) e classifique em qual serviço primário se encaixa (se for um pedido de serviço).
+- Determine o e-mail correto de encaminhamento (email_encaminhamento) seguindo as regras da Estrutura de Roteamento.
 - Crie uma breve estratégia de abordagem recomendada focando no serviço principal E na introdução do DL Partner apropriado pelo tamanho do condomínio.
 - Retorne apenas um JSON válido no seguinte formato exato (sem formatação markdown como \`\`\`json):
 {
-  "tipo_servico": "Nome do Serviço Primário (Ex: DL Volt / DL Guardião)",
-  "estrategia_abordagem": "Estratégia detalhada..."
+  "tipo_servico": "Nome do Serviço Primário (Ex: DL Volt / Recrutamento / Dúvida)",
+  "estrategia_abordagem": "Estratégia detalhada...",
+  "email_encaminhamento": "O email exato escolhido da lista acima"
 }
 `
 
@@ -52,7 +63,7 @@ serve(async (req) => {
 
     const mensagemLead = `O Lead ${lead.nome_contato} do condomínio ${lead.nome_condominio || 'Desconhecido'} (${lead.num_unidades || 'Tamanho não informado'} unidades) mandou a seguinte mensagem: "${lead.mensagem || lead.tipo_servico || 'Sem mensagem. Apenas entrou em contato.'}"`
 
-    // Chama a OpenAI API para analisar o lead (Substitua por sua IA favorita via API)
+    // Chama a OpenAI API para analisar o lead
     const aiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -83,7 +94,11 @@ serve(async (req) => {
         analise = JSON.parse(content)
     } catch (e) {
         console.error("Erro ao fazer parse do JSON da IA:", content)
-        analise = { tipo_servico: "Desconhecido", estrategia_abordagem: "A IA não conseguiu classificar corretamente: " + content }
+        analise = {
+            tipo_servico: "Desconhecido",
+            estrategia_abordagem: "A IA não conseguiu classificar corretamente: " + content,
+            email_encaminhamento: "contato@dlsolucoescondominiais.com.br"
+        }
     }
 
     // Atualiza o lead no Supabase
@@ -91,8 +106,9 @@ serve(async (req) => {
         .from('leads')
         .update({
             tipo_servico: analise.tipo_servico,
-            mensagem: `[Triagem IA]:\nEstratégia: ${analise.estrategia_abordagem}\n\n[Mensagem Original]:\n${lead.mensagem}`,
-            status: 'triado'
+            mensagem: `[Triagem IA]:\nEstratégia: ${analise.estrategia_abordagem}\nEncaminhar para: ${analise.email_encaminhamento}\n\n[Mensagem Original]:\n${lead.mensagem}`,
+            status: 'triado',
+            email_encaminhamento: analise.email_encaminhamento
         })
         .eq('id', lead.id)
 

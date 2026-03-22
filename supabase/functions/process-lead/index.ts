@@ -7,8 +7,10 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '
 const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY') ?? ''
 
 // URL do novo Webhook do n8n para disparo de e-mail (Coloque o endereço real do seu n8n aqui)
-// Exemplo: http://seu-ip:5678/webhook/lead-triado
 const N8N_WEBHOOK_URL = Deno.env.get('N8N_WEBHOOK_URL') ?? 'http://SEU_IP_N8N:5678/webhook/lead-triado'
+
+// URL base do Antigravity rodando os agentes específicos
+const ANTIGRAVITY_URL = Deno.env.get('ANTIGRAVITY_URL') ?? 'http://SEU_IP_ANTIGRAVITY:8000/api/v1/agent'
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
 
@@ -41,11 +43,13 @@ Regras de Triagem:
 - Analise a mensagem do cliente (lead) e classifique em qual serviço primário se encaixa (se for um pedido de serviço).
 - Determine o e-mail correto de encaminhamento (email_encaminhamento) seguindo as regras da Estrutura de Roteamento.
 - Crie uma breve estratégia de abordagem recomendada focando no serviço principal E na introdução do DL Partner apropriado pelo tamanho do condomínio.
+- Identifique o ID do Agente Antigravity a ser chamado (ex: solar, eletrica, seguranca, consultoria, portoes)
 - Retorne apenas um JSON válido no seguinte formato exato (sem formatação markdown como \`\`\`json):
 {
   "tipo_servico": "Nome do Serviço Primário (Ex: DL Volt / Recrutamento / Dúvida)",
   "estrategia_abordagem": "Estratégia detalhada...",
-  "email_encaminhamento": "O email exato escolhido da lista acima"
+  "email_encaminhamento": "O email exato escolhido da lista acima",
+  "antigravity_agent_id": "solar|eletrica|seguranca|consultoria|portoes|geral"
 }
 `
 
@@ -101,14 +105,42 @@ serve(async (req) => {
         analise = {
             tipo_servico: "Desconhecido",
             estrategia_abordagem: "A IA não conseguiu classificar corretamente: " + content,
-            email_encaminhamento: "contato@dlsolucoescondominiais.com.br"
+            email_encaminhamento: "contato@dlsolucoescondominiais.com.br",
+            antigravity_agent_id: "geral"
         }
+    }
+
+    // Chama o Antigravity VPS
+    let agenteResponseTexto = "Nenhuma resposta do agente Antigravity";
+    try {
+        const agUrl = `${ANTIGRAVITY_URL}/${analise.antigravity_agent_id}`;
+        console.log(`Chamando agente Antigravity em: ${agUrl}`);
+        const agResponse = await fetch(agUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                lead_id: lead.id,
+                lead_data: lead,
+                triagem_inicial: analise
+            })
+        });
+
+        if (agResponse.ok) {
+            const agJson = await agResponse.json();
+            agenteResponseTexto = agJson.detalhamento_projeto || agJson.resposta || "Projeto analisado pelo agente específico.";
+        } else {
+            console.error("Erro ao chamar o agente Antigravity:", await agResponse.text());
+        }
+    } catch (agErr) {
+        console.error("Falha na conexão com Antigravity VPS:", agErr);
     }
 
     const leadAtualizado = {
         ...lead,
         tipo_servico: analise.tipo_servico,
-        mensagem: `[Triagem IA]:\nEstratégia: ${analise.estrategia_abordagem}\nEncaminhar para: ${analise.email_encaminhamento}\n\n[Mensagem Original]:\n${lead.mensagem}`,
+        mensagem: `[Triagem Diego IA]:\nEstratégia: ${analise.estrategia_abordagem}\nEncaminhar para: ${analise.email_encaminhamento}\nAgente Destino: ${analise.antigravity_agent_id}\n\n[Análise do Agente Especialista]:\n${agenteResponseTexto}\n\n[Mensagem Original]:\n${lead.mensagem}`,
         status: 'triado',
         email_encaminhamento: analise.email_encaminhamento
     }

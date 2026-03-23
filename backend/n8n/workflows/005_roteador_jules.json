@@ -1,0 +1,47 @@
+{
+  "name": "005_roteador_jules",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-jules"
+      },
+      "id": "wh-jules",
+      "name": "Entrada Jules",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-notificacoes",
+        "sendBody": true
+      },
+      "id": "call-notif",
+      "name": "Notificar (006)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        400,
+        200
+      ]
+    }
+  ],
+  "connections": {
+    "Entrada Jules": {
+      "main": [
+        [
+          {
+            "node": "Notificar (006)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

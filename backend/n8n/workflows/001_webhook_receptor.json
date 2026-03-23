@@ -1,0 +1,71 @@
+{
+  "name": "001_webhook_receptor",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-receptor",
+        "options": {}
+      },
+      "id": "wh-receptor-01",
+      "name": "Webhook Entradas",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-aninha",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "mensagem_original",
+              "value": "={{ $json.body.message.content || $json.body.mensagem }}"
+            },
+            {
+              "name": "telefone",
+              "value": "={{ $json.body.sender.phone || $json.body.telefone }}"
+            },
+            {
+              "name": "nome_contato",
+              "value": "={{ $json.body.sender.name || $json.body.nome }}"
+            },
+            {
+              "name": "origem",
+              "value": "={{ $json.body.source || 'indeterminado' }}"
+            }
+          ]
+        }
+      },
+      "id": "call-aninha-01",
+      "name": "Enviar para ANINHA (002)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        500,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Entradas": {
+      "main": [
+        [
+          {
+            "node": "Enviar para ANINHA (002)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

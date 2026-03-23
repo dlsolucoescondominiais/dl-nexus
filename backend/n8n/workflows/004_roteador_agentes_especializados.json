@@ -1,0 +1,47 @@
+{
+  "name": "004_roteador_agentes_especializados",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-especialistas"
+      },
+      "id": "wh-spec",
+      "name": "Entrada Técnicos",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-jules",
+        "sendBody": true
+      },
+      "id": "call-jules",
+      "name": "Chamar Jules (005)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        400,
+        200
+      ]
+    }
+  ],
+  "connections": {
+    "Entrada Técnicos": {
+      "main": [
+        [
+          {
+            "node": "Chamar Jules (005)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

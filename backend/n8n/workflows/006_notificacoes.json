@@ -1,0 +1,46 @@
+{
+  "name": "006_notificacoes",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-notificacoes"
+      },
+      "id": "wh-notif",
+      "name": "Entrada Notificações",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "action": "textToSpeech",
+        "voiceId": "aninha_dl"
+      },
+      "id": "eleven",
+      "name": "ElevenLabs Aninha",
+      "type": "n8n-nodes-base.elevenLabs",
+      "typeVersion": 1,
+      "position": [
+        350,
+        200
+      ]
+    }
+  ],
+  "connections": {
+    "Entrada Notificações": {
+      "main": [
+        [
+          {
+            "node": "ElevenLabs Aninha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

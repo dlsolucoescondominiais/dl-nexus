@@ -1,0 +1,111 @@
+{
+  "name": "002_roteador_aninha",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-aninha"
+      },
+      "id": "wh-aninha",
+      "name": "Entrada Aninha",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.mensagem_original }}",
+        "options": {
+          "systemMessage": "Você é a ANINHA - Triagem DL (B2B). Analise se o lead é escolar/condomínio. Regra: Sem canaletas plásticas. Terminologia: Avaliação Técnica."
+        }
+      },
+      "id": "ai-aninha",
+      "name": "AI Agent Aninha",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        350,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o"
+      },
+      "id": "llm-aninha",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        300,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-diego",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "lead_id",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "status",
+              "value": "triado"
+            }
+          ]
+        }
+      },
+      "id": "call-diego",
+      "name": "Chamar Diego (003)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        600,
+        200
+      ]
+    }
+  ],
+  "connections": {
+    "Entrada Aninha": {
+      "main": [
+        [
+          {
+            "node": "AI Agent Aninha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent Aninha",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent Aninha": {
+      "main": [
+        [
+          {
+            "node": "Chamar Diego (003)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

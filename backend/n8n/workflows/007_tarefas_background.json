@@ -1,0 +1,56 @@
+{
+  "name": "007_tarefas_background",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "unit": "minutes",
+              "value": 5
+            }
+          ]
+        }
+      },
+      "id": "cron",
+      "name": "Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        100,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "tableId": "tarefas"
+      },
+      "id": "sb-read",
+      "name": "Read Tasks",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        350,
+        200
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "QzziIRhKJMDNAE1m"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule": {
+      "main": [
+        [
+          {
+            "node": "Read Tasks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

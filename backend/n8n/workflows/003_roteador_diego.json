@@ -1,0 +1,93 @@
+{
+  "name": "003_roteador_diego",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-diego"
+      },
+      "id": "wh-diego",
+      "name": "Entrada Diego",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "leads",
+        "filters": {
+          "conditions": [
+            {
+              "column": "telefone",
+              "value": "={{ $json.body.telefone }}"
+            }
+          ]
+        },
+        "updateValues": {
+          "values": [
+            {
+              "column": "status",
+              "value": "agendado"
+            }
+          ]
+        }
+      },
+      "id": "sb-update",
+      "name": "Update Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        350,
+        200
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "QzziIRhKJMDNAE1m"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-especialistas",
+        "sendBody": true
+      },
+      "id": "call-specs",
+      "name": "Chamar Técnicos (004)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        600,
+        200
+      ]
+    }
+  ],
+  "connections": {
+    "Entrada Diego": {
+      "main": [
+        [
+          {
+            "node": "Update Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Supabase": {
+      "main": [
+        [
+          {
+            "node": "Chamar Técnicos (004)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

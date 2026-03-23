@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DL Nexus | DL Volt™ Sentinel Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "tertiary": "#eec209",
+              "primary": "#4ae183",
+              "outline-variant": "#44474e",
+              "on-tertiary-fixed-variant": "#574500",
+              "on-secondary-fixed": "#410008",
+              "on-surface-variant": "#c5c6ce",
+              "surface-container-highest": "#253454",
+              "on-tertiary-container": "#4e3e00",
+              "surface-dim": "#011230",
+              "on-tertiary": "#3c2f00",
+              "secondary-fixed": "#ffdad9",
+              "on-background": "#d8e2ff",
+              "on-surface": "#d8e2ff",
+              "on-primary-fixed-variant": "#005228",
+              "on-primary-fixed": "#00210c",
+              "surface-container-high": "#1a2a48",
+              "on-primary-container": "#00914b",
+              "surface-container-lowest": "#000d28",
+              "inverse-on-surface": "#20304f",
+              "surface-tint": "#4ae183",
+              "inverse-primary": "#006d37",
+              "surface-container-low": "#091b39",
+              "secondary": "#ffb3b2",
+              "on-tertiary-fixed": "#231b00",
+              "primary-container": "#001807",
+              "outline": "#8f9098",
+              "error-container": "#93000a",
+              "tertiary-container": "#cea700",
+              "primary-fixed": "#6bfe9c",
+              "tertiary-fixed": "#ffe084",
+              "tertiary-fixed-dim": "#eec209",
+              "on-secondary-container": "#ffc2c1",
+              "inverse-surface": "#d8e2ff",
+              "surface-container": "#0e1f3d",
+              "background": "#011230",
+              "secondary-container": "#b6002a",
+              "on-error": "#690005",
+              "secondary-fixed-dim": "#ffb3b2",
+              "surface": "#011230",
+              "surface-bright": "#293958",
+              "on-error-container": "#ffdad6",
+              "on-secondary-fixed-variant": "#92001f",
+              "surface-variant": "#253454",
+              "primary-fixed-dim": "#4ae183",
+              "on-secondary": "#680013",
+              "on-primary": "#003919",
+              "error": "#ffb4ab"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Space Grotesk"],
+              "label": ["Space Grotesk"]
+            },
+            borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        body { font-family: 'Space Grotesk', sans-serif; }
+        .scada-line { background: repeating-linear-gradient(90deg, #4ae183, #4ae183 10px, transparent 10px, transparent 20px); }
+        .bg-grid-subtle { background-image: radial-gradient(circle, #44474e26 1px, transparent 1px); background-size: 24px 24px; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary selection:text-primary-container overflow-hidden">
+<div class="flex h-screen w-full">
+<!-- SIDE NAVIGATION -->
+<aside class="flex flex-col h-screen py-4 bg-[#091b39] dark:bg-[#091b39] docked left-0 h-full w-64 shrink-0 z-40">
+<div class="px-6 mb-8">
+<h1 class="text-lg font-black text-[#4ae183] uppercase tracking-tighter">DL Volt™</h1>
+<p class="text-[10px] uppercase tracking-widest text-[#4ae183] opacity-80">Sentinel Active</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center px-6 py-3 space-x-3 bg-[#011230] text-[#4ae183] border-r-4 border-[#4ae183] transition-all duration-200 ease-in-out font-['Space_Grotesk'] font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center px-6 py-3 space-x-3 text-[#d8e2ff] opacity-60 hover:bg-[#0e1f3d] hover:text-[#4ae183] transition-all duration-200 ease-in-out font-['Space_Grotesk'] font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="account_tree">account_tree</span>
+<span>Sinótico</span>
+</a>
+<a class="flex items-center px-6 py-3 space-x-3 text-[#d8e2ff] opacity-60 hover:bg-[#0e1f3d] hover:text-[#4ae183] transition-all duration-200 ease-in-out font-['Space_Grotesk'] font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="list_alt">list_alt</span>
+<span>Eventos</span>
+</a>
+<a class="flex items-center px-6 py-3 space-x-3 text-[#d8e2ff] opacity-60 hover:bg-[#0e1f3d] hover:text-[#4ae183] transition-all duration-200 ease-in-out font-['Space_Grotesk'] font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span>Harmônicas</span>
+</a>
+<a class="flex items-center px-6 py-3 space-x-3 text-[#d8e2ff] opacity-60 hover:bg-[#0e1f3d] hover:text-[#4ae183] transition-all duration-200 ease-in-out font-['Space_Grotesk'] font-medium text-sm" href="#">
+<span class="material-symbols-outlined" data-icon="settings_input_component">settings_input_component</span>
+<span>Configurações</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full bg-secondary-container text-white py-3 font-bold text-xs tracking-widest border border-white/10 hover:bg-error transition-colors">
+                    EMERGENCY STOP
+                </button>
+<div class="mt-4 flex items-center px-2 py-2 text-[#d8e2ff] opacity-60 hover:text-[#4ae183] text-xs font-['Space_Grotesk']">
+<span class="material-symbols-outlined mr-3 text-sm" data-icon="support_agent">support_agent</span>
+<span>Suporte</span>
+</div>
+</div>
+</aside>
+<!-- MAIN CONTENT AREA -->
+<main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+<!-- TOP APP BAR -->
+<header class="flex justify-between items-center w-full px-6 h-16 bg-[#011230] dark:bg-[#011230] shrink-0 border-b border-outline-variant/15 z-30">
+<div class="flex items-center space-x-8">
+<span class="text-xl font-bold tracking-tighter text-[#4ae183]">DL Nexus</span>
+<nav class="hidden md:flex space-x-6">
+<a class="text-[#4ae183] border-b-2 border-[#4ae183] pb-1 font-['Space_Grotesk'] tracking-wider uppercase text-sm" href="#">Baixa Tensão</a>
+<a class="text-[#d8e2ff] opacity-70 hover:bg-[#253454] transition-colors font-['Space_Grotesk'] tracking-wider uppercase text-sm" href="#">Média Tensão</a>
+<a class="text-[#d8e2ff] opacity-70 hover:bg-[#253454] transition-colors font-['Space_Grotesk'] tracking-wider uppercase text-sm" href="#">Alta Tensão</a>
+</nav>
+</div>
+<div class="flex items-center space-x-6">
+<div class="flex items-center space-x-2 px-3 py-1 bg-primary-container border border-primary/20">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-[10px] text-primary font-bold uppercase tracking-tighter">Operação Nominal</span>
+</div>
+<div class="flex space-x-4">
+<span class="material-symbols-outlined text-[#4ae183] hover:bg-[#253454] p-1 transition-colors cursor-pointer" data-icon="sensors">sensors</span>
+<span class="material-symbols-outlined text-[#4ae183] hover:bg-[#253454] p-1 transition-colors cursor-pointer" data-icon="notifications_active">notifications_active</span>
+<span class="material-symbols-outlined text-[#4ae183] hover:bg-[#253454] p-1 transition-colors cursor-pointer" data-icon="schedule">schedule</span>
+</div>
+</div>
+</header>
+<!-- DASHBOARD CANVAS -->
+<div class="flex-1 overflow-y-auto p-6 bg-grid-subtle">
+<!-- TOP SUMMARY SECTION (ASIDE GRID) -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+<!-- Tensions -->
+<div class="bg-surface-container p-4 border-l-4 border-primary">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xs uppercase tracking-widest text-on-surface-variant font-medium">Tensões por Fase</h3>
+<span class="material-symbols-outlined text-primary text-lg" data-icon="bolt">bolt</span>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<span class="text-[10px] text-on-surface-variant">FASE R</span>
+<span class="text-lg font-bold text-primary tracking-tight">220V</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-[10px] text-on-surface-variant">FASE S</span>
+<span class="text-lg font-bold text-primary tracking-tight">219V</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-[10px] text-on-surface-variant">FASE T</span>
+<span class="text-lg font-bold text-primary tracking-tight">221V</span>
+</div>
+</div>
+</div>
+<!-- Power -->
+<div class="bg-surface-container p-4 border-l-4 border-primary">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xs uppercase tracking-widest text-on-surface-variant font-medium">Fluxo de Potência</h3>
+<span class="material-symbols-outlined text-primary text-lg" data-icon="show_chart">show_chart</span>
+</div>
+<div class="mt-4">
+<div class="flex items-baseline space-x-2">
+<span class="text-2xl font-black text-on-surface">450</span>
+<span class="text-xs text-primary font-bold">A</span>
+</div>
+<div class="flex items-baseline space-x-2 mt-1">
+<span class="text-3xl font-black text-on-surface">110</span>
+<span class="text-xs text-primary font-bold">kW</span>
+</div>
+</div>
+<div class="mt-4 h-8 w-full flex items-end space-x-1">
+<div class="bg-primary/20 h-2 w-full"></div>
+<div class="bg-primary/40 h-4 w-full"></div>
+<div class="bg-primary/60 h-6 w-full"></div>
+<div class="bg-primary h-3 w-full"></div>
+<div class="bg-primary/80 h-5 w-full"></div>
+<div class="bg-primary h-8 w-full"></div>
+</div>
+</div>
+<!-- Voltage Drops -->
+<div class="bg-surface-container p-4 border-l-4 border-tertiary">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xs uppercase tracking-widest text-on-surface-variant font-medium">Quedas de Tensão</h3>
+<span class="material-symbols-outlined text-tertiary text-lg" data-icon="warning">warning</span>
+</div>
+<div class="mt-4">
+<span class="text-4xl font-black text-on-surface">03</span>
+<span class="block text-[10px] text-on-surface-variant mt-1 uppercase">Ocorrências (24h)</span>
+</div>
+<div class="mt-4 flex items-center space-x-2">
+<div class="px-2 py-0.5 bg-tertiary/10 border border-tertiary/30 text-tertiary text-[9px] font-bold uppercase">Média Gravidade</div>
+</div>
+</div>
+<!-- Electrical Risks -->
+<div class="bg-surface-container p-4 border-l-4 border-secondary">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-xs uppercase tracking-widest text-on-surface-variant font-medium">Riscos Ativos</h3>
+<span class="material-symbols-outlined text-secondary text-lg" data-icon="emergency_home">emergency_home</span>
+</div>
+<div class="mt-4 flex flex-col justify-center items-center py-2 bg-secondary-container/20 border border-secondary/20">
+<span class="text-3xl font-black text-secondary">01</span>
+<span class="text-[10px] text-secondary font-bold uppercase text-center px-2">Sobrecarga Circuito B1</span>
+</div>
+<p class="text-[9px] text-on-surface-variant mt-2 text-center uppercase tracking-tighter">Resposta Imediata Requerida</p>
+</div>
+</div>
+<!-- CENTRAL SCADA SECTION -->
+<div class="grid grid-cols-12 gap-6 mb-6">
+<div class="col-span-12 lg:col-span-8 bg-surface-container-low relative min-h-[400px] border border-outline-variant/10 overflow-hidden">
+<div class="absolute inset-0 bg-grid-subtle opacity-50"></div>
+<div class="p-4 border-b border-outline-variant/15 flex justify-between items-center relative z-10">
+<h2 class="text-xs font-bold uppercase tracking-widest text-on-surface flex items-center">
+<span class="material-symbols-outlined mr-2 text-sm" data-icon="schema">schema</span>
+                                Diagrama Sinótico DL Volt™
+                            </h2>
+<span class="text-[10px] text-on-surface-variant font-mono">NODE-ALPHA: BT-01</span>
+</div>
+<!-- Visual SCADA Simulation -->
+<div class="relative w-full h-full flex items-center justify-center p-12">
+<!-- Main Busbar -->
+<div class="absolute top-1/4 left-10 right-10 h-2 bg-primary shadow-[0_0_15px_rgba(74,225,131,0.4)]"></div>
+<div class="absolute top-[calc(25%-1rem)] left-1/2 -translate-x-1/2 px-4 py-1 bg-surface-dim border border-primary text-primary text-[10px] font-bold uppercase">Barramento Principal - 380V Nominal</div>
+<!-- Feeders -->
+<div class="grid grid-cols-3 w-full h-full pt-20">
+<!-- Branch 1 (Active) -->
+<div class="flex flex-col items-center relative">
+<div class="w-1 h-20 bg-primary"></div>
+<div class="w-12 h-16 bg-primary flex items-center justify-center shadow-[0_0_20px_rgba(74,225,131,0.2)]">
+<span class="material-symbols-outlined text-white text-2xl" data-icon="toggle_on" style="font-variation-settings: 'FILL' 1;">toggle_on</span>
+</div>
+<div class="w-1 h-12 bg-primary"></div>
+<div class="mt-4 p-3 bg-surface-container border border-primary/30 text-center min-w-[120px]">
+<div class="text-[9px] text-on-surface-variant uppercase font-bold">Carga Prioritária 1</div>
+<div class="text-lg font-black text-primary">125A</div>
+<div class="text-[10px] text-on-surface-variant">STATUS: LIGADO</div>
+</div>
+</div>
+<!-- Branch 2 (Off) -->
+<div class="flex flex-col items-center relative opacity-50">
+<div class="w-1 h-20 bg-outline"></div>
+<div class="w-12 h-16 bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-2xl" data-icon="toggle_off">toggle_off</span>
+</div>
+<div class="w-1 h-12 bg-outline"></div>
+<div class="mt-4 p-3 bg-surface-container border border-outline/30 text-center min-w-[120px]">
+<div class="text-[9px] text-on-surface-variant uppercase font-bold">Carga HVAC Setor B</div>
+<div class="text-lg font-black text-outline">0A</div>
+<div class="text-[10px] text-on-surface-variant">STATUS: OFF</div>
+</div>
+</div>
+<!-- Branch 3 (Alert/Trip) -->
+<div class="flex flex-col items-center relative">
+<div class="w-1 h-20 bg-secondary"></div>
+<div class="w-12 h-16 bg-secondary flex items-center justify-center animate-pulse shadow-[0_0_20px_rgba(215,38,61,0.4)]">
+<span class="material-symbols-outlined text-white text-2xl" data-icon="report" style="font-variation-settings: 'FILL' 1;">report</span>
+</div>
+<div class="w-1 h-12 bg-secondary"></div>
+<div class="mt-4 p-3 bg-surface-container border border-secondary/30 text-center min-w-[120px]">
+<div class="text-[9px] text-on-surface-variant uppercase font-bold">Setor Maquinário</div>
+<div class="text-lg font-black text-secondary">TRIP</div>
+<div class="text-[10px] text-secondary font-bold">ERRO DE FUGA</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Side Log/Telemetry Column -->
+<div class="col-span-12 lg:col-span-4 flex flex-col space-y-4">
+<div class="bg-surface-container flex-1 border border-outline-variant/10 p-4">
+<h3 class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-4 flex items-center">
+<span class="material-symbols-outlined mr-2 text-sm" data-icon="history">history</span>
+                                Logs do Sistema (Real-time)
+                            </h3>
+<div class="space-y-3 font-mono">
+<div class="text-[11px] p-2 bg-surface-dim border-l-2 border-primary">
+<span class="text-primary font-bold">[14:22:01]</span>
+<span class="text-on-surface ml-2">ESTABILIZAÇÃO REDE BT-01 CONCLUÍDA</span>
+</div>
+<div class="text-[11px] p-2 bg-surface-dim border-l-2 border-tertiary">
+<span class="text-tertiary font-bold">[14:18:45]</span>
+<span class="text-on-surface ml-2">VARIAÇÃO THD DETECTADA EM P-04 (&gt;5%)</span>
+</div>
+<div class="text-[11px] p-2 bg-surface-dim border-l-2 border-secondary">
+<span class="text-secondary font-bold">[14:15:30]</span>
+<span class="text-on-surface ml-2">DISJUNTOR SETOR C - DISPARO POR FUGA</span>
+</div>
+<div class="text-[11px] p-2 bg-surface-dim border-l-2 border-primary">
+<span class="text-primary font-bold">[14:00:00]</span>
+<span class="text-on-surface ml-2">BACKUP NOMINAL EXECUTADO COM SUCESSO</span>
+</div>
+<div class="text-[11px] p-2 bg-surface-dim border-l-2 border-outline">
+<span class="text-on-surface-variant font-bold">[13:55:12]</span>
+<span class="text-on-surface-variant ml-2 opacity-70">SINCRONIZAÇÃO PLC-ALPHA...</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- BOTTOM ANOMALIES TABLE -->
+<section class="bg-surface-container border border-outline-variant/10 mb-8 overflow-hidden">
+<div class="p-4 border-b border-outline-variant/15 flex justify-between items-center bg-surface-container-high">
+<h2 class="text-xs font-bold uppercase tracking-widest text-on-surface">Detalhamento de Anomalias Críticas</h2>
+<button class="text-[10px] font-bold text-primary border border-primary/20 px-3 py-1 hover:bg-primary/10 transition-colors uppercase">Exportar Relatório</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-lowest/50 text-on-surface-variant uppercase text-[10px] font-bold tracking-widest">
+<th class="px-6 py-4">ID</th>
+<th class="px-6 py-4">Circuito</th>
+<th class="px-6 py-4">Descrição da Anomalia</th>
+<th class="px-6 py-4">Leituras Atuais</th>
+<th class="px-6 py-4">Histórico de Evento</th>
+<th class="px-6 py-4">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="bg-surface-container/30 hover:bg-surface-container-highest/20 transition-colors">
+<td class="px-6 py-4 font-mono text-xs text-on-surface">L1</td>
+<td class="px-6 py-4 text-xs font-bold text-primary">B1-01</td>
+<td class="px-6 py-4 text-xs text-on-surface">Fuga de Corrente Detectada</td>
+<td class="px-6 py-4 text-xs font-bold text-secondary">30mA</td>
+<td class="px-6 py-4 text-[10px] text-on-surface-variant">Permanente desde 14:15</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 bg-secondary-container text-white text-[9px] font-black uppercase">Crítico</span>
+</td>
+</tr>
+<tr class="bg-surface-container-low hover:bg-surface-container-highest/20 transition-colors">
+<td class="px-6 py-4 font-mono text-xs text-on-surface">L2</td>
+<td class="px-6 py-4 text-xs font-bold text-primary">P-04</td>
+<td class="px-6 py-4 text-xs text-on-surface">Harmônicas Elevadas (THD &gt; 5%)</td>
+<td class="px-6 py-4 text-xs font-bold text-tertiary">8.2%</td>
+<td class="px-6 py-4 text-[10px] text-on-surface-variant">Intermitente (Pico em 14:18)</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 bg-tertiary-container text-white text-[9px] font-black uppercase">Alerta</span>
+</td>
+</tr>
+<tr class="bg-surface-container/30 hover:bg-surface-container-highest/20 transition-colors">
+<td class="px-6 py-4 font-mono text-xs text-on-surface">L3</td>
+<td class="px-6 py-4 text-xs font-bold text-primary">BT-C2</td>
+<td class="px-6 py-4 text-xs text-on-surface">Desequilíbrio de Carga Fase S-T</td>
+<td class="px-6 py-4 text-xs font-bold text-tertiary">12%</td>
+<td class="px-6 py-4 text-[10px] text-on-surface-variant">Detectado Recorrente</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 bg-tertiary-container text-white text-[9px] font-black uppercase">Alerta</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<!-- FOOTER -->
+<footer class="flex justify-between items-center px-8 w-full z-50 fixed bottom-0 h-8 bg-[#011230]/80 backdrop-blur-md border-t border-[#44474e]/15 font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.2em] text-[#eec209]">
+<div>© 2024 DL Nexus Sentinel System</div>
+<div class="flex space-x-6">
+<span class="text-primary font-bold">System Status: Nominal</span>
+<span class="opacity-50">PLC-Alpha Connected</span>
+</div>
+</footer>
+</main>
+</div>
+</body></html>

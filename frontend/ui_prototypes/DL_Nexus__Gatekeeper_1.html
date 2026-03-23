@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DL Nexus - Gatekeeper Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "inverse-primary": "#006880",
+              "surface-container-low": "#001232",
+              "surface-dim": "#000d28",
+              "error-container": "#9f0519",
+              "surface-container-high": "#041e46",
+              "on-error-container": "#ffa8a3",
+              "surface": "#000d28",
+              "on-primary-container": "#004050",
+              "tertiary-fixed-dim": "#68ee00",
+              "on-tertiary-fixed-variant": "#296700",
+              "on-primary-fixed": "#002a35",
+              "on-secondary-fixed": "#00472d",
+              "tertiary": "#c1ff9b",
+              "error": "#ff716c",
+              "surface-container-highest": "#08244f",
+              "secondary-container": "#006c46",
+              "primary-fixed-dim": "#00c0ea",
+              "on-tertiary": "#286500",
+              "surface-container-lowest": "#000000",
+              "on-background": "#dce5ff",
+              "secondary-fixed": "#00ffab",
+              "on-secondary-container": "#e1ffea",
+              "secondary-dim": "#00efa0",
+              "on-tertiary-fixed": "#1a4700",
+              "outline": "#667598",
+              "surface-tint": "#69daff",
+              "secondary-fixed-dim": "#00efa0",
+              "primary": "#69daff",
+              "outline-variant": "#384868",
+              "on-surface": "#dce5ff",
+              "on-primary-fixed-variant": "#004a5c",
+              "error-dim": "#d7383b",
+              "on-tertiary-container": "#245c00",
+              "inverse-surface": "#f9f9ff",
+              "primary-container": "#00cffc",
+              "surface-container": "#01183d",
+              "inverse-on-surface": "#465576",
+              "secondary": "#00ffab",
+              "on-secondary": "#005c3b",
+              "background": "#000d28",
+              "on-surface-variant": "#9babd0",
+              "surface-variant": "#08244f",
+              "on-error": "#490006",
+              "tertiary-dim": "#68ee00",
+              "tertiary-fixed": "#6ffe00",
+              "tertiary-container": "#6ffe00",
+              "surface-bright": "#0d2b59",
+              "primary-fixed": "#00cffc",
+              "on-secondary-fixed-variant": "#006742",
+              "on-primary": "#004a5d",
+              "primary-dim": "#00c0ea"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-glass {
+            background: rgba(13, 43, 89, 0.6);
+            backdrop-filter: blur(20px);
+        }
+        .led-glow-green {
+            box-shadow: 0 0 12px rgba(0, 255, 171, 0.4);
+        }
+        .led-glow-blue {
+            box-shadow: 0 0 12px rgba(105, 218, 255, 0.4);
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000d28; }
+        ::-webkit-scrollbar-thumb { background: #041e46; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary/30">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-screen w-64 bg-[#01183d] flex flex-col p-6 z-50">
+<div class="mb-10 flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+<div>
+<h1 class="text-xl font-bold text-[#dce5ff] px-2 font-headline tracking-tighter leading-none">Gatekeeper</h1>
+<p class="text-[10px] uppercase tracking-[0.1em] text-primary/70 px-2 mt-1">Access Control</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Active Tab: Dashboard -->
+<div class="flex items-center gap-4 px-4 py-3 mb-2 cursor-pointer transition-all duration-200 bg-[#041e46] text-[#69daff] rounded-xl font-bold shadow-[0_0_15px_rgba(105,218,255,0.15)] active:scale-[0.98]">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-['Manrope'] text-sm">Dashboard</span>
+</div>
+<div class="flex items-center gap-4 px-4 py-3 mb-2 cursor-pointer transition-all duration-200 text-[#9babd0] hover:bg-[#08244f]/50 hover:text-[#dce5ff] rounded-xl active:scale-[0.98]">
+<span class="material-symbols-outlined">group</span>
+<span class="font-['Manrope'] text-sm">Users</span>
+</div>
+<div class="flex items-center gap-4 px-4 py-3 mb-2 cursor-pointer transition-all duration-200 text-[#9babd0] hover:bg-[#08244f]/50 hover:text-[#dce5ff] rounded-xl active:scale-[0.98]">
+<span class="material-symbols-outlined">list_alt</span>
+<span class="font-['Manrope'] text-sm">Logs</span>
+</div>
+<div class="flex items-center gap-4 px-4 py-3 mb-2 cursor-pointer transition-all duration-200 text-[#9babd0] hover:bg-[#08244f]/50 hover:text-[#dce5ff] rounded-xl active:scale-[0.98]">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-['Manrope'] text-sm">Settings</span>
+</div>
+</nav>
+<div class="mt-auto pt-6 border-t border-outline-variant/20">
+<button class="w-full py-4 mb-6 rounded-2xl bg-gradient-to-r from-primary to-primary-container text-on-primary font-bold text-sm shadow-lg shadow-primary/20 active:scale-95 transition-all">
+                Open Main Gate
+            </button>
+<div class="flex items-center gap-4 px-4 py-3 cursor-pointer text-[#9babd0] hover:text-primary transition-all">
+<span class="material-symbols-outlined">contact_support</span>
+<span class="font-['Manrope'] text-sm">Support</span>
+</div>
+<div class="flex items-center gap-4 px-4 py-3 cursor-pointer text-[#9babd0] hover:text-error transition-all">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-['Manrope'] text-sm">Logout</span>
+</div>
+</div>
+</aside>
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 left-64 h-20 flex justify-between items-center px-10 z-40 bg-[#000d28]/80 backdrop-blur-md shadow-[0_20px_40px_rgba(105,218,255,0.08)]">
+<div class="flex items-center gap-4">
+<span class="text-lg font-extrabold tracking-tighter text-[#dce5ff] font-headline">DL Nexus</span>
+<div class="h-4 w-[1px] bg-outline-variant/30"></div>
+<span class="text-sm font-medium text-[#9babd0]">Módulo Gatekeeper</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary/10 border border-secondary/20">
+<div class="w-2 h-2 rounded-full bg-secondary led-glow-green"></div>
+<span class="text-xs font-bold text-secondary uppercase tracking-wider">System: Online</span>
+</div>
+<div class="flex items-center gap-4 text-[#9babd0]">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary transition-all">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary transition-all">help</span>
+<div class="w-10 h-10 rounded-full bg-surface-container-high border-2 border-primary/20 overflow-hidden cursor-pointer active:scale-95 transition-all">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="Close up professional male headshot portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbamyBdNeKzjuBhRzK7MZb3NaUvwYOex94hn7-jVRIsL0S2gThNzouYO4K9YG0YNL2iZ-Kl7ntdDIBT_nVDVtVFHj2V1sdwTOqh3GOCwHuqzTdCf4Jpqh0HAZ24JRUpX7EkgyVvTob1AK-dF-WMY8Ti1reVXTDnTLEpil7B1xIBGKMRFmOcEu1Hf_M98jdrhQSLcSAaVtlJgTsD4EA5MWAheLgbkfSOSvENpC6ykRYfCozc8p7RP6tOWUkMmJEySFG4hr3WuFU2i0R"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 pt-28 pb-12 px-10 min-h-screen">
+<!-- Hero Metrics & Immediate Actions -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+<!-- Portão Social -->
+<div class="bg-surface-container rounded-xl p-6 relative overflow-hidden group transition-all hover:bg-surface-container-high">
+<div class="flex justify-between items-start mb-6">
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">Portão Social</p>
+<h3 class="text-2xl font-bold font-headline text-secondary">Aberto</h3>
+</div>
+<div class="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary led-glow-green">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">meeting_room</span>
+</div>
+</div>
+<button class="w-full py-2.5 rounded-lg bg-surface-container-highest text-on-surface font-semibold text-xs border border-outline-variant/20 hover:bg-primary/10 hover:text-primary transition-all">
+                    Fechar Portão
+                </button>
+</div>
+<!-- Portão Garagem -->
+<div class="bg-surface-container rounded-xl p-6 relative overflow-hidden group transition-all hover:bg-surface-container-high">
+<div class="flex justify-between items-start mb-6">
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">Portão Garagem</p>
+<h3 class="text-2xl font-bold font-headline text-on-surface-variant">Fechado</h3>
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">garage</span>
+</div>
+</div>
+<button class="w-full py-2.5 rounded-lg bg-primary text-on-primary font-bold text-xs shadow-lg shadow-primary/20 hover:brightness-110 active:scale-95 transition-all">
+                    Abrir Portão
+                </button>
+</div>
+<!-- Aberturas / Hora -->
+<div class="bg-surface-container rounded-xl p-6 flex flex-col justify-between">
+<div>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">Fluxo por Hora</p>
+<div class="flex items-baseline gap-2">
+<h3 class="text-4xl font-extrabold font-headline text-primary">42</h3>
+<span class="text-xs font-medium text-on-surface-variant">aberturas/h</span>
+</div>
+</div>
+<div class="mt-4 flex items-center gap-2 text-[10px] font-bold text-secondary">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>12% maior que ontem</span>
+</div>
+</div>
+<!-- Estado do Motor -->
+<div class="bg-surface-container-low border border-outline-variant/10 rounded-xl p-5 space-y-4">
+<div class="flex justify-between items-center">
+<span class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Motor / Nobreak</span>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-secondary/10 text-secondary">ONLINE</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="p-2 rounded-lg bg-surface-container-highest">
+<p class="text-[10px] text-on-surface-variant mb-1">Temp.</p>
+<p class="text-lg font-bold font-headline">35°C</p>
+</div>
+<div class="p-2 rounded-lg bg-surface-container-highest">
+<p class="text-[10px] text-on-surface-variant mb-1">Bateria</p>
+<p class="text-lg font-bold font-headline text-secondary">98%</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Analytics Section (Bento Layout) -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+<!-- Line Chart Area -->
+<div class="lg:col-span-2 bg-surface-container rounded-2xl p-8">
+<div class="flex justify-between items-center mb-10">
+<div>
+<h4 class="text-xl font-bold font-headline text-on-surface">Fluxo de Acessos</h4>
+<p class="text-sm text-on-surface-variant">Picos de entrada e saída nas últimas 24h</p>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-1.5 rounded-full text-xs font-bold bg-primary text-on-primary">Hoje</button>
+<button class="px-4 py-1.5 rounded-full text-xs font-bold text-on-surface-variant hover:bg-surface-container-high transition-all">Semana</button>
+</div>
+</div>
+<div class="h-64 flex items-end gap-3 px-2">
+<!-- Fake Chart Visualization -->
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/5 rounded-t-lg h-[40%] relative group">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-surface-bright px-2 py-1 rounded text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity">12:00</div>
+</div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/5 rounded-t-lg h-[65%]"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/5 rounded-t-lg h-[85%]"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/5 rounded-t-lg h-[95%] border-t-2 border-primary led-glow-blue"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/5 rounded-t-lg h-[75%]"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/5 rounded-t-lg h-[60%]"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/5 rounded-t-lg h-[45%]"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/5 rounded-t-lg h-[30%]"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/5 rounded-t-lg h-[20%]"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/5 rounded-t-lg h-[55%]"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/5 rounded-t-lg h-[80%]"></div>
+<div class="flex-1 bg-gradient-to-t from-primary/20 to-primary/5 rounded-t-lg h-[60%]"></div>
+</div>
+<div class="flex justify-between mt-4 text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
+<span>06:00</span>
+<span>12:00</span>
+<span>18:00</span>
+<span>00:00</span>
+</div>
+</div>
+<!-- Donut Chart Area -->
+<div class="bg-surface-container rounded-2xl p-8 flex flex-col">
+<h4 class="text-xl font-bold font-headline text-on-surface mb-2">Volume por Tipo</h4>
+<p class="text-sm text-on-surface-variant mb-10">Distribuição total de acessos</p>
+<div class="flex-1 flex flex-col justify-center items-center relative">
+<!-- SVG Donut -->
+<svg class="w-48 h-48 transform -rotate-90">
+<circle class="text-surface-container-highest" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-width="24"></circle>
+<circle class="text-primary" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-dasharray="502" stroke-dashoffset="150" stroke-width="24"></circle>
+<circle class="text-secondary" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-dasharray="502" stroke-dashoffset="350" stroke-width="24"></circle>
+<circle class="text-tertiary" cx="96" cy="96" fill="transparent" r="80" stroke="currentColor" stroke-dasharray="502" stroke-dashoffset="450" stroke-width="24"></circle>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="text-3xl font-extrabold font-headline">1.2k</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-variant tracking-widest">Acessos</span>
+</div>
+</div>
+<div class="mt-10 space-y-3">
+<div class="flex items-center justify-between text-sm">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<span class="font-medium">Morador</span>
+</div>
+<span class="font-bold">65%</span>
+</div>
+<div class="flex items-center justify-between text-sm">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-secondary"></div>
+<span class="font-medium">Serviço</span>
+</div>
+<span class="font-bold">25%</span>
+</div>
+<div class="flex items-center justify-between text-sm">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-tertiary"></div>
+<span class="font-medium">Visitante</span>
+</div>
+<span class="font-bold">10%</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Datagrid Section -->
+<section class="bg-surface-container rounded-2xl overflow-hidden shadow-2xl">
+<div class="p-8 border-b border-outline-variant/10 flex justify-between items-center">
+<div>
+<h4 class="text-xl font-bold font-headline text-on-surface">Log Operacional</h4>
+<p class="text-sm text-on-surface-variant">Registros de acesso em tempo real</p>
+</div>
+<div class="flex gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant/20 rounded-xl text-sm focus:outline-none focus:border-primary/50 transition-all w-64" placeholder="Filtrar logs..." type="text"/>
+</div>
+<button class="p-2 bg-surface-container-high rounded-xl hover:text-primary transition-all">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-high/50 text-[10px] font-bold text-on-surface-variant uppercase tracking-[0.15em]">
+<tr>
+<th class="px-8 py-5">ID de Acesso</th>
+<th class="px-6 py-5">Usuário ou Morador</th>
+<th class="px-6 py-5">Permissão</th>
+<th class="px-6 py-5">Tipo</th>
+<th class="px-6 py-5">Data e Hora</th>
+<th class="px-8 py-5 text-right">Ações</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<tr class="hover:bg-surface-bright/30 transition-all group">
+<td class="px-8 py-5 font-mono text-xs text-primary">#GK-882190</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden">
+<img alt="Resident Avatar" class="w-full h-full object-cover" data-alt="Portrait of a smiling young woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDk8E4AN7db_IyyNijqVMu6UA4BfllysikOL5vVe_zEpj_vCXfSQGWqKjwJXQGVFvmzxEcZrPPF23KICfSFeEF59gpg3J-9e1BYczN5d8jO-LJwgcLkUFl2gcppAdPuwOpTAaECwPuOIr-mf2DTB-7eNO9I5fph_nYLErtWSFac2P-mnaH8AHPMII0DdJzpsfTS5y2h_mFuEEpc4rD7zugcDHcELI_zOLYagPzvx__B-T4st49eXLYN1EXIt6Tof8YCkSEuNG2x1bXn"/>
+</div>
+<span class="font-semibold text-on-surface">Mariana Almeida</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase">Morador</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-base">smartphone</span>
+<span>App DL</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">Hoje, 14:22:15</td>
+<td class="px-8 py-5 text-right">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-all">info</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright/30 transition-all group">
+<td class="px-8 py-5 font-mono text-xs text-primary">#GK-882189</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">person</span>
+</div>
+<span class="font-semibold text-on-surface">Roberto Santos</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full bg-secondary/10 text-secondary text-[10px] font-bold uppercase">Serviço</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">fingerprint</span>
+<span>Biometria</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">Hoje, 14:18:42</td>
+<td class="px-8 py-5 text-right">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-all">info</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright/30 transition-all group">
+<td class="px-8 py-5 font-mono text-xs text-primary">#GK-882188</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest overflow-hidden">
+<img alt="Resident Avatar" class="w-full h-full object-cover" data-alt="Portrait of a young man with glasses" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4gYlsIVKvbGJX7cTFRQwhuZMoalAI-j-fxHvp4JQwc96-wXXuEV8rNBqbZWfGEYws1mmgZQYLhWa1RwdtpuJXLJvWtCxcbo4beHsTyBPJqhieYDZzofXvV58YnjUpDzsl7t0D_amyLzTLniLWnXX1-K-Sps8N94de7fo5goRUY2Xlz6pPtMx5YHZegAVHrAJfjdxMW4lGSNV66P0S27FLeP7dODz_4Z2Pl2TNP7jxLSSZpPH1J2dzq997sa6Kg8o9nP5cExX_J9no"/>
+</div>
+<span class="font-semibold text-on-surface">Carlos Eduardo</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase">Morador</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-base">style</span>
+<span>Tag RFID</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">Hoje, 14:05:01</td>
+<td class="px-8 py-5 text-right">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-all">info</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright/30 transition-all group">
+<td class="px-8 py-5 font-mono text-xs text-primary">#GK-882187</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-sm">person_pin_circle</span>
+</div>
+<span class="font-semibold text-on-surface">Visita: Apartamento 402</span>
+</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-3 py-1 rounded-full bg-tertiary/20 text-tertiary text-[10px] font-bold uppercase">Visitante</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex items-center gap-2 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-base">key</span>
+<span>QR Code</span>
+</div>
+</td>
+<td class="px-6 py-5 text-sm text-on-surface-variant">Hoje, 13:58:12</td>
+<td class="px-8 py-5 text-right">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary transition-all">info</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="px-8 py-6 bg-surface-container-low flex justify-between items-center text-sm font-medium text-on-surface-variant">
+<span>Exibindo 4 de 2,450 registros</span>
+<div class="flex gap-2">
+<button class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center hover:bg-primary/20 transition-all">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 rounded-lg bg-primary text-on-primary flex items-center justify-center">1</button>
+<button class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center hover:bg-primary/20 transition-all">2</button>
+<button class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center hover:bg-primary/20 transition-all">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button (SUPPRESSED ON DASHBOARD as per prompt focused on cards and grid, but usually present - keeping it subtle for 'The Concierge' feel) -->
+<div class="fixed bottom-10 right-10 z-50">
+<button class="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary-container text-on-primary shadow-2xl shadow-primary/40 flex items-center justify-center transform hover:scale-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">add</span>
+</button>
+</div>
+</body></html>

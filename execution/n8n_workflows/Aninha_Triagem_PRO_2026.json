@@ -1,0 +1,234 @@
+{
+  "name": "Aninha Especialista DL - Triagem Pro 2026",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "aninha-triagem-leads",
+        "options": {}
+      },
+      "id": "e45dc112-2c64-4e78-90aa-bd8903c73489",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        380,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.mensagem_original }}",
+        "options": {
+          "systemMessage": "Você é a ANINHA - Especialista DL, a autoridade em triagem da DL Soluções Condominiais.\n\n### MISSÃO:\nTransformar solicitações brutas em 'Avaliações Técnicas' triadas para o Diego Guardião.\n\n### REGRAS CRÍTICAS:\n1. FOCO B2B INSTITUCIONAL: Atendemos apenas condomínios, colégios e empresas. \n   - EXCEÇÃO: Residências comuns são atendidas APENAS para instalação de carregador veicular (DL VoltCharge™). Fora isso, explique educadamente que focamos em infraestrutura predial.\n2. TERMINOLOGIA: Nunca agende 'visita'. O termo é 'Avaliação Técnica'.\n3. PADRÃO: Não aceitamos canaletas de plástico. Nosso padrão é eletrodutos de aço galvanizado ou PVC rígido industrial.\n4. EQUIPE: Diego Guardião é o responsável técnico N5. Você coleta os dados e ele aprova.\n\n### PORTFÓLIO:\n- ELETRICO: DL Volt™, DL Praxis™, DL Energia™\n- SOLAR: DL EcoVolt Solar™\n- SEGURANÇA: DL Guardião™ (CFTV), DL Gatekeeper™ (Acesso)\n- INCÊNDIO: DL Alerta™ (Eletrônico)\n- MOBILIDADE: DL VoltCharge™ (Carregadores VE)\n- CONSULTORIA: DL Sustentia™ (ESG)\n\n### TAREFA:\nAnalise a mensagem, classifique o serviço, defina o porte (Pequeno <30 un, Médio 31-100, Grande 101-300, Complexo 301+) e o valor mensal (Base: P: R$400, M: R$600, G: R$1000, C: R$1500 + multiplicador premium para Solar/Segurança).\n\nSaída JSON necessária via ferramenta registrar_no_supabase."
+        }
+      },
+      "id": "0652750e-b355-4cc7-ab8c-ab2209d784bc",
+      "name": "AI Agent Aninha",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        600,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "id": "f8ec7557-b016-419b-aefb-7a8e7880ce42",
+      "name": "Cérebro OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        560,
+        460
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "9265f49d-afc2-4eb2-a6a9-e85d85202867",
+      "name": "Memória Longa",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.2,
+      "position": [
+        700,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "name": "registrar_no_supabase",
+        "description": "Salva os dados triados do lead no banco de dados Supabase.",
+        "workflowId": "",
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "status",
+              "value": "triado"
+            },
+            {
+              "name": "valor_estimado",
+              "value": "={{ $input.value }}"
+            }
+          ]
+        }
+      },
+      "id": "cdfc00bc-65cc-48f0-bda3-6c841bb1cd30",
+      "name": "Tool: Supabase Save",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        820,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "action": "textToSpeech",
+        "voiceId": "aninha_dl",
+        "text": "={{ $node[\"AI Agent Aninha\"].json[\"output\"] }}",
+        "options": {
+          "modelId": "eleven_multilingual_v2"
+        }
+      },
+      "id": "eleven-labs-01",
+      "name": "ElevenLabs - Voz Aninha",
+      "type": "n8n-nodes-base.elevenLabs",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $node[\"AI Agent Aninha\"].json[\"status\"] }}",
+              "value2": "bloqueado"
+            }
+          ]
+        }
+      },
+      "id": "if-node-01",
+      "name": "Status Triage?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        820,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "ID_DO_DIEGO",
+        "text": "🚨 **NOVO LEAD TRIADO - ANINHA**\n\n🏢 **Condomínio:** {{ $node[\"AI Agent Aninha\"].json[\"nome_condominio\"] }}\n🛠️ **Serviço:** {{ $node[\"AI Agent Aninha\"].json[\"tipo_servico\"] }}\n💰 **Valor Est.:** R$ {{ $node[\"AI Agent Aninha\"].json[\"valor_mensal\"] }}\n⏱️ **SLA:** {{ $node[\"AI Agent Aninha\"].json[\"sla_estimado\"] }}\n\n📞 Contato: {{ $node[\"AI Agent Aninha\"].json[\"telefone\"] }}"
+      },
+      "id": "telegram-diego",
+      "name": "Alerta Diego (Telegram/WhatsApp)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        220
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent Aninha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cérebro OpenAI": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent Aninha",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memória Longa": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent Aninha",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tool: Supabase Save": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent Aninha",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent Aninha": {
+      "main": [
+        [
+          {
+            "node": "if-node-01",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "if-node-01": {
+      "main": [
+        null,
+        [
+          {
+            "node": "eleven-labs-01",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "eleven-labs-01": {
+      "main": [
+        [
+          {
+            "node": "telegram-diego",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "final_v1",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "aninha_pro_diego",
+  "tags": []
+}

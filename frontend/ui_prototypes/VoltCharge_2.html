@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-fixed-variant": "#5b4300",
+                        "surface-tint": "#b7c6ed",
+                        "on-primary-fixed": "#0a1b39",
+                        "inverse-primary": "#4f5e80",
+                        "inverse-on-surface": "#20304f",
+                        "on-surface": "#d8e2ff",
+                        "surface-container-lowest": "#000d28",
+                        "on-surface-variant": "#c5c6ce",
+                        "secondary-fixed-dim": "#fabd00",
+                        "on-primary-fixed-variant": "#374667",
+                        "primary": "#b7c6ed",
+                        "surface-container": "#0e1f3d",
+                        "error-container": "#93000a",
+                        "outline-variant": "#44474e",
+                        "surface-bright": "#293958",
+                        "surface-container-high": "#1a2a48",
+                        "background": "#011230",
+                        "on-tertiary": "#003912",
+                        "outline": "#8f9098",
+                        "surface-variant": "#253454",
+                        "primary-container": "#00102e",
+                        "inverse-surface": "#d8e2ff",
+                        "tertiary-container": "#001604",
+                        "surface-container-highest": "#253454",
+                        "on-tertiary-fixed": "#002108",
+                        "secondary-fixed": "#ffdf9e",
+                        "on-secondary-container": "#6a4e00",
+                        "on-secondary": "#3f2e00",
+                        "tertiary": "#3ce36a",
+                        "on-primary-container": "#6e7da0",
+                        "tertiary-fixed": "#69ff87",
+                        "on-background": "#d8e2ff",
+                        "on-secondary-fixed": "#261a00",
+                        "primary-fixed": "#d8e2ff",
+                        "on-tertiary-container": "#00913a",
+                        "on-primary": "#21304f",
+                        "surface-container-low": "#091b39",
+                        "tertiary-fixed-dim": "#3ce36a",
+                        "secondary-container": "#fabd00",
+                        "on-error-container": "#ffdad6",
+                        "on-tertiary-fixed-variant": "#00531e",
+                        "surface": "#011230",
+                        "secondary": "#ffdf9e",
+                        "error": "#ffb4ab",
+                        "on-error": "#690005",
+                        "primary-fixed-dim": "#b7c6ed",
+                        "surface-dim": "#011230"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glow-tertiary { filter: drop-shadow(0 0 8px rgba(60, 227, 106, 0.4)); }
+        .glow-secondary { filter: drop-shadow(0 0 8px rgba(255, 223, 158, 0.4)); }
+        .glow-error { filter: drop-shadow(0 0 8px rgba(255, 180, 171, 0.4)); }
+        .glass-panel { backdrop-filter: blur(20px); background-color: rgba(41, 57, 88, 0.2); }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary selection:text-primary-container">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-6 py-4 w-full sticky top-0 z-50 bg-[#011230] dark:bg-[#011230]">
+<div class="flex items-center gap-4">
+<span class="text-xl font-bold tracking-tighter text-[#b7c6ed] font-headline">DL Nexus – DL VoltCharge™</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<button class="text-[#b7c6ed]/60 hover:bg-[#293958]/30 transition-colors p-2 rounded active:scale-95 duration-75">
+<span class="material-symbols-outlined">sensors</span>
+</button>
+<button class="text-[#b7c6ed]/60 hover:bg-[#293958]/30 transition-colors p-2 rounded active:scale-95 duration-75">
+<span class="material-symbols-outlined">bolt</span>
+</button>
+<button class="text-[#b7c6ed]/60 hover:bg-[#293958]/30 transition-colors p-2 rounded active:scale-95 duration-75 relative">
+<span class="material-symbols-outlined text-error glow-error">warning</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+</div>
+<div class="h-8 w-px bg-[#091b39]"></div>
+<div class="flex items-center gap-3">
+<span class="font-['Space_Grotesk'] tracking-tighter text-sm uppercase text-[#b7c6ed]">Técnico Responsável</span>
+<img alt="Técnico Responsável" class="w-8 h-8 rounded-full border border-outline-variant/30" data-alt="Close up professional portrait of a technical operator" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA84GsK73tDxT2_1ekve47s8A7u5ZbwdHJF_trsJcbTktrd4C47dGQm067zSPyIvFPe6ux2KvicS90t8Qx4W_ALvSP6clAao2szKwrCpxiH0X8nQuWCneGXc-ToYWCsIZgYMY2f0c4OXOOWMohpIGcSYd0p6fQRzMLs3hrAVDZJJukD5DwvVbIhRhvIrM3YmnxbVlHfBKXPcphG6WXSMOYP2jIU_jTDMiElC9qPTmzGYqiFz_FnYCCX0k2nWcwAzNAjEra8KIYl2MTN"/>
+</div>
+</div>
+</header>
+<div class="flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full flex flex-col z-40 bg-[#091b39] dark:bg-[#091b39] h-screen w-64 border-r border-[#293958]/20">
+<div class="p-6">
+<div class="flex items-center gap-2 mb-8">
+<div class="w-8 h-8 bg-primary rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary">bolt</span>
+</div>
+<div>
+<h1 class="text-lg font-black text-[#b7c6ed] leading-none">DL Nexus</h1>
+<p class="text-[10px] font-medium tracking-widest text-[#ffdf9e] uppercase">DL VoltCharge™</p>
+</div>
+</div>
+<nav class="space-y-1">
+<a class="flex items-center gap-3 font-['Inter'] font-medium text-xs tracking-wider uppercase bg-[#0e1f3d] text-[#ffdf9e] border-l-4 border-[#ffdf9e] px-4 py-3 hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+                        Dashboard
+                    </a>
+<a class="flex items-center gap-3 font-['Inter'] font-medium text-xs tracking-wider uppercase text-[#b7c6ed]/50 px-4 py-3 hover:bg-[#1a2a48] hover:text-[#b7c6ed] transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">ev_station</span>
+                        Estações
+                    </a>
+<a class="flex items-center gap-3 font-['Inter'] font-medium text-xs tracking-wider uppercase text-[#b7c6ed]/50 px-4 py-3 hover:bg-[#1a2a48] hover:text-[#b7c6ed] transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">electric_bolt</span>
+                        Energia
+                    </a>
+<a class="flex items-center gap-3 font-['Inter'] font-medium text-xs tracking-wider uppercase text-[#b7c6ed]/50 px-4 py-3 hover:bg-[#1a2a48] hover:text-[#b7c6ed] transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">notification_important</span>
+                        Alerts
+                    </a>
+<a class="flex items-center gap-3 font-['Inter'] font-medium text-xs tracking-wider uppercase text-[#b7c6ed]/50 px-4 py-3 hover:bg-[#1a2a48] hover:text-[#b7c6ed] transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+                        Billing
+                    </a>
+</nav>
+</div>
+<div class="mt-auto p-6 space-y-4">
+<button class="w-full py-3 bg-error text-on-error font-black text-xs tracking-widest uppercase hover:opacity-90 transition-opacity active:scale-95 duration-75">
+                    EMERGENCY STOP
+                </button>
+<div class="space-y-1 border-t border-[#293958]/20 pt-4">
+<a class="flex items-center gap-3 font-['Inter'] font-medium text-[10px] tracking-wider uppercase text-[#b7c6ed]/40 px-4 py-2 hover:text-[#b7c6ed]" href="#">
+<span class="material-symbols-outlined text-sm">settings</span>
+                        Settings
+                    </a>
+<a class="flex items-center gap-3 font-['Inter'] font-medium text-[10px] tracking-wider uppercase text-[#b7c6ed]/40 px-4 py-2 hover:text-[#b7c6ed]" href="#">
+<span class="material-symbols-outlined text-sm">help_center</span>
+                        Support
+                    </a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-64 flex-1 p-8 bg-surface">
+<div class="max-w-7xl mx-auto">
+<!-- Bento Grid Header -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+<!-- Metric 1: Power -->
+<div class="bg-surface-container-low p-6 flex flex-col justify-between border-l-2 border-primary">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[0.65rem] font-bold text-primary tracking-[0.2em] uppercase font-label">[POW-GRID-01]</span>
+<span class="material-symbols-outlined text-primary text-sm">bolt</span>
+</div>
+<div>
+<p class="text-3xl font-headline font-bold text-on-surface tracking-tighter">145 <span class="text-lg font-medium text-primary/60">kW</span></p>
+<p class="text-[0.7rem] uppercase tracking-wider text-outline mt-1">Potência Consumida</p>
+</div>
+</div>
+<!-- Metric 2: Occupancy -->
+<div class="bg-surface-container-low p-6 flex flex-col justify-between border-l-2 border-tertiary">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[0.65rem] font-bold text-tertiary tracking-[0.2em] uppercase font-label">[PARK-OCC-04]</span>
+<span class="material-symbols-outlined text-tertiary text-sm glow-tertiary">check_circle</span>
+</div>
+<div>
+<p class="text-3xl font-headline font-bold text-on-surface tracking-tighter">78<span class="text-lg font-medium text-tertiary/60">%</span></p>
+<p class="text-[0.7rem] uppercase tracking-wider text-outline mt-1">Ocupação Atual</p>
+</div>
+</div>
+<!-- Metric 3: Active Sessions -->
+<div class="bg-surface-container-low p-6 flex flex-col justify-between border-l-2 border-secondary">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[0.65rem] font-bold text-secondary tracking-[0.2em] uppercase font-label">[SESS-ACT-09]</span>
+<span class="material-symbols-outlined text-secondary text-sm glow-secondary">ev_station</span>
+</div>
+<div>
+<p class="text-3xl font-headline font-bold text-on-surface tracking-tighter">24 <span class="text-lg font-medium text-secondary/60">Units</span></p>
+<p class="text-[0.7rem] uppercase tracking-wider text-outline mt-1">Sessões Ativas</p>
+</div>
+</div>
+<!-- Metric 4: Billing -->
+<div class="bg-surface-container-low p-6 flex flex-col justify-between border-l-2 border-primary-container">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[0.65rem] font-bold text-primary tracking-[0.2em] uppercase font-label">[FIN-NET-12]</span>
+<span class="material-symbols-outlined text-primary text-sm">payments</span>
+</div>
+<div>
+<p class="text-xl font-headline font-bold text-on-surface tracking-tighter">R$ 12.450 <span class="text-[10px] text-tertiary font-label">+12%</span></p>
+<p class="text-[0.7rem] uppercase tracking-wider text-outline mt-1">Estimativa Billing</p>
+</div>
+</div>
+</div>
+<!-- Main Visualization Area -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Real-time Power Graph -->
+<div class="lg:col-span-2 bg-surface-container p-8 relative overflow-hidden">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h3 class="font-headline text-2xl font-bold tracking-tighter mb-1 uppercase">Fluxo de Potência</h3>
+<p class="text-xs text-outline tracking-wider uppercase">Monitoramento em Tempo Real - 60Hz Sampling</p>
+</div>
+<div class="flex gap-2">
+<span class="px-2 py-1 bg-surface-bright text-[10px] font-bold text-primary">LIVE GRID</span>
+</div>
+</div>
+<div class="h-64 flex items-end gap-1 px-2 relative">
+<!-- Abstract SVG Line Graph -->
+<svg class="absolute inset-0 w-full h-full opacity-30" preserveaspectratio="none" viewbox="0 0 100 100">
+<path class="text-primary" d="M0 80 Q 10 70 20 75 T 40 60 T 60 65 T 80 40 T 100 50" fill="none" stroke="currentColor" stroke-width="0.5"></path>
+</svg>
+<!-- Visualizing Data Bars -->
+<div class="flex-1 bg-primary/20 h-[40%]"></div>
+<div class="flex-1 bg-primary/25 h-[45%]"></div>
+<div class="flex-1 bg-primary/30 h-[50%]"></div>
+<div class="flex-1 bg-primary/20 h-[35%]"></div>
+<div class="flex-1 bg-primary/40 h-[60%]"></div>
+<div class="flex-1 bg-tertiary/40 h-[75%] glow-tertiary"></div>
+<div class="flex-1 bg-primary/30 h-[55%]"></div>
+<div class="flex-1 bg-primary/35 h-[50%]"></div>
+<div class="flex-1 bg-primary/25 h-[40%]"></div>
+<div class="flex-1 bg-primary/30 h-[45%]"></div>
+<div class="flex-1 bg-primary/40 h-[65%]"></div>
+<div class="flex-1 bg-primary/20 h-[30%]"></div>
+<div class="flex-1 bg-primary/35 h-[55%]"></div>
+<div class="flex-1 bg-primary/25 h-[45%]"></div>
+<div class="flex-1 bg-secondary/40 h-[85%] glow-secondary"></div>
+<div class="flex-1 bg-primary/30 h-[60%]"></div>
+<div class="flex-1 bg-primary/20 h-[40%]"></div>
+<div class="flex-1 bg-primary/35 h-[50%]"></div>
+<div class="flex-1 bg-primary/30 h-[45%]"></div>
+</div>
+<div class="mt-4 flex justify-between text-[10px] text-outline font-label uppercase tracking-widest">
+<span>14:00</span>
+<span>14:15</span>
+<span>14:30</span>
+<span>14:45</span>
+<span>AGORA (UTC-3)</span>
+</div>
+</div>
+<!-- Critical Alerts -->
+<div class="bg-surface-container p-8 flex flex-col">
+<div class="flex items-center gap-2 mb-8">
+<span class="material-symbols-outlined text-error glow-error">report</span>
+<h3 class="font-headline text-lg font-bold tracking-tighter uppercase">Alertas Críticos</h3>
+</div>
+<div class="space-y-4 flex-1">
+<!-- Alert Item -->
+<div class="p-4 bg-surface-container-lowest border-l-4 border-error">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-black text-error tracking-widest uppercase">OVERHEAT</span>
+<span class="text-[9px] text-outline">02m atrás</span>
+</div>
+<p class="text-sm font-medium text-on-surface">Temperatura Painel Central: 82°C</p>
+<p class="text-[10px] text-outline mt-2 uppercase tracking-tight">Setor: Subestação A2-4</p>
+</div>
+<!-- Alert Item -->
+<div class="p-4 bg-surface-container-lowest border-l-4 border-secondary">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-black text-secondary tracking-widest uppercase">BREAKER TRIP</span>
+<span class="text-[9px] text-outline">15m atrás</span>
+</div>
+<p class="text-sm font-medium text-on-surface">Disjuntor Atuado - Vaga 12</p>
+<p class="text-[10px] text-outline mt-2 uppercase tracking-tight">Setor: Lote Norte B</p>
+</div>
+<!-- Alert Item -->
+<div class="p-4 bg-surface-container-lowest opacity-60">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-black text-outline tracking-widest uppercase">COMM LOSS</span>
+<span class="text-[9px] text-outline">1h atrás</span>
+</div>
+<p class="text-sm font-medium text-on-surface/70">Perda de sinal: Estação EV-09</p>
+</div>
+</div>
+<button class="mt-6 w-full py-2 border border-outline-variant/30 text-[10px] font-bold tracking-widest uppercase hover:bg-surface-bright transition-colors">
+                            Ver Histórico Completo
+                        </button>
+</div>
+</div>
+<!-- Bottom Row: Parking Status & Big Indicator -->
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-8 mt-8">
+<!-- Parking Blocks Visualization -->
+<div class="lg:col-span-3 bg-surface-container p-8">
+<div class="flex justify-between items-center mb-6">
+<h3 class="font-headline text-lg font-bold tracking-tighter uppercase">Status das Vagas</h3>
+<div class="flex gap-4 text-[9px] font-bold tracking-widest uppercase">
+<div class="flex items-center gap-1.5"><span class="w-2 h-2 bg-tertiary"></span> Livre</div>
+<div class="flex items-center gap-1.5"><span class="w-2 h-2 bg-secondary"></span> Ocupado</div>
+<div class="flex items-center gap-1.5"><span class="w-2 h-2 bg-error"></span> Falha</div>
+</div>
+</div>
+<div class="grid grid-cols-10 gap-2">
+<!-- Block Generation -->
+<div class="aspect-square bg-secondary glow-secondary"></div>
+<div class="aspect-square bg-secondary"></div>
+<div class="aspect-square bg-tertiary"></div>
+<div class="aspect-square bg-tertiary"></div>
+<div class="aspect-square bg-secondary"></div>
+<div class="aspect-square bg-secondary"></div>
+<div class="aspect-square bg-error glow-error"></div>
+<div class="aspect-square bg-tertiary"></div>
+<div class="aspect-square bg-tertiary"></div>
+<div class="aspect-square bg-tertiary"></div>
+<div class="aspect-square bg-secondary"></div>
+<div class="aspect-square bg-secondary glow-secondary"></div>
+<div class="aspect-square bg-secondary"></div>
+<div class="aspect-square bg-tertiary"></div>
+<div class="aspect-square bg-secondary"></div>
+<div class="aspect-square bg-tertiary"></div>
+<div class="aspect-square bg-tertiary"></div>
+<div class="aspect-square bg-tertiary"></div>
+<div class="aspect-square bg-secondary"></div>
+<div class="aspect-square bg-secondary"></div>
+<div class="aspect-square bg-tertiary"></div>
+<div class="aspect-square bg-tertiary"></div>
+<div class="aspect-square bg-tertiary"></div>
+<div class="aspect-square bg-tertiary"></div>
+<div class="aspect-square bg-tertiary"></div>
+<div class="aspect-square bg-secondary"></div>
+<div class="aspect-square bg-secondary"></div>
+<div class="aspect-square bg-secondary"></div>
+<div class="aspect-square bg-secondary"></div>
+<div class="aspect-square bg-secondary glow-secondary"></div>
+</div>
+</div>
+<!-- Active Chargers Big Indicator -->
+<div class="bg-[#0e1f3d] border-t-4 border-secondary p-8 flex flex-col items-center justify-center text-center">
+<span class="text-[0.6rem] font-black text-secondary tracking-[0.3em] uppercase mb-4">ACTIVE CHARGING UNITS</span>
+<div class="relative">
+<span class="text-7xl font-headline font-extrabold text-on-surface tracking-tighter glow-secondary">24</span>
+<div class="absolute -top-2 -right-4 bg-secondary text-on-secondary px-1 text-[8px] font-black">MAX 32</div>
+</div>
+<p class="mt-6 text-[10px] text-outline-variant leading-relaxed px-4">Capacidade de carga operando em 75% da banda nominal de segurança.</p>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

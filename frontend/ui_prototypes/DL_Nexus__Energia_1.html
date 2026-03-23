@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DL Nexus – Módulo DL Energia™</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-tertiary": "#690006",
+                        "on-error": "#690005",
+                        "surface-container-low": "#091b39",
+                        "outline": "#85967c",
+                        "primary": "#efffe3",
+                        "on-primary-fixed-variant": "#095300",
+                        "on-secondary-fixed-variant": "#5c4300",
+                        "background": "#011230",
+                        "primary-container": "#39ff14",
+                        "on-surface": "#d8e2ff",
+                        "outline-variant": "#3c4b35",
+                        "secondary-container": "#ffbf00",
+                        "on-secondary-fixed": "#261a00",
+                        "on-primary": "#053900",
+                        "on-tertiary-fixed": "#410002",
+                        "on-tertiary-fixed-variant": "#93000c",
+                        "tertiary-fixed": "#ffdad6",
+                        "on-tertiary-container": "#c50015",
+                        "on-primary-container": "#107100",
+                        "inverse-surface": "#d8e2ff",
+                        "inverse-on-surface": "#20304f",
+                        "tertiary-fixed-dim": "#ffb4ab",
+                        "tertiary": "#fff8f7",
+                        "surface-container-lowest": "#000d28",
+                        "primary-fixed": "#79ff5b",
+                        "primary-fixed-dim": "#2ae500",
+                        "secondary-fixed": "#ffdfa0",
+                        "secondary-fixed-dim": "#fbbc00",
+                        "tertiary-container": "#ffd3ce",
+                        "on-primary-fixed": "#022100",
+                        "on-background": "#d8e2ff",
+                        "surface-dim": "#011230",
+                        "surface": "#011230",
+                        "on-secondary-container": "#6d5000",
+                        "surface-container-high": "#1a2a48",
+                        "surface-bright": "#293958",
+                        "on-error-container": "#ffdad6",
+                        "secondary": "#ffe2ab",
+                        "inverse-primary": "#106e00",
+                        "error-container": "#93000a",
+                        "surface-tint": "#2ae500",
+                        "surface-container-highest": "#253454",
+                        "on-surface-variant": "#baccb0",
+                        "on-secondary": "#402d00",
+                        "error": "#ffb4ab",
+                        "surface-variant": "#253454",
+                        "surface-container": "#0e1f3d"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tabular-nums { font-variant-numeric: tabular-nums; }
+        .grid-bg {
+            background-image: linear-gradient(to right, rgba(60, 75, 53, 0.1) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(60, 75, 53, 0.1) 1px, transparent 1px);
+            background-size: 1.75rem 1.75rem;
+        }
+        .waveform-glow {
+            filter: drop-shadow(0 0 2px currentColor);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary-container selection:text-on-primary">
+<!-- TopNavBar -->
+<header class="bg-[#011230] flex justify-between items-center w-full px-6 py-3 fixed top-0 z-50">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold text-[#39FF14] tracking-widest font-headline">DL Nexus</span>
+<nav class="hidden md:flex gap-6 items-center">
+<a class="font-['Space_Grotesk'] tracking-tighter uppercase text-sm text-[#39FF14] border-b border-[#39FF14] pb-1" href="#">Módulo Energia</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-400 hover:text-[#39FF14] transition-colors duration-150">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="text-slate-400 hover:text-[#39FF14] transition-colors duration-150 relative">
+<span class="material-symbols-outlined">notifications_active</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-error-container rounded-full"></span>
+</button>
+<button class="text-slate-400 hover:text-[#39FF14] transition-colors duration-150">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="w-8 h-8 bg-surface-container-highest overflow-hidden">
+<img alt="User technician profile" data-alt="Technical user profile avatar icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpisQOD62y1UCT_TTuomuLPRlb-8tB9xij1YTv1Ajwc1T7SDdz1I52Di7dQuo0sagPsOAR2WSmS9FS0crZl9WM5mi-s0q9nczr4BVcNxVYv8LZDUSEEDWAv4uUIgWXaV3WU3CoRmg6pmyjy_C7X0wTaCLgV6GrfqwE6fjKQZ-7QMnNYFSh0Rjf9k6NKhtA89wJ77VszWms4kkSodiHCisUed_zC_WwaNMqgjYCZwP43go6MHUtARARjiF5xmYsGX-_pq7NSf-P8q4"/>
+</div>
+</div>
+</header>
+<div class="flex pt-12 min-h-screen">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-screen w-64 bg-[#091B39] py-6 sticky top-12 border-r border-outline-variant/10">
+<div class="px-6 mb-8">
+<div class="font-['Space_Grotesk'] font-black text-[#39FF14] text-lg">DL ENERGIA</div>
+<div class="text-[10px] text-slate-500 font-mono tracking-widest">V.4.2.0-ALPHA</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-6 py-3 bg-[#1A2A48] text-[#39FF14] border-l-2 border-[#39FF14] font-['Inter'] tabular-nums text-xs font-medium active:translate-x-1" href="#">
+<span class="material-symbols-outlined">timeline</span>
+                    Real-time Monitoring
+                </a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 hover:text-slate-200 hover:bg-[#1A2A48] transition-all duration-150 font-['Inter'] tabular-nums text-xs font-medium active:translate-x-1" href="#">
+<span class="material-symbols-outlined">equalizer</span>
+                    Harmonic Analysis
+                </a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 hover:text-slate-200 hover:bg-[#1A2A48] transition-all duration-150 font-['Inter'] tabular-nums text-xs font-medium active:translate-x-1" href="#">
+<span class="material-symbols-outlined">history</span>
+                    Event Log
+                </a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 hover:text-slate-200 hover:bg-[#1A2A48] transition-all duration-150 font-['Inter'] tabular-nums text-xs font-medium active:translate-x-1" href="#">
+<span class="material-symbols-outlined">settings_input_component</span>
+                    System Config
+                </a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-500 hover:text-slate-200 hover:bg-[#1A2A48] transition-all duration-150 font-['Inter'] tabular-nums text-xs font-medium active:translate-x-1" href="#">
+<span class="material-symbols-outlined">biotech</span>
+                    Calibration
+                </a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full py-3 bg-transparent border border-primary-container text-primary-container font-mono text-[10px] tracking-widest hover:bg-primary-container/10 transition-colors">
+                    EXPORT TELEMETRY
+                </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 p-6 pb-12 overflow-x-hidden">
+<!-- Dashboard Title Area -->
+<div class="mb-8 flex justify-between items-end">
+<div>
+<h1 class="text-3xl font-headline font-bold text-on-surface tracking-tight uppercase">Advanced Power Quality Analyzer</h1>
+<p class="text-xs text-outline font-mono mt-1 uppercase tracking-widest">Station ID: NX-4922 // Location: Main Substation Alpha</p>
+</div>
+<div class="flex items-center gap-4 text-[10px] font-mono">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+<span class="text-primary-container">SYSTEM LINK: STABLE</span>
+</div>
+<div class="text-slate-500">REFRESH RATE: 60Hz</div>
+</div>
+</div>
+<!-- 1. Numerical Summary Cards -->
+<section class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+<!-- Harmonics THD -->
+<div class="bg-surface-container-high p-4 border-l-4 border-secondary-container">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[10px] font-mono text-outline uppercase tracking-wider">Harmonics THD (%)</span>
+<span class="material-symbols-outlined text-secondary-container">warning</span>
+</div>
+<div class="text-4xl font-headline font-black text-secondary-container tabular-nums">4.28%</div>
+<div class="mt-2 text-[10px] text-slate-400 font-mono uppercase">Status: Near Threshold</div>
+</div>
+<!-- Surges -->
+<div class="bg-surface-container-high p-4 border-l-4 border-error-container">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[10px] font-mono text-outline uppercase tracking-wider">Surges Detected</span>
+<span class="material-symbols-outlined text-error">bolt</span>
+</div>
+<div class="text-4xl font-headline font-black text-error tabular-nums">12</div>
+<div class="mt-2 text-[10px] text-slate-400 font-mono uppercase">Last 24h peak: 480V</div>
+</div>
+<!-- Drops -->
+<div class="bg-surface-container-high p-4 border-l-4 border-secondary-container">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[10px] font-mono text-outline uppercase tracking-wider">Drops Registered</span>
+<span class="material-symbols-outlined text-secondary-container">trending_down</span>
+</div>
+<div class="text-4xl font-headline font-black text-secondary-container tabular-nums">03</div>
+<div class="mt-2 text-[10px] text-slate-400 font-mono uppercase">Sags/Undervoltage active</div>
+</div>
+<!-- Imminent Risks -->
+<div class="bg-surface-container-highest p-4 border-l-4 border-error">
+<div class="flex justify-between items-start mb-4">
+<span class="text-[10px] font-mono text-error uppercase tracking-wider font-bold">Imminent Risks</span>
+<span class="material-symbols-outlined text-error animate-ping">priority_high</span>
+</div>
+<div class="text-4xl font-headline font-black text-error tabular-nums">CRIT</div>
+<div class="mt-2 text-[10px] text-error font-mono uppercase font-bold">Action Required: Phase B</div>
+</div>
+</section>
+<!-- 2. Advanced Technical Panel (Charts) -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+<!-- Voltage Chart (Sinusoidal) -->
+<div class="lg:col-span-2 bg-surface-container-low p-6 flex flex-col h-[400px]">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-sm font-headline font-bold text-[#39FF14] uppercase tracking-widest flex items-center gap-2">
+<span class="w-2 h-2 bg-[#39FF14]"></span>
+                            Voltage Waveform Analysis
+                        </h2>
+<div class="flex gap-4">
+<div class="flex items-center gap-2 text-[10px] font-mono">
+<span class="w-3 h-0.5 bg-primary-container"></span> NOMINAL
+                            </div>
+<div class="flex items-center gap-2 text-[10px] font-mono">
+<span class="w-3 h-0.5 bg-error"></span> ANOMALY
+                            </div>
+</div>
+</div>
+<div class="flex-1 grid-bg relative overflow-hidden flex items-center">
+<!-- Simulated Waveform Vector (simplified) -->
+<svg class="w-full h-full stroke-[1.5] fill-none" viewbox="0 0 800 200">
+<!-- Nominal Sine Wave -->
+<path class="waveform-glow opacity-30" d="M0 100 Q 50 20, 100 100 T 200 100 T 300 100 T 400 100 T 500 100 T 600 100 T 700 100 T 800 100" stroke="#39FF14"></path>
+<!-- Anomaly Wave -->
+<path class="waveform-glow" d="M0 100 Q 50 10, 100 100 Q 120 180, 140 100 Q 160 0, 180 100 T 300 100 Q 320 40, 340 100 Q 360 160, 380 100 T 500 100 T 600 100 T 700 100 T 800 100" stroke="#39FF14"></path>
+<!-- Red Spike Anomaly -->
+<path class="waveform-glow" d="M300 100 L 310 10 L 320 100" stroke="#FF3131" stroke-width="2"></path>
+<!-- Markers -->
+<circle cx="310" cy="10" fill="#FF3131" r="4"></circle>
+<text fill="#FF3131" font-family="monospace" font-size="10" x="320" y="25">SPIKE: +480V</text>
+<path class="waveform-glow" d="M120 180 L 130 140 L 140 180" stroke="#FFBF00" stroke-width="2"></path>
+<text fill="#FFBF00" font-family="monospace" font-size="10" x="135" y="170">SAG: -95V</text>
+</svg>
+</div>
+</div>
+<!-- Phase Indicators & Current Chart -->
+<div class="flex flex-col gap-4">
+<!-- Phase Status -->
+<div class="bg-surface-container-high p-4 flex-1">
+<h3 class="text-[10px] font-mono text-outline uppercase mb-4 tracking-widest">Phase Continuity Status</h3>
+<div class="space-y-4">
+<div class="flex justify-between items-center bg-surface-container-lowest p-3">
+<span class="font-headline font-bold text-sm">PHASE R (L1)</span>
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-mono text-primary-container">NOMINAL</span>
+<span class="w-3 h-3 bg-primary-container"></span>
+</div>
+</div>
+<div class="flex justify-between items-center bg-surface-container-lowest p-3">
+<span class="font-headline font-bold text-sm text-error">PHASE S (L2)</span>
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-mono text-error">CRITICAL UNBALANCE</span>
+<span class="w-3 h-3 bg-error animate-pulse"></span>
+</div>
+</div>
+<div class="flex justify-between items-center bg-surface-container-lowest p-3">
+<span class="font-headline font-bold text-sm">PHASE T (L3)</span>
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-mono text-primary-container">NOMINAL</span>
+<span class="w-3 h-3 bg-primary-container"></span>
+</div>
+</div>
+</div>
+</div>
+<!-- Small Current Wave -->
+<div class="bg-surface-container-low p-4 h-[160px]">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[10px] font-mono text-outline uppercase">Current Wave (I)</span>
+<span class="text-[10px] font-mono text-primary-container">14.2A RMS</span>
+</div>
+<div class="grid-bg h-full opacity-60">
+<svg class="w-full h-full stroke-primary-container fill-none opacity-80" viewbox="0 0 200 60">
+<path d="M0 30 Q 12.5 5, 25 30 T 50 30 T 75 30 T 100 30 T 125 30 T 150 30 T 175 30 T 200 30" stroke-width="1"></path>
+</svg>
+</div>
+</div>
+</div>
+</section>
+<!-- 3. Datagrid Table (Clinical Logs) -->
+<section class="bg-surface-container-low overflow-hidden">
+<div class="p-4 border-b border-outline-variant/20 flex justify-between items-center">
+<h2 class="text-sm font-headline font-bold text-on-surface uppercase tracking-widest flex items-center gap-2">
+<span class="material-symbols-outlined text-xs">list_alt</span>
+                        Clinical Energy Logs
+                    </h2>
+<div class="flex gap-2">
+<span class="px-2 py-0.5 bg-error-container text-[8px] font-mono text-on-surface">5 ALERTS</span>
+<span class="px-2 py-0.5 bg-surface-container-highest text-[8px] font-mono text-outline">120 TOTAL</span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left font-mono text-[11px] border-collapse">
+<thead>
+<tr class="bg-surface-container-highest text-outline uppercase tracking-tighter">
+<th class="p-3 font-medium">Event Detected</th>
+<th class="p-3 font-medium">Exact Time</th>
+<th class="p-3 font-medium">Severity</th>
+<th class="p-3 font-medium">Affected Phase</th>
+<th class="p-3 font-medium">Metric Value</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 text-on-surface">TRANS_SPIKE_DETECTION</td>
+<td class="p-3 tabular-nums text-slate-400">2023-10-24 14:22:01.034</td>
+<td class="p-3">
+<span class="px-2 py-0.5 bg-error-container text-on-surface uppercase text-[9px] font-bold">CRITICAL</span>
+</td>
+<td class="p-3 text-on-surface">PHASE S</td>
+<td class="p-3 tabular-nums text-error font-bold">480.2 V</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 text-on-surface">VOLTAGE_SAG_THRESHOLD</td>
+<td class="p-3 tabular-nums text-slate-400">2023-10-24 14:20:45.912</td>
+<td class="p-3">
+<span class="px-2 py-0.5 bg-secondary-container text-on-secondary uppercase text-[9px] font-bold">WARNING</span>
+</td>
+<td class="p-3 text-on-surface">PHASE R</td>
+<td class="p-3 tabular-nums text-secondary-container font-bold">95.4 V</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 text-on-surface">HARMONIC_DISTORTION_L3</td>
+<td class="p-3 tabular-nums text-slate-400">2023-10-24 14:15:22.001</td>
+<td class="p-3">
+<span class="px-2 py-0.5 bg-secondary-container text-on-secondary uppercase text-[9px] font-bold">WARNING</span>
+</td>
+<td class="p-3 text-on-surface">PHASE T</td>
+<td class="p-3 tabular-nums text-secondary-container font-bold">THD 4.2%</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 text-on-surface">NOMINAL_RESTORED_L1</td>
+<td class="p-3 tabular-nums text-slate-400">2023-10-24 14:10:05.122</td>
+<td class="p-3">
+<span class="px-2 py-0.5 bg-primary-container/20 text-primary-container uppercase text-[9px] font-bold">OPTIMAL</span>
+</td>
+<td class="p-3 text-on-surface">PHASE R</td>
+<td class="p-3 tabular-nums text-primary-container font-bold">120.0 V</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+</div>
+<!-- Footer -->
+<footer class="bg-[#000D28] fixed bottom-0 w-full flex justify-between items-center px-6 py-1 z-50">
+<div class="font-mono text-[10px] tracking-widest uppercase text-[#39FF14]">
+            SYSTEM STATUS: <span class="font-bold">NOMINAL</span> // CORE TEMP: 32C // HB: 1.02s
+        </div>
+<div class="flex gap-6">
+<a class="font-mono text-[10px] tracking-widest uppercase text-slate-600 hover:text-[#FFBF00] transition-colors duration-150" href="#">API DOCS</a>
+<a class="font-mono text-[10px] tracking-widest uppercase text-slate-600 hover:text-[#FFBF00] transition-colors duration-150" href="#">SECURITY PROTOCOL</a>
+<a class="font-mono text-[10px] tracking-widest uppercase text-slate-600 hover:text-[#FFBF00] transition-colors duration-150" href="#">HARDWARE LOGS</a>
+</div>
+<div class="text-[#39FF14] font-bold font-mono text-[10px] tracking-widest">
+            © 2024 NEXUS INDUSTRIES
+        </div>
+</footer>
+</body></html>

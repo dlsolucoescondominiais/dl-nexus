@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DL Nexus | DL Insight™ Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary-container": "#00923a",
+              "surface-bright": "#303a48",
+              "primary-fixed": "#d8e2ff",
+              "error-container": "#93000a",
+              "surface-container-low": "#121c29",
+              "on-secondary-fixed": "#001f24",
+              "background": "#0a1420",
+              "on-error-container": "#ffdad6",
+              "on-surface-variant": "#c5c6ce",
+              "secondary-fixed-dim": "#00daf3",
+              "on-surface": "#d9e3f5",
+              "on-background": "#d9e3f5",
+              "surface-tint": "#b7c6ed",
+              "inverse-primary": "#4f5e80",
+              "tertiary-fixed-dim": "#3ce36a",
+              "inverse-on-surface": "#27313f",
+              "primary": "#b7c6ed",
+              "tertiary": "#3ce36a",
+              "surface-container-high": "#212b38",
+              "surface-container": "#16202d",
+              "outline": "#8f9098",
+              "tertiary-container": "#001804",
+              "on-tertiary-fixed-variant": "#00531e",
+              "primary-container": "#011230",
+              "primary-fixed-dim": "#b7c6ed",
+              "surface-dim": "#0a1420",
+              "tertiary-fixed": "#69ff87",
+              "error": "#ffb4ab",
+              "on-primary-fixed": "#091b39",
+              "surface-container-lowest": "#050f1b",
+              "on-secondary-fixed-variant": "#004f58",
+              "surface": "#0a1420",
+              "on-primary": "#20304f",
+              "on-tertiary-fixed": "#002108",
+              "on-primary-fixed-variant": "#374767",
+              "secondary-fixed": "#9cf0ff",
+              "inverse-surface": "#d9e3f5",
+              "surface-container-highest": "#2c3543",
+              "outline-variant": "#44474e",
+              "on-error": "#690005",
+              "surface-variant": "#2c3543",
+              "on-primary-container": "#6e7ea1",
+              "secondary": "#bdf4ff",
+              "on-secondary": "#00363d",
+              "on-tertiary": "#003912",
+              "secondary-container": "#00e3fd",
+              "on-secondary-container": "#00616d"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Inter"],
+              "label": ["Space Grotesk"]
+            },
+            borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .tonal-carving {
+            background: linear-gradient(135deg, #121c29 0%, #0a1420 100%);
+        }
+        .glow-emerald {
+            box-shadow: 0 0 20px -5px rgba(60, 227, 106, 0.2);
+        }
+        .glow-crimson {
+            box-shadow: 0 0 20px -5px rgba(255, 180, 171, 0.2);
+        }
+        .monospaced {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-tertiary selection:text-on-tertiary">
+<!-- TopAppBar -->
+<header class="bg-[#011230] text-[#b7c6ed] font-['Space_Grotesk'] tracking-tight text-sm uppercase docked full-width top-0 z-50 flex justify-between items-center px-6 py-3 w-full">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-[#b7c6ed] uppercase">DL Nexus</span>
+<div class="hidden md:flex items-center gap-2 bg-surface-container-highest px-3 py-1.5 border-b border-outline/20">
+<span class="material-symbols-outlined text-xs">domain</span>
+<select class="bg-transparent border-none text-xs focus:ring-0 cursor-pointer font-bold tracking-widest">
+<option>CONDOMÍNIO ALPHA TOWER</option>
+<option>RESIDENCIAL ZENITH</option>
+<option>OFFICE MATRIX</option>
+</select>
+</div>
+</div>
+<nav class="hidden md:flex gap-6 items-center">
+<a class="text-[#3ce36a] border-b-2 border-[#3ce36a] pb-1" href="#">Unified Vision</a>
+</nav>
+<div class="flex items-center gap-4">
+<div class="flex gap-2">
+<button class="p-2 hover:bg-[#2c3543] transition-colors duration-200 active:scale-95 transition-transform">
+<span class="material-symbols-outlined">notifications_active</span>
+</button>
+<button class="p-2 hover:bg-[#2c3543] transition-colors duration-200 active:scale-95 transition-transform">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+<div class="w-8 h-8 bg-surface-container-highest flex items-center justify-center border border-outline/20">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="User profile avatar icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCD4Kc67MnigCgGkCfl8u35xkx6yn0zvCM9gU6yzdLgOGVgv2Rqj29WJkll9UjUst8bn2u0788eIiIw3zn7xtVZNuQjtD6WrjUu8Q3HZ4wW8kudiNMoAuX6iGE_AUazXWD9xDnLCIHWE50hoER3qkj0okffKmc1HBwHjhZlHjYWA3pN-a103Jzxa2z6VeV7nVtnFVj3TwTxPLpjQ29k8_zTst8s7ow2bftL8D6y5jolEGRHu_aQ-3QEestsVbqKH4fLqEYdeH4h4Q"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="hidden md:flex bg-[#011230] text-[#b7c6ed] font-['Space_Grotesk'] text-xs font-bold uppercase tracking-widest h-screen w-64 fixed left-0 top-0 z-40 tonal-carving flex-col pt-16">
+<div class="px-6 py-4 mb-4">
+<div class="text-lg font-black text-[#b7c6ed]">DL Nexus</div>
+<div class="text-[10px] opacity-50 tracking-tighter">Tactical Monolith v1.0</div>
+</div>
+<div class="flex-1 space-y-1">
+<a class="bg-[#2c3543] text-[#3ce36a] border-l-4 border-[#3ce36a] flex items-center px-6 py-4 transition-all" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span> DL Insight
+            </a>
+<a class="flex items-center px-6 py-4 text-[#b7c6ed]/60 hover:bg-[#1c2838] transition-all" href="#">
+<span class="material-symbols-outlined mr-3">analytics</span> Fleet Monitor
+            </a>
+<a class="flex items-center px-6 py-4 text-[#b7c6ed]/60 hover:bg-[#1c2838] transition-all" href="#">
+<span class="material-symbols-outlined mr-3">sensors</span> Telemetry
+            </a>
+<a class="flex items-center px-6 py-4 text-[#b7c6ed]/60 hover:bg-[#1c2838] transition-all" href="#">
+<span class="material-symbols-outlined mr-3">receipt_long</span> Logs
+            </a>
+<a class="flex items-center px-6 py-4 text-[#b7c6ed]/60 hover:bg-[#1c2838] transition-all" href="#">
+<span class="material-symbols-outlined mr-3">memory</span> Systems
+            </a>
+</div>
+<div class="p-4">
+<button class="w-full py-3 bg-error-container text-on-error-container font-black text-[10px] hover:brightness-110 active:scale-95 transition-all">
+                EMERGENCY OVERRIDE
+            </button>
+</div>
+<div class="mt-auto border-t border-outline/10">
+<a class="flex items-center px-6 py-3 text-[#b7c6ed]/60 hover:bg-[#1c2838]" href="#">
+<span class="material-symbols-outlined mr-3">help_outline</span> Support
+            </a>
+<a class="flex items-center px-6 py-3 text-[#b7c6ed]/60 hover:bg-[#1c2838]" href="#">
+<span class="material-symbols-outlined mr-3">logout</span> Logout
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 pt-16 min-h-screen p-6 space-y-6 bg-surface-container-lowest">
+<!-- Priority Banners -->
+<div class="flex flex-col md:flex-row gap-4">
+<div class="flex-1 bg-error-container/20 border-l-4 border-error p-3 flex items-center justify-between glow-crimson">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">report</span>
+<div>
+<div class="text-[10px] font-bold text-error uppercase tracking-widest">CRITICAL ALERT</div>
+<div class="text-sm font-headline font-bold text-on-error-container">FIRE SENSOR FAULT: SECTOR B-4</div>
+</div>
+</div>
+<button class="text-[10px] font-bold underline text-error">DISPATCH TECHNICIAN</button>
+</div>
+<div class="flex-1 bg-tertiary/5 border-l-4 border-tertiary p-3 flex items-center justify-between glow-emerald">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<div>
+<div class="text-[10px] font-bold text-tertiary uppercase tracking-widest">SYSTEM STATUS</div>
+<div class="text-sm font-headline font-bold text-on-surface">ALL OTHER SUBSYSTEMS NOMINAL</div>
+</div>
+</div>
+<div class="text-[10px] font-mono text-tertiary">UPTIME: 99.98%</div>
+</div>
+</div>
+<!-- Status Heatmap -->
+<section class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-2">
+<!-- Electrical -->
+<div class="bg-surface-container-low p-4 border-t-2 border-tertiary group hover:bg-surface-container-high transition-colors">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-tertiary text-lg">bolt</span>
+<div class="w-1.5 h-1.5 bg-tertiary rounded-full animate-pulse"></div>
+</div>
+<div class="text-[9px] font-bold text-outline uppercase tracking-tighter">Electrical</div>
+<div class="text-xs font-headline font-bold text-on-surface">NOMINAL</div>
+</div>
+<!-- Solar -->
+<div class="bg-surface-container-low p-4 border-t-2 border-tertiary group hover:bg-surface-container-high transition-colors">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-tertiary text-lg">solar_power</span>
+<div class="w-1.5 h-1.5 bg-tertiary rounded-full"></div>
+</div>
+<div class="text-[9px] font-bold text-outline uppercase tracking-tighter">Solar</div>
+<div class="text-xs font-headline font-bold text-on-surface">GENERATING</div>
+</div>
+<!-- Security -->
+<div class="bg-surface-container-low p-4 border-t-2 border-tertiary group hover:bg-surface-container-high transition-colors">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-tertiary text-lg">security</span>
+<div class="w-1.5 h-1.5 bg-tertiary rounded-full"></div>
+</div>
+<div class="text-[9px] font-bold text-outline uppercase tracking-tighter">Security</div>
+<div class="text-xs font-headline font-bold text-on-surface">SECURED</div>
+</div>
+<!-- Automation -->
+<div class="bg-surface-container-low p-4 border-t-2 border-error group hover:bg-surface-container-high transition-colors">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-error text-lg">settings_remote</span>
+<div class="w-1.5 h-1.5 bg-error rounded-full"></div>
+</div>
+<div class="text-[9px] font-bold text-outline uppercase tracking-tighter">Automation</div>
+<div class="text-xs font-headline font-bold text-on-surface">OVERRIDE</div>
+</div>
+<!-- Fire -->
+<div class="bg-surface-container-low p-4 border-t-2 border-error group hover:bg-surface-container-high transition-colors">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-error text-lg">fire_truck</span>
+<div class="w-1.5 h-1.5 bg-error rounded-full animate-ping"></div>
+</div>
+<div class="text-[9px] font-bold text-outline uppercase tracking-tighter">Fire</div>
+<div class="text-xs font-headline font-bold text-on-surface">ALERT</div>
+</div>
+<!-- CCTV -->
+<div class="bg-surface-container-low p-4 border-t-2 border-[#eab308] group hover:bg-surface-container-high transition-colors">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-[#eab308] text-lg">videocam</span>
+<div class="w-1.5 h-1.5 bg-[#eab308] rounded-full"></div>
+</div>
+<div class="text-[9px] font-bold text-outline uppercase tracking-tighter">CCTV</div>
+<div class="text-xs font-headline font-bold text-on-surface">1 CAM DOWN</div>
+</div>
+<!-- Gates -->
+<div class="bg-surface-container-low p-4 border-t-2 border-tertiary group hover:bg-surface-container-high transition-colors">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-tertiary text-lg">sensor_door</span>
+<div class="w-1.5 h-1.5 bg-tertiary rounded-full"></div>
+</div>
+<div class="text-[9px] font-bold text-outline uppercase tracking-tighter">Gates</div>
+<div class="text-xs font-headline font-bold text-on-surface">LOCKED</div>
+</div>
+<!-- Network -->
+<div class="bg-surface-container-low p-4 border-t-2 border-tertiary group hover:bg-surface-container-high transition-colors">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-tertiary text-lg">lan</span>
+<div class="w-1.5 h-1.5 bg-tertiary rounded-full"></div>
+</div>
+<div class="text-[9px] font-bold text-outline uppercase tracking-tighter">Network</div>
+<div class="text-xs font-headline font-bold text-on-surface">ONLINE</div>
+</div>
+</section>
+<!-- Massive KPIs -->
+<section class="grid grid-cols-1 md:grid-cols-5 gap-4">
+<div class="bg-surface-container-low p-5 relative overflow-hidden group">
+<div class="text-[10px] font-bold text-on-primary-container tracking-widest uppercase mb-1">Monthly Savings</div>
+<div class="text-3xl font-headline font-bold text-tertiary monospaced tracking-tighter">R$ 14.280</div>
+<div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-8xl">payments</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-5 relative overflow-hidden group">
+<div class="text-[10px] font-bold text-on-primary-container tracking-widest uppercase mb-1">Total Consumption</div>
+<div class="text-3xl font-headline font-bold text-on-surface monospaced tracking-tighter">8.422 <span class="text-sm font-normal text-outline">kWh</span></div>
+<div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-8xl">electric_bolt</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-5 relative overflow-hidden group">
+<div class="text-[10px] font-bold text-on-primary-container tracking-widest uppercase mb-1">Open Calls</div>
+<div class="text-3xl font-headline font-bold text-on-surface monospaced tracking-tighter">04</div>
+<div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-8xl">support_agent</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-5 relative overflow-hidden group">
+<div class="text-[10px] font-bold text-on-primary-container tracking-widest uppercase mb-1">Critical Events</div>
+<div class="text-3xl font-headline font-bold text-error monospaced tracking-tighter">02</div>
+<div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-8xl">warning</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-5 relative overflow-hidden group">
+<div class="text-[10px] font-bold text-on-primary-container tracking-widest uppercase mb-1">IA Anomaly Count</div>
+<div class="text-3xl font-headline font-bold text-secondary monospaced tracking-tighter">18</div>
+<div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-8xl">psychology</span>
+</div>
+</div>
+</section>
+<!-- Bento Grid Main Content -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Events Table (Asymmetric Focus) -->
+<section class="lg:col-span-8 bg-surface-container-low p-0 overflow-hidden">
+<div class="p-6 border-b border-outline/10 flex justify-between items-center">
+<h2 class="text-sm font-headline font-black uppercase tracking-widest text-on-surface flex items-center gap-2">
+<span class="w-1 h-4 bg-primary"></span> Primary Events Table
+                    </h2>
+<div class="flex gap-2">
+<span class="text-[10px] bg-surface-container-highest px-2 py-1 text-outline">AUTO-REFRESH: 5s</span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-xs">
+<thead class="bg-surface-container-lowest text-outline uppercase tracking-widest font-bold">
+<tr>
+<th class="px-6 py-3 border-b border-outline/5">ID</th>
+<th class="px-6 py-3 border-b border-outline/5">Module</th>
+<th class="px-6 py-3 border-b border-outline/5">Description</th>
+<th class="px-6 py-3 border-b border-outline/5">Severity</th>
+<th class="px-6 py-3 border-b border-outline/5">Technician</th>
+<th class="px-6 py-3 border-b border-outline/5">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline/5 monospaced">
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-4 text-on-surface">#NX-9021</td>
+<td class="px-6 py-4">
+<span class="bg-surface-container-highest px-2 py-1 border-l-2 border-error">FIRE</span>
+</td>
+<td class="px-6 py-4 max-w-xs truncate">Smoke detector failure in technical basement gallery.</td>
+<td class="px-6 py-4"><span class="text-error font-bold">CRITICAL</span></td>
+<td class="px-6 py-4">M. SANTOS</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-error animate-pulse"></div>
+<span>DISPATCHED</span>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors bg-surface-container-lowest/30">
+<td class="px-6 py-4 text-on-surface">#NX-8995</td>
+<td class="px-6 py-4">
+<span class="bg-surface-container-highest px-2 py-1 border-l-2 border-[#eab308]">CCTV</span>
+</td>
+<td class="px-6 py-4 max-w-xs truncate">IP Camera #42 - Signal Intermittent.</td>
+<td class="px-6 py-4"><span class="text-[#eab308] font-bold">WARNING</span></td>
+<td class="px-6 py-4">T. COSTA</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2 text-outline">
+<div class="w-2 h-2 rounded-full bg-outline"></div>
+<span>PENDING</span>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-4 text-on-surface">#NX-8842</td>
+<td class="px-6 py-4">
+<span class="bg-surface-container-highest px-2 py-1 border-l-2 border-tertiary">ELEC</span>
+</td>
+<td class="px-6 py-4 max-w-xs truncate">Phase balance optimization complete.</td>
+<td class="px-6 py-4 text-tertiary">INFO</td>
+<td class="px-6 py-4">SYSTEM_AI</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2 text-tertiary">
+<span class="material-symbols-outlined text-xs">done_all</span>
+<span>RESOLVED</span>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors bg-surface-container-lowest/30">
+<td class="px-6 py-4 text-on-surface">#NX-8830</td>
+<td class="px-6 py-4">
+<span class="bg-surface-container-highest px-2 py-1 border-l-2 border-tertiary">GATE</span>
+</td>
+<td class="px-6 py-4 max-w-xs truncate">Battery replacement scheduled for backup UPS.</td>
+<td class="px-6 py-4 text-tertiary">INFO</td>
+<td class="px-6 py-4">J. ALMEIDA</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2 text-outline">
+<div class="w-2 h-2 rounded-full bg-outline"></div>
+<span>SCHEDULED</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Vertical Event Timeline -->
+<section class="lg:col-span-4 bg-surface-container-low p-6">
+<h2 class="text-sm font-headline font-black uppercase tracking-widest text-on-surface mb-6 flex items-center gap-2">
+<span class="w-1 h-4 bg-secondary"></span> Tactical Timeline
+                </h2>
+<div class="relative border-l border-outline/10 ml-2 space-y-8 pb-4">
+<!-- Event 1 -->
+<div class="relative pl-6">
+<div class="absolute -left-1.5 top-0 w-3 h-3 bg-error border-2 border-background glow-crimson"></div>
+<div class="text-[10px] font-mono text-error font-bold mb-1">14:22:15 - CRITICAL</div>
+<div class="text-xs font-bold text-on-surface mb-1 uppercase tracking-tight">Zone Delta: Intrusion Alarm Triggered</div>
+<p class="text-[11px] text-outline leading-relaxed">External perimeter sensor detected movement. PTZ Camera #3 zoomed and confirmed false positive (Wildlife).</p>
+</div>
+<!-- Event 2 -->
+<div class="relative pl-6">
+<div class="absolute -left-1.5 top-0 w-3 h-3 bg-tertiary border-2 border-background"></div>
+<div class="text-[10px] font-mono text-tertiary font-bold mb-1">13:45:00 - RESOLVED</div>
+<div class="text-xs font-bold text-on-surface mb-1 uppercase tracking-tight">Solar Inverter #2 Re-Sync</div>
+<p class="text-[11px] text-outline leading-relaxed">Grid frequency stabilized. System successfully re-synchronized after maintenance window.</p>
+</div>
+<!-- Event 3 -->
+<div class="relative pl-6">
+<div class="absolute -left-1.5 top-0 w-3 h-3 bg-secondary border-2 border-background"></div>
+<div class="text-[10px] font-mono text-secondary font-bold mb-1">12:10:04 - AI INSIGHT</div>
+<div class="text-xs font-bold text-on-surface mb-1 uppercase tracking-tight">Predictive Maintenance Warning</div>
+<p class="text-[11px] text-outline leading-relaxed">Air conditioning compressor #B showing 15% increase in vibration patterns. Suggest inspection within 7 days.</p>
+</div>
+<!-- Event 4 -->
+<div class="relative pl-6">
+<div class="absolute -left-1.5 top-0 w-3 h-3 bg-outline border-2 border-background"></div>
+<div class="text-[10px] font-mono text-outline font-bold mb-1">11:00:00 - SYSTEM</div>
+<div class="text-xs font-bold text-on-surface mb-1 uppercase tracking-tight">Database Scrub Complete</div>
+<p class="text-[11px] text-outline leading-relaxed">Routine integrity check of historical telemetry logs finished without errors.</p>
+</div>
+</div>
+<button class="w-full mt-4 py-2 border border-outline/20 text-[10px] font-bold uppercase tracking-widest hover:bg-surface-container-high transition-colors">
+                    View Full Audit Log
+                </button>
+</section>
+</div>
+<!-- Footer Stats Ribbon -->
+<footer class="bg-[#011230] text-[#3ce36a] font-mono text-[10px] uppercase tracking-[0.1em] docked full-width bottom-0 z-50 flex justify-between items-center px-6 py-2 w-full border-t border-[#b7c6ed]/10">
+<div class="flex items-center gap-6">
+<span>System Status: Operational</span>
+<span class="hidden md:inline text-[#b7c6ed]/30">|</span>
+<span class="hidden md:inline">v2.4.1-alpha</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 bg-tertiary rounded-full animate-pulse"></span>
+                    Telemetry: Live
+                </span>
+<span class="text-[#b7c6ed]/50">DL NEXUS CORE © 2024</span>
+</div>
+</footer>
+</main>
+<!-- Map/Background Reference -->
+<div class="fixed inset-0 pointer-events-none opacity-5 -z-10">
+<img alt="Background Pattern" class="w-full h-full object-cover" data-alt="Technical blueprint grid pattern background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRvjPrCr0Lz4NGQsVCXSdJhzkSL6FU7F12IqEsSgJAce57735yY0om1iJKRfJKW00GQ3iN-D7KSvHX57ePvRIbCz9CCGEZGRTPcN0p9ZFb-0Rz05sAiPDzt40T_ayvMOendML4fLbcSEGCtb-0Y4dvqc3MCwp5Yq0THCZe8Q6ifHJ44_JAlB4GWfVSBVy06ZuGg4hyES9ZufcEO4yWsG3Px7aXAbBCXI9WkGrmvcLf3-zI0q5XzSIv7EFlcnr1HyTo5irCzScyeQ"/>
+</div>
+</body></html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DL Nexus – DL VoltCharge™ | Gestão de Energia</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary-fixed-variant": "#5b4300",
+              "surface-tint": "#b7c6ed",
+              "on-primary-fixed": "#0a1b39",
+              "inverse-primary": "#4f5e80",
+              "inverse-on-surface": "#20304f",
+              "on-surface": "#d8e2ff",
+              "surface-container-lowest": "#000d28",
+              "on-surface-variant": "#c5c6ce",
+              "secondary-fixed-dim": "#fabd00",
+              "on-primary-fixed-variant": "#374667",
+              "primary": "#b7c6ed",
+              "surface-container": "#0e1f3d",
+              "error-container": "#93000a",
+              "outline-variant": "#44474e",
+              "surface-bright": "#293958",
+              "surface-container-high": "#1a2a48",
+              "background": "#011230",
+              "on-tertiary": "#003912",
+              "outline": "#8f9098",
+              "surface-variant": "#253454",
+              "primary-container": "#00102e",
+              "inverse-surface": "#d8e2ff",
+              "tertiary-container": "#001604",
+              "surface-container-highest": "#253454",
+              "on-tertiary-fixed": "#002108",
+              "secondary-fixed": "#ffdf9e",
+              "on-secondary-container": "#6a4e00",
+              "on-secondary": "#3f2e00",
+              "tertiary": "#3ce36a",
+              "on-primary-container": "#6e7da0",
+              "tertiary-fixed": "#69ff87",
+              "on-background": "#d8e2ff",
+              "on-secondary-fixed": "#261a00",
+              "primary-fixed": "#d8e2ff",
+              "on-tertiary-container": "#00913a",
+              "on-primary": "#21304f",
+              "surface-container-low": "#091b39",
+              "tertiary-fixed-dim": "#3ce36a",
+              "secondary-container": "#fabd00",
+              "on-error-container": "#ffdad6",
+              "on-tertiary-fixed-variant": "#00531e",
+              "surface": "#011230",
+              "secondary": "#ffdf9e",
+              "error": "#ffb4ab",
+              "on-error": "#690005",
+              "primary-fixed-dim": "#b7c6ed",
+              "surface-dim": "#011230"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-card {
+        background: rgba(41, 57, 88, 0.1);
+        backdrop-filter: blur(20px);
+      }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-secondary selection:text-on-secondary">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full flex flex-col z-40 bg-[#091b39] dark:bg-[#091b39] h-screen w-64 left-0 border-r border-[#293958]/20">
+<div class="px-6 py-8 flex flex-col gap-1">
+<span class="text-lg font-black text-[#b7c6ed] font-headline uppercase tracking-tighter">DL Nexus</span>
+<span class="font-['Inter'] font-medium text-xs tracking-wider uppercase text-[#ffdf9e]">DL VoltCharge™</span>
+</div>
+<nav class="flex-1 flex flex-col mt-4">
+<!-- Dashboard -->
+<a class="text-[#b7c6ed]/50 px-4 py-3 font-['Inter'] font-medium text-xs tracking-wider uppercase flex items-center gap-3 hover:bg-[#1a2a48] hover:text-[#b7c6ed] transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span>Dashboard</span>
+</a>
+<!-- Estações -->
+<a class="text-[#b7c6ed]/50 px-4 py-3 font-['Inter'] font-medium text-xs tracking-wider uppercase flex items-center gap-3 hover:bg-[#1a2a48] hover:text-[#b7c6ed] transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="ev_station">ev_station</span>
+<span>Estaçõess</span>
+</a>
+<!-- Energia (Active) -->
+<a class="bg-[#0e1f3d] text-[#ffdf9e] border-l-4 border-[#ffdf9e] px-4 py-3 font-['Inter'] font-medium text-xs tracking-wider uppercase flex items-center gap-3" href="#">
+<span class="material-symbols-outlined" data-icon="electric_bolt">electric_bolt</span>
+<span>Energia</span>
+</a>
+<!-- Alerts -->
+<a class="text-[#b7c6ed]/50 px-4 py-3 font-['Inter'] font-medium text-xs tracking-wider uppercase flex items-center gap-3 hover:bg-[#1a2a48] hover:text-[#b7c6ed] transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="notification_important">notification_important</span>
+<span>Alerts</span>
+</a>
+<!-- Billing -->
+<a class="text-[#b7c6ed]/50 px-4 py-3 font-['Inter'] font-medium text-xs tracking-wider uppercase flex items-center gap-3 hover:bg-[#1a2a48] hover:text-[#b7c6ed] transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span>Billing</span>
+</a>
+</nav>
+<div class="p-4 mb-4">
+<button class="w-full py-3 bg-error text-on-error font-bold text-xs tracking-widest rounded-DEFAULT active:scale-95 duration-75 uppercase">
+                EMERGENCY STOP
+            </button>
+</div>
+<div class="border-t border-[#293958]/20 pt-4 pb-8">
+<a class="text-[#b7c6ed]/50 px-4 py-3 font-['Inter'] font-medium text-xs tracking-wider uppercase flex items-center gap-3 hover:bg-[#1a2a48] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+<a class="text-[#b7c6ed]/50 px-4 py-3 font-['Inter'] font-medium text-xs tracking-wider uppercase flex items-center gap-3 hover:bg-[#1a2a48] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="help_center">help_center</span>
+<span>Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-64 min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-6 py-4 w-full sticky top-0 z-50 bg-[#011230] dark:bg-[#011230]">
+<div class="flex items-center gap-4">
+<h1 class="font-['Space_Grotesk'] tracking-tighter text-sm uppercase font-bold text-[#b7c6ed]">
+                    Energia e Billing <span class="mx-2 opacity-30">/</span> <span class="text-[#ffdf9e]">Relatório Operacional</span>
+</h1>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 text-[#b7c6ed]">
+<span class="material-symbols-outlined cursor-pointer hover:bg-[#293958]/30 p-2 rounded transition-colors" data-icon="sensors">sensors</span>
+<span class="material-symbols-outlined cursor-pointer hover:bg-[#293958]/30 p-2 rounded transition-colors" data-icon="bolt">bolt</span>
+<span class="material-symbols-outlined cursor-pointer hover:bg-[#293958]/30 p-2 rounded transition-colors" data-icon="warning">warning</span>
+</div>
+<div class="h-8 w-px bg-[#091b39]"></div>
+<div class="flex items-center gap-3">
+<div class="text-right hidden sm:block">
+<p class="text-[10px] font-label font-bold text-primary uppercase tracking-wider">Técnico Responsável</p>
+<p class="text-xs text-on-surface-variant">Nexus Admin</p>
+</div>
+<img alt="Técnico Responsável" class="w-10 h-10 rounded-full border-2 border-primary/20" data-alt="User profile avatar technical operator" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbVgebkdfvUYE1WzK2TYL6sN7TTW9wYvnKSDRL4aw17-N0KW7q63jaiOycUsSzMfvnou9frnVwo9iV1Jdjnsqc8M0V2MVB5uh5UOkuLOMSgz8tT1826pAnqJinXZV5noqaMG9J9qu1oQU77XICsotwdOZ3dg6Xl5-Jp3b-mEzbVNjQOxGnbBj6bX6xgedUxqjAnYpWcEHB_fEnEqk0D02WFMw24o6sIOS3x2FTq0QJpCLVmrmqnQFWI_yAp6v1ei1qmo3j46NKXFR3"/>
+</div>
+</div>
+</header>
+<!-- Separation Logic -->
+<div class="bg-[#091b39] h-[1px] w-full"></div>
+<!-- Canvas -->
+<div class="p-8 flex flex-col gap-8">
+<!-- Header Actions -->
+<div class="flex justify-between items-end">
+<div>
+<h2 class="text-4xl font-headline font-bold tracking-tighter text-on-surface">Monitoramento Energético</h2>
+<p class="text-on-surface-variant font-label text-sm mt-1 uppercase tracking-widest opacity-60">[ NEXUS-GRID-V4.2 ]</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 border border-outline-variant/30 text-xs font-bold tracking-widest uppercase hover:bg-surface-bright transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="picture_as_pdf">picture_as_pdf</span> Exportar PDF
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-secondary text-on-secondary text-xs font-bold tracking-widest uppercase hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-sm" data-icon="csv">csv</span> Exportar CSV
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Main Consumption Chart -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-low p-6 flex flex-col gap-6 relative overflow-hidden">
+<div class="flex justify-between items-start">
+<div>
+<span class="text-[10px] font-label font-bold text-tertiary uppercase tracking-widest mb-1 block">[DATA-METRIC: KWH_CONSUMPTION]</span>
+<h3 class="text-xl font-headline font-bold text-on-surface">Consumo por Período</h3>
+</div>
+<div class="flex bg-surface-container-lowest p-1 rounded-lg">
+<button class="px-4 py-1 text-[10px] font-bold uppercase tracking-tighter bg-surface-bright text-primary">Diário</button>
+<button class="px-4 py-1 text-[10px] font-bold uppercase tracking-tighter text-on-surface-variant hover:text-primary transition-colors">Semanal</button>
+</div>
+</div>
+<!-- SVG Chart Simulation -->
+<div class="h-64 w-full flex items-end gap-1 px-2 group">
+<!-- Bar Items -->
+<div class="flex-1 bg-surface-bright h-[40%] hover:bg-tertiary transition-colors relative group-hover:opacity-40 hover:!opacity-100"></div>
+<div class="flex-1 bg-surface-bright h-[65%] hover:bg-tertiary transition-colors relative group-hover:opacity-40 hover:!opacity-100"></div>
+<div class="flex-1 bg-surface-bright h-[55%] hover:bg-tertiary transition-colors relative group-hover:opacity-40 hover:!opacity-100"></div>
+<div class="flex-1 bg-surface-bright h-[85%] hover:bg-tertiary transition-colors relative group-hover:opacity-40 hover:!opacity-100"></div>
+<div class="flex-1 bg-tertiary h-[95%] relative">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-surface-bright px-2 py-1 text-[10px] font-bold border border-tertiary/50">442 kWh</div>
+</div>
+<div class="flex-1 bg-surface-bright h-[70%] hover:bg-tertiary transition-colors relative group-hover:opacity-40 hover:!opacity-100"></div>
+<div class="flex-1 bg-surface-bright h-[45%] hover:bg-tertiary transition-colors relative group-hover:opacity-40 hover:!opacity-100"></div>
+<div class="flex-1 bg-surface-bright h-[60%] hover:bg-tertiary transition-colors relative group-hover:opacity-40 hover:!opacity-100"></div>
+<div class="flex-1 bg-surface-bright h-[75%] hover:bg-tertiary transition-colors relative group-hover:opacity-40 hover:!opacity-100"></div>
+<div class="flex-1 bg-surface-bright h-[30%] hover:bg-tertiary transition-colors relative group-hover:opacity-40 hover:!opacity-100"></div>
+</div>
+<div class="flex justify-between text-[10px] font-label font-bold text-on-surface-variant uppercase tracking-widest mt-2 border-t border-outline-variant/10 pt-4">
+<span>01 Nov</span>
+<span>05 Nov</span>
+<span>10 Nov</span>
+<span>15 Nov</span>
+<span>20 Nov</span>
+<span>25 Nov</span>
+<span>30 Nov</span>
+</div>
+</div>
+<!-- Billing Comparison -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container-low p-6 flex flex-col gap-8">
+<div>
+<span class="text-[10px] font-label font-bold text-secondary uppercase tracking-widest mb-1 block">[FINANCIAL: MARGIN_ANALYSIS]</span>
+<h3 class="text-xl font-headline font-bold text-on-surface">Billing &amp; Margem</h3>
+</div>
+<div class="space-y-6">
+<div class="flex justify-between items-end">
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest">Receita Gerada</p>
+<p class="text-3xl font-headline font-bold text-tertiary">R$ 12.440,00</p>
+</div>
+<span class="material-symbols-outlined text-tertiary bg-tertiary/10 p-2" data-icon="trending_up">trending_up</span>
+</div>
+<div class="flex justify-between items-end">
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest">Custo Operacional</p>
+<p class="text-3xl font-headline font-bold text-error">R$ 4.812,10</p>
+</div>
+<span class="material-symbols-outlined text-error bg-error/10 p-2" data-icon="trending_down">trending_down</span>
+</div>
+<div class="h-px bg-outline-variant/20"></div>
+<div class="bg-surface-container-lowest p-4 border-l-4 border-secondary">
+<p class="text-[10px] text-secondary uppercase font-bold tracking-widest">Lucro Operacional Líquido</p>
+<p class="text-4xl font-headline font-bold text-on-surface mt-1">R$ 7.627,90</p>
+<p class="text-[10px] text-tertiary font-bold mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="check_circle">check_circle</span> 61.3% Eficiência Financeira
+                            </p>
+</div>
+</div>
+</div>
+<!-- Demand Peaks (Technical Asymmetry) -->
+<div class="col-span-12 lg:col-span-7 grid grid-cols-2 gap-6">
+<div class="col-span-2 bg-surface-container p-6 relative overflow-hidden group">
+<div class="relative z-10 flex justify-between items-center">
+<div>
+<span class="text-[10px] font-label font-bold text-error uppercase tracking-widest mb-1 block">[CRITICAL: DEMAND_PEAK]</span>
+<h3 class="text-xl font-headline font-bold text-on-surface">Picos de Demanda</h3>
+</div>
+<div class="text-right">
+<p class="text-3xl font-headline font-extrabold text-error">82.4 kW</p>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase">Capacidade Nominal: 100kW</p>
+</div>
+</div>
+<!-- Peak Indicator Line -->
+<div class="mt-6 h-2 w-full bg-surface-container-lowest rounded-full overflow-hidden">
+<div class="h-full bg-error w-[82.4%]" style="box-shadow: 0 0 15px rgba(255, 180, 171, 0.3);"></div>
+</div>
+<div class="mt-4 grid grid-cols-3 gap-4">
+<div class="text-center p-3 bg-surface-container-high">
+<p class="text-[9px] text-on-surface-variant font-bold uppercase">Média</p>
+<p class="text-lg font-headline font-bold">34.2 kW</p>
+</div>
+<div class="text-center p-3 bg-surface-container-high">
+<p class="text-[9px] text-on-surface-variant font-bold uppercase">Mínima</p>
+<p class="text-lg font-headline font-bold">12.1 kW</p>
+</div>
+<div class="text-center p-3 bg-surface-container-high">
+<p class="text-[9px] text-on-surface-variant font-bold uppercase">Ocorrência</p>
+<p class="text-lg font-headline font-bold">14:23h</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Fleet Efficiency (Technical Data Hub) -->
+<div class="col-span-12 lg:col-span-5 bg-surface-container-low p-6 flex flex-col gap-6">
+<div class="flex justify-between items-center">
+<h3 class="text-xl font-headline font-bold text-on-surface">Eficiência da Frota</h3>
+<span class="material-symbols-outlined text-primary" data-icon="electric_car">electric_car</span>
+</div>
+<div class="grid grid-cols-1 gap-4">
+<div class="bg-surface-container flex items-center justify-between p-4 border-r-2 border-primary">
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest">Consumo Estimado</p>
+<p class="text-2xl font-headline font-bold text-on-surface">0.18 kWh/Km</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-tertiary font-bold uppercase">+2.4% vs Ideal</p>
+</div>
+</div>
+<div class="bg-surface-container flex items-center justify-between p-4 border-r-2 border-secondary">
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase font-bold tracking-widest">Tempo Médio Carga</p>
+<p class="text-2xl font-headline font-bold text-on-surface">42 min</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] text-tertiary font-bold uppercase">-12 min p/ 80%</p>
+</div>
+</div>
+<div class="p-4 border border-outline-variant/20 flex flex-col gap-3">
+<div class="flex justify-between items-center">
+<span class="text-[9px] font-bold uppercase tracking-widest text-on-surface-variant">Saúde do Sistema</span>
+<span class="text-[9px] font-bold uppercase tracking-widest text-tertiary">ÓTIMA</span>
+</div>
+<div class="flex gap-1">
+<div class="h-1 flex-1 bg-tertiary"></div>
+<div class="h-1 flex-1 bg-tertiary"></div>
+<div class="h-1 flex-1 bg-tertiary"></div>
+<div class="h-1 flex-1 bg-tertiary"></div>
+<div class="h-1 flex-1 bg-tertiary"></div>
+<div class="h-1 flex-1 bg-surface-bright"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Stats / Recent Transactions -->
+<div class="bg-surface-container-low rounded-lg overflow-hidden border border-outline-variant/10">
+<div class="px-6 py-4 bg-surface-container flex justify-between items-center border-b border-outline-variant/10">
+<span class="text-xs font-bold uppercase tracking-widest text-primary">Log de Sessões Recentes</span>
+<button class="text-[10px] font-bold text-on-surface-variant hover:text-primary transition-colors uppercase">Ver Histórico Completo</button>
+</div>
+<table class="w-full text-left">
+<thead class="bg-surface-container-lowest text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">
+<tr>
+<th class="px-6 py-3">Estação ID</th>
+<th class="px-6 py-3">Início</th>
+<th class="px-6 py-3">Energia (kWh)</th>
+<th class="px-6 py-3">Custo Unid.</th>
+<th class="px-6 py-3 text-right">Valor Total</th>
+</tr>
+</thead>
+<tbody class="text-xs divide-y divide-outline-variant/10">
+<tr class="hover:bg-surface-bright/20 transition-colors">
+<td class="px-6 py-4 font-mono text-primary">[ST-BRA-001]</td>
+<td class="px-6 py-4">Hoy, 14:12</td>
+<td class="px-6 py-4">42.50</td>
+<td class="px-6 py-4">R$ 0,82</td>
+<td class="px-6 py-4 text-right font-bold text-tertiary">R$ 34,85</td>
+</tr>
+<tr class="hover:bg-surface-bright/20 transition-colors">
+<td class="px-6 py-4 font-mono text-primary">[ST-BRA-005]</td>
+<td class="px-6 py-4">Hoy, 13:45</td>
+<td class="px-6 py-4">12.10</td>
+<td class="px-6 py-4">R$ 0,82</td>
+<td class="px-6 py-4 text-right font-bold text-tertiary">R$ 9,92</td>
+</tr>
+<tr class="hover:bg-surface-bright/20 transition-colors">
+<td class="px-6 py-4 font-mono text-primary">[ST-BRA-002]</td>
+<td class="px-6 py-4">Hoy, 12:30</td>
+<td class="px-6 py-4">88.45</td>
+<td class="px-6 py-4">R$ 0,82</td>
+<td class="px-6 py-4 text-right font-bold text-tertiary">R$ 72,53</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+<!-- FAB Suppression Rule Active: FAB is contextual and should only appear on Dashboards for adding new stations or actions. For this management/billing screen, we hide it to prioritize the data canvas. -->
+</body></html>

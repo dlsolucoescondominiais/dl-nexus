@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DL Nexus – Módulo DL EcoVolt Solar™</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary": "#3f2e00",
+              "on-primary-container": "#004c1b",
+              "tertiary-fixed": "#d8e2ff",
+              "on-primary": "#003912",
+              "surface-dim": "#011230",
+              "surface-container-lowest": "#000d28",
+              "on-primary-fixed": "#002108",
+              "primary-fixed-dim": "#3ce36a",
+              "surface-bright": "#2a3958",
+              "primary-fixed": "#69ff87",
+              "surface-container-low": "#0a1b39",
+              "surface-variant": "#253453",
+              "on-surface": "#d8e2ff",
+              "on-tertiary-container": "#324160",
+              "on-primary-fixed-variant": "#00531e",
+              "tertiary-container": "#9eadd3",
+              "outline-variant": "#3c4a3c",
+              "on-error": "#690005",
+              "inverse-on-surface": "#21304f",
+              "on-error-container": "#ffdad6",
+              "secondary-container": "#fabd00",
+              "on-secondary-fixed": "#261a00",
+              "outline": "#869583",
+              "error-container": "#93000a",
+              "surface-container-highest": "#253453",
+              "on-tertiary": "#21304f",
+              "background": "#011230",
+              "on-secondary-fixed-variant": "#5b4300",
+              "primary-container": "#00c853",
+              "secondary": "#ffdf9e",
+              "on-secondary-container": "#6a4e00",
+              "secondary-fixed-dim": "#fabd00",
+              "surface": "#011230",
+              "error": "#ffb4ab",
+              "surface-container-high": "#1a2948",
+              "primary": "#3fe56c",
+              "on-surface-variant": "#bbcbb8",
+              "surface-tint": "#3ce36a",
+              "inverse-surface": "#d8e2ff",
+              "surface-container": "#0e1f3d",
+              "inverse-primary": "#006e2a",
+              "on-tertiary-fixed": "#0a1b39",
+              "on-background": "#d8e2ff",
+              "tertiary": "#b9c8ef",
+              "secondary-fixed": "#ffdf9e",
+              "tertiary-fixed-dim": "#b7c6ed",
+              "on-tertiary-fixed-variant": "#374667"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .font-space { font-family: 'Space Grotesk', sans-serif; }
+        .glass-card {
+            background: rgba(10, 27, 57, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(60, 74, 60, 0.15);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#011230] shadow-[0_20px_40px_rgba(0,200,83,0.06)]">
+<div class="flex items-center gap-4">
+<span class="text-xl font-bold tracking-tight text-[#3fe56c] font-['Space_Grotesk']">DL Nexus</span>
+<div class="hidden md:flex gap-6 ml-10">
+<a class="text-[#3fe56c] border-b-2 border-[#3fe56c] font-medium text-sm py-1" href="#">Monitoring</a>
+<a class="text-[#bbcbb8] hover:bg-[#253453] transition-colors font-medium text-sm py-1" href="#">Analytics</a>
+<a class="text-[#bbcbb8] hover:bg-[#253453] transition-colors font-medium text-sm py-1" href="#">Assets</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-[#bbcbb8] hover:bg-[#253453] p-2 rounded-full transition-transform active:scale-90" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined text-[#bbcbb8] hover:bg-[#253453] p-2 rounded-full transition-transform active:scale-90" data-icon="location_on">location_on</button>
+<button class="material-symbols-outlined text-[#bbcbb8] hover:bg-[#253453] p-2 rounded-full transition-transform active:scale-90" data-icon="settings_input_component">settings_input_component</button>
+<div class="w-8 h-8 rounded-full overflow-hidden ml-2 border border-outline-variant">
+<img alt="User profile switcher" data-alt="User avatar for profile management" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXS67ee4aMWwk2yNW3v20KirG0vQAF2EBNAXg9HChb7oCCL-VV0MWZiMhAHhdtaEK45x9jD9QH3u9t7QUrjRol7DzNpX9LeM-fpRP7yXJymu3ekIFkQJo2MoY4tL3_IgiQE_K1vStP378irc2F9Uv_MFGO46MvmYAmShaysayJACnEaCl7xmrvHQhq1LmpuGH2laeHPrixncJOfnjiqYHnjWFUmD_MKnPb4lcR_hCe5zQ5nhdbd0IuttexjnK676pp_wiayE488DU"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-[#0a1b39] flex flex-col py-8 z-40 hidden md:flex">
+<div class="px-6 mb-10 mt-12">
+<h2 class="font-['Space_Grotesk'] font-bold text-[#3fe56c] text-lg">DL EcoVolt Solar™</h2>
+<p class="text-[#bbcbb8] opacity-70 text-xs tracking-widest uppercase mt-1">Kinetic Observatory</p>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-[#00c853]/20 to-transparent text-[#3fe56c] border-l-4 border-[#3fe56c] font-['Manrope'] font-medium text-sm tracking-wide transition-all translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Overview
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#bbcbb8] opacity-70 hover:bg-[#253453] hover:text-white transition-all font-['Manrope'] font-medium text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+                Technical Monitoring
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#bbcbb8] opacity-70 hover:bg-[#253453] hover:text-white transition-all font-['Manrope'] font-medium text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="battery_charging_full">battery_charging_full</span>
+                Battery Status
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#bbcbb8] opacity-70 hover:bg-[#253453] hover:text-white transition-all font-['Manrope'] font-medium text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+                Savings
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#bbcbb8] opacity-70 hover:bg-[#253453] hover:text-white transition-all font-['Manrope'] font-medium text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="px-4 mt-auto space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-[#bbcbb8] opacity-70 hover:bg-[#253453] hover:text-white transition-all font-['Manrope'] font-medium text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+                Support
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#bbcbb8] opacity-70 hover:bg-[#253453] hover:text-white transition-all font-['Manrope'] font-medium text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                Logout
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 pt-24 px-6 pb-12 transition-all">
+<!-- Hero Section: Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+<!-- Current Generation -->
+<div class="glass-card rounded-xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl" data-icon="wb_sunny">wb_sunny</span>
+</div>
+<p class="text-on-surface-variant text-sm font-medium mb-2">Current Generation</p>
+<div class="flex items-baseline gap-2">
+<h3 class="font-space text-5xl font-bold text-primary">8.42</h3>
+<span class="text-primary-fixed-dim font-space text-xl font-medium">kW</span>
+</div>
+<div class="mt-4 flex items-center gap-2 text-primary-fixed text-xs">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span>
+<span>+12% vs yesterday</span>
+</div>
+</div>
+<!-- Monthly Savings -->
+<div class="glass-card rounded-xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-secondary" data-icon="payments">payments</span>
+</div>
+<p class="text-on-surface-variant text-sm font-medium mb-2">Monthly Savings</p>
+<div class="flex items-baseline gap-2">
+<h3 class="font-space text-5xl font-bold text-secondary">1.2k</h3>
+<span class="text-secondary-fixed-dim font-space text-xl font-medium text-secondary">R$</span>
+</div>
+<div class="mt-4 flex items-center gap-2 text-secondary text-xs">
+<span class="material-symbols-outlined text-sm" data-icon="account_balance">account_balance</span>
+<span>On track for goal</span>
+</div>
+</div>
+<!-- Inverter Status -->
+<div class="glass-card rounded-xl p-6 relative overflow-hidden group">
+<p class="text-on-surface-variant text-sm font-medium mb-2">Inverter Status</p>
+<div class="flex items-center gap-4">
+<div class="p-3 rounded-full bg-primary-container/20 text-primary">
+<span class="material-symbols-outlined text-3xl" data-icon="bolt">bolt</span>
+</div>
+<div>
+<h3 class="font-space text-2xl font-bold text-on-surface">Optimal</h3>
+<p class="text-xs text-on-surface-variant">98.4% Efficiency</p>
+</div>
+</div>
+<div class="mt-6 h-1 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[98%]"></div>
+</div>
+</div>
+<!-- Battery Autonomy -->
+<div class="glass-card rounded-xl p-6 relative overflow-hidden group">
+<p class="text-on-surface-variant text-sm font-medium mb-2">Battery Autonomy</p>
+<div class="flex items-baseline gap-2">
+<h3 class="font-space text-5xl font-bold text-tertiary">14.5</h3>
+<span class="text-on-tertiary-container font-space text-xl font-medium">hrs</span>
+</div>
+<div class="mt-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-sm" data-icon="battery_full" style="font-variation-settings: 'FILL' 1;">battery_full</span>
+<span class="text-xs text-on-surface-variant">88% Charged</span>
+</div>
+<span class="text-[10px] bg-tertiary/10 text-tertiary px-2 py-0.5 rounded uppercase font-bold tracking-tighter">Discharging</span>
+</div>
+</div>
+</section>
+<!-- Technical Monitoring Panel -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+<!-- Real-time chart -->
+<div class="lg:col-span-2 glass-card rounded-xl p-8">
+<div class="flex justify-between items-center mb-8">
+<h2 class="font-space text-xl font-bold">Real-time Generation</h2>
+<div class="flex gap-2">
+<button class="px-3 py-1 rounded-lg text-xs font-bold bg-surface-container-highest text-on-surface border border-outline-variant/20 transition-all hover:bg-surface-bright">LIVE</button>
+<button class="px-3 py-1 rounded-lg text-xs font-bold text-on-surface-variant hover:text-on-surface transition-all">24H</button>
+<button class="px-3 py-1 rounded-lg text-xs font-bold text-on-surface-variant hover:text-on-surface transition-all">7D</button>
+</div>
+</div>
+<div class="h-64 relative flex items-end gap-1">
+<!-- Fake smooth line graph using SVG and gradient -->
+<svg class="absolute inset-0 w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 100 100">
+<defs>
+<lineargradient id="line-gradient" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#3fe56c" stop-opacity="0.5"></stop>
+<stop offset="100%" stop-color="#3fe56c" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,80 Q10,75 20,40 T40,50 T60,20 T80,35 T100,10 L100,100 L0,100 Z" fill="url(#line-gradient)"></path>
+<path d="M0,80 Q10,75 20,40 T40,50 T60,20 T80,35 T100,10" fill="none" stroke="#3fe56c" stroke-width="2"></path>
+</svg>
+<!-- Chart Y-Axis Labels -->
+<div class="absolute left-0 top-0 h-full flex flex-col justify-between text-[10px] text-on-surface-variant font-mono opacity-50">
+<span>10kW</span>
+<span>7.5kW</span>
+<span>5.0kW</span>
+<span>2.5kW</span>
+<span>0kW</span>
+</div>
+</div>
+<div class="mt-4 flex justify-between text-[10px] text-on-surface-variant font-mono px-4">
+<span>06:00</span>
+<span>09:00</span>
+<span>12:00</span>
+<span>15:00</span>
+<span>18:00</span>
+</div>
+</div>
+<!-- Energy Flow Visualization -->
+<div class="glass-card rounded-xl p-8 flex flex-col items-center justify-between">
+<h2 class="font-space text-xl font-bold self-start mb-6">Energy System Flow</h2>
+<div class="relative w-full aspect-square flex items-center justify-center">
+<!-- Flow Nodes -->
+<div class="flex flex-col items-center gap-12 relative z-10 w-full">
+<div class="flex justify-between w-full px-4">
+<div class="flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded-full bg-primary/20 border border-primary/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="solar_power">solar_power</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Panels</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded-full bg-tertiary/20 border border-tertiary/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary" data-icon="battery_charging_80">battery_charging_80</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Storage</span>
+</div>
+</div>
+<div class="w-16 h-16 rounded-2xl bg-primary-container shadow-[0_0_30px_rgba(0,200,83,0.3)] flex items-center justify-center flex-col">
+<span class="material-symbols-outlined text-on-primary-container text-3xl" data-icon="settings_input_component">settings_input_component</span>
+<span class="text-[8px] font-black text-on-primary-container uppercase">Inverter</span>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="w-12 h-12 rounded-full bg-secondary/20 border border-secondary/40 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="home">home</span>
+</div>
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Consumption</span>
+</div>
+</div>
+<!-- Flow Lines SVG Background -->
+<svg class="absolute inset-0 w-full h-full opacity-30" viewbox="0 0 100 100">
+<line stroke="#3fe56c" stroke-dasharray="2 2" stroke-width="1" x1="25" x2="50" y1="25" y2="45"></line>
+<line stroke="#b9c8ef" stroke-dasharray="2 2" stroke-width="1" x1="75" x2="50" y1="25" y2="45"></line>
+<line stroke="#ffdf9e" stroke-dasharray="2 2" stroke-width="1" x1="50" x2="50" y1="55" y2="75"></line>
+</svg>
+</div>
+<div class="w-full mt-6 grid grid-cols-2 gap-4">
+<div class="bg-surface-container-highest/50 p-3 rounded-lg">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold">MPPT 1 Status</p>
+<p class="text-sm font-space font-bold text-primary">Active • 420V</p>
+</div>
+<div class="bg-surface-container-highest/50 p-3 rounded-lg">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold">MPPT 2 Status</p>
+<p class="text-sm font-space font-bold text-primary">Active • 415V</p>
+</div>
+</div>
+</div>
+</section>
+<!-- String Monitor & Operational Logs -->
+<section class="grid grid-cols-1 xl:grid-cols-4 gap-6">
+<!-- String Monitor -->
+<div class="glass-card rounded-xl p-6 xl:col-span-1">
+<h2 class="font-space text-lg font-bold mb-6">String Monitoring</h2>
+<div class="space-y-6">
+<div class="space-y-2">
+<div class="flex justify-between text-xs">
+<span class="text-on-surface-variant">String A1</span>
+<span class="font-mono text-primary">45.2°C / 42.1A</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[75%]"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-xs">
+<span class="text-on-surface-variant">String A2</span>
+<span class="font-mono text-primary">44.8°C / 41.8A</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[72%]"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-xs">
+<span class="text-on-surface-variant">String B1</span>
+<span class="font-mono text-secondary">48.5°C / 38.5A</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[85%]"></div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between text-xs">
+<span class="text-on-surface-variant">String B2</span>
+<span class="font-mono text-primary">43.1°C / 40.2A</span>
+</div>
+<div class="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[65%]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Operational Logs Table -->
+<div class="glass-card rounded-xl overflow-hidden xl:col-span-3">
+<div class="p-6 flex justify-between items-center border-b border-outline-variant/10">
+<h2 class="font-space text-lg font-bold">System Operational Logs</h2>
+<button class="text-xs font-bold text-primary flex items-center gap-1">
+                        EXPORT DATA
+                        <span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="text-[10px] uppercase tracking-widest text-on-surface-variant bg-surface-container-low/50">
+<th class="px-6 py-4 font-bold">Timestamp</th>
+<th class="px-6 py-4 font-bold">Event Type</th>
+<th class="px-6 py-4 font-bold">Component</th>
+<th class="px-6 py-4 font-bold">Description</th>
+<th class="px-6 py-4 font-bold">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="text-sm hover:bg-surface-container-highest/30 transition-colors">
+<td class="px-6 py-4 font-mono text-xs">2023-10-27 14:22:01</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+                                        System Check
+                                    </span>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">Inverter Module B</td>
+<td class="px-6 py-4">MPPT Optimization sequence complete.</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold">RESOLVED</span>
+</td>
+</tr>
+<tr class="text-sm hover:bg-surface-container-highest/30 transition-colors">
+<td class="px-6 py-4 font-mono text-xs">2023-10-27 13:45:12</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+                                        Thermal Warning
+                                    </span>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">String Monitor B1</td>
+<td class="px-6 py-4">Module temp exceeded 48°C threshold.</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded-full bg-secondary/10 text-secondary text-[10px] font-bold">ACTIVE</span>
+</td>
+</tr>
+<tr class="text-sm hover:bg-surface-container-highest/30 transition-colors">
+<td class="px-6 py-4 font-mono text-xs">2023-10-27 11:10:05</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-tertiary"></div>
+                                        Cycle Update
+                                    </span>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">Battery Array</td>
+<td class="px-6 py-4">Transitioned to Discharging mode.</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded-full bg-tertiary/10 text-tertiary text-[10px] font-bold">INFO</span>
+</td>
+</tr>
+<tr class="text-sm hover:bg-surface-container-highest/30 transition-colors">
+<td class="px-6 py-4 font-mono text-xs">2023-10-27 09:02:44</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+                                        Grid Sync
+                                    </span>
+</td>
+<td class="px-6 py-4 text-on-surface-variant">Main Breaker</td>
+<td class="px-6 py-4">Synchronization with local utility stable.</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-bold">RESOLVED</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Signature Action Button -->
+<button class="fixed bottom-8 right-8 w-14 h-14 rounded-xl bg-primary-container shadow-[0_10px_30px_rgba(0,200,83,0.3)] flex items-center justify-center transition-transform hover:scale-110 active:scale-95 group">
+<span class="material-symbols-outlined text-on-primary-container text-2xl group-hover:rotate-45 transition-transform" data-icon="add">add</span>
+</button>
+</body></html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="pt-br"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .status-glow-tertiary { box-shadow: 0 0 15px -3px rgba(60, 227, 106, 0.15); }
+        .status-glow-secondary { box-shadow: 0 0 15px -3px rgba(255, 223, 158, 0.15); }
+        .status-glow-error { box-shadow: 0 0 15px -3px rgba(255, 180, 171, 0.15); }
+        .glass-panel {
+            backdrop-filter: blur(20px);
+            background: rgba(41, 57, 88, 0.1);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "on-secondary-fixed-variant": "#5b4300",
+                "surface-tint": "#b7c6ed",
+                "on-primary-fixed": "#0a1b39",
+                "inverse-primary": "#4f5e80",
+                "inverse-on-surface": "#20304f",
+                "on-surface": "#d8e2ff",
+                "surface-container-lowest": "#000d28",
+                "on-surface-variant": "#c5c6ce",
+                "secondary-fixed-dim": "#fabd00",
+                "on-primary-fixed-variant": "#374667",
+                "primary": "#b7c6ed",
+                "surface-container": "#0e1f3d",
+                "error-container": "#93000a",
+                "outline-variant": "#44474e",
+                "surface-bright": "#293958",
+                "surface-container-high": "#1a2a48",
+                "background": "#011230",
+                "on-tertiary": "#003912",
+                "outline": "#8f9098",
+                "surface-variant": "#253454",
+                "primary-container": "#00102e",
+                "inverse-surface": "#d8e2ff",
+                "tertiary-container": "#001604",
+                "surface-container-highest": "#253454",
+                "on-tertiary-fixed": "#002108",
+                "secondary-fixed": "#ffdf9e",
+                "on-secondary-container": "#6a4e00",
+                "on-secondary": "#3f2e00",
+                "tertiary": "#3ce36a",
+                "on-primary-container": "#6e7da0",
+                "tertiary-fixed": "#69ff87",
+                "on-background": "#d8e2ff",
+                "on-secondary-fixed": "#261a00",
+                "primary-fixed": "#d8e2ff",
+                "on-tertiary-container": "#00913a",
+                "on-primary": "#21304f",
+                "surface-container-low": "#091b39",
+                "tertiary-fixed-dim": "#3ce36a",
+                "secondary-container": "#fabd00",
+                "on-error-container": "#ffdad6",
+                "on-tertiary-fixed-variant": "#00531e",
+                "surface": "#011230",
+                "secondary": "#ffdf9e",
+                "error": "#ffb4ab",
+                "on-error": "#690005",
+                "primary-fixed-dim": "#b7c6ed",
+                "surface-dim": "#011230"
+              },
+              fontFamily: {
+                "headline": ["Space Grotesk"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+            },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-surface font-body selection:bg-primary selection:text-on-primary">
+<!-- TopAppBar Shell -->
+<header class="flex justify-between items-center px-6 py-4 w-full sticky top-0 z-50 bg-[#011230] dark:bg-[#011230]">
+<div class="flex items-center gap-4">
+<span class="text-xl font-bold tracking-tighter text-[#b7c6ed] font-headline uppercase">DL Nexus – DL VoltCharge™</span>
+</div>
+<div class="hidden md:flex items-center gap-6">
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container-low border border-outline-variant/15">
+<span class="material-symbols-outlined text-primary text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm placeholder:text-outline w-64" placeholder="Buscar Estação..." type="text"/>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-[#b7c6ed]/60 hover:bg-[#293958]/30 transition-colors p-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="sensors">sensors</span>
+</button>
+<button class="text-[#b7c6ed]/60 hover:bg-[#293958]/30 transition-colors p-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="bolt">bolt</span>
+</button>
+<button class="text-[#b7c6ed]/60 hover:bg-[#293958]/30 transition-colors p-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="warning">warning</span>
+</button>
+<div class="h-8 w-[1px] bg-[#091b39]"></div>
+<div class="flex items-center gap-3 ml-2">
+<div class="text-right">
+<p class="text-xs font-bold text-primary font-headline tracking-tight uppercase">Técnico Responsável</p>
+<p class="text-[10px] text-outline uppercase tracking-widest">Sessão Ativa</p>
+</div>
+<img alt="Avatar" class="w-10 h-10 rounded-full border border-primary/20" data-alt="Avatar of the technical operator" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSKsAa-OeWeMlMXre0g1GGSrjQoh0R1PdAZ-_2OZ8Nx3LmGZ5UP6BCwL9mRF7XbSuraW_mdWs2LJ2XHeTxu3lScGloIogw6hTpAvonwFfr2391qocf54oMAN_o7RUH-SoYrcDF9uoy9cV7MoU7VDUXodhbWeYHPMonHpBns6uzepbdHK54otnV_8R6wO62k96XEsjfanqEvYL72-n79xLPtJitaMzt5s0r_taqYM8C3ALSD2yZs4XsHmuaiCRELj0wJUUA_avMjLb3"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex min-h-screen">
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full flex flex-col z-40 bg-[#091b39] dark:bg-[#091b39] h-screen w-64 border-r border-[#293958]/20 font-['Inter'] font-medium text-xs tracking-wider uppercase">
+<div class="p-6 flex flex-col gap-1">
+<span class="text-lg font-black text-[#b7c6ed] font-headline">DL Nexus</span>
+<span class="text-[10px] text-[#ffdf9e]/80 tracking-[0.2em]">DL VoltCharge™</span>
+</div>
+<nav class="flex-1 mt-6">
+<a class="flex items-center gap-4 text-[#b7c6ed]/50 px-6 py-4 hover:bg-[#1a2a48] hover:text-[#b7c6ed] transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-4 bg-[#0e1f3d] text-[#ffdf9e] border-l-4 border-[#ffdf9e] px-6 py-4 hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="ev_station">ev_station</span>
+<span>Estações</span>
+</a>
+<a class="flex items-center gap-4 text-[#b7c6ed]/50 px-6 py-4 hover:bg-[#1a2a48] hover:text-[#b7c6ed] transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="electric_bolt">electric_bolt</span>
+<span>Energia</span>
+</a>
+<a class="flex items-center gap-4 text-[#b7c6ed]/50 px-6 py-4 hover:bg-[#1a2a48] hover:text-[#b7c6ed] transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="notification_important">notification_important</span>
+<span>Alerts</span>
+</a>
+<a class="flex items-center gap-4 text-[#b7c6ed]/50 px-6 py-4 hover:bg-[#1a2a48] hover:text-[#b7c6ed] transition-all hover:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span>Billing</span>
+</a>
+</nav>
+<div class="p-4 border-t border-outline-variant/10">
+<button class="w-full bg-error text-on-error font-black py-3 rounded tracking-tighter hover:bg-error/90 active:scale-95 transition-all">
+                    EMERGENCY STOP
+                </button>
+</div>
+<div class="pb-6">
+<a class="flex items-center gap-4 text-[#b7c6ed]/50 px-6 py-3 hover:bg-[#1a2a48] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+<a class="flex items-center gap-4 text-[#b7c6ed]/50 px-6 py-3 hover:bg-[#1a2a48] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="help_center">help_center</span>
+<span>Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-64 flex-1 p-8">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-8">
+<div>
+<span class="text-label-md uppercase tracking-[0.2em] text-primary/60 text-xs">[SITE-MONITOR-042]</span>
+<h1 class="text-4xl font-headline font-bold tracking-tighter text-on-surface mt-1">Status das Vagas</h1>
+</div>
+<div class="flex gap-4">
+<div class="bg-surface-container p-4 rounded-lg flex items-center gap-4 border border-outline-variant/5">
+<div class="w-2 h-2 rounded-full bg-tertiary shadow-[0_0_8px_rgba(60,227,106,0.5)]"></div>
+<div>
+<p class="text-[10px] text-outline uppercase tracking-widest">Disponibilidade</p>
+<p class="text-xl font-headline font-bold leading-none">84%</p>
+</div>
+</div>
+<div class="bg-surface-container p-4 rounded-lg flex items-center gap-4 border border-outline-variant/5">
+<div class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_8px_rgba(255,223,158,0.5)]"></div>
+<div>
+<p class="text-[10px] text-outline uppercase tracking-widest">Carga Ativa</p>
+<p class="text-xl font-headline font-bold leading-none">12.4 kW</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Filter Tabs (Subtle) -->
+<div class="flex gap-2 mb-8 p-1 bg-surface-container-low w-fit rounded-lg">
+<button class="px-6 py-2 bg-surface-bright text-primary text-xs font-bold rounded uppercase tracking-wider">Todas</button>
+<button class="px-6 py-2 text-outline hover:text-on-surface text-xs font-bold rounded uppercase tracking-wider transition-colors">Disponíveis</button>
+<button class="px-6 py-2 text-outline hover:text-on-surface text-xs font-bold rounded uppercase tracking-wider transition-colors">Em Carga</button>
+<button class="px-6 py-2 text-outline hover:text-on-surface text-xs font-bold rounded uppercase tracking-wider transition-colors">Manutenção</button>
+</div>
+<!-- Bento Grid of Charging Bays -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Card 1: Charging (Active) -->
+<div class="bg-surface-container border-l-4 border-secondary p-6 relative group hover:bg-surface-container-high transition-all">
+<div class="flex justify-between items-start mb-6">
+<div>
+<p class="text-[10px] font-label text-outline tracking-widest mb-1">[BAY-V01]</p>
+<h3 class="text-xl font-headline font-extrabold text-secondary">CARREGANDO</h3>
+</div>
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">electric_bolt</span>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-end border-b border-outline-variant/10 pb-2">
+<span class="text-[10px] text-outline uppercase">Consumo Atual</span>
+<span class="text-2xl font-headline font-bold text-on-surface">42.5 <span class="text-xs font-normal text-outline">kWh</span></span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-[10px] text-outline uppercase">Tempo Est.</span>
+<span class="text-sm font-medium text-primary">~ 14 min</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-[10px] text-outline uppercase">Veículo</span>
+<span class="text-xs font-medium text-on-surface">Model 3 (TX-892)</span>
+</div>
+</div>
+<div class="mt-6 flex justify-between items-center">
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-tertiary text-xs" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-[9px] text-tertiary font-bold tracking-tighter uppercase">Hardware OK</span>
+</div>
+<span class="text-[10px] text-outline font-mono">CON-TYPE2</span>
+</div>
+</div>
+<!-- Card 2: Available (Success) -->
+<div class="bg-surface-container border-l-4 border-tertiary p-6 relative group hover:bg-surface-container-high transition-all">
+<div class="flex justify-between items-start mb-6">
+<div>
+<p class="text-[10px] font-label text-outline tracking-widest mb-1">[BAY-V02]</p>
+<h3 class="text-xl font-headline font-extrabold text-tertiary">DISPONÍVEL</h3>
+</div>
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+</div>
+<div class="flex flex-col items-center justify-center py-8 opacity-40">
+<span class="material-symbols-outlined text-4xl mb-2">ev_station</span>
+<p class="text-[10px] uppercase tracking-widest">Aguardando Conexão</p>
+</div>
+<div class="mt-4 flex justify-between items-center">
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-tertiary text-xs" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-[9px] text-tertiary font-bold tracking-tighter uppercase">Hardware OK</span>
+</div>
+<span class="text-[10px] text-outline font-mono">CON-CCS2</span>
+</div>
+</div>
+<!-- Card 3: Finished (Primary/Neutral) -->
+<div class="bg-surface-container border-l-4 border-primary p-6 relative group hover:bg-surface-container-high transition-all">
+<div class="flex justify-between items-start mb-6">
+<div>
+<p class="text-[10px] font-label text-outline tracking-widest mb-1">[BAY-V03]</p>
+<h3 class="text-xl font-headline font-extrabold text-primary">FINALIZADO</h3>
+</div>
+<span class="material-symbols-outlined text-primary">done_all</span>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-end border-b border-outline-variant/10 pb-2">
+<span class="text-[10px] text-outline uppercase">Total Sessão</span>
+<span class="text-2xl font-headline font-bold text-on-surface">78.2 <span class="text-xs font-normal text-outline">kWh</span></span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-[10px] text-outline uppercase">Duração</span>
+<span class="text-sm font-medium text-on-surface">1h 04min</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-[10px] text-outline uppercase">ID Conector</span>
+<span class="text-xs font-medium text-on-surface">#992-B-ALPHA</span>
+</div>
+</div>
+<div class="mt-6 flex justify-between items-center">
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-tertiary text-xs" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-[9px] text-tertiary font-bold tracking-tighter uppercase">Hardware OK</span>
+</div>
+<button class="text-[9px] font-bold text-primary bg-primary/10 px-2 py-1 rounded hover:bg-primary/20 transition-colors uppercase">Liberar Vaga</button>
+</div>
+</div>
+<!-- Card 4: Error (Alert) -->
+<div class="bg-surface-container border-l-4 border-error p-6 relative group hover:bg-surface-container-high transition-all">
+<div class="flex justify-between items-start mb-6">
+<div>
+<p class="text-[10px] font-label text-outline tracking-widest mb-1">[BAY-V04]</p>
+<h3 class="text-xl font-headline font-extrabold text-error">FALHA</h3>
+</div>
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="bg-error/10 border border-error/20 p-4 rounded mb-4">
+<p class="text-[10px] text-error font-bold uppercase mb-1">CÓDIGO DE ERRO: E-024</p>
+<p class="text-xs text-on-surface leading-tight">Interrupção de fluxo detectada no inversor térmico. Verifique hardware.</p>
+</div>
+<div class="mt-6 flex justify-between items-center">
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-error text-xs" style="font-variation-settings: 'FILL' 1;">error</span>
+<span class="text-[9px] text-error font-bold tracking-tighter uppercase">Saúde Crítica</span>
+</div>
+<button class="text-[9px] font-bold text-error bg-error/10 px-2 py-1 rounded hover:bg-error/20 transition-colors uppercase">Reiniciar</button>
+</div>
+</div>
+<!-- Card 5: Charging (Active) -->
+<div class="bg-surface-container border-l-4 border-secondary p-6 relative group hover:bg-surface-container-high transition-all">
+<div class="flex justify-between items-start mb-6">
+<div>
+<p class="text-[10px] font-label text-outline tracking-widest mb-1">[BAY-V05]</p>
+<h3 class="text-xl font-headline font-extrabold text-secondary">CARREGANDO</h3>
+</div>
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">electric_bolt</span>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-end border-b border-outline-variant/10 pb-2">
+<span class="text-[10px] text-outline uppercase">Consumo Atual</span>
+<span class="text-2xl font-headline font-bold text-on-surface">12.1 <span class="text-xs font-normal text-outline">kWh</span></span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-[10px] text-outline uppercase">Tempo Est.</span>
+<span class="text-sm font-medium text-primary">~ 55 min</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-[10px] text-outline uppercase">Veículo</span>
+<span class="text-xs font-medium text-on-surface">BYD Dolphin (FL-01)</span>
+</div>
+</div>
+<div class="mt-6 flex justify-between items-center">
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-tertiary text-xs" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-[9px] text-tertiary font-bold tracking-tighter uppercase">Hardware OK</span>
+</div>
+<span class="text-[10px] text-outline font-mono">CON-CCS2</span>
+</div>
+</div>
+<!-- Card 6: Available (Success) -->
+<div class="bg-surface-container border-l-4 border-tertiary p-6 relative group hover:bg-surface-container-high transition-all">
+<div class="flex justify-between items-start mb-6">
+<div>
+<p class="text-[10px] font-label text-outline tracking-widest mb-1">[BAY-V06]</p>
+<h3 class="text-xl font-headline font-extrabold text-tertiary">DISPONÍVEL</h3>
+</div>
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+</div>
+<div class="flex flex-col items-center justify-center py-8 opacity-40">
+<span class="material-symbols-outlined text-4xl mb-2">ev_station</span>
+<p class="text-[10px] uppercase tracking-widest">Aguardando Conexão</p>
+</div>
+<div class="mt-4 flex justify-between items-center">
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-tertiary text-xs" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-[9px] text-tertiary font-bold tracking-tighter uppercase">Hardware OK</span>
+</div>
+<span class="text-[10px] text-outline font-mono">CON-TYPE2</span>
+</div>
+</div>
+<!-- Card 7: Available (Success) -->
+<div class="bg-surface-container border-l-4 border-tertiary p-6 relative group hover:bg-surface-container-high transition-all">
+<div class="flex justify-between items-start mb-6">
+<div>
+<p class="text-[10px] font-label text-outline tracking-widest mb-1">[BAY-V07]</p>
+<h3 class="text-xl font-headline font-extrabold text-tertiary">DISPONÍVEL</h3>
+</div>
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+</div>
+<div class="flex flex-col items-center justify-center py-8 opacity-40">
+<span class="material-symbols-outlined text-4xl mb-2">ev_station</span>
+<p class="text-[10px] uppercase tracking-widest">Aguardando Conexão</p>
+</div>
+<div class="mt-4 flex justify-between items-center">
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-tertiary text-xs" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-[9px] text-tertiary font-bold tracking-tighter uppercase">Hardware OK</span>
+</div>
+<span class="text-[10px] text-outline font-mono">CON-CCS2</span>
+</div>
+</div>
+<!-- Card 8: Charging (Active) -->
+<div class="bg-surface-container border-l-4 border-secondary p-6 relative group hover:bg-surface-container-high transition-all">
+<div class="flex justify-between items-start mb-6">
+<div>
+<p class="text-[10px] font-label text-outline tracking-widest mb-1">[BAY-V08]</p>
+<h3 class="text-xl font-headline font-extrabold text-secondary">CARREGANDO</h3>
+</div>
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">electric_bolt</span>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-end border-b border-outline-variant/10 pb-2">
+<span class="text-[10px] text-outline uppercase">Consumo Atual</span>
+<span class="text-2xl font-headline font-bold text-on-surface">5.4 <span class="text-xs font-normal text-outline">kWh</span></span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-[10px] text-outline uppercase">Tempo Est.</span>
+<span class="text-sm font-medium text-primary">~ 2h 10min</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-[10px] text-outline uppercase">Veículo</span>
+<span class="text-xs font-medium text-on-surface">Renault Zoe (Z-04)</span>
+</div>
+</div>
+<div class="mt-6 flex justify-between items-center">
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-tertiary text-xs" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-[9px] text-tertiary font-bold tracking-tighter uppercase">Hardware OK</span>
+</div>
+<span class="text-[10px] text-outline font-mono">CON-TYPE2</span>
+</div>
+</div>
+</div>
+<!-- Footer Metrics Hub -->
+<div class="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
+<div class="bg-surface-container-low p-6 flex flex-col justify-between border-t border-outline-variant/15 h-32">
+<span class="text-[10px] text-outline uppercase tracking-widest font-bold">Consumo Total 24h</span>
+<p class="text-3xl font-headline font-extrabold text-on-surface">1,402.8 <span class="text-sm font-normal text-primary">kWh</span></p>
+</div>
+<div class="bg-surface-container-low p-6 flex flex-col justify-between border-t border-outline-variant/15 h-32">
+<span class="text-[10px] text-outline uppercase tracking-widest font-bold">Ocupação Atual</span>
+<p class="text-3xl font-headline font-extrabold text-on-surface">50.0 <span class="text-sm font-normal text-primary">%</span></p>
+</div>
+<div class="bg-surface-container-low p-6 flex flex-col justify-between border-t border-outline-variant/15 h-32">
+<span class="text-[10px] text-outline uppercase tracking-widest font-bold">Custo Operacional</span>
+<p class="text-3xl font-headline font-extrabold text-on-surface">R$ 842.10</p>
+</div>
+<div class="bg-surface-container-low p-6 flex flex-col justify-between border-t border-secondary/30 h-32 bg-gradient-to-br from-surface-container-low to-secondary/5">
+<span class="text-[10px] text-secondary font-bold uppercase tracking-widest">Alerta de Rede</span>
+<p class="text-xs text-on-surface leading-snug">Flutuação de 0.4% detectada no transformador principal da unidade.</p>
+</div>
+</div>
+</main>
+</div>
+<!-- Background Decoration -->
+<div class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+<div class="absolute top-1/4 right-0 w-[500px] h-[500px] bg-primary/5 blur-[120px] rounded-full"></div>
+<div class="absolute bottom-0 left-1/4 w-[600px] h-[600px] bg-secondary/3 blur-[120px] rounded-full"></div>
+</div>
+</body></html>

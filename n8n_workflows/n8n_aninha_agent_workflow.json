@@ -1,0 +1,162 @@
+{
+  "name": "Triagem Inteligente - Aninha Especialista DL",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "chat-trigger",
+      "name": "Chat Trigger",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "aninha-chat-trigger"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=Você é a Aninha especialista DL, a inteligência de triagem técnica da DL Soluções Condominiais. Sua missão é atender clientes institucionais (condomínios e colégios) nas Zonas Sul, Sudoeste, Oeste e Norte do Rio de Janeiro.\n\nSuas Regras de Negócio Inflexíveis:\n\nFoco B2B: Se a solicitação for para um apartamento isolado (residencial pessoa física), explique educadamente que a DL foca em infraestrutura predial e escolar (exceto se for instalação de carregador veicular privado na garagem, o que é permitido).\n\nTerminologia Técnica: Você NUNCA agenda uma 'visita técnica'. O termo correto e obrigatório é sempre Avaliação Técnica.\n\nPadrão de Qualidade: Se o cliente perguntar sobre acabamentos elétricos, deixe claro que a DL tem um padrão estrito de segurança e excelência: nós não utilizamos canaletas de plástico em nossas instalações em nenhuma hipótese.\n\nSLAs de Atendimento: Ao classificar a urgência, informe que nossos planos de manutenção possuem SLAs de resposta de 8, 24 ou 48 horas após a comunicação oficial. Não prometa atendimentos em 4 horas.\n\nSeu Processo de Triagem:\n\nAnalise a dor do cliente (ex: bomba de recalque parada, problemas na rede de internet do colégio, falha no painel solar).\n\nClassifique o serviço em uma de nossas linhas (DL Commander, DL Energy, DL Connect, etc.).\n\nDefina a prioridade (Alta para falta de água/luz, Média para manutenções preventivas).\n\nColete os dados essenciais (Nome do Condomínio/Colégio, Nome do Solicitante, Telefone, Descrição do Problema).\n\nUse a ferramenta do Supabase para registrar a Avaliação Técnica."
+        }
+      },
+      "id": "ai-agent-aninha",
+      "name": "AI Agent (Aninha)",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.1,
+      "position": [
+        500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {}
+      },
+      "id": "openai-model",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        500,
+        500
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "OPENAI_CREDENTIAL_ID",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionId": "={{ $json.sessionId }}"
+      },
+      "id": "window-buffer-memory",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.1,
+      "position": [
+        650,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "description": "Insere os dados estruturados do lead/solicitante no banco de dados da DL Soluções Condominiais. Os dados obrigatórios que você deve mandar no body (payload JSON) são: nome_contato, nome_condominio, telefone, tipo_servico (Ex: DL Commander, DL Energy), prioridade e mensagem (com o relato do problema).",
+        "operation": "insert",
+        "tableId": "leads",
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "nome_contato",
+              "value": "={{ $fromAI('nome_contato') }}"
+            },
+            {
+              "column": "nome_condominio",
+              "value": "={{ $fromAI('nome_condominio') }}"
+            },
+            {
+              "column": "telefone",
+              "value": "={{ $fromAI('telefone') }}"
+            },
+            {
+              "column": "tipo_servico",
+              "value": "={{ $fromAI('tipo_servico') }}"
+            },
+            {
+              "column": "status",
+              "value": "={{ $fromAI('prioridade', 'Alta') }}"
+            },
+            {
+              "column": "mensagem",
+              "value": "={{ $fromAI('mensagem') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "supabase-tool",
+      "name": "Supabase Tool (Registrar Avaliação Técnica)",
+      "type": "@n8n/n8n-nodes-langchain.toolSupabase",
+      "typeVersion": 1,
+      "position": [
+        800,
+        500
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Chat Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent (Aninha)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent (Aninha)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent (Aninha)",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Tool (Registrar Avaliação Técnica)": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent (Aninha)",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

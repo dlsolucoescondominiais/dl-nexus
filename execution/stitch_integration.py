@@ -63,7 +63,7 @@ class StitchClient:
             "id": 1
         }
         try:
-            resp = self.session.post(self.base_url, json=payload, timeout=60)
+            resp = self.session.post(self.base_url, json=payload, timeout=180)
             resp.raise_for_status()
             return resp.json()
         except requests.exceptions.RequestException as e:
@@ -102,16 +102,16 @@ class StitchClient:
                          device_type: str = "DESKTOP") -> dict:
         """Gera uma tela UI a partir de um prompt"""
         return self.call_tool("generate_screen_from_text", {
-            "project_id": project_id,
-            "text_prompt": prompt,
-            "device_type": device_type
+            "projectId": project_id,
+            "prompt": prompt,
+            "deviceType": device_type
         })
 
     def get_screen(self, project_id: str, screen_id: str) -> dict:
         """Recupera detalhes de uma tela (HTML + screenshot)"""
         return self.call_tool("get_screen", {
-            "project_id": project_id,
-            "screen_id": screen_id
+            "projectId": project_id,
+            "screenId": screen_id
         })
 
     def edit_screen(self, project_id: str, screen_id: str, prompt: str) -> dict:

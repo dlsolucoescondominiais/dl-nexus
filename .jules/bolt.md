@@ -1,0 +1,3 @@
+## 2024-03-24 - API Calls Cache Opportunity
+**Learning:** In `agente_zelador.py`, both `obter_ou_criar_pasta` and `extrair_local_com_ia` are called repeatedly within loops without any caching. This means for every file processed, we hit the Google Drive API and Gemini API multiple times even for the same inputs (e.g., getting the 'ano' and 'mes' folders or extracting locations from similarly named files).
+**Action:** We can implement a simple in-memory cache (dictionary) for `obter_ou_criar_pasta` to avoid redundant Google Drive API calls, and for `extrair_local_com_ia` to avoid redundant Gemini API calls. This is a very common optimization pattern.

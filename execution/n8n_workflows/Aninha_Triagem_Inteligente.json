@@ -1,0 +1,130 @@
+{
+  "name": "Triagem Inteligente - Aninha Especialista DL",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "e45dc112-2c64-4e78-90aa-bd8903c73489",
+      "name": "Chat Trigger",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1,
+      "position": [
+        380,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.chatInput }}",
+        "options": {
+          "systemMessage": "Você é a Aninha especialista DL, a inteligência de triagem técnica da DL Soluções Condominiais. Sua missão é atender clientes institucionais (condomínios e colégios) nas Zonas Sul, Sudoeste, Oeste e Norte do Rio de Janeiro.\n\nSuas Regras de Negócio Inflexíveis:\n\n1. Foco B2B: Se a solicitação for para um apartamento isolado (residencial pessoa física), explique educadamente que a DL foca em infraestrutura predial e escolar (exceto se for instalação de carregador veicular privado na garagem, o que é permitido).\n\n2. Terminologia Técnica: Você NUNCA agenda uma 'visita técnica'. O termo correto e obrigatório é sempre Avaliação Técnica.\n\n3. Padrão de Qualidade: Se o cliente perguntar sobre acabamentos elétricos, deixe claro que a DL tem um padrão estrito de segurança e excelência: nós não utilizamos canaletas de plástico em nossas instalações em nenhuma hipótese.\n\n4. SLAs de Atendimento: Ao classificar a urgência, informe que nossos planos de manutenção possuem SLAs de resposta de 8, 24 ou 48 horas após a comunicação oficial. Não prometa atendimentos em 4 horas.\n\nSeu Processo de Triagem:\n- Analise a dor do cliente (ex: bomba de recalque parada, problemas na rede de internet do colégio, falha no painel solar).\n- Classifique o serviço em uma de nossas linhas (DL Commander, DL Energy, DL Connect, etc.).\n- Defina a prioridade (Alta para falta de água/luz, Média para manutenções preventivas).\n- Colete os dados essenciais (Nome do Condomínio/Colégio, Nome do Solicitante, Telefone, Descrição do Problema).\n- Use a ferramenta do Supabase para registrar a Avaliação Técnica."
+        }
+      },
+      "id": "0652750e-b355-4cc7-ab8c-ab2209d784bc",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        600,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "f8ec7557-b016-419b-aefb-7a8e7880ce42",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        560,
+        460
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "9265f49d-afc2-4eb2-a6a9-e85d85202867",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.2,
+      "position": [
+        700,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "name": "registrar_avaliacao_tecnica",
+        "description": "Usa esta ferramenta para registrar a Avaliação Técnica coletada no banco de dados Supabase da DL Soluções.",
+        "workflowId": "",
+        "workflowDescription": "Insere os dados coletados (Nome, Telefone, Problema) na tabela leads/chamados do Supabase."
+      },
+      "id": "cdfc00bc-65cc-48f0-bda3-6c841bb1cd30",
+      "name": "Supabase Registration Tool",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 1.1,
+      "position": [
+        820,
+        460
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Chat Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Registration Tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "60e9086f-5baf-402f-b4de-da2bb544f802",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "triagem_aninha",
+  "tags": []
+}

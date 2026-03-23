@@ -1,0 +1,90 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "google-drive-webhook",
+        "options": {}
+      },
+      "id": "gd-webhook-1",
+      "name": "Webhook Supabase/IA",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        200,
+        300
+      ],
+      "webhookId": "gd-webhook-1-id"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "name": "={{ $json.body.lead.nome_condominio }} - {{ $json.body.lead.nome_contato }}",
+        "options": {}
+      },
+      "id": "gd-create-folder-1",
+      "name": "Google Drive - Criar Pasta",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "position": [
+        450,
+        300
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "SEU_ID",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "title": "=Proposta Inicial - {{ $json.body.lead.nome_condominio }}",
+        "content": "=Olá, {{ $json.body.lead.nome_contato }}.\n\nAgradecemos o contato com a DL Soluções Condominiais.\n\nServiço solicitado: {{ $json.body.lead.tipo_servico }}\nMensagem original: {{ $json.body.lead.mensagem }}\n\nNossa equipe de {{ $json.body.email_routing }} já está analisando o seu caso e retornará em breve com os detalhes técnicos e orçamento inicial.",
+        "parents": [
+          "={{ $json.id }}"
+        ],
+        "options": {}
+      },
+      "id": "gd-create-doc-1",
+      "name": "Google Docs - Criar Proposta Base",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 1,
+      "position": [
+        700,
+        300
+      ],
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "SEU_ID",
+          "name": "Google Docs account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Supabase/IA": {
+      "main": [
+        [
+          {
+            "node": "Google Drive - Criar Pasta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive - Criar Pasta": {
+      "main": [
+        [
+          {
+            "node": "Google Docs - Criar Proposta Base",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

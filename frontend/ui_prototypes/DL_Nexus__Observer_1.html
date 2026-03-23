@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DL-Nexus Observer™ | Tactical Intelligence Oversight</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "surface-container": "#01183d",
+              "secondary-fixed-dim": "#b4c4ea",
+              "tertiary-container": "#fe0000",
+              "inverse-primary": "#006a6a",
+              "surface-bright": "#0d2b59",
+              "on-primary": "#006767",
+              "surface-variant": "#08244f",
+              "outline-variant": "#384868",
+              "primary-container": "#00ffff",
+              "on-secondary-fixed": "#243453",
+              "secondary-dim": "#b4c4ea",
+              "on-tertiary-fixed-variant": "#7a0100",
+              "on-secondary": "#384767",
+              "error-container": "#9f0519",
+              "on-background": "#dce5ff",
+              "surface-container-high": "#041e46",
+              "on-tertiary-fixed": "#3a0000",
+              "primary-fixed-dim": "#00e6e6",
+              "surface-container-lowest": "#000000",
+              "on-primary-container": "#005d5d",
+              "secondary-fixed": "#c2d1f9",
+              "surface": "#000d28",
+              "tertiary": "#ff725e",
+              "on-secondary-container": "#c0d0f7",
+              "on-surface": "#dce5ff",
+              "secondary": "#c2d1f9",
+              "surface-container-highest": "#08244f",
+              "on-error-container": "#ffa8a3",
+              "tertiary-fixed": "#ff9382",
+              "secondary-container": "#374767",
+              "tertiary-fixed-dim": "#ff7c69",
+              "on-surface-variant": "#9babd0",
+              "inverse-surface": "#f9f9ff",
+              "primary-fixed": "#00f5f5",
+              "error-dim": "#d7383b",
+              "on-error": "#490006",
+              "surface-dim": "#000d28",
+              "on-primary-fixed": "#004343",
+              "tertiary-dim": "#eb0000",
+              "background": "#000d28",
+              "on-secondary-fixed-variant": "#415071",
+              "primary-dim": "#00e6e6",
+              "on-primary-fixed-variant": "#006262",
+              "surface-tint": "#c1fffe",
+              "outline": "#667598",
+              "on-tertiary-container": "#000000",
+              "surface-container-low": "#001232",
+              "error": "#ff716c",
+              "inverse-on-surface": "#465576",
+              "on-tertiary": "#4a0000",
+              "primary": "#c1fffe"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Inter"],
+              "label": ["Space Grotesk"]
+            },
+            borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { background-color: #000d28; color: #dce5ff; font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+        .scanline-overlay {
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 255, 255, 0.05) 50%);
+            background-size: 100% 4px;
+        }
+        .glow-stitch-v { background: linear-gradient(to bottom, #c1fffe 40%, transparent); width: 1px; }
+        .glow-stitch-h { background: linear-gradient(to right, #c1fffe 40%, transparent); height: 1px; }
+        .cyber-clip { clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%); }
+    </style>
+</head>
+<body class="overflow-hidden">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 h-16 bg-[#000d28] dark:bg-[#000d28] shadow-[0_0_15px_rgba(0,255,255,0.1)]">
+<div class="flex items-center gap-4">
+<span class="font-['Space_Grotesk'] text-2xl font-bold tracking-widest text-[#00ffff]">DL-Nexus Observer™</span>
+<div class="h-6 w-[1px] bg-outline-variant/30"></div>
+<span class="font-['Space_Grotesk'] tracking-tighter uppercase text-sm text-[#c1fffe] font-bold">Sector: Global_Zero</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-[#c1fffe]/60 hover:text-[#00ffff] cursor-pointer transition-colors" data-icon="memory">memory</span>
+<span class="material-symbols-outlined text-[#c1fffe]/60 hover:text-[#00ffff] cursor-pointer transition-colors" data-icon="sensors">sensors</span>
+<span class="material-symbols-outlined text-[#c1fffe]/60 hover:text-[#00ffff] cursor-pointer transition-colors" data-icon="lan">lan</span>
+</div>
+<button class="bg-primary-container text-on-primary-container font-['Space_Grotesk'] font-bold text-xs tracking-widest px-4 py-2 cyber-clip">
+                SYSTEM_NOMINAL
+            </button>
+</div>
+<div class="bg-gradient-to-r from-[#00ffff]/40 via-transparent to-transparent h-[1px] w-full absolute bottom-0 left-0"></div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] z-40 flex flex-col py-4 bg-[#001232] dark:bg-[#001232] w-64">
+<div class="px-6 mb-8">
+<h2 class="text-[#00ffff] font-black text-lg font-['Space_Grotesk']">DL-OBSERVER</h2>
+<p class="font-['Space_Grotesk'] font-medium text-[10px] tracking-[0.2em] text-[#c1fffe]/40 uppercase">V.2.4.0-STABLE</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="bg-[#041e46] text-[#00ffff] border-l-4 border-[#00ffff] px-6 py-3 flex items-center gap-3 font-['Space_Grotesk'] font-medium text-xs tracking-widest uppercase transition-all duration-150 active:translate-x-1" href="#">
+<span class="material-symbols-outlined" data-icon="videocam">videocam</span>
+                Live Feeds
+            </a>
+<a class="text-[#c1fffe]/40 px-6 py-3 flex items-center gap-3 font-['Space_Grotesk'] font-medium text-xs tracking-widest uppercase hover:text-[#00ffff] hover:bg-[#041e46]/50 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+                Incident History
+            </a>
+<a class="text-[#c1fffe]/40 px-6 py-3 flex items-center gap-3 font-['Space_Grotesk'] font-medium text-xs tracking-widest uppercase hover:text-[#00ffff] hover:bg-[#041e46]/50 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="Account_tree">account_tree</span>
+                Camera Groups
+            </a>
+<a class="text-[#c1fffe]/40 px-6 py-3 flex items-center gap-3 font-['Space_Grotesk'] font-medium text-xs tracking-widest uppercase hover:text-[#00ffff] hover:bg-[#041e46]/50 transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                System Config
+            </a>
+</nav>
+<div class="mt-auto px-2 space-y-1 border-t border-outline-variant/10 pt-4">
+<a class="text-[#c1fffe]/40 px-4 py-2 flex items-center gap-3 font-['Space_Grotesk'] font-medium text-[10px] tracking-widest uppercase hover:text-[#00ffff] transition-all" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="analytics">analytics</span> Diagnostics
+            </a>
+<a class="text-[#c1fffe]/40 px-4 py-2 flex items-center gap-3 font-['Space_Grotesk'] font-medium text-[10px] tracking-widest uppercase hover:text-[#00ffff] transition-all" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="terminal">terminal</span> Logs
+            </a>
+<div class="mt-4 px-4 pb-4">
+<button class="w-full bg-tertiary-container text-white font-['Space_Grotesk'] font-bold text-xs tracking-widest py-3 cyber-clip shadow-[0_0_15px_rgba(254,0,0,0.3)]">
+                    ARM_RESPONSE
+                </button>
+</div>
+</div>
+<div class="bg-gradient-to-b from-[#00ffff]/20 to-transparent w-[1px] absolute right-0 top-0 h-full"></div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-16 p-6 h-[calc(100vh-64px)] overflow-y-auto bg-surface relative">
+<!-- Nexus Spine Visual Element -->
+<div class="absolute left-0 top-0 w-px h-full bg-outline-variant/10 ml-6 hidden lg:block">
+<div class="absolute top-24 -left-1 w-2 h-2 bg-primary shadow-[0_0_5px_#00ffff]"></div>
+<div class="absolute top-[60%] -left-1 w-2 h-2 bg-primary shadow-[0_0_5px_#00ffff]"></div>
+</div>
+<div class="grid grid-cols-12 gap-6 relative z-10">
+<!-- Status Metrics -->
+<div class="col-span-12 grid grid-cols-1 md:grid-cols-4 gap-4">
+<div class="bg-surface-container-low p-4 border-l-2 border-primary-container relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2 opacity-10">
+<span class="material-symbols-outlined text-4xl" data-icon="videocam">videocam</span>
+</div>
+<p class="font-['Space_Grotesk'] text-[10px] tracking-widest text-on-surface-variant uppercase">IA Active Nodes</p>
+<h3 class="text-3xl font-['Space_Grotesk'] font-bold text-primary-container">24 <span class="text-xs font-normal opacity-50">CAMS</span></h3>
+</div>
+<div class="bg-surface-container-low p-4 border-l-2 border-tertiary-fixed relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2 opacity-10">
+<span class="material-symbols-outlined text-4xl" data-icon="warning">warning</span>
+</div>
+<p class="font-['Space_Grotesk'] text-[10px] tracking-widest text-on-surface-variant uppercase">Suspicious Events (1h)</p>
+<h3 class="text-3xl font-['Space_Grotesk'] font-bold text-tertiary">03 <span class="text-xs font-normal opacity-50">ALERTS</span></h3>
+</div>
+<div class="bg-surface-container-low p-4 border-l-2 border-tertiary-container relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2 opacity-10">
+<span class="material-symbols-outlined text-4xl" data-icon="gavel">gavel</span>
+</div>
+<p class="font-['Space_Grotesk'] text-[10px] tracking-widest text-on-surface-variant uppercase">Invasions Today</p>
+<h3 class="text-3xl font-['Space_Grotesk'] font-bold text-tertiary-container">02 <span class="text-xs font-normal opacity-50">CRITICAL</span></h3>
+</div>
+<div class="bg-surface-container-low p-4 border-l-2 border-primary relative overflow-hidden">
+<div class="absolute top-0 right-0 p-2 opacity-10">
+<span class="material-symbols-outlined text-4xl" data-icon="filter_alt">filter_alt</span>
+</div>
+<p class="font-['Space_Grotesk'] text-[10px] tracking-widest text-on-surface-variant uppercase">False Positives Filtered</p>
+<h3 class="text-3xl font-['Space_Grotesk'] font-bold text-primary">142 <span class="text-xs font-normal opacity-50">AUTO-CLEAN</span></h3>
+</div>
+</div>
+<!-- Main Intelligence Grid -->
+<div class="col-span-12 lg:col-span-8 space-y-6">
+<div class="flex items-center justify-between">
+<h2 class="font-['Space_Grotesk'] text-lg font-bold tracking-widest uppercase flex items-center gap-2">
+<span class="w-2 h-4 bg-primary-container"></span> AI Computer Vision Matrix
+                    </h2>
+<div class="flex gap-2">
+<span class="bg-surface-container-high px-3 py-1 text-[10px] font-bold text-primary-container font-['Space_Grotesk']">LIVE_STREAM</span>
+<span class="bg-surface-container-high px-3 py-1 text-[10px] font-bold text-on-surface-variant font-['Space_Grotesk'] tracking-widest">TS: 14:02:44:892</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- Feed 1: Normal Detection -->
+<div class="relative bg-black aspect-video group overflow-hidden border border-outline-variant/20">
+<img class="w-full h-full object-cover opacity-60" data-alt="Dark warehouse interior with industrial shelving" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaW5DnOPsrAA-rSJpJ4ICiK7kwYYp4gPRXDPvFcMND5abdxhN2O_IukDzaM5ys4_5M3fgFo0obIuMJfDQJFMP1d0sYH2R7l1bJP-ZhEUOcgwM3J1srWtQDp0PsSn_i4HZGkmNJk9i9R_5WuAVqjrlVGmG6Yigun5ZMIrCK1fqMSsL8ELZ4JaQhxucihxgks2thfKVq1DVE7DcY4uI6-pvWhLlbzfT6BRSt0qhtiKqEywc1B0fsCQqbxSXPJHzXMB0vUtzFVEvu-pk"/>
+<div class="absolute inset-0 scanline-overlay pointer-events-none"></div>
+<!-- Bounding Box Person -->
+<div class="absolute top-1/4 left-1/3 w-24 h-48 border border-primary-container">
+<div class="absolute -top-6 left-0 bg-primary-container text-black text-[10px] font-black px-1 leading-tight font-['Space_Grotesk']">PERSON 98.4%</div>
+<div class="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-primary-container"></div>
+<div class="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-primary-container"></div>
+<div class="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-primary-container"></div>
+<div class="absolute bottom-0 right-0 w-2 h-2 border-b-2 border-r-2 border-primary-container"></div>
+</div>
+<!-- Tripwire -->
+<div class="absolute bottom-1/4 left-0 w-full h-[2px] bg-primary/40 shadow-[0_0_8px_#c1fffe] flex items-center justify-center">
+<span class="text-[8px] font-['Space_Grotesk'] text-primary-container bg-black/80 px-2">PERIMETER_A_SAFE</span>
+</div>
+<div class="absolute top-2 left-2 flex flex-col">
+<span class="text-[10px] font-bold text-white bg-black/60 px-2 font-['Space_Grotesk']">CAM 01 - NORTH_LOADING</span>
+</div>
+</div>
+<!-- Feed 2: Threat Detection -->
+<div class="relative bg-black aspect-video group overflow-hidden border border-tertiary-container/30">
+<img class="w-full h-full object-cover opacity-60" data-alt="Security parking lot at night with high contrast shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcdx9Npe25Mla2FQmnG0klEOmc0r3tZNGzg_9_iEbAudN-J6cTvIZBCnZ_CkMX8BpE3sLTlgD3tCT7Rqg3gob7k0TdPCM2TXEtHEQjDxrW-JgjSS1Pwc4F11LwBQrUNyEf1i6oaGEqJb3SZDg-x8tDXqmfBftvPO-T4Q6IIVky5ygGJqpGU3zttC9xdN78U8SnjbWf4f0PbHEMYftncgtluoh0zndjMpI4CdZwai39EfI4k9E0rRElDEp4EG9khyx-DButSbgsoOA"/>
+<div class="absolute inset-0 scanline-overlay pointer-events-none"></div>
+<!-- Bounding Box Vehicle -->
+<div class="absolute top-1/2 left-1/4 w-40 h-24 border-2 border-tertiary-container bg-tertiary-container/5">
+<div class="absolute -top-6 left-0 bg-tertiary-container text-white text-[10px] font-black px-1 leading-tight font-['Space_Grotesk']">VEHICLE LOITERING 85.2%</div>
+<div class="absolute inset-0 opacity-20" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, #fe0000 10px, #fe0000 11px);"></div>
+</div>
+<div class="absolute top-2 left-2 flex flex-col">
+<span class="text-[10px] font-bold text-white bg-tertiary-container px-2 font-['Space_Grotesk']">CAM 04 - SECTOR_ALPHA</span>
+</div>
+<div class="absolute bottom-0 left-0 w-full p-2 bg-gradient-to-t from-tertiary-container/40 to-transparent">
+<p class="text-[10px] font-black text-white font-['Space_Grotesk'] tracking-widest animate-pulse">ALERT: ANOMALOUS DURATION DETECTED</p>
+</div>
+</div>
+<!-- Feed 3: Abandoned Object -->
+<div class="relative bg-black aspect-video group overflow-hidden border border-outline-variant/20">
+<img class="w-full h-full object-cover opacity-60" data-alt="Modern building lobby with glass and steel" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArZPgyi-pAdQVes7pW787kLgCmlI-B3UiQKWUHm64xWjoujU1hF89PIfzyC7-8REVEvwmyAp4FPOqotxoYIxDgPX83EgZbLfd2hIz8G2fe8YYfyZXOeUQ-C7dhAhC1fw7RVmS1GA4amep5N95JhHQsb6LKvORtv6Omk3blUYqBLVq4lPRucOV-vvDFyPyOjK8UqGWkXBcBDUvUkjrm_u9btxNgdQwmR6wBS73hjnJ99TXX9oTSZSparwmxvFkzahy1oSl-fnq_by4"/>
+<div class="absolute inset-0 scanline-overlay pointer-events-none"></div>
+<!-- Bounding Box Object -->
+<div class="absolute top-2/3 right-1/4 w-12 h-12 border border-tertiary animate-pulse">
+<div class="absolute -top-6 left-0 bg-tertiary text-black text-[10px] font-black px-1 leading-tight font-['Space_Grotesk']">ABANDONED OBJECT</div>
+</div>
+<div class="absolute top-2 left-2 flex flex-col">
+<span class="text-[10px] font-bold text-white bg-black/60 px-2 font-['Space_Grotesk']">CAM 09 - LOBBY_EAST</span>
+</div>
+</div>
+<!-- Feed 4: Active Scan -->
+<div class="relative bg-black aspect-video group overflow-hidden border border-outline-variant/20">
+<img class="w-full h-full object-cover opacity-60" data-alt="Empty server room hallway with blue led lights" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMpEK0xSgLp-0nFNJdL0SMGzDGW3Mzj9itYDGHKHCpCcHLIYIzp3KQkcauijBVYfyVSlxnZHUhso4tGbEDKAq3tIEIKf6OitDfoPSLa16oZvBSvSY0GuLZyZnTLtCFRcJjSRAIfuxX6jRzACy7tqwNJjQ3UV0R8iwT3onXI2nPmg_yTNVt2xKTRJdv5uBdEizGNwXDwNqebwkTGOzC_49hrXS8SqJS_4erP9qG0QyYQiUeH7l1WH4xngXtLCPIt6MXfeGVoquZ1DU"/>
+<div class="absolute inset-0 scanline-overlay pointer-events-none"></div>
+<div class="absolute top-0 left-0 w-full h-1 bg-primary-container/40 animate-[scan_3s_linear_infinite]" style="top: 20%"></div>
+<div class="absolute top-2 left-2 flex flex-col">
+<span class="text-[10px] font-bold text-white bg-black/60 px-2 font-['Space_Grotesk']">CAM 12 - DATA_VAULT_01</span>
+</div>
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<span class="material-symbols-outlined text-[#00ffff]/10 text-8xl" data-icon="search">search</span>
+</div>
+</div>
+</div>
+<!-- Recognition Table -->
+<div class="bg-surface-container-low overflow-hidden mt-8 border border-outline-variant/10">
+<div class="px-6 py-4 border-b border-outline-variant/10 bg-surface-container-high/50 flex justify-between items-center">
+<h3 class="font-['Space_Grotesk'] font-bold text-xs tracking-[0.2em] uppercase">Machine Learning &amp; Records Table</h3>
+<span class="text-[10px] text-on-surface-variant font-['Space_Grotesk'] tracking-widest">REAL-TIME SYNC: ACTIVE</span>
+</div>
+<table class="w-full text-left text-xs border-collapse">
+<thead class="bg-surface-container-highest/30 text-on-surface-variant font-['Space_Grotesk'] tracking-widest uppercase text-[10px]">
+<tr>
+<th class="px-6 py-3 font-medium">Camera Node</th>
+<th class="px-6 py-3 font-medium">Event Recognized</th>
+<th class="px-6 py-3 font-medium">Severity</th>
+<th class="px-6 py-3 font-medium">Action Trigger</th>
+</tr>
+</thead>
+<tbody class="font-['Inter']">
+<tr class="bg-tertiary-container/10 border-b border-tertiary-container/20">
+<td class="px-6 py-4 font-bold text-[#ff725e]">Cam 04 - Sector Alpha</td>
+<td class="px-6 py-4">Vehicle Loitering [T+300s]</td>
+<td class="px-6 py-4"><span class="bg-tertiary-container text-white px-2 py-0.5 text-[10px] font-bold">HIGH</span></td>
+<td class="px-6 py-4 text-tertiary font-bold tracking-tighter">ARMED RESPONSE</td>
+</tr>
+<tr class="border-b border-outline-variant/10 hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-4 font-medium">Cam 09 - Lobby East</td>
+<td class="px-6 py-4">Object Abandoned (Suitcase)</td>
+<td class="px-6 py-4"><span class="bg-tertiary text-black px-2 py-0.5 text-[10px] font-bold">MEDIUM</span></td>
+<td class="px-6 py-4 text-on-surface-variant">SEC_NOTIFY</td>
+</tr>
+<tr class="border-b border-outline-variant/10 hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-4 font-medium">Cam 01 - North Loading</td>
+<td class="px-6 py-4">Person Detection (Verified ID)</td>
+<td class="px-6 py-4"><span class="bg-primary text-on-primary px-2 py-0.5 text-[10px] font-bold">LOW</span></td>
+<td class="px-6 py-4 text-on-surface-variant">AUTO-LOG</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-4 font-medium">Cam 22 - Perimeter West</td>
+<td class="px-6 py-4">Anomalous Movement (Wildlife)</td>
+<td class="px-6 py-4"><span class="bg-outline-variant text-on-surface-variant px-2 py-0.5 text-[10px] font-bold">IGNORE</span></td>
+<td class="px-6 py-4 text-on-surface-variant">SYSTEM_DISMISS</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- AI Recognition Timeline Sidebar -->
+<div class="col-span-12 lg:col-span-4 space-y-6">
+<div class="flex items-center justify-between">
+<h2 class="font-['Space_Grotesk'] text-lg font-bold tracking-widest uppercase flex items-center gap-2">
+<span class="w-2 h-4 bg-tertiary"></span> AI Timeline
+                    </h2>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-white" data-icon="more_vert">more_vert</span>
+</div>
+<div class="space-y-4 relative">
+<div class="absolute left-4 top-2 bottom-0 w-[1px] bg-outline-variant/20"></div>
+<!-- Timeline Item 1 -->
+<div class="relative pl-10 group">
+<div class="absolute left-[13px] top-1 w-2.5 h-2.5 bg-tertiary-container shadow-[0_0_8px_#fe0000] z-10"></div>
+<div class="bg-surface-container-high p-4 border border-tertiary-container/20 group-hover:border-tertiary-container/50 transition-all">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-bold font-['Space_Grotesk'] text-tertiary-container">CRITICAL ALERT</span>
+<span class="text-[9px] text-on-surface-variant font-mono">14:02:11</span>
+</div>
+<h4 class="font-['Space_Grotesk'] font-bold text-sm mb-1 uppercase">Perimeter Breach</h4>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">External Fence Sector 4. High-velocity entry detected. Armed Response unit DL-04 dispatched.</p>
+<div class="mt-3 flex gap-2">
+<span class="material-symbols-outlined text-sm text-tertiary-container" data-icon="location_on">location_on</span>
+<span class="text-[9px] font-bold font-['Space_Grotesk'] uppercase tracking-widest">GATE_4_WEST</span>
+</div>
+</div>
+</div>
+<!-- Timeline Item 2 -->
+<div class="relative pl-10 group">
+<div class="absolute left-[13px] top-1 w-2.5 h-2.5 bg-tertiary z-10"></div>
+<div class="bg-surface-container-low p-4 border border-outline-variant/20 group-hover:bg-surface-container-high transition-all">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-bold font-['Space_Grotesk'] text-tertiary uppercase">Security Event</span>
+<span class="text-[9px] text-on-surface-variant font-mono">13:58:45</span>
+</div>
+<h4 class="font-['Space_Grotesk'] font-bold text-sm mb-1 uppercase">Anomalous Movement</h4>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">Cam 12: Thermal signature detected in Restricted Server Area after hours. Identification: Pending.</p>
+</div>
+</div>
+<!-- Timeline Item 3 -->
+<div class="relative pl-10 group">
+<div class="absolute left-[13px] top-1 w-2.5 h-2.5 bg-primary-container z-10"></div>
+<div class="bg-surface-container-low p-4 border border-outline-variant/20 group-hover:bg-surface-container-high transition-all">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-bold font-['Space_Grotesk'] text-primary-container uppercase">System Update</span>
+<span class="text-[9px] text-on-surface-variant font-mono">13:45:00</span>
+</div>
+<h4 class="font-['Space_Grotesk'] font-bold text-sm mb-1 uppercase">Object Abandoned Resolved</h4>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">Object in Lobby Sector B identified as maintenance equipment. Risk downgraded to Zero.</p>
+</div>
+</div>
+<!-- Timeline Item 4 -->
+<div class="relative pl-10 group opacity-60">
+<div class="absolute left-[13px] top-1 w-2.5 h-2.5 bg-outline-variant z-10"></div>
+<div class="bg-surface-container-low p-4 border border-outline-variant/20">
+<div class="flex justify-between items-start mb-2">
+<span class="text-[10px] font-bold font-['Space_Grotesk'] text-on-surface-variant uppercase">Log Record</span>
+<span class="text-[9px] text-on-surface-variant font-mono">13:30:12</span>
+</div>
+<h4 class="font-['Space_Grotesk'] font-bold text-sm mb-1 uppercase">Shift Rotation</h4>
+<p class="text-[11px] text-on-surface-variant leading-relaxed">Automated AI Diagnostic Check complete. No anomalies in neural weighting.</p>
+</div>
+</div>
+</div>
+<!-- Technical Specs Mini Widget -->
+<div class="bg-surface-container-lowest p-4 border border-primary-container/10 relative">
+<div class="absolute top-0 right-0 h-full w-[2px] bg-primary-container/20"></div>
+<h4 class="font-['Space_Grotesk'] text-[10px] tracking-[0.3em] font-bold text-primary-container mb-4 uppercase text-center border-b border-outline-variant/10 pb-2">Neural Load Distribution</h4>
+<div class="space-y-3">
+<div>
+<div class="flex justify-between text-[9px] font-bold font-['Space_Grotesk'] uppercase mb-1">
+<span>Vision Processing Unit</span>
+<span>74%</span>
+</div>
+<div class="h-1 w-full bg-surface-variant">
+<div class="h-full bg-primary-container w-[74%] shadow-[0_0_5px_#00ffff]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[9px] font-bold font-['Space_Grotesk'] uppercase mb-1">
+<span>Object Recog Cache</span>
+<span>31%</span>
+</div>
+<div class="h-1 w-full bg-surface-variant">
+<div class="h-full bg-primary-container w-[31%] shadow-[0_0_5px_#00ffff]"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[9px] font-bold font-['Space_Grotesk'] uppercase mb-1">
+<span>Uplink Latency</span>
+<span>12ms</span>
+</div>
+<div class="h-1 w-full bg-surface-variant">
+<div class="h-full bg-primary w-[12%] shadow-[0_0_5px_#c1fffe]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Background Grid Texture -->
+<div class="fixed inset-0 pointer-events-none opacity-5 z-0" style="background-image: radial-gradient(#c1fffe 0.5px, transparent 0.5px); background-size: 24px 24px;"></div>
+</body></html>

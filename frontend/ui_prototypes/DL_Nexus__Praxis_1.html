@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DL Nexus – Módulo DL Praxis™ | Technical Compliance</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scanline-header {
+            background: repeating-linear-gradient(
+                90deg,
+                rgba(71, 214, 255, 0.05) 0px,
+                rgba(71, 214, 255, 0.05) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+        }
+        body {
+            background-color: #011230;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "on-surface-variant": "#bec7d4",
+                "on-tertiary-container": "#463000",
+                "surface-container-low": "#091b39",
+                "primary-container": "#00aacf",
+                "background": "#011230",
+                "tertiary-fixed": "#ffdea8",
+                "on-primary-fixed-variant": "#004e60",
+                "surface-tint": "#47d6ff",
+                "on-secondary-container": "#006c71",
+                "surface-dim": "#011230",
+                "on-tertiary-fixed-variant": "#5e4200",
+                "secondary-fixed": "#63f7ff",
+                "surface-bright": "#293958",
+                "error": "#ffb4ab",
+                "on-secondary-fixed-variant": "#004f53",
+                "primary-fixed": "#b6ebff",
+                "surface-variant": "#253454",
+                "inverse-primary": "#00677f",
+                "error-container": "#93000a",
+                "on-primary-fixed": "#001f28",
+                "inverse-on-surface": "#20304f",
+                "secondary-container": "#00f4fe",
+                "on-error": "#690005",
+                "tertiary-container": "#cc9200",
+                "on-surface": "#d8e2ff",
+                "surface-container-lowest": "#000d28",
+                "tertiary-fixed-dim": "#ffba20",
+                "secondary-fixed-dim": "#00dce5",
+                "secondary": "#e6feff",
+                "on-secondary": "#003739",
+                "on-primary": "#003543",
+                "outline-variant": "#3f4852",
+                "outline": "#88919d",
+                "surface-container": "#0e1f3d",
+                "on-error-container": "#ffdad6",
+                "on-secondary-fixed": "#002021",
+                "on-background": "#d8e2ff",
+                "primary": "#47d6ff",
+                "on-tertiary-fixed": "#271900",
+                "tertiary": "#ffba20",
+                "surface-container-high": "#1a2a48",
+                "primary-fixed-dim": "#47d6ff",
+                "surface-container-highest": "#253454",
+                "surface": "#011230",
+                "inverse-surface": "#d8e2ff",
+                "on-tertiary": "#412d00",
+                "on-primary-container": "#003948"
+              },
+              fontFamily: {
+                "headline": ["Space Grotesk"],
+                "body": ["Inter"],
+                "label": ["Inter"]
+              },
+              borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+            },
+          },
+        }
+    </script>
+</head>
+<body class="font-body text-on-surface selection:bg-primary selection:text-on-primary">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#011230] dark:bg-[#011230]">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold tracking-tighter text-[#47d6ff] dark:text-[#47d6ff] font-headline">DL Nexus – Módulo DL Praxis™</span>
+<div class="hidden lg:flex items-center bg-[#253454] h-10 px-4 gap-3">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-[11px] font-medium tracking-widest uppercase text-on-surface-variant w-64" placeholder="SEARCH SYSTEM..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center text-[#bec7d4] hover:bg-[#293958]/60 hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="sensors">sensors</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center text-[#bec7d4] hover:bg-[#293958]/60 hover:text-white transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications_active">notifications_active</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full animate-pulse"></span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center text-[#bec7d4] hover:bg-[#293958]/60 hover:text-white transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant opacity-20 mx-2"></div>
+<img alt="User profile administrator" class="w-8 h-8 object-cover" data-alt="User profile administrator photo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmbsmYbAOeyiELAG_iq-hDYU_okCQy1Mrnw1rsJdCB1YLhzHo0BeBslgDk2wFONIbugo_1Km3sMD-Bp98xwAlsIkKtXbQykABSlfHlGwxEHUELHfppLJpb2CRhLJY-X6jzlGB9lV7T02arKxF5tjuuqoignLcjix2CT437zpIKMuDe0tKmX5f8oBtD8sBMiSmGH_zWlL3TRfCmAXnHCFndgf4vm2p9n2BShjbfHrJTPXh6nzCMyx4IVZPkap6O7g8FEaCmtMqOvwd1"/>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] w-64 bg-[#091b39] dark:bg-[#091b39] flex flex-col z-40">
+<div class="p-6 border-b border-outline-variant/10">
+<div class="flex items-center gap-3 mb-4">
+<div class="w-10 h-10 bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="shield">shield</span>
+</div>
+<div>
+<h2 class="font-headline text-sm font-bold text-on-surface leading-none">Módulo DL Praxis™</h2>
+<span class="text-[10px] uppercase tracking-widest text-on-surface-variant">Technical Compliance</span>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary font-bold py-3 text-[11px] uppercase tracking-widest hover:opacity-90 transition-opacity">
+                Generate Report
+            </button>
+</div>
+<nav class="flex-1 py-4">
+<a class="flex items-center px-6 py-4 bg-[#1a2a48] text-[#47d6ff] border-l-4 border-[#47d6ff] transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="electric_bolt">electric_bolt</span>
+<span class="font-medium uppercase tracking-widest text-[11px] font-label">NR10 Electrical</span>
+</a>
+<a class="flex items-center px-6 py-4 text-[#bec7d4] hover:bg-[#1a2a48] hover:text-[#47d6ff] transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="height">height</span>
+<span class="font-medium uppercase tracking-widest text-[11px] font-label">NR35 Heights</span>
+</a>
+<a class="flex items-center px-6 py-4 text-[#bec7d4] hover:bg-[#1a2a48] hover:text-[#47d6ff] transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="warning">warning</span>
+<span class="font-medium uppercase tracking-widest text-[11px] font-label">Risk Analysis</span>
+</a>
+<a class="flex items-center px-6 py-4 text-[#bec7d4] hover:bg-[#1a2a48] hover:text-[#47d6ff] transition-all duration-150 ease-in-out" href="#">
+<span class="material-symbols-outlined mr-4" data-icon="accessibility_new">accessibility_new</span>
+<span class="font-medium uppercase tracking-widest text-[11px] font-label">Accessibility</span>
+</a>
+</nav>
+<div class="p-4 bg-surface-container-lowest/50 mt-auto">
+<a class="flex items-center px-2 py-2 text-[#bec7d4] hover:text-primary transition-colors mb-2" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="help_center">help_center</span>
+<span class="font-medium uppercase tracking-widest text-[10px]">Support</span>
+</a>
+<a class="flex items-center px-2 py-2 text-[#bec7d4] hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="terminal">terminal</span>
+<span class="font-medium uppercase tracking-widest text-[10px]">Logs</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 mt-16 p-8 min-h-screen">
+<!-- Header Section -->
+<div class="mb-10 flex justify-between items-end">
+<div>
+<h1 class="font-headline text-4xl font-extrabold text-on-surface tracking-tight mb-2 uppercase">Command Dashboard</h1>
+<p class="text-on-surface-variant font-medium flex items-center gap-2">
+<span class="w-2 h-2 bg-primary animate-pulse"></span>
+                    ACTIVE SURVEILLANCE: SECTOR 7G COMPLIANCE NODE
+                </p>
+</div>
+<div class="bg-surface-container-high p-4 flex gap-6">
+<div class="text-right">
+<span class="block text-[10px] uppercase tracking-widest text-on-surface-variant">System Uptime</span>
+<span class="font-headline font-bold text-primary">99.998%</span>
+</div>
+<div class="w-[1px] bg-outline-variant opacity-20"></div>
+<div class="text-right">
+<span class="block text-[10px] uppercase tracking-widest text-on-surface-variant">Last Audit</span>
+<span class="font-headline font-bold text-primary">02:14:55 AGO</span>
+</div>
+</div>
+</div>
+<!-- 2. Numeric Management Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<!-- Inspections Card -->
+<div class="bg-surface-container-low relative overflow-hidden group">
+<div class="h-1 w-full bg-primary/20 scanline-header absolute top-0"></div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<span class="material-symbols-outlined text-primary-container" data-icon="fact_check">fact_check</span>
+<span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-1 uppercase tracking-widest">Inspections</span>
+</div>
+<div class="flex items-baseline gap-4">
+<div class="flex flex-col">
+<span class="text-4xl font-headline font-bold text-on-surface">145</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-variant">Open</span>
+</div>
+<div class="h-10 w-[1px] bg-outline-variant opacity-20"></div>
+<div class="flex flex-col">
+<span class="text-4xl font-headline font-bold text-on-surface-variant/50">82</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-variant">Completed</span>
+</div>
+</div>
+</div>
+<div class="absolute bottom-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-8xl" data-icon="query_stats">query_stats</span>
+</div>
+</div>
+<!-- Non-Conformities Card -->
+<div class="bg-surface-container-low relative overflow-hidden group">
+<div class="h-1 w-full bg-error/20 scanline-header absolute top-0"></div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<span class="material-symbols-outlined text-error" data-icon="report_problem">report_problem</span>
+<span class="text-[10px] font-bold text-error bg-error/10 px-2 py-1 uppercase tracking-widest">Non-Conformities</span>
+</div>
+<div class="flex items-baseline gap-4">
+<div class="flex flex-col">
+<span class="text-4xl font-headline font-bold text-error">12</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-variant">Critical</span>
+</div>
+<div class="h-10 w-[1px] bg-outline-variant opacity-20"></div>
+<div class="flex flex-col">
+<span class="text-4xl font-headline font-bold text-tertiary">34</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-variant">Attention</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Irregular Suppliers Card -->
+<div class="bg-surface-container-low relative overflow-hidden group">
+<div class="h-1 w-full bg-tertiary/20 scanline-header absolute top-0"></div>
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<span class="material-symbols-outlined text-tertiary" data-icon="group_off">group_off</span>
+<span class="text-[10px] font-bold text-tertiary bg-tertiary/10 px-2 py-1 uppercase tracking-widest">Suppliers</span>
+</div>
+<div class="flex flex-col">
+<span class="text-4xl font-headline font-bold text-on-surface">5</span>
+<span class="text-[10px] uppercase font-bold text-on-surface-variant">Mapped Irregularities</span>
+</div>
+<div class="mt-4 flex gap-1">
+<div class="h-1 flex-1 bg-tertiary"></div>
+<div class="h-1 flex-1 bg-tertiary"></div>
+<div class="h-1 flex-1 bg-tertiary"></div>
+<div class="h-1 flex-1 bg-tertiary"></div>
+<div class="h-1 flex-1 bg-tertiary"></div>
+<div class="h-1 flex-1 bg-surface-container-highest"></div>
+<div class="h-1 flex-1 bg-surface-container-highest"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- 3. Visual Checklist Status Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+<!-- Grounding -->
+<div class="bg-surface-container-high p-4 border-l-2 border-secondary-container">
+<div class="flex justify-between items-center mb-4">
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Quality of Grounding</span>
+<span class="material-symbols-outlined text-sm text-secondary-container" data-icon="cable">cable</span>
+</div>
+<span class="inline-block bg-[#006c71] text-secondary-fixed px-3 py-1 text-[10px] font-bold uppercase tracking-tighter">Compliant Tag</span>
+</div>
+<!-- Panels -->
+<div class="bg-surface-container-high p-4 border-l-2 border-tertiary">
+<div class="flex justify-between items-center mb-4">
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Panels &amp; Protections</span>
+<span class="material-symbols-outlined text-sm text-tertiary" data-icon="electric_meter">electric_meter</span>
+</div>
+<span class="inline-block bg-[#463000] text-tertiary-fixed-dim px-3 py-1 text-[10px] font-bold uppercase tracking-tighter">Attention Tag</span>
+</div>
+<!-- Document Status -->
+<div class="bg-surface-container-high p-4 border-l-2 border-error">
+<div class="flex justify-between items-center mb-4">
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Reports / ARTs</span>
+<span class="material-symbols-outlined text-sm text-error" data-icon="description">description</span>
+</div>
+<span class="inline-block bg-error-container text-on-error-container px-3 py-1 text-[10px] font-bold uppercase tracking-tighter">Expiring Tag</span>
+</div>
+<!-- PPE/EPC -->
+<div class="bg-surface-container-high p-4 border-l-2 border-error">
+<div class="flex justify-between items-center mb-4">
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">PPE/EPC Usage</span>
+<span class="material-symbols-outlined text-sm text-error" data-icon="engineering">engineering</span>
+</div>
+<span class="inline-block bg-error-container text-on-error-container px-3 py-1 text-[10px] font-bold uppercase tracking-tighter">Non-Compliant Tag</span>
+</div>
+</div>
+<!-- 4. Normative Datagrid -->
+<div class="bg-surface-container-low overflow-hidden">
+<div class="bg-surface-container-highest p-4 flex justify-between items-center">
+<h3 class="font-headline text-sm font-bold text-primary uppercase tracking-widest flex items-center gap-2">
+<span class="material-symbols-outlined text-lg" data-icon="format_list_bulleted">format_list_bulleted</span>
+                    Active Compliance Violations
+                </h3>
+<div class="flex gap-2">
+<button class="px-4 py-1 text-[10px] font-bold uppercase tracking-widest border border-outline-variant/30 hover:bg-surface-bright transition-colors">Export CSV</button>
+<button class="px-4 py-1 text-[10px] font-bold uppercase tracking-widest border border-outline-variant/30 hover:bg-surface-bright transition-colors">Filter</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container/50">
+<th class="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-primary border-b border-outline-variant/10">Obra Local</th>
+<th class="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-primary border-b border-outline-variant/10">Irregularidade</th>
+<th class="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-primary border-b border-outline-variant/10">Severidade do Risco</th>
+<th class="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-primary border-b border-outline-variant/10">Prazo Limite</th>
+<th class="px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-primary border-b border-outline-variant/10">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<tr class="hover:bg-surface-bright/10 transition-colors">
+<td class="px-6 py-4 text-[13px] font-medium text-on-surface">Building A</td>
+<td class="px-6 py-4 text-[13px] text-on-surface-variant">Exposed wiring in main distribution board</td>
+<td class="px-6 py-4">
+<span class="px-3 py-0.5 text-[10px] font-bold uppercase bg-error-container text-on-error-container border-l-2 border-error">High</span>
+</td>
+<td class="px-6 py-4 text-[13px] font-mono text-error">48h</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-error animate-pulse"></span>
+<span class="text-[10px] uppercase font-bold tracking-widest text-error">Overdue</span>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright/10 transition-colors bg-surface-variant/5">
+<td class="px-6 py-4 text-[13px] font-medium text-on-surface">Factory Floor</td>
+<td class="px-6 py-4 text-[13px] text-on-surface-variant">Missing ART for substation maintenance</td>
+<td class="px-6 py-4">
+<span class="px-3 py-0.5 text-[10px] font-bold uppercase bg-tertiary-container/30 text-tertiary border-l-2 border-tertiary">Medium</span>
+</td>
+<td class="px-6 py-4 text-[13px] font-mono text-on-surface">5 days</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="text-[10px] uppercase font-bold tracking-widest text-tertiary">Pending</span>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright/10 transition-colors">
+<td class="px-6 py-4 text-[13px] font-medium text-on-surface">West Wing Lab</td>
+<td class="px-6 py-4 text-[13px] text-on-surface-variant">Expired fire extinguishers (H2O)</td>
+<td class="px-6 py-4">
+<span class="px-3 py-0.5 text-[10px] font-bold uppercase bg-error-container text-on-error-container border-l-2 border-error">High</span>
+</td>
+<td class="px-6 py-4 text-[13px] font-mono text-error">12h</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-error animate-pulse"></span>
+<span class="text-[10px] uppercase font-bold tracking-widest text-error">CRITICAL</span>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-bright/10 transition-colors bg-surface-variant/5">
+<td class="px-6 py-4 text-[13px] font-medium text-on-surface">Logistics Hub</td>
+<td class="px-6 py-4 text-[13px] text-on-surface-variant">Asymmetry in phase loading (&gt;15%)</td>
+<td class="px-6 py-4">
+<span class="px-3 py-0.5 text-[10px] font-bold uppercase bg-secondary-container/10 text-secondary border-l-2 border-secondary">Low</span>
+</td>
+<td class="px-6 py-4 text-[13px] font-mono text-on-surface">15 days</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span class="text-[10px] uppercase font-bold tracking-widest text-secondary">Scheduled</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 bg-surface-container-highest border-t border-outline-variant/10 flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
+<span>Showing 4 of 217 compliance records</span>
+<div class="flex gap-4">
+<button class="hover:text-primary transition-colors">Previous Page</button>
+<button class="text-primary">1</button>
+<button class="hover:text-primary transition-colors">2</button>
+<button class="hover:text-primary transition-colors">3</button>
+<button class="hover:text-primary transition-colors">Next Page</button>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB Overlay -->
+<div class="fixed bottom-8 right-8 z-50">
+<button class="w-14 h-14 bg-primary text-on-primary shadow-2xl flex items-center justify-center group">
+<span class="material-symbols-outlined transition-transform group-hover:rotate-90" data-icon="add">add</span>
+</button>
+</div>
+</body></html>

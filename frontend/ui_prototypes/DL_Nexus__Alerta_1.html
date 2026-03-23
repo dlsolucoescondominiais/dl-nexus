@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DL Nexus – Módulo DL Alerta™</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "error": "#ffb4ab",
+                        "outline": "#ab8888",
+                        "surface-container-lowest": "#000d28",
+                        "tertiary-fixed": "#69ff87",
+                        "error-container": "#93000a",
+                        "surface-dim": "#011230",
+                        "surface-tint": "#ffb3b2",
+                        "on-primary-container": "#fff2f1",
+                        "on-surface-variant": "#e4bdbc",
+                        "on-error": "#690005",
+                        "primary-fixed": "#ffdad9",
+                        "secondary-fixed": "#ffdf9e",
+                        "on-tertiary-fixed-variant": "#00531e",
+                        "surface-container-low": "#091b39",
+                        "tertiary-fixed-dim": "#3ce36a",
+                        "secondary-fixed-dim": "#fabd00",
+                        "outline-variant": "#5b403f",
+                        "on-secondary": "#3f2e00",
+                        "on-secondary-container": "#6a4e00",
+                        "on-primary-fixed": "#410008",
+                        "primary": "#ffb3b2",
+                        "secondary": "#ffdf9e",
+                        "primary-container": "#d7263d",
+                        "on-primary-fixed-variant": "#92001f",
+                        "on-primary": "#680013",
+                        "on-tertiary": "#003912",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-highest": "#253454",
+                        "surface-container": "#0e1f3d",
+                        "surface": "#011230",
+                        "on-surface": "#d8e2ff",
+                        "inverse-primary": "#bd0a2e",
+                        "tertiary-container": "#008233",
+                        "primary-fixed-dim": "#ffb3b2",
+                        "secondary-container": "#fabd00",
+                        "on-tertiary-fixed": "#002108",
+                        "on-secondary-fixed": "#261a00",
+                        "on-background": "#d8e2ff",
+                        "inverse-surface": "#d8e2ff",
+                        "on-tertiary-container": "#daffd7",
+                        "on-secondary-fixed-variant": "#5b4300",
+                        "inverse-on-surface": "#20304f",
+                        "surface-bright": "#293958",
+                        "background": "#011230",
+                        "surface-variant": "#253454",
+                        "surface-container-high": "#1a2a48",
+                        "tertiary": "#3ce36a"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #011230; color: #d8e2ff; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .blinking-red { animation: pulse-red 1s infinite; }
+        @keyframes pulse-red {
+            0%, 100% { background-color: #d7263d; }
+            50% { background-color: #253454; }
+        }
+        .technical-grid {
+            background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="bg-surface selection:bg-primary-container selection:text-white overflow-x-hidden">
+<!-- TopAppBar from JSON -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#011230] dark:bg-[#011230] border-b border-white/5 shadow-[0_20_40px_rgba(0,0,0,0.5)]">
+<div class="flex items-center gap-4">
+<span class="text-xl font-black text-white tracking-tighter uppercase font-headline">DL Nexus</span>
+<div class="h-4 w-[1px] bg-white/10 hidden md:block"></div>
+<span class="font-['Space_Grotesk'] tracking-wider uppercase text-sm font-bold text-[#d7263d]">Módulo DL Alerta™</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-slate-400 hover:bg-white/5 transition-colors rounded-lg active:opacity-80 active:scale-95">
+<span class="material-symbols-outlined">notifications_active</span>
+</button>
+<button class="p-2 text-slate-400 hover:bg-white/5 transition-colors rounded-lg active:opacity-80 active:scale-95">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<button class="p-2 text-slate-400 hover:bg-white/5 transition-colors rounded-lg active:opacity-80 active:scale-95">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- SideNavBar from JSON -->
+<aside class="fixed left-0 top-0 h-full flex flex-col pt-16 bg-[#091b39] dark:bg-[#091b39] w-64 z-40 hidden md:flex">
+<div class="px-6 py-8">
+<h2 class="font-['Space_Grotesk'] font-bold text-[#d7263d] text-lg tracking-tight">DL ALERTA™</h2>
+<p class="text-[10px] text-tertiary font-bold tracking-[0.2em] mt-1 uppercase">SYSTEM NORMAL</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="bg-[#253454] text-white border-l-4 border-[#d7263d] px-4 py-3 flex items-center gap-3 transition-all scale-102" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-['Inter'] font-medium text-xs tracking-tight">Dashboard</span>
+</a>
+<a class="text-slate-400 px-4 py-3 flex items-center gap-3 hover:bg-[#253454]/50 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-['Inter'] font-medium text-xs tracking-tight">Loops</span>
+</a>
+<a class="text-slate-400 px-4 py-3 flex items-center gap-3 hover:bg-[#253454]/50 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">sensors</span>
+<span class="font-['Inter'] font-medium text-xs tracking-tight">Detectors</span>
+</a>
+<a class="text-slate-400 px-4 py-3 flex items-center gap-3 hover:bg-[#253454]/50 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-['Inter'] font-medium text-xs tracking-tight">Sirens</span>
+</a>
+<a class="text-slate-400 px-4 py-3 flex items-center gap-3 hover:bg-[#253454]/50 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">gas_meter</span>
+<span class="font-['Inter'] font-medium text-xs tracking-tight">Gas Alerts</span>
+</a>
+<a class="text-slate-400 px-4 py-3 flex items-center gap-3 hover:bg-[#253454]/50 hover:text-white transition-all" href="#">
+<span class="material-symbols-outlined">list_alt</span>
+<span class="font-['Inter'] font-medium text-xs tracking-tight">Event Log</span>
+</a>
+</nav>
+<div class="p-4 mt-auto space-y-4">
+<button class="w-full bg-primary-container text-on-primary-container py-3 font-headline font-bold text-xs tracking-widest uppercase rounded hover:brightness-110 active:scale-95 transition-all">
+                SILENCE ALARM
+            </button>
+<div class="border-t border-white/5 pt-4">
+<a class="text-slate-400 px-4 py-2 flex items-center gap-3 hover:text-white transition-all text-xs" href="#">
+<span class="material-symbols-outlined text-sm">admin_panel_settings</span>
+                    System Settings
+                </a>
+<a class="text-slate-400 px-4 py-2 flex items-center gap-3 hover:text-white transition-all text-xs" href="#">
+<span class="material-symbols-outlined text-sm">help</span>
+                    Support
+                </a>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 pt-20 px-6 pb-12 technical-grid min-h-screen">
+<!-- 1. Numeric Cards Section -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+<!-- Central Active -->
+<div class="bg-surface-container-low p-5 flex flex-col justify-between h-32 relative overflow-hidden">
+<div class="flex justify-between items-start">
+<span class="text-[10px] font-bold tracking-widest text-on-surface-variant uppercase">Central Active</span>
+<span class="material-symbols-outlined text-tertiary-fixed-dim" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-black font-headline text-white">STATUS</span>
+<span class="text-xl font-bold font-headline text-tertiary">OK</span>
+</div>
+<div class="absolute bottom-0 right-0 w-16 h-16 bg-tertiary/5 rounded-full -mb-8 -mr-8 blur-2xl"></div>
+</div>
+<!-- Loops OK -->
+<div class="bg-surface-container-low p-5 flex flex-col justify-between h-32">
+<span class="text-[10px] font-bold tracking-widest text-on-surface-variant uppercase">Loops Active / Total</span>
+<div class="flex items-baseline gap-1">
+<span class="text-4xl font-black font-headline text-white">08</span>
+<span class="text-xl font-medium text-slate-500">/ 08</span>
+</div>
+<div class="w-full h-1 bg-surface-container-highest mt-2">
+<div class="h-full bg-tertiary w-full"></div>
+</div>
+</div>
+<!-- Detectors with Dirt -->
+<div class="bg-surface-container-low p-5 flex flex-col justify-between h-32 border-b-2 border-secondary-container/20">
+<span class="text-[10px] font-bold tracking-widest text-on-surface-variant uppercase">Maintenance: Dirt</span>
+<div class="flex items-center gap-3">
+<span class="text-4xl font-black font-headline text-secondary-fixed-dim">04</span>
+<span class="material-symbols-outlined text-secondary-fixed-dim">cloud_sync</span>
+</div>
+<span class="text-[10px] text-secondary-fixed-dim/80">Calibration required soon</span>
+</div>
+<!-- Active Alarms -->
+<div class="bg-surface-container-low p-5 flex flex-col justify-between h-32 border-b-2 border-primary-container">
+<span class="text-[10px] font-bold tracking-widest text-on-surface-variant uppercase">Active Alarms</span>
+<div class="flex items-center gap-3">
+<span class="text-5xl font-black font-headline text-white">00</span>
+<span class="material-symbols-outlined text-slate-600">emergency</span>
+</div>
+<span class="text-[10px] text-slate-500 uppercase tracking-tighter">Zero Threat Detected</span>
+</div>
+<!-- Supervision Faults -->
+<div class="bg-surface-container-low p-5 flex flex-col justify-between h-32 border-b-2 border-secondary-container/20">
+<span class="text-[10px] font-bold tracking-widest text-on-surface-variant uppercase">Supervision Faults</span>
+<div class="flex items-center gap-3">
+<span class="text-4xl font-black font-headline text-secondary-container">02</span>
+<span class="material-symbols-outlined text-secondary-container">report_problem</span>
+</div>
+<span class="text-[10px] text-secondary-container/80">Signal Interference Loop 4</span>
+</div>
+</section>
+<!-- 2. Main Panel: Visual Technical Map -->
+<section class="mb-8">
+<div class="flex justify-between items-end mb-4">
+<div>
+<h3 class="text-xs font-bold tracking-[0.3em] uppercase text-slate-400 mb-1">Vigilance Matrix</h3>
+<h2 class="text-2xl font-black font-headline text-white">ELECTRONIC LOOP 01</h2>
+</div>
+<div class="flex gap-4 text-[10px] font-bold uppercase tracking-widest text-slate-500 bg-surface-container-low px-4 py-2 rounded">
+<div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-tertiary"></div> OK</div>
+<div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-secondary-container"></div> SUPERVISION</div>
+<div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-primary-container"></div> ALARM</div>
+<div class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-slate-600"></div> OFFLINE</div>
+</div>
+</div>
+<div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-12 gap-3">
+<!-- Row 1 -->
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center group relative cursor-help">
+<span class="material-symbols-outlined text-on-tertiary text-xl" style="font-variation-settings: 'FILL' 1;">detector</span>
+<span class="text-[9px] font-bold text-on-tertiary mt-1">D01</span>
+</div>
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary text-xl" style="font-variation-settings: 'FILL' 1;">detector</span>
+<span class="text-[9px] font-bold text-on-tertiary mt-1">D02</span>
+</div>
+<div class="aspect-square bg-secondary-container rounded-sm flex flex-col items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container text-xl" style="font-variation-settings: 'FILL' 1;">sensors</span>
+<span class="text-[9px] font-bold text-on-secondary-container mt-1">M01</span>
+</div>
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary text-xl" style="font-variation-settings: 'FILL' 1;">detector</span>
+<span class="text-[9px] font-bold text-on-tertiary mt-1">D03</span>
+</div>
+<!-- Simulating an alarm state with blinking -->
+<div class="aspect-square blinking-red rounded-sm flex flex-col items-center justify-center shadow-[0_0_20px_rgba(215,38,61,0.4)]">
+<span class="material-symbols-outlined text-white text-xl" style="font-variation-settings: 'FILL' 1;">gas_meter</span>
+<span class="text-[9px] font-bold text-white mt-1">G01</span>
+</div>
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary text-xl" style="font-variation-settings: 'FILL' 1;">detector</span>
+<span class="text-[9px] font-bold text-on-tertiary mt-1">D04</span>
+</div>
+<div class="aspect-square bg-surface-container-highest rounded-sm flex flex-col items-center justify-center border border-white/5">
+<span class="material-symbols-outlined text-slate-500 text-xl">detector</span>
+<span class="text-[9px] font-bold text-slate-500 mt-1">D05</span>
+</div>
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary text-xl" style="font-variation-settings: 'FILL' 1;">campaign</span>
+<span class="text-[9px] font-bold text-on-tertiary mt-1">S01</span>
+</div>
+<!-- Repeat pattern for grid richness -->
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center"><span class="material-symbols-outlined text-on-tertiary text-xl">detector</span><span class="text-[9px] font-bold text-on-tertiary mt-1">D06</span></div>
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center"><span class="material-symbols-outlined text-on-tertiary text-xl">detector</span><span class="text-[9px] font-bold text-on-tertiary mt-1">D07</span></div>
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center"><span class="material-symbols-outlined text-on-tertiary text-xl">detector</span><span class="text-[9px] font-bold text-on-tertiary mt-1">D08</span></div>
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center"><span class="material-symbols-outlined text-on-tertiary text-xl">detector</span><span class="text-[9px] font-bold text-on-tertiary mt-1">D09</span></div>
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center"><span class="material-symbols-outlined text-on-tertiary text-xl">detector</span><span class="text-[9px] font-bold text-on-tertiary mt-1">D10</span></div>
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center"><span class="material-symbols-outlined text-on-tertiary text-xl">detector</span><span class="text-[9px] font-bold text-on-tertiary mt-1">D11</span></div>
+<div class="aspect-square bg-secondary-container rounded-sm flex flex-col items-center justify-center"><span class="material-symbols-outlined text-on-secondary-container text-xl">detector</span><span class="text-[9px] font-bold text-on-secondary-container mt-1">D12</span></div>
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center"><span class="material-symbols-outlined text-on-tertiary text-xl">detector</span><span class="text-[9px] font-bold text-on-tertiary mt-1">D13</span></div>
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center"><span class="material-symbols-outlined text-on-tertiary text-xl">detector</span><span class="text-[9px] font-bold text-on-tertiary mt-1">D14</span></div>
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center"><span class="material-symbols-outlined text-on-tertiary text-xl">detector</span><span class="text-[9px] font-bold text-on-tertiary mt-1">D15</span></div>
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center"><span class="material-symbols-outlined text-on-tertiary text-xl">detector</span><span class="text-[9px] font-bold text-on-tertiary mt-1">D16</span></div>
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center"><span class="material-symbols-outlined text-on-tertiary text-xl">detector</span><span class="text-[9px] font-bold text-on-tertiary mt-1">D17</span></div>
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center"><span class="material-symbols-outlined text-on-tertiary text-xl">detector</span><span class="text-[9px] font-bold text-on-tertiary mt-1">D18</span></div>
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center"><span class="material-symbols-outlined text-on-tertiary text-xl">detector</span><span class="text-[9px] font-bold text-on-tertiary mt-1">D19</span></div>
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center"><span class="material-symbols-outlined text-on-tertiary text-xl">detector</span><span class="text-[9px] font-bold text-on-tertiary mt-1">D20</span></div>
+<div class="aspect-square bg-tertiary rounded-sm flex flex-col items-center justify-center"><span class="material-symbols-outlined text-on-tertiary text-xl">detector</span><span class="text-[9px] font-bold text-on-tertiary mt-1">D21</span></div>
+</div>
+</section>
+<!-- 3. Bottom Section: Event Log Table -->
+<section>
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-slate-400">history</span>
+<h2 class="text-sm font-bold tracking-[0.2em] uppercase text-white">Event Log: Real-time Feed</h2>
+</div>
+<div class="bg-surface-container-low overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-highest border-b border-white/5">
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">ID</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Zone / Area</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Device Type</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Event</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Status</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">Technician</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<!-- Red Highlighting for Alarms -->
+<tr class="bg-primary-container/20 group hover:bg-primary-container/30 transition-colors">
+<td class="px-6 py-4 text-xs font-mono text-white font-bold">DET-092-L1</td>
+<td class="px-6 py-4 text-xs text-on-surface">Data Center - Rack A4</td>
+<td class="px-6 py-4 text-xs text-on-surface">Smoke Optical</td>
+<td class="px-6 py-4 text-xs font-bold text-primary">FIRE ALARM</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded text-[9px] font-black uppercase bg-primary-container text-white">Critical</span>
+</td>
+<td class="px-6 py-4 text-xs text-on-surface-variant italic">Automated Action</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-4 text-xs font-mono text-slate-400">DET-041-L2</td>
+<td class="px-6 py-4 text-xs text-on-surface">West Wing - Level 3</td>
+<td class="px-6 py-4 text-xs text-on-surface">Gas Sensor (CO)</td>
+<td class="px-6 py-4 text-xs text-secondary-container">Dirt Accumulation</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded text-[9px] font-black uppercase bg-secondary-container/20 text-secondary-container">Warning</span>
+</td>
+<td class="px-6 py-4 text-xs text-on-surface-variant">Eng. M. Silva</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-4 text-xs font-mono text-slate-400">SIR-012-L1</td>
+<td class="px-6 py-4 text-xs text-on-surface">Main Hallway</td>
+<td class="px-6 py-4 text-xs text-on-surface">Smart Siren</td>
+<td class="px-6 py-4 text-xs text-slate-400">Periodic Supervision</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded text-[9px] font-black uppercase bg-tertiary/10 text-tertiary">Normal</span>
+</td>
+<td class="px-6 py-4 text-xs text-on-surface-variant">System Hub</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-4 text-xs font-mono text-slate-400">MOD-005-L4</td>
+<td class="px-6 py-4 text-xs text-on-surface">Electrical Room B</td>
+<td class="px-6 py-4 text-xs text-on-surface">Input Module</td>
+<td class="px-6 py-4 text-xs text-secondary-container">Short Circuit (Superv)</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded text-[9px] font-black uppercase bg-secondary-container/20 text-secondary-container">Fault</span>
+</td>
+<td class="px-6 py-4 text-xs text-on-surface-variant">Pending Desk</td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-4 text-xs font-mono text-slate-400">DET-115-L2</td>
+<td class="px-6 py-4 text-xs text-on-surface">Loading Dock</td>
+<td class="px-6 py-4 text-xs text-on-surface">Multi-Sensor</td>
+<td class="px-6 py-4 text-xs text-slate-400">Supervision OK</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded text-[9px] font-black uppercase bg-tertiary/10 text-tertiary">Normal</span>
+</td>
+<td class="px-6 py-4 text-xs text-on-surface-variant">System Hub</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-4 flex justify-between items-center text-[10px] text-slate-500 font-bold uppercase tracking-widest">
+<p>Showing 5 of 1,248 active devices</p>
+<div class="flex gap-2">
+<button class="px-3 py-1 bg-surface-container-highest border border-white/5 hover:text-white transition-all">Previous</button>
+<button class="px-3 py-1 bg-surface-container-highest border border-white/5 hover:text-white transition-all">Next</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Contextual FAB (Only on relevant screens as per mandate) -->
+<div class="fixed bottom-8 right-8 z-50 group">
+<button class="flex items-center gap-3 bg-primary-container text-white px-6 py-4 rounded-full shadow-2xl hover:brightness-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">security</span>
+<span class="font-headline font-bold text-sm tracking-widest uppercase">System Override</span>
+</button>
+</div>
+</body></html>

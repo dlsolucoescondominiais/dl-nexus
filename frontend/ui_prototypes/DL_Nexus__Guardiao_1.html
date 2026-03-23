@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&amp;family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-fixed-dim": "#5ed4ff",
+              "primary-fixed": "#bbe9ff",
+              "primary-container": "#00ccff",
+              "surface-bright": "#293958",
+              "on-error": "#690005",
+              "on-tertiary-fixed-variant": "#92001f",
+              "on-secondary": "#402d00",
+              "on-tertiary-container": "#9c0022",
+              "surface-variant": "#253454",
+              "secondary-container": "#ffbf00",
+              "secondary-fixed-dim": "#fbbc00",
+              "on-background": "#d8e2ff",
+              "on-error-container": "#ffdad6",
+              "tertiary-fixed": "#ffdad9",
+              "background": "#011230",
+              "on-secondary-fixed-variant": "#5c4300",
+              "inverse-on-surface": "#20304f",
+              "surface-container": "#0e1f3d",
+              "on-primary-fixed": "#001f29",
+              "surface-container-highest": "#253454",
+              "primary": "#9de2ff",
+              "tertiary-fixed-dim": "#ffb3b2",
+              "on-surface": "#d8e2ff",
+              "on-surface-variant": "#bbc8d0",
+              "surface-container-lowest": "#000d28",
+              "error-container": "#93000a",
+              "outline": "#869399",
+              "surface-container-high": "#1a2a48",
+              "on-primary-fixed-variant": "#004d63",
+              "on-primary": "#003545",
+              "on-tertiary": "#680013",
+              "on-tertiary-fixed": "#410008",
+              "inverse-primary": "#006782",
+              "on-secondary-container": "#6d5000",
+              "error": "#ffb4ab",
+              "tertiary": "#ffcccb",
+              "on-secondary-fixed": "#261a00",
+              "surface": "#011230",
+              "tertiary-container": "#ffa4a4",
+              "surface-container-low": "#091b39",
+              "secondary-fixed": "#ffdfa0",
+              "secondary": "#ffe2ab",
+              "on-primary-container": "#005369",
+              "surface-dim": "#011230",
+              "inverse-surface": "#d8e2ff",
+              "surface-tint": "#5ed4ff",
+              "outline-variant": "#3c494e"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .hud-scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(157, 226, 255, 0.05) 50%);
+            background-size: 100% 4px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body selection:bg-primary selection:text-on-primary overflow-hidden h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full px-6 h-14 bg-gradient-to-r from-[#011230] via-[#011b3d] to-[#011230] border-b border-[#9de2ff]/15 z-50 fixed top-0 left-0">
+<div class="flex items-center gap-6">
+<span class="text-xl font-black text-[#9de2ff] tracking-tighter font-headline">DL NEXUS</span>
+<nav class="hidden md:flex gap-6 items-center">
+<a class="font-headline uppercase tracking-[0.1rem] text-xs font-bold text-[#9de2ff] border-b-2 border-[#9de2ff] pb-1 shadow-[0_4px_12px_rgba(157,226,255,0.2)]" href="#">CCTV GRID</a>
+<a class="font-headline uppercase tracking-[0.1rem] text-xs font-bold text-slate-500 hover:text-[#9de2ff]/70 transition-colors" href="#">AI OBSERVER</a>
+<a class="font-headline uppercase tracking-[0.1rem] text-xs font-bold text-slate-500 hover:text-[#9de2ff]/70 transition-colors" href="#">PERIMETER</a>
+<a class="font-headline uppercase tracking-[0.1rem] text-xs font-bold text-slate-500 hover:text-[#9de2ff]/70 transition-colors" href="#">HEATMAP</a>
+<a class="font-headline uppercase tracking-[0.1rem] text-xs font-bold text-slate-500 hover:text-[#9de2ff]/70 transition-colors" href="#">NETWORK</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-container-low border border-outline-variant/20">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#9de2ff]"></span>
+<span class="font-headline text-[10px] font-bold tracking-widest text-primary">SYSTEM: NOMINAL</span>
+</div>
+<div class="flex items-center gap-4 text-slate-500">
+<span class="material-symbols-outlined text-lg cursor-pointer hover:text-primary transition-colors">security</span>
+<span class="material-symbols-outlined text-lg cursor-pointer hover:text-primary transition-colors">sensors</span>
+<span class="material-symbols-outlined text-lg cursor-pointer hover:text-primary transition-colors">settings</span>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-14 h-[calc(100vh-6.5rem)] flex flex-col z-40 w-64 bg-[#011230] border-r border-[#9de2ff]/10">
+<div class="p-6">
+<h2 class="text-lg font-bold text-[#9de2ff] font-headline">DL GUARDIÃO</h2>
+<p class="font-inter font-medium text-[10px] tracking-widest uppercase text-slate-400 opacity-60">TAC-COMMAND V4.2</p>
+</div>
+<nav class="flex-1 px-2 space-y-1 overflow-y-auto no-scrollbar">
+<div class="flex items-center gap-3 p-3 bg-[#9de2ff]/10 text-[#9de2ff] border-l-2 border-[#9de2ff] transition-all cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">router</span>
+<span class="font-inter font-medium text-[10px] tracking-widest uppercase">DEVICES</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-slate-400 opacity-60 hover:opacity-100 hover:bg-white/5 hover:translate-x-1 duration-200 cursor-pointer">
+<span class="material-symbols-outlined">developer_board</span>
+<span class="font-inter font-medium text-[10px] tracking-widest uppercase">NVR HEALTH</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-slate-400 opacity-60 hover:opacity-100 hover:bg-white/5 hover:translate-x-1 duration-200 cursor-pointer">
+<span class="material-symbols-outlined">settings_ethernet</span>
+<span class="font-inter font-medium text-[10px] tracking-widest uppercase">PoE MGMT</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-slate-400 opacity-60 hover:opacity-100 hover:bg-white/5 hover:translate-x-1 duration-200 cursor-pointer">
+<span class="material-symbols-outlined">database</span>
+<span class="font-inter font-medium text-[10px] tracking-widest uppercase">STORAGE</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-slate-400 opacity-60 hover:opacity-100 hover:bg-white/5 hover:translate-x-1 duration-200 cursor-pointer">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="font-inter font-medium text-[10px] tracking-widest uppercase">LOGS</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-slate-400 opacity-60 hover:opacity-100 hover:bg-white/5 hover:translate-x-1 duration-200 cursor-pointer">
+<span class="material-symbols-outlined">terminal</span>
+<span class="font-inter font-medium text-[10px] tracking-widest uppercase">SYSTEM</span>
+</div>
+</nav>
+<div class="p-4 border-t border-[#9de2ff]/10">
+<button class="w-full py-3 bg-error text-on-error font-headline font-black text-sm tracking-widest active:scale-95 transition-all">LOCKDOWN</button>
+<div class="mt-4 flex justify-around text-slate-400">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary">emergency_home</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary">contact_support</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Grid -->
+<main class="ml-64 mt-14 mb-12 p-1 grid grid-cols-12 h-[calc(100vh-6.5rem)] gap-1">
+<!-- Left Column: Devices & PoE -->
+<section class="col-span-2 flex flex-col gap-1 overflow-hidden">
+<div class="bg-surface-container-low p-4 border border-outline-variant/10 flex-1">
+<h3 class="font-headline text-[10px] font-bold text-primary tracking-[0.2rem] mb-4">NODE INVENTORY</h3>
+<div class="space-y-3 overflow-y-auto no-scrollbar">
+<!-- Camera Items -->
+<div class="p-2 bg-surface-container-high border-l-2 border-primary">
+<div class="flex justify-between items-start mb-1">
+<span class="font-headline text-[9px] text-primary">CAM-01-NORTH</span>
+<span class="text-[8px] font-mono text-primary/60">4K HDR</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1">
+<div class="bg-primary w-[85%] h-full"></div>
+</div>
+<div class="flex justify-between mt-1">
+<span class="text-[8px] text-slate-500">7.2W</span>
+<span class="text-[8px] text-primary">ONLINE</span>
+</div>
+</div>
+<div class="p-2 bg-surface-container-high border-l-2 border-primary/40">
+<div class="flex justify-between items-start mb-1">
+<span class="font-headline text-[9px] text-slate-300">CAM-02-ENTRY</span>
+<span class="text-[8px] font-mono text-primary/60">4K HDR</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1">
+<div class="bg-primary w-[40%] h-full"></div>
+</div>
+<div class="flex justify-between mt-1">
+<span class="text-[8px] text-slate-500">5.1W</span>
+<span class="text-[8px] text-primary">ONLINE</span>
+</div>
+</div>
+<div class="p-2 bg-surface-container-high border-l-2 border-tertiary-container">
+<div class="flex justify-between items-start mb-1">
+<span class="font-headline text-[9px] text-tertiary">CAM-03-PERIM</span>
+<span class="text-[8px] font-mono text-tertiary/60">PTZ IR</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1">
+<div class="bg-tertiary w-full h-full"></div>
+</div>
+<div class="flex justify-between mt-1">
+<span class="text-[8px] text-tertiary/60">0.0W</span>
+<span class="text-[8px] text-tertiary">OFFLINE</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 border border-outline-variant/10 h-40">
+<h3 class="font-headline text-[10px] font-bold text-primary tracking-[0.2rem] mb-2">PoE LOAD</h3>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-end">
+<span class="text-[10px] font-mono text-slate-400">TOTAL DRAW</span>
+<span class="text-xl font-headline font-black text-primary">124.8<span class="text-xs">W</span></span>
+</div>
+<div class="h-2 bg-surface-container-highest overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-secondary w-[62%]"></div>
+</div>
+<div class="flex justify-between text-[8px] font-mono text-slate-500">
+<span>0W</span>
+<span>200W MAX</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Center Column: 2x2 CCTV Grid -->
+<section class="col-span-7 grid grid-cols-2 grid-rows-2 gap-1 relative">
+<!-- Feed 1 -->
+<div class="relative bg-black group overflow-hidden">
+<img alt="CCTV Feed Main Hall" class="w-full h-full object-cover opacity-60" data-alt="CCTV surveillance feed of a large modern empty building corridor" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8m4eiom3aNkGda2JxkWT1Ez5sKfT6To2e11oJF8JCOO0U-HlB-C0oxKS6UN6FrIJ1BNuh4eaInz0Shh0iEL3Tnw4HTzHj55a2Y2003Uc853ufPndXPgcg91Nk14smk44RcsSyAeCFursjVUVoasdpLByyCzoQ2qv-QkOa2lLslz5C5Y7tyGVoeRCOItv7METluxwuVBlnynkZRRCh_krqbM-1yeLOMSsDIYoCwJ9kOA1kcukr8YcWVMhcjRU4JRbYM0cqojuCjJUq"/>
+<div class="absolute inset-0 border border-primary/20 group-hover:border-primary/60 transition-colors"></div>
+<div class="absolute top-2 left-2 px-2 py-0.5 bg-surface-container-lowest/60 text-[8px] font-mono text-primary flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse"></span> REC 00:42:15
+                </div>
+<!-- AI Overlay -->
+<div class="absolute top-1/4 left-1/3 w-32 h-48 border border-primary shadow-[0_0_15px_rgba(157,226,255,0.3)] pointer-events-none">
+<div class="absolute -top-4 left-0 text-[8px] bg-primary text-on-primary px-1 font-bold">HUMAN ID: 4882</div>
+<div class="absolute -bottom-4 right-0 text-[8px] text-primary font-mono bg-surface-container-lowest/80 px-1">CONF: 98.2%</div>
+</div>
+<div class="absolute bottom-2 left-2 text-[9px] font-headline text-white bg-black/40 px-2 uppercase tracking-tighter">CAM-01-NORTH HALL</div>
+</div>
+<!-- Feed 2 -->
+<div class="relative bg-black group overflow-hidden">
+<img alt="CCTV Entry" class="w-full h-full object-cover opacity-60" data-alt="CCTV camera angle overlooking a high security parking garage entrance" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-Z6iKE48wzPfSHMNSc4TnYdKNFiVb1DrxFHzKJO3g9pCM6Le7bFXZthBxwH3DZWrJaMeYHKJWa9B3W410fC-QEEc_4z7siv0wuHA1dWAPpHFKZ6jIpngG5TY6nZfcK0RE4HDOtEzOLO0KiahAHxoBsEeVO3t9asVosZwv_P7A4ZsChYU1HPctWLlbBAJ6a9n8OfaRlZ9b4WVM9fjQWT2Lp9Z3_J0vXL3neaAf4ekBnCZEYkswFcWuIseTBpfuiybMEss3Wtn8ct8_"/>
+<div class="absolute inset-0 border border-primary/20 group-hover:border-primary/60 transition-colors"></div>
+<!-- AI Overlay Plate -->
+<div class="absolute top-[60%] right-[40%] w-24 h-12 border border-secondary shadow-[0_0_15px_rgba(255,191,0,0.3)] pointer-events-none">
+<div class="absolute -top-4 left-0 text-[8px] bg-secondary text-on-secondary px-1 font-bold">PLATE: DX-92-B</div>
+</div>
+<div class="absolute bottom-2 left-2 text-[9px] font-headline text-white bg-black/40 px-2 uppercase tracking-tighter">CAM-02-ENTRY GATE</div>
+</div>
+<!-- Feed 3 -->
+<div class="relative bg-black group overflow-hidden">
+<img alt="CCTV Perimeter" class="w-full h-full object-cover opacity-30 grayscale contrast-125" data-alt="CCTV night vision shot of an office building exterior perimeter" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDhO3wn0HJ6X14OZQHSkZEc3T6noRBmnkG2enrIWwo3nJOQogCY1b6saPfVNa-lkx1JAut-mAZ1LFNVCxCvNzUQtM6i6KTsWdPGpQtOMsBEaEvanGAAkEiJGlnhfQcYVSMFno_L64mZJzkQjnDIzyQtgJCEyEV6TBHPLKSdUYam2K6nlOPcYvFKpVHJj115iUy0ha74NlLbKDJRTGKdwWs7PQkzz1WOHmwqLaXaMqRYUr39bC5XZfHq2YpVij9DbMaq-kk6wAHurqgS"/>
+<div class="absolute inset-0 border border-primary/20 bg-primary/5 hud-scanline"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-tertiary animate-pulse">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="absolute bottom-2 left-2 text-[9px] font-headline text-white bg-black/40 px-2 uppercase tracking-tighter">CAM-03-SOUTH PERIMETER (LOW SIGNAL)</div>
+</div>
+<!-- Feed 4 -->
+<div class="relative bg-black group overflow-hidden">
+<img alt="CCTV Loading Dock" class="w-full h-full object-cover opacity-60" data-alt="CCTV angle of a loading dock with containers and technical equipment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpBHFMjebOdBOJuPaL6rEbI9_SrE76fJOfuawhcLtO_qK8f9zyz3Ub_hFEdvOoC6mKQ3aLUosFktoCsc0OgvB-4slqDf_VRHctVb46vitLfeMzi3bDqwGZ6wmsyP0Ez--yl7WS0A4h424PjdEIbJZ2VBNk60raEKPM5uOLpdJIrJlAgYFUDkVpRH0VwqnRCsvcTHzi6wqefh-jPQFwrjGp9v--1zfzEzc49UjVIZTpQSXcrVgc_F5CXdF3P7VZq7UcJz0slq-kxgM4"/>
+<div class="absolute inset-0 border border-primary/20 group-hover:border-primary/60 transition-colors"></div>
+<div class="absolute bottom-2 left-2 text-[9px] font-headline text-white bg-black/40 px-2 uppercase tracking-tighter">CAM-04-LOADING DOCK</div>
+</div>
+</section>
+<!-- Right Column: Metrics & Sensors -->
+<section class="col-span-3 flex flex-col gap-1 overflow-hidden">
+<!-- Heatmap -->
+<div class="bg-surface-container-low p-4 border border-outline-variant/10 flex-[1.5] relative overflow-hidden">
+<h3 class="font-headline text-[10px] font-bold text-primary tracking-[0.2rem] mb-4">RISK HEATMAP</h3>
+<div class="relative w-full h-32 bg-surface-container-highest overflow-hidden">
+<img alt="Security Map Overlay" class="w-full h-full object-cover opacity-20" data-alt="Stylized architectural floor plan of a secure facility" data-location="Secure Complex Alpha" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-YviqjTNgU0MzLWa64UQ8h45fElUhv7fxqjUe5zXitrEqvGOS2bBNmzbPnu8nNLNi9393cUwtfwSsOzP_9qyoQk2PF_1KmSduz1ZoAILp3TvLnZxZxgMmHjnOCIO3Ds9cHAWgVtCOZgpTTZExAWplVeyqHbvtmPTKWeL82ROEZeKA90X8BzZiEXgcxRGferrwKSUmxcA9J_033BNHW1VouPVS1bzhgMghSEW1px5nQV_IRJvcpt55Nsx9h33v8DzMOz51fAXHchDw"/>
+<!-- Heat Points -->
+<div class="absolute top-1/4 left-1/4 w-8 h-8 bg-error/40 rounded-full blur-xl animate-pulse"></div>
+<div class="absolute bottom-1/3 right-1/4 w-12 h-12 bg-secondary/30 rounded-full blur-xl"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low to-transparent"></div>
+</div>
+</div>
+<!-- Sensor Status -->
+<div class="bg-surface-container-low p-4 border border-outline-variant/10 flex-1">
+<h3 class="font-headline text-[10px] font-bold text-primary tracking-[0.2rem] mb-4">SENSOR ARRAY</h3>
+<div class="grid grid-cols-2 gap-2">
+<div class="p-2 border border-outline-variant/20 bg-surface-container-highest flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_5px_#9de2ff]"></span>
+<span class="text-[9px] font-mono">IR-01: OK</span>
+</div>
+<div class="p-2 border border-tertiary-container/40 bg-tertiary-container/10 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-error shadow-[0_0_5px_#d7263d]"></span>
+<span class="text-[9px] font-mono text-tertiary">BR-04: BRCH</span>
+</div>
+<div class="p-2 border border-secondary/40 bg-secondary/10 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary shadow-[0_0_5px_#ffbf00]"></span>
+<span class="text-[9px] font-mono text-secondary">IR-02: WARN</span>
+</div>
+<div class="p-2 border border-outline-variant/20 bg-surface-container-highest flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_5px_#9de2ff]"></span>
+<span class="text-[9px] font-mono">BR-01: OK</span>
+</div>
+</div>
+</div>
+<!-- NVR Health -->
+<div class="bg-surface-container-low p-4 border border-outline-variant/10 flex-1">
+<h3 class="font-headline text-[10px] font-bold text-primary tracking-[0.2rem] mb-4">NVR METRICS</h3>
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<span class="text-[9px] font-headline text-slate-400">STORAGE USED</span>
+<span class="text-[9px] font-mono text-primary">82.4%</span>
+</div>
+<div class="h-1 bg-surface-container-highest">
+<div class="h-full bg-primary w-[82%]"></div>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-[9px] font-headline text-slate-400">CPU LOAD</span>
+<span class="text-[9px] font-mono text-primary">45%</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-[9px] font-headline text-slate-400">CORE TEMP</span>
+<span class="text-[9px] font-mono text-secondary">62°C</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar / Event Ticker -->
+<footer class="fixed bottom-0 w-full flex items-center h-10 bg-surface-container-lowest border-t border-[#9de2ff]/20 z-50 overflow-hidden">
+<div class="bg-error px-4 h-full flex items-center z-10">
+<span class="font-headline font-black text-[10px] text-on-error whitespace-nowrap">CRITICAL LOGS</span>
+</div>
+<div class="flex-1 px-4 overflow-hidden">
+<div class="flex gap-12 animate-scroll whitespace-nowrap">
+<span class="text-[9px] font-mono text-tertiary-container uppercase">
+                    [14:22:01] <span class="font-bold">INVASION ALERT:</span> CAM-03-SOUTH PERIMETER - MOTION DETECTED
+                </span>
+<span class="text-[9px] font-mono text-slate-400 uppercase">
+                    [14:21:45] SYSTEM STATUS: NODE-CAM-03 REBOOTING AFTER INTERRUPT
+                </span>
+<span class="text-[9px] font-mono text-primary uppercase">
+                    [14:20:12] OBSERVER AI: PLATE DX-92-B REGISTERED AT GATE ENTRY
+                </span>
+<span class="text-[9px] font-mono text-tertiary-container uppercase">
+                    [14:22:01] <span class="font-bold">INVASION ALERT:</span> CAM-03-SOUTH PERIMETER - MOTION DETECTED
+                </span>
+</div>
+</div>
+<style>
+            @keyframes scroll {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-50%); }
+            }
+            .animate-scroll {
+                animation: scroll 30s linear infinite;
+            }
+        </style>
+</footer>
+<!-- Mobile Bottom Navigation (Hidden on desktop) -->
+<nav class="md:hidden fixed bottom-0 w-full flex justify-center items-center h-12 gap-8 bg-[#011230]/90 backdrop-blur-xl border-t border-[#9de2ff]/20 z-50">
+<div class="flex flex-col items-center justify-center text-[#9de2ff] bg-[#9de2ff]/10 border-t-2 border-[#9de2ff] px-6 py-1">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">videocam</span>
+<span class="font-inter text-[9px] font-black tracking-tighter">LIVE FEED</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 px-6 py-1">
+<span class="material-symbols-outlined text-lg">visibility</span>
+<span class="font-inter text-[9px] font-black tracking-tighter">OBSERVER</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 px-6 py-1">
+<span class="material-symbols-outlined text-lg">query_stats</span>
+<span class="font-inter text-[9px] font-black tracking-tighter">HEATMAP</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 px-6 py-1">
+<span class="material-symbols-outlined text-lg">bolt</span>
+<span class="font-inter text-[9px] font-black tracking-tighter">POW-MGMT</span>
+</div>
+</nav>
+</body></html>

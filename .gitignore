@@ -1,0 +1,36 @@
+# ===========================
+# DL Soluções - .gitignore
+# ===========================
+
+# Credenciais e Segredos (O COFRE FORTE)
+.env
+execution/.env
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+
+# Tokens de autenticação
+token_*.json
+credentials_*.json
+
+# Cache Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Pasta temporária (A Lixeira Mágica)
+tmp/
+
+# VSCode / IDE
+.vscode/
+*.code-workspace
+
+# Sistema
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Node modules (caso use n8n local)
+node_modules/

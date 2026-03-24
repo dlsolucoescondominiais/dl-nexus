@@ -7,7 +7,7 @@
         "path": "dl-notificacoes"
       },
       "id": "wh-notif",
-      "name": "Entrada Notificações",
+      "name": "Entrada Notificacoes",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
@@ -17,13 +17,46 @@
     },
     {
       "parameters": {
-        "action": "textToSpeech",
-        "voiceId": "aninha_dl"
+        "method": "POST",
+        "url": "https://api.elevenlabs.io/v1/text-to-speech/={{ $env.ELEVENLABS_VOICE_ID }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "xi-api-key",
+              "value": "={{ $env.ELEVENLABS_API_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ $json.body.mensagem || 'Notificação' }}"
+            },
+            {
+              "name": "model_id",
+              "value": "eleven_multilingual_v2"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
       },
       "id": "eleven",
       "name": "ElevenLabs Aninha",
-      "type": "n8n-nodes-base.elevenLabs",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
       "position": [
         350,
         200
@@ -31,7 +64,7 @@
     }
   ],
   "connections": {
-    "Entrada Notificações": {
+    "Entrada Notificacoes": {
       "main": [
         [
           {

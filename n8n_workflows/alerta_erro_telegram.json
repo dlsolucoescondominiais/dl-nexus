@@ -1,0 +1,56 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "alerta-erro-sistema",
+        "options": {}
+      },
+      "id": "e987b9c3-4d5e-6f7g-8h9i-0j1k2l3m4n5a",
+      "name": "Webhook Erros Antigravity",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "bd60c885-fbba-4c22-9214-b81fc23d6a9a"
+    },
+    {
+      "parameters": {
+        "chatId": "=@SEU_TELEGRAM_ID_AQUI",
+        "text": "=🚨 *ALERTA DL NEXUS* 🚨\n\nErro no Motor de IA (Antigravity):\n\n```\n{{ $json.body.mensagem }}\n```\n\n_Agente de Monitoramento ativo_.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "f1c2d3e4-f5a6-7b8c-9d0e-1f2g3h4i5j6b",
+      "name": "Aviso Telegram (Equipe TI)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        450,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "SUA_CREDENTIAL_TELEGRAM_AQUI",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Erros Antigravity": {
+      "main": [
+        [
+          {
+            "node": "Aviso Telegram (Equipe TI)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

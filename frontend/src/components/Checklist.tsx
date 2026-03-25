@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { supabase } from '../lib/supabaseClient';
+import supabaseClient from '../lib/supabaseClient';
 
 interface ChecklistProps {
   leadId: string; // Vem via rota ou props (qual condomínio está sendo avaliado)

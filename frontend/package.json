@@ -1,0 +1,16 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "Este é o frontend React da **DL Soluções Condominiais**. Ele conecta você (Técnico/Engenheiro de Vendas) e os Síndicos (Clientes) diretamente ao cérebro do sistema: **Supabase + n8n + IA**.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.100.0"
+  }
+}

@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: dl-nexus-frontend
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run preview
+    envVars:
+      - key: VITE_SUPABASE_URL
+        value: https://[seu-projeto].supabase.co
+      - key: VITE_SUPABASE_ANON_KEY
+        value: [sua-chave-anon]
+      - key: VITE_API_BASE_URL
+        value: https://api.dlsolucoescondominiais.com.br

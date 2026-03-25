@@ -4,7 +4,8 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "dl-aninha"
+        "path": "dl-aninha",
+        "authentication": "headerAuth"
       },
       "id": "wh-aninha",
       "name": "Entrada Aninha",
@@ -20,7 +21,7 @@
         "promptType": "define",
         "text": "={{ $json.body.mensagem_original }}",
         "options": {
-          "systemMessage": "Você é a ANINHA - Triagem DL (B2B). Analise se o lead é escolar/condomínio. Regra: Sem canaletas plásticas. Terminologia: Avaliação Técnica."
+          "systemMessage": "Voc\u00ea \u00e9 a ANINHA - Triagem DL (B2B). Analise se o lead \u00e9 escolar/condom\u00ednio. Regra: Sem canaletas pl\u00e1sticas. Terminologia: Avalia\u00e7\u00e3o T\u00e9cnica."
         }
       },
       "id": "ai-aninha",

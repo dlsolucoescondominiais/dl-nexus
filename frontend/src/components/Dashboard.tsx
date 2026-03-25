@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
-// Tipagem baseada na Tabela de Leads criada no Supabase MIGRATION
 interface Lead {
   id: string;
-  nome_condominio: string;
+  condominio_id: string | null;
+  nome: string;
   telefone: string;
-  tipo_servico: string;
-  porte: string;
+  origem: string;
   status: string;
-  created_at: string;
+  criado_em: string;
 }
 
 export default function Dashboard() {
@@ -36,11 +35,11 @@ export default function Dashboard() {
   const fetchDashboardData = async () => {
     setLoading(true);
 
-    // 1. Fetch Leads
+    // 1. Fetch Leads V3
     const { data: leadsData, error: leadsError } = await supabase
       .from('leads')
-      .select('id, nome_condominio, telefone, tipo_servico, porte, status, created_at')
-      .order('created_at', { ascending: false });
+      .select('id, condominio_id, nome, telefone, origem, status, criado_em')
+      .order('criado_em', { ascending: false });
 
     // 2. Fetch Avaliações Técnicas (Contagem)
     const { count: avaliacoesCount, error: avaliacoesError } = await supabase
@@ -51,7 +50,7 @@ export default function Dashboard() {
     const { count: propostasCount, error: propostasError } = await supabase
       .from('propostas')
       .select('*', { count: 'exact', head: true })
-      .neq('status', 'recusada');
+      .neq('status', 'rejeitada'); // V3 status_proposta
 
     if (leadsError) console.error('Erro ao buscar leads:', leadsError);
 
@@ -111,12 +110,13 @@ export default function Dashboard() {
           {leads.map((lead) => (
             <li key={lead.id} className="px-4 py-4 sm:px-6 hover:bg-gray-50 cursor-pointer">
               <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-blue-600 truncate">{lead.nome_condominio || 'Condomínio não informado'}</p>
+                <p className="text-sm font-medium text-blue-600 truncate">{lead.nome || 'Nome não informado'}</p>
                 <div className="ml-2 flex-shrink-0 flex">
                   <p className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                     ${lead.status === 'novo' ? 'bg-blue-100 text-blue-800' :
-                      lead.status === 'avaliado' ? 'bg-yellow-100 text-yellow-800' :
-                      lead.status === 'proposta' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                      lead.status === 'triagem' ? 'bg-yellow-100 text-yellow-800' :
+                      lead.status === 'roteado' ? 'bg-indigo-100 text-indigo-800' :
+                      lead.status === 'proposta_gerada' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
                     {lead.status.toUpperCase()}
                   </p>
                 </div>
@@ -127,14 +127,11 @@ export default function Dashboard() {
                     📱 {lead.telefone}
                   </p>
                   <p className="flex items-center text-sm text-gray-500 mr-4 font-semibold">
-                    🔧 {lead.tipo_servico || 'Não classificado'}
-                  </p>
-                  <p className="flex items-center text-sm text-gray-500">
-                    🏢 Porte: {lead.porte || 'N/A'}
+                    Origem: {lead.origem || 'Não identificada'}
                   </p>
                 </div>
                 <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                  <p>{new Date(lead.created_at).toLocaleDateString('pt-BR')}</p>
+                  <p>{new Date(lead.criado_em).toLocaleDateString('pt-BR')}</p>
                 </div>
               </div>
             </li>

@@ -11,18 +11,19 @@ export default function ChecklistMobile({ leadId = 'a1b2c3d4-e5f6-7890-1234-5678
   const [loading, setLoading] = useState(false);
   const [mensagem, setMensagem] = useState('');
 
-  // Estado local do formulário (JSONB no Supabase)
   const [checklist, setChecklist] = useState({
     quadroEletrico: false,
     cabeamentoEstruturado: false,
     bombaDagua: false,
     cameraIntelbras: false,
     painelSolar: false,
-    observacoes: ''
+    observacoes: '',
+    viabilidade: 'media',
+    score: 50
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target as any;
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
       setChecklist(prev => ({ ...prev, [name]: checked }));
@@ -37,16 +38,16 @@ export default function ChecklistMobile({ leadId = 'a1b2c3d4-e5f6-7890-1234-5678
     setMensagem('Sincronizando com o DL Nexus...');
 
     try {
-      // 1. Grava na tabela de avaliações técnicas no formato JSONB
+      // 1. Grava na tabela de avaliações técnicas no formato V3 do Supabase
       const { data, error } = await supabase
         .from('avaliacoes_tecnicas')
         .insert([
           {
             lead_id: leadId,
-            checklist: checklist,
-            tecnico_responsavel: tecnicoNome,
-            data_avaliacao: new Date().toISOString().split('T')[0], // YYYY-MM-DD
-            resultado: 'Aprovada com ressalvas estruturais', // Simplificado
+            agente: tecnicoNome, // Equivalente a Tecnico / Especialidade
+            score: parseInt(checklist.score as any),
+            recomendacoes: checklist.observacoes,
+            viabilidade: checklist.viabilidade, // 'alta', 'media', 'baixa'
           }
         ])
         .select();
@@ -56,7 +57,7 @@ export default function ChecklistMobile({ leadId = 'a1b2c3d4-e5f6-7890-1234-5678
       // 2. Atualiza o status do Lead no Pipeline (Gatilho para n8n)
       const { error: updateError } = await supabase
         .from('leads')
-        .update({ status: 'avaliado' })
+        .update({ status: 'proposta_gerada' }) // V3 Status enum
         .eq('id', leadId);
 
       if (updateError) throw updateError;
@@ -110,19 +111,33 @@ export default function ChecklistMobile({ leadId = 'a1b2c3d4-e5f6-7890-1234-5678
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label htmlFor="observacoes" className="block text-sm font-medium text-gray-700">
-              Anotações Críticas (Vão para a Proposta)
-            </label>
-            <textarea
-              id="observacoes"
-              name="observacoes"
-              rows={4}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3 border"
-              placeholder="Descreva problemas críticos de segurança ou infraestrutura para justificar a proposta OPEX."
-              value={checklist.observacoes}
-              onChange={handleChange}
-            ></textarea>
+          <div className="space-y-4">
+            <div>
+               <label htmlFor="score" className="block text-sm font-medium text-gray-700">Score da Vistoria (0 a 100)</label>
+               <input type="number" name="score" min="0" max="100" value={checklist.score} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3 border"/>
+            </div>
+
+            <div>
+               <label htmlFor="viabilidade" className="block text-sm font-medium text-gray-700">Viabilidade</label>
+               <select name="viabilidade" value={checklist.viabilidade} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3 border">
+                  <option value="alta">Alta</option>
+                  <option value="media">Média</option>
+                  <option value="baixa">Baixa</option>
+               </select>
+            </div>
+
+            <div>
+              <label htmlFor="observacoes" className="block text-sm font-medium text-gray-700">Recomendações</label>
+              <textarea
+                id="observacoes"
+                name="observacoes"
+                rows={4}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3 border"
+                placeholder="Descreva problemas críticos de segurança ou infraestrutura para justificar a proposta OPEX."
+                value={checklist.observacoes}
+                onChange={handleChange}
+              ></textarea>
+            </div>
           </div>
 
           {mensagem && (

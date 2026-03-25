@@ -1,4 +1,5 @@
 -- =============================================
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- DL SOLUÇÕES CONDOMINIAIS - SCHEMA SUPABASE
 -- Combinação: Jules (base) + Antigravity (expansão)
 -- Data: 2026-03-22
@@ -16,6 +17,7 @@ CREATE TABLE IF NOT EXISTS leads (
     nome_condominio VARCHAR(255),
     telefone VARCHAR(20),
     email VARCHAR(255),
+    email_encaminhamento TEXT,
     tipo_imovel VARCHAR(50),           -- Condomínio, Colégio, Escola, etc.
     num_unidades INT,
     mensagem TEXT,

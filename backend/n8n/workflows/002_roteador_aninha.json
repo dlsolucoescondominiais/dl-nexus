@@ -4,7 +4,8 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "dl-aninha"
+        "path": "dl-aninha",
+        "authentication": "headerAuth"
       },
       "id": "wh-aninha",
       "name": "Entrada Aninha",

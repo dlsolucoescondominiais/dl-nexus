@@ -1,4 +1,5 @@
 -- =============================================
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- DL NEXUS - ESQUEMA DE BANCO DE DADOS (SUPABASE)
 -- Rodar este script no Editor SQL para blindar o sistema
 -- =============================================
@@ -10,6 +11,7 @@ CREATE TABLE IF NOT EXISTS leads (
     nome_condominio TEXT,
     telefone TEXT UNIQUE,
     email TEXT,
+    email_encaminhamento TEXT,
     tipo_imovel TEXT,
     num_unidades INTEGER,
     mensagem TEXT,

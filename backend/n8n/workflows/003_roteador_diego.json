@@ -4,7 +4,8 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "dl-diego"
+        "path": "dl-diego",
+        "authentication": "headerAuth"
       },
       "id": "wh-diego",
       "name": "Entrada Diego",

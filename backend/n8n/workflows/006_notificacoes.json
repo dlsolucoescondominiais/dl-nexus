@@ -4,7 +4,8 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "dl-notificacoes"
+        "path": "dl-notificacoes",
+        "authentication": "headerAuth"
       },
       "id": "wh-notif",
       "name": "Entrada Notificacoes",

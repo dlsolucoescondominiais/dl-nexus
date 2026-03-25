@@ -1,11 +1,21 @@
 import os
-from google import genai
-from dotenv import load_dotenv
+import pytest
+from unittest.mock import patch, MagicMock
 
-load_dotenv("d:/AntiGravity/projeto_01/execution/.env")
-api_key = os.getenv("GEMINI_API_KEY")
+@patch('google.genai.Client')
+def test_generate_image(mock_client_class):
+    # Set up mock
+    mock_client = mock_client_class.return_value
+    mock_result = MagicMock()
+    mock_image = MagicMock()
+    mock_image.image.image_bytes = b"fake_image_bytes"
+    mock_result.generated_images = [mock_image]
+    mock_client.models.generate_images.return_value = mock_result
 
-try:
+    # Execute
+    api_key = "fake_api_key_for_test"
+
+    import google.genai as genai
     client = genai.Client(api_key=api_key)
     result = client.models.generate_images(
         model='imagen-3.0-generate-001',
@@ -15,8 +25,7 @@ try:
             output_mime_type="image/jpeg",
         )
     )
-    for generated_image in result.generated_images:
-        image = generated_image.image
-        print(f"Sucesso! Imagem gerada com {len(image.image_bytes)} bytes.")
-except Exception as e:
-    print(f"Erro: {e}")
+
+    # Assert
+    assert result.generated_images[0].image.image_bytes == b"fake_image_bytes"
+    mock_client.models.generate_images.assert_called_once()

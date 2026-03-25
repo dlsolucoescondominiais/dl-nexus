@@ -32,6 +32,9 @@ Crie um arquivo chamado `.env` na pasta raiz do frontend (`frontend/.env`) conte
 # Nunca coloque a SERVICE_ROLE KEY aqui, apenas a ANON_KEY.
 VITE_SUPABASE_URL=https://nejdtvkpiclagsnfljsz.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJhb... (SUA CHAVE ANONIMA AQUI)
+
+# URL da API do Motor Antigravity (IA / Automação via HostGator)
+VITE_API_BASE_URL=https://api.dlsolucoescondominiais.com.br
 ```
 
 *(Nota: Se usar Next.js, use `NEXT_PUBLIC_` no prefixo)*

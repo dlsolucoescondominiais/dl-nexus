@@ -30,8 +30,8 @@ Crie um arquivo chamado `.env` na pasta raiz do frontend (`frontend/.env`) conte
 ```env
 # URL e Chave Pública do DL Nexus (Supabase)
 # Nunca coloque a SERVICE_ROLE KEY aqui, apenas a ANON_KEY.
-REACT_APP_SUPABASE_URL=https://nejdtvkpiclagsnfljsz.supabase.co
-REACT_APP_SUPABASE_ANON_KEY=eyJhb... (SUA CHAVE ANONIMA AQUI)
+VITE_SUPABASE_URL=https://nejdtvkpiclagsnfljsz.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhb... (SUA CHAVE ANONIMA AQUI)
 ```
 
 *(Nota: Se usar Next.js, use `NEXT_PUBLIC_` no prefixo)*

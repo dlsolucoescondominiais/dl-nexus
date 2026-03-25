@@ -4,11 +4,11 @@
 // All functions return a structured object: { success: boolean, data: any, error: string | null }
 
 // Import Supabase client (assuming it's configured elsewhere)
-import supabaseClient from '../lib/supabaseClient'; // Ajustado para o nome do export default que criamos
+import { supabase } from '../lib/supabaseClient'; // Ajustado para o nome do export default que criamos
 
 export const login = async (email, password) => {
   try {
-    const { data, error } = await supabaseClient.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -23,7 +23,7 @@ export const login = async (email, password) => {
 
 export const register = async (email, password, name) => {
   try {
-    const { data, error } = await supabaseClient.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -41,7 +41,7 @@ export const register = async (email, password, name) => {
 
 export const logout = async () => {
   try {
-    const { error } = await supabaseClient.auth.signOut();
+    const { error } = await supabase.auth.signOut();
     if (error) {
       return { success: false, data: null, error: error.message };
     }
@@ -53,7 +53,7 @@ export const logout = async () => {
 
 export const resetPassword = async (email) => {
   try {
-    const { error } = await supabaseClient.auth.resetPasswordForEmail(email);
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
     if (error) {
       return { success: false, data: null, error: error.message };
     }
@@ -65,7 +65,7 @@ export const resetPassword = async (email) => {
 
 export const updateProfile = async (updates) => {
   try {
-    const { data, error } = await supabaseClient.auth.updateUser({
+    const { data, error } = await supabase.auth.updateUser({
       data: updates, // Update user metadata
     });
     if (error) {
@@ -79,7 +79,7 @@ export const updateProfile = async (updates) => {
 
 export const getCurrentUser = async () => {
   try {
-    const { data: { session }, error } = await supabaseClient.auth.getSession();
+    const { data: { session }, error } = await supabase.auth.getSession();
     if (error || !session) {
       return { success: false, data: null, error: error ? error.message : 'No user is currently authenticated.' };
     }

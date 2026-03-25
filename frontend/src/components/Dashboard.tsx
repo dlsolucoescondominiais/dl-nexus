@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import supabaseClient from '../lib/supabaseClient';
+import { supabase } from '../lib/supabaseClient';
 
 // Tipagem baseada na Tabela de Leads criada no Supabase MIGRATION
 interface Lead {
@@ -29,7 +29,7 @@ export default function Dashboard() {
       .subscribe();
 
     return () => {
-      supabaseClient.removeChannel(subscription);
+      supabase.removeChannel(subscription);
     };
   }, []);
 

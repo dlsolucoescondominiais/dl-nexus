@@ -78,6 +78,9 @@ def extrair_local_com_ia(nome_arquivo):
     except:
         return "VistoriaGeral"
 
+# Cache global de pastas para reduzir chamadas na API do Drive
+_pasta_cache = {}
+
 def analisar_midia_com_visao_computacional(dados_bytes, mime_type="image/jpeg") -> str:
     """
     O Olho do Arquiteto: Inspeciona a imagem/video em memória RAM e categoriza.
@@ -114,15 +117,23 @@ Caso a mídia não carregue ou o arquivo não seja compatível, retorne ERRO_LEI
         return "ERRO_LEITURA"
 
 def obter_ou_criar_pasta(service_drive, nome_pasta, parent_id):
-    """Cria ou recupera gaveta no Drive."""
+    """Cria ou recupera gaveta no Drive (com cache em memoria)."""
+    cache_key = (parent_id, nome_pasta)
+    if cache_key in _pasta_cache:
+        return _pasta_cache[cache_key]
+
     query = f"name='{nome_pasta}' and mimeType='application/vnd.google-apps.folder' and '{parent_id}' in parents and trashed=false"
     resultados = service_drive.files().list(q=query, fields="files(id, name)").execute().get('files', [])
     if resultados:
-        return resultados[0]['id']
+        folder_id = resultados[0]['id']
+        _pasta_cache[cache_key] = folder_id
+        return folder_id
     else:
         metadata = {'name': nome_pasta, 'mimeType': 'application/vnd.google-apps.folder', 'parents': [parent_id]}
         pasta = service_drive.files().create(body=metadata, fields='id').execute()
-        return pasta.get('id')
+        folder_id = pasta.get('id')
+        _pasta_cache[cache_key] = folder_id
+        return folder_id
 
 def obter_ou_criar_album_fotos(service_fotos, titulo_album):
     """Cria ou recupera Álbum Corporativo no Google Fotos."""

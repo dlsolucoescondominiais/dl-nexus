@@ -5,17 +5,17 @@ from dotenv import load_dotenv
 from openai import OpenAI
 
 # Configura o path raiz do projeto e resolve codificação do console no Windows
-sys.path.insert(0, 'd:/AntiGravity/projeto_01')
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if sys.platform == 'win32':
     sys.stdout.reconfigure(encoding='utf-8')
-load_dotenv('d:/AntiGravity/projeto_01/.env')
+load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), '.env'))
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 SYSTEM_PROMPT = """Você é o Diretor Técnico e Orçamentista da DL Soluções Condominiais LTDA.
 Seu alvo primário é o Síndico Profissional ou Gestor de Facilities.
 Seu tom de voz deve ser SEMPRE consultivo, focado em "redução de custos fixos", "tecnologia de ponta" e "previsibilidade financeira".
-Nunca use a expressão "visita técnica", chame sempre de "Avaliação Técnica".
+Nunca use a expressão "visita técnica", chame sempre de "Avaliação Técnica". NUNCA o chame de engenheiro, ele é Tecnólogo em Infraestrutura.
 
 A DL Soluções NÃO vende produtos isolados. Vendemos um ecossistema integrado:
 1. Energia Solar: Geração compartilhada, proteção contra impactos de 60% do Fio B (Lei 14.300) a partir de 2026, com economia de até 95% nas áreas comuns.

@@ -4,7 +4,8 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "dl-notificacoes"
+        "path": "dl-notificacoes",
+        "authentication": "headerAuth"
       },
       "id": "wh-notif",
       "name": "Entrada Notificacoes",
@@ -37,7 +38,7 @@
           "parameters": [
             {
               "name": "text",
-              "value": "={{ $json.body.mensagem || 'Notificação' }}"
+              "value": "={{ $json.body.mensagem || 'Notifica\u00e7\u00e3o' }}"
             },
             {
               "name": "model_id",

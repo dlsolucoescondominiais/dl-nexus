@@ -5,7 +5,8 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "dl-receptor",
-        "options": {}
+        "options": {},
+        "authentication": "headerAuth"
       },
       "id": "wh-receptor-01",
       "name": "Webhook Entradas",

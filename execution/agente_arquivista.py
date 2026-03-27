@@ -55,13 +55,20 @@ def classificar_arquivo_com_ia(nome_arquivo, tipo_arquivo):
     )
     return response.choices[0].message.content.strip()
 
+# Cache em memória para evitar N+1 queries na API do Google Drive
+_folder_cache = {}
+
 def obter_ou_criar_pasta(service, nome_pasta):
     """A Mão do Agente: Cria a gaveta caso ela ainda não exista."""
+    if nome_pasta in _folder_cache:
+        return _folder_cache[nome_pasta]
+
     query = f"name='{nome_pasta}' and mimeType='application/vnd.google-apps.folder' and '{ARCHIVE_FOLDER_ID}' in parents and trashed=false"
     resultados = service.files().list(q=query, fields="files(id, name)").execute().get('files', [])
     
     if resultados:
-        return resultados[0]['id']
+        _folder_cache[nome_pasta] = resultados[0]['id']
+        return _folder_cache[nome_pasta]
     else:
         # Cria a pasta nova dentro do Gabinete
         metadata = {
@@ -71,7 +78,8 @@ def obter_ou_criar_pasta(service, nome_pasta):
         }
         pasta = service.files().create(body=metadata, fields='id').execute()
         print(f"📂 Nova Gaveta Criada automaticamente: {nome_pasta}")
-        return pasta.get('id')
+        _folder_cache[nome_pasta] = pasta.get('id')
+        return _folder_cache[nome_pasta]
 
 def rodar_triagem_corporativa():
     if not INBOX_FOLDER_ID or not ARCHIVE_FOLDER_ID:

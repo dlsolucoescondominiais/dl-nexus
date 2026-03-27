@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'rea
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import Checklist from './components/Checklist';
+import LeadDetails from './components/LeadDetails';
 
 function ChecklistWrapper() {
   const { leadId } = useParams();
@@ -16,7 +17,10 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         {/* Painel do Tecnólogo/Admin */}
-        <Route path="/dashboard-tecnico" element={<Dashboard />} />
+                <Route path="/dashboard-tecnico" element={<Dashboard />} />
+
+        {/* Raio-X B2B do Sindico */}
+        <Route path="/lead/:id" element={<LeadDetails />} />
 
         {/* Portal do Síndico (Placeholder para V2) */}
         <Route path="/portal-sindico" element={

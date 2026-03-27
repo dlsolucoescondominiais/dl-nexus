@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 
 interface Lead {
@@ -14,6 +15,7 @@ interface Lead {
 export default function Dashboard() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   const [kpis, setKpis] = useState({ novos: 0, avaliacoes_concluidas: 0, propostas_ativas: 0 });
 
   useEffect(() => {
@@ -108,7 +110,7 @@ export default function Dashboard() {
         </div>
         <ul className="divide-y divide-gray-200 overflow-y-auto max-h-96">
           {leads.map((lead) => (
-            <li key={lead.id} className="px-4 py-4 sm:px-6 hover:bg-gray-50 cursor-pointer">
+            <li key={lead.id} className="px-4 py-4 sm:px-6 hover:bg-gray-50 cursor-pointer" onClick={() => navigate(`/lead/${lead.id}`)}>
               <div className="flex items-center justify-between">
                 <p className="text-sm font-medium text-blue-600 truncate">{lead.nome || 'Nome não informado'}</p>
                 <div className="ml-2 flex-shrink-0 flex">

@@ -1,65 +1,41 @@
 import re
-from enum import Enum
-from typing import Dict, List, Optional
-from datetime import datetime
 import json
+import os
+import logging
+from enum import Enum
+from typing import Dict, List, Optional, Any
+from datetime import datetime
+from google import genai
+from google.genai import types
+
+logger = logging.getLogger(__name__)
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_MODEL = "gemini-2.5-flash"
 
 class TipoServico(Enum):
     """Tipos de serviço baseados no portfólio DL Soluções"""
-    ELETRICO = "ELETRICO"  # DL Volt™, DL Praxis Elétrica™, DL Energia™
-    SOLAR = "SOLAR"  # DL EcoVolt Solar™
-    SEGURANCA = "SEGURANCA"  # DL Guardião™, DL Observer™, DL Gatekeeper™
-    INCENDIO = "INCENDIO"  # DL Alerta™
-    MOBILIDADE = "MOBILIDADE"  # DL VoltCharge™
-    AUTOMACAO = "AUTOMACAO"  # DL Commander™, DL Fortress™
-    CONSULTORIA = "CONSULTORIA"  # DL Praxis™, DL Sustentia™
+    ELETRICA = "eletrica"
+    SOLAR = "solar"
+    SEGURANCA = "seguranca"
+    INCENDIO = "incendio"
+    MOBILIDADE = "mobilidade"
+    AUTOMACAO = "automacao"
+    CONSULTORIA = "consultoria"
 
 class Porte(Enum):
     """Porte do condomínio baseado no número de unidades"""
-    PEQUENO = "PEQUENO"  # Até 30 unidades
-    MEDIO = "MEDIO"  # 31 a 100 unidades
-    GRANDE = "GRANDE"  # 101 a 300 unidades
-    COMPLEXO = "COMPLEXO"  # 301+ unidades
+    PEQUENO = "PEQUENO"
+    MEDIO = "MEDIO"
+    GRANDE = "GRANDE"
+    COMPLEXO = "COMPLEXO"
 
 class AninhaAgent:
     """
-    Agente ANINHA: Triagem Inteligente de Leads (Híbrida: Regras + Contexto)
+    Agente ANINHA: Triagem Inteligente de Leads (Versão 2.0 - IA + Regras Híbridas)
     """
     
     def __init__(self):
-        self.palavras_chave_servicos = {
-            TipoServico.ELETRICO: [
-                r"\belétrico\b", r"\beletricidade\b", r"\bpainel\b", r"\bdisjuntor\b", r"\bfiação\b",
-                r"\breforma elétrica\b", r"\binstalação elétrica\b", r"\bpc de luz\b",
-                r"\bdl volt\b", r"\bpraxis elétrica\b", r"\bdl energia\b"
-            ],
-            TipoServico.SOLAR: [
-                r"\bsolar\b", r"\benergia solar\b", r"\bfotovoltaico\b", r"\bpainel solar\b",
-                r"\bbateria\b", r"\bhíbrido\b", r"\becovolt\b", r"\busina solar\b"
-            ],
-            TipoServico.SEGURANCA: [
-                r"\bcâmera\b", r"\bcftv\b", r"\bsegurança\b", r"\bvigilância\b", r"\bportão\b",
-                r"\bacesso\b", r"\bgatekeeper\b", r"\bguardião\b", r"\bobserver\b", r"\bcerca\b",
-                r"\bcontrole de acesso\b", r"\bchave virtual\b"
-            ],
-            TipoServico.INCENDIO: [
-                r"\bincêndio\b", r"\bdetector\b", r"\bfumaça\b", r"\balarme\b", r"\bsinalização\b",
-                r"\bemergência\b", r"\balerta\b", r"\bprevenção incêndio\b"
-            ],
-            TipoServico.MOBILIDADE: [
-                r"\bcarregador\b", r"\bcve\b", r"\bveículo elétrico\b", r"\bwallbox\b",
-                r"\bvoltcharge\b", r"\bev charger\b", r"\bcarro elétrico\b"
-            ],
-            TipoServico.AUTOMACAO: [
-                r"\bautomação\b", r"\bcomando\b", r"\btelemetria\b", r"\bsmart building\b",
-                r"\bcommander\b", r"\bfortress\b", r"\bportaria digital\b"
-            ],
-            TipoServico.CONSULTORIA: [
-                r"\bconsultoria\b", r"\bauditoria\b", r"\bsustentabilidade\b", r"\besg\b",
-                r"\bpraxis\b", r"\bsustentia\b", r"\beficiência energética\b"
-            ]
-        }
-        
         self.palavras_chave_bloqueio_b2b = [
             r"\bcasa\b", r"\bresidência\b", r"\bapartamento\b", r"\bmeu apartamento\b",
             r"\bminha casa\b", r"\bresidencial\b", r"\buso pessoal\b", r"\bparticular\b"
@@ -69,6 +45,12 @@ class AninhaAgent:
             r"\bbomba\b", r"\bhidrante\b", r"\bsprinkler\b", r"\bprumada\b", r"\bhidráulica\b",
             r"\bencanamento\b", r"\bmanutenção mecânica\b", r"\breparos gerais\b", r"\bcanaleta de plástico\b"
         ]
+
+        if GEMINI_API_KEY:
+            self.gemini_client = genai.Client(api_key=GEMINI_API_KEY)
+        else:
+            self.gemini_client = None
+            logger.warning("GEMINI_API_KEY não configurada. A triagem IA vai falhar.")
     
     def match_keywords(self, text: str, patterns: List[str]) -> bool:
         for p in patterns:
@@ -81,8 +63,7 @@ class AninhaAgent:
         msg_lower = mensagem.lower()
         tipo_lower = (tipo_imovel or "").lower()
         
-        # Exceção de regra rígida: Permite residencial SE for instalação de carregador veicular
-        is_mobilidade = self.match_keywords(msg_lower, self.palavras_chave_servicos[TipoServico.MOBILIDADE])
+        is_mobilidade = "carregador" in msg_lower or "veículo elétrico" in msg_lower or "cve" in msg_lower
         
         has_block = self.match_keywords(msg_lower, self.palavras_chave_bloqueio_b2b) or \
                     self.match_keywords(tipo_lower, self.palavras_chave_bloqueio_b2b)
@@ -104,22 +85,59 @@ class AninhaAgent:
         if self.match_keywords(msg_lower, self.palavras_chave_bloqueio_escopo):
             return False, "Fora de escopo: Foco exclusivo em elétrica e automação dry (sem hidráulica direta)."
         
-        for tipo, palavras in self.palavras_chave_servicos.items():
-            if self.match_keywords(msg_lower, palavras):
-                return True, "Escopo validado"
+        return True, "Escopo inicial aceito."
+
+    def classificar_ia(self, mensagem: str) -> Dict[str, Any]:
+        """ Classifica usando Gemini com Structured JSON Output """
+
+        if not self.gemini_client:
+            # Fallback seguro para não estourar se faltar API key (ex: testes)
+            return {
+                "urgencia": "media",
+                "categoria_servico": "eletrica"
+            }
+
+        system_prompt = """Você é a Aninha, agente de IA de triagem da DL Soluções Condominiais.
+Sua tarefa é analisar a mensagem do síndico e OBRIGATORIAMENTE devolver um JSON rigoroso com duas chaves:
+1. "urgencia": Deve ser UM DOS SEGUINTES valores: "baixa", "media", "alta", "critica".
+   (Ex: quadro desarmado/fogo/choque = critica; orçamento solar = media; reforma de PC = alta).
+2. "categoria_servico": Deve ser UM DOS SEGUINTES valores: "eletrica", "solar", "incendio", "seguranca", "mobilidade", "automacao".
+
+NÃO retorne formatação markdown, retorne APENAS o JSON.
+"""
+
+        try:
+            response = self.gemini_client.models.generate_content(
+                model=GEMINI_MODEL,
+                contents=f"{system_prompt}\n\nMensagem do Síndico: '{mensagem}'",
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    temperature=0.1
+                )
+            )
+            # Como usamos response_mime_type, o texto será um JSON string.
+            resultado_json = json.loads(response.text)
+
+            # Validação defensiva do payload gerado pela IA
+            urgencia = resultado_json.get("urgencia", "media")
+            if urgencia not in ["baixa", "media", "alta", "critica"]:
+                urgencia = "media"
                 
-        return False, "Serviço não identificado no portfólio DL Soluções."
-    
-    def classificar_servico(self, mensagem: str) -> Optional[TipoServico]:
-        """ Classifica com base no maior número de matches de regex """
-        scores = {tipo: 0 for tipo in TipoServico}
-        for tipo_servico, palavras in self.palavras_chave_servicos.items():
-            for regex in palavras:
-                if re.search(regex, mensagem, re.IGNORECASE):
-                    scores[tipo_servico] += 1
-                    
-        best_match = max(scores, key=scores.get)
-        return best_match if scores[best_match] > 0 else None
+            categoria = resultado_json.get("categoria_servico", "eletrica")
+            if categoria not in ["eletrica", "solar", "incendio", "seguranca", "mobilidade", "automacao"]:
+                categoria = "eletrica"
+
+            return {
+                "urgencia": urgencia,
+                "categoria_servico": categoria
+            }
+        except Exception as e:
+            logger.error(f"Erro na IA Gemini Aninha: {e}")
+            # Fallback seguro
+            return {
+                "urgencia": "media",
+                "categoria_servico": "eletrica"
+            }
     
     def calcular_porte(self, num_unidades: Optional[int]) -> Porte:
         if not num_unidades: return Porte.PEQUENO
@@ -128,20 +146,22 @@ class AninhaAgent:
         if num_unidades <= 300: return Porte.GRANDE
         return Porte.COMPLEXO
     
-    def calcular_valor_mensal(self, porte: Porte, tipo_servico: TipoServico) -> float:
+    def calcular_valor_mensal(self, porte: Porte, categoria: str) -> float:
         valores_base = { Porte.PEQUENO: 400.0, Porte.MEDIO: 600.0, Porte.GRANDE: 1000.0, Porte.COMPLEXO: 1500.0 }
         multiplicadores = {
-            TipoServico.ELETRICO: 1.0, TipoServico.SOLAR: 1.5, TipoServico.SEGURANCA: 1.3,
-            TipoServico.INCENDIO: 1.1, TipoServico.MOBILIDADE: 1.2, TipoServico.AUTOMACAO: 1.2,
-            TipoServico.CONSULTORIA: 0.8
+            "eletrica": 1.0, "solar": 1.5, "seguranca": 1.3,
+            "incendio": 1.1, "mobilidade": 1.2, "automacao": 1.2,
+            "consultoria": 0.8
         }
-        return valores_base.get(porte, 400.0) * multiplicadores.get(tipo_servico, 1.0)
+        return valores_base.get(porte, 400.0) * multiplicadores.get(categoria, 1.0)
     
-    def definir_sla(self, tipo_servico: TipoServico, prioridade_texto: str) -> str:
-        """ Regra rígida de SLAs de Atendimento DL """
-        if "alta" in prioridade_texto.lower() or tipo_servico in [TipoServico.INCENDIO]:
+    def definir_sla(self, urgencia: str) -> str:
+        """ Nova regra dinâmica de SLAs baseada na Urgência Versão 2.0 """
+        if urgencia == "critica":
+            return "SLA 4 horas"
+        elif urgencia == "alta":
             return "SLA 8 horas"
-        elif tipo_servico in [TipoServico.ELETRICO, TipoServico.SEGURANCA]:
+        elif urgencia == "media":
             return "SLA 24 horas"
         return "SLA 48 horas"
     
@@ -153,27 +173,34 @@ class AninhaAgent:
             "timestamp": datetime.now().isoformat()
         }
         
-        if not self.validar_b2b(lead_data.get("mensagem_original", ""), lead_data.get("tipo_imovel")):
+        mensagem = lead_data.get("mensagem_original", "")
+
+        if not self.validar_b2b(mensagem, lead_data.get("tipo_imovel")):
             resultado["motivo"] = "Lead residencial. Foco exclusivo em Condomínios e B2B Escolar."
             return resultado
         
-        escopo_ok, escopo_motivo = self.validar_escopo(lead_data.get("mensagem_original", ""))
+        escopo_ok, escopo_motivo = self.validar_escopo(mensagem)
         if not escopo_ok:
             resultado["motivo"] = escopo_motivo
             return resultado
         
-        tipo_servico = self.classificar_servico(lead_data.get("mensagem_original", ""))
+        # Etapa IA: Classificação Inteligente v2.0
+        classificacao = self.classificar_ia(mensagem)
+        urgencia = classificacao["urgencia"]
+        categoria_servico = classificacao["categoria_servico"]
+
         porte = self.calcular_porte(lead_data.get("num_unidades"))
-        valor_mensal = self.calcular_valor_mensal(porte, tipo_servico) if tipo_servico else 0
-        sla = self.definir_sla(tipo_servico or TipoServico.ELETRICO, lead_data.get("prioridade", ""))
+        valor_mensal = self.calcular_valor_mensal(porte, categoria_servico)
+        sla = self.definir_sla(urgencia)
         
         resultado.update({
             "status": "triado",
-            "tipo_servico": tipo_servico.value if tipo_servico else "NÃO_IDENTIFICADO",
+            "categoria_servico": categoria_servico,
+            "urgencia": urgencia,
             "porte": porte.value,
             "valor_mensal_estimado": valor_mensal,
             "sla_estimado": sla,
-            "proxima_acao_obrigatoria": "Agendar Avaliação Técnica", # Nunca 'Visita Técnica'
+            "proxima_acao_obrigatoria": "Agendar Avaliação Técnica", # Diretriz: Nunca 'Visita Técnica'
             "nome_condominio": lead_data.get("nome_condominio"),
             "telefone": lead_data.get("telefone"),
             "email": lead_data.get("email"),

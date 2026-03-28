@@ -18,6 +18,9 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 INBOX_FOLDER_ID = os.getenv("INBOX_FOLDER_ID") 
 ARCHIVE_FOLDER_ID = os.getenv("ARCHIVE_FOLDER_ID")
 
+# Cache em memória para evitar requisições redundantes à API do Google Drive
+_CACHE_PASTAS = {}
+
 def autenticar_drive():
     """Valida o crachá do Agente para mexer nos ficheiros."""
     creds = None
@@ -57,11 +60,18 @@ def classificar_arquivo_com_ia(nome_arquivo, tipo_arquivo):
 
 def obter_ou_criar_pasta(service, nome_pasta):
     """A Mão do Agente: Cria a gaveta caso ela ainda não exista."""
+    # ⚡ Bolt: Check in-memory cache first to avoid redundant API calls
+    cache_key = f"{nome_pasta}_{ARCHIVE_FOLDER_ID}"
+    if cache_key in _CACHE_PASTAS:
+        return _CACHE_PASTAS[cache_key]
+
     query = f"name='{nome_pasta}' and mimeType='application/vnd.google-apps.folder' and '{ARCHIVE_FOLDER_ID}' in parents and trashed=false"
     resultados = service.files().list(q=query, fields="files(id, name)").execute().get('files', [])
     
     if resultados:
-        return resultados[0]['id']
+        pasta_id = resultados[0]['id']
+        _CACHE_PASTAS[cache_key] = pasta_id
+        return pasta_id
     else:
         # Cria a pasta nova dentro do Gabinete
         metadata = {
@@ -71,7 +81,9 @@ def obter_ou_criar_pasta(service, nome_pasta):
         }
         pasta = service.files().create(body=metadata, fields='id').execute()
         print(f"📂 Nova Gaveta Criada automaticamente: {nome_pasta}")
-        return pasta.get('id')
+        pasta_id = pasta.get('id')
+        _CACHE_PASTAS[cache_key] = pasta_id
+        return pasta_id
 
 def rodar_triagem_corporativa():
     if not INBOX_FOLDER_ID or not ARCHIVE_FOLDER_ID:

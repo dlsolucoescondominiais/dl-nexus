@@ -28,6 +28,9 @@ ARCHIVE_FOLDER_ID = os.getenv("ARCHIVE_FOLDER_ID")
 # Configura o Cérebro do Gemini (Novo SDK Oficial)
 gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 
+# Cache em memória para evitar requisições redundantes à API do Google Drive
+_CACHE_PASTAS = {}
+
 # =====================================================================
 # 2. SISTEMA DE AUTENTICAÇÃO BLINDADO
 # =====================================================================
@@ -115,14 +118,23 @@ Caso a mídia não carregue ou o arquivo não seja compatível, retorne ERRO_LEI
 
 def obter_ou_criar_pasta(service_drive, nome_pasta, parent_id):
     """Cria ou recupera gaveta no Drive."""
+    # ⚡ Bolt: Check in-memory cache first to avoid redundant API calls
+    cache_key = f"{nome_pasta}_{parent_id}"
+    if cache_key in _CACHE_PASTAS:
+        return _CACHE_PASTAS[cache_key]
+
     query = f"name='{nome_pasta}' and mimeType='application/vnd.google-apps.folder' and '{parent_id}' in parents and trashed=false"
     resultados = service_drive.files().list(q=query, fields="files(id, name)").execute().get('files', [])
     if resultados:
-        return resultados[0]['id']
+        pasta_id = resultados[0]['id']
+        _CACHE_PASTAS[cache_key] = pasta_id
+        return pasta_id
     else:
         metadata = {'name': nome_pasta, 'mimeType': 'application/vnd.google-apps.folder', 'parents': [parent_id]}
         pasta = service_drive.files().create(body=metadata, fields='id').execute()
-        return pasta.get('id')
+        pasta_id = pasta.get('id')
+        _CACHE_PASTAS[cache_key] = pasta_id
+        return pasta_id
 
 def obter_ou_criar_album_fotos(service_fotos, titulo_album):
     """Cria ou recupera Álbum Corporativo no Google Fotos."""

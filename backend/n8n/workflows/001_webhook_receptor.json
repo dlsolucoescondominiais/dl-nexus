@@ -5,12 +5,29 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "dl-receptor",
-        "options": {},
-        "authentication": "headerAuth"
+        "authentication": "headerAuth",
+        "options": {}
       },
-      "id": "wh-receptor-01",
-      "name": "Webhook Entradas",
+      "id": "webhook-entrada-whatsapp",
+      "name": "Meta API (WhatsApp)",
       "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.entry[0].changes[0].value.messages[0].text.body }}",
+        "options": {
+          "systemMessage": "Você é o Agente de Triagem da DL Soluções Condominiais. Classifique a mensagem do usuário em UMA das 3 categorias estritas: 'Urgencia_Tecnica' (problemas em painéis elétricos, bombas, curto-circuito, CFTV inoperante), 'Comercial_Orcamento' (pedidos de preço, cotações de energia solar, propostas), ou 'Duvida_Geral'. Retorne APENAS a string da categoria."
+        }
+      },
+      "id": "chain-gemini-triagem",
+      "name": "Triagem de Intenção",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1,
       "position": [
         250,
@@ -19,47 +36,320 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-aninha",
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
+        "model": "models/gemini-2.5-flash"
+      },
+      "id": "llm-gemini-triagem",
+      "name": "Google Gemini",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        250,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.text }}",
+        "rules": {
+          "rules": [
             {
-              "name": "mensagem_original",
-              "value": "={{ $json.body.message.content || $json.body.mensagem }}"
+              "value2": "Urgencia_Tecnica",
+              "output": 0
             },
             {
-              "name": "telefone",
-              "value": "={{ $json.body.sender.phone || $json.body.telefone }}"
+              "value2": "Comercial_Orcamento",
+              "output": 1
+            }
+          ]
+        },
+        "fallbackOutput": 2
+      },
+      "id": "switch-roteamento",
+      "name": "Switch Roteador",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Meta API (WhatsApp)').item.json.body.entry[0].changes[0].value.messages[0].text.body }}",
+        "options": {
+          "systemMessage": "Você é o Diretor Técnico de Infraestrutura da DL Soluções Condominiais. Analise o problema técnico relatado pelo condomínio e forneça uma resposta analítica, pedindo calma e afirmando que uma 'Avaliação Técnica' será agendada. Nunca diga 'visita técnica'."
+        }
+      },
+      "id": "chain-claude-urgencia",
+      "name": "Resposta Técnica",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1,
+      "position": [
+        800,
+        100
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": "claude-3-5-sonnet-20240620"
+      },
+      "id": "llm-claude-urgencia",
+      "name": "Anthropic Claude",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1,
+      "position": [
+        800,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Meta API (WhatsApp)').item.json.body.entry[0].changes[0].value.messages[0].text.body }}",
+        "options": {
+          "systemMessage": "Você é o Executivo B2B da DL Soluções Condominiais. O cliente quer um orçamento. Seja persuasivo e foque em nosso ecossistema OPEX de economia e segurança a longo prazo. Convide para uma Avaliação Técnica."
+        }
+      },
+      "id": "chain-gpt4-comercial",
+      "name": "Resposta Comercial",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1,
+      "position": [
+        800,
+        500
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o"
+      },
+      "id": "llm-gpt4-comercial",
+      "name": "OpenAI GPT-4o",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        800,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Meta API (WhatsApp)').item.json.body.entry[0].changes[0].value.messages[0].text.body }}",
+        "options": {
+          "systemMessage": "Você é a Assistente Aninha da DL Soluções. Responda educadamente a dúvida do condomínio e direcione para um consultor."
+        }
+      },
+      "id": "chain-gemini-geral",
+      "name": "Resposta Geral / Fallback",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "model": "models/gemini-2.5-flash"
+      },
+      "id": "llm-gemini-geral",
+      "name": "Google Gemini Fallback",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list"
+        },
+        "table": {
+          "__rl": true,
+          "value": "mensagens_whatsapp",
+          "mode": "list"
+        },
+        "columns": "telefone,mensagem,direcao,criado_em",
+        "dataMode": "define",
+        "values": {
+          "values": [
+            {
+              "column": "telefone",
+              "value": "={{ $('Meta API (WhatsApp)').item.json.body.entry[0].changes[0].value.messages[0].from }}"
             },
             {
-              "name": "nome_contato",
-              "value": "={{ $json.body.sender.name || $json.body.nome }}"
+              "column": "mensagem",
+              "value": "={{ $json.text }}"
             },
             {
-              "name": "origem",
-              "value": "={{ $json.body.source || 'indeterminado' }}"
+              "column": "direcao",
+              "value": "saida"
+            },
+            {
+              "column": "criado_em",
+              "value": "={{ new Date().toISOString() }}"
             }
           ]
         }
       },
-      "id": "call-aninha-01",
-      "name": "Enviar para ANINHA (002)",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.1,
+      "id": "supabase-insert-msg",
+      "name": "Gravar Resposta Supabase (Dashboard)",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
       "position": [
-        500,
+        1400,
         300
       ]
     }
   ],
   "connections": {
-    "Webhook Entradas": {
+    "Meta API (WhatsApp)": {
       "main": [
         [
           {
-            "node": "Enviar para ANINHA (002)",
+            "node": "Triagem de Intenção",
             "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Triagem de Intenção": {
+      "main": [
+        [
+          {
+            "node": "Switch Roteador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Triagem de Intenção",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Roteador": {
+      "main": [
+        [
+          {
+            "node": "Resposta Técnica",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Resposta Comercial",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Resposta Geral / Fallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resposta Técnica": {
+      "main": [
+        [
+          {
+            "node": "Gravar Resposta Supabase (Dashboard)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ],
+      "error": [
+        [
+          {
+            "node": "Resposta Geral / Fallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Claude": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Resposta Técnica",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resposta Comercial": {
+      "main": [
+        [
+          {
+            "node": "Gravar Resposta Supabase (Dashboard)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ],
+      "error": [
+        [
+          {
+            "node": "Resposta Geral / Fallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI GPT-4o": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Resposta Comercial",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resposta Geral / Fallback": {
+      "main": [
+        [
+          {
+            "node": "Gravar Resposta Supabase (Dashboard)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Fallback": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Resposta Geral / Fallback",
+            "type": "ai_languageModel",
             "index": 0
           }
         ]

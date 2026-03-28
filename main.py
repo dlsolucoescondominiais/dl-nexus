@@ -2,6 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from antigravity.routes.aninha import router as aninha_router
+from antigravity.routes.propostas import router as propostas_router
 
 app = FastAPI(
     title="DL Nexus API",
@@ -20,13 +21,14 @@ app.add_middleware(
 
 # Registrando as rotas criadas pelo Antigravity
 app.include_router(aninha_router)
+app.include_router(propostas_router)
 
 @app.get("/")
 def read_root():
     return {
         "status": "online",
         "system": "DL Nexus - Antigravity Engine",
-        "modules_active": ["Aninha Especialista DL"]
+        "modules_active": ["Aninha Especialista DL", "Jules Auditor de Qualidade"]
     }
 
 if __name__ == "__main__":

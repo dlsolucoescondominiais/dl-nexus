@@ -4,24 +4,32 @@ import { supabase } from '../lib/supabaseClient';
 
 interface Lead {
   id: string;
-  condominio_id: string | null;
   nome: string;
   telefone: string;
-  origem: string;
-  status: string;
-  criado_em: string;
+  empresa_condominio: string;
+  tipo_cliente: string;
+  servico_desejado: string;
+  pipeline_stage: string;
+  score_comercial: number;
+  ultima_interacao: string;
 }
 
 export default function Dashboard() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
+  const [kpis, setKpis] = useState({
+    total_leads: 0,
+    em_negociacao: 0,
+    fechado_ganho: 0,
+    contratos_ativos: 0
+  });
+
   const navigate = useNavigate();
-  const [kpis, setKpis] = useState({ novos: 0, avaliacoes_concluidas: 0, propostas_ativas: 0 });
 
   useEffect(() => {
     fetchDashboardData();
 
-    // Subscribing ao Supabase Realtime para não precisar de F5 quando n8n injeta dados
+    // Subscribing ao Supabase Realtime V6
     const subscription = supabase
       .channel('public:leads')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, payload => {
@@ -37,109 +45,117 @@ export default function Dashboard() {
   const fetchDashboardData = async () => {
     setLoading(true);
 
-    // 1. Fetch Leads V3
+    // 1. Fetch Leads V6 (Enterprise)
     const { data: leadsData, error: leadsError } = await supabase
       .from('leads')
-      .select('id, condominio_id, nome, telefone, origem, status, criado_em')
-      .order('criado_em', { ascending: false });
-
-    // 2. Fetch Avaliações Técnicas (Contagem)
-    const { count: avaliacoesCount, error: avaliacoesError } = await supabase
-      .from('avaliacoes_tecnicas')
-      .select('*', { count: 'exact', head: true });
-
-    // 3. Fetch Propostas (Contagem Ativas)
-    const { count: propostasCount, error: propostasError } = await supabase
-      .from('propostas')
-      .select('*', { count: 'exact', head: true })
-      .neq('status', 'rejeitada'); // V3 status_proposta
+      .select('id, nome, telefone, empresa_condominio, tipo_cliente, servico_desejado, pipeline_stage, score_comercial, ultima_interacao')
+      .order('ultima_interacao', { ascending: false });
 
     if (leadsError) console.error('Erro ao buscar leads:', leadsError);
 
     setLeads(leadsData || []);
 
-    const novos = leadsData?.filter(l => l.status === 'novo').length || 0;
+    // Calcula KPIs do Funil
+    const total = leadsData?.length || 0;
+    const negociando = leadsData?.filter(l => l.pipeline_stage === 'negociacao').length || 0;
+    const ganhos = leadsData?.filter(l => l.pipeline_stage === 'fechado_ganho').length || 0;
+    const recorrentes = leadsData?.filter(l => l.pipeline_stage === 'contrato_recorrente').length || 0;
 
     setKpis({
-      novos,
-      avaliacoes_concluidas: avaliacoesCount || 0,
-      propostas_ativas: propostasCount || 0
+      total_leads: total,
+      em_negociacao: negociando,
+      fechado_ganho: ganhos,
+      contratos_ativos: recorrentes
     });
 
     setLoading(false);
   };
 
   if (loading && leads.length === 0) {
-    return <div className="p-8 text-center">Carregando Cérebro DL Nexus...</div>;
+    return <div className="p-8 text-center text-slate-500">Inicializando DL Commander...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-slate-50 p-8">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Dashboard Tático B2B</h1>
-        <p className="text-gray-500">Gestão Automática de Leads e Automação OPEX</p>
+        <h1 className="text-3xl font-bold text-slate-900 tracking-tight">DL Commander (Visão Executiva)</h1>
+        <p className="text-slate-500 mt-1">Pipeline B2B, Conversão e Gestão OPEX (Zonas Sul, Norte, Oeste, Sudoeste)</p>
       </header>
 
       {/* KPIs da Operação (Pipeline de Vendas) */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 lg:grid-cols-3 mb-8">
-        <div className="bg-white overflow-hidden shadow rounded-lg border-l-4 border-blue-500">
-          <div className="px-4 py-5 sm:p-6">
-            <dt className="text-sm font-medium text-gray-500 truncate">Novos Leads (IA Triando)</dt>
-            <dd className="mt-1 text-3xl font-semibold text-gray-900">{kpis.novos}</dd>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        <div className="bg-white overflow-hidden shadow-sm rounded-xl border border-slate-200">
+          <div className="px-5 py-5">
+            <dt className="text-sm font-medium text-slate-500 truncate">Total no Funil</dt>
+            <dd className="mt-1 text-3xl font-semibold text-slate-900">{kpis.total_leads}</dd>
           </div>
         </div>
-        <div className="bg-white overflow-hidden shadow rounded-lg border-l-4 border-yellow-500">
-          <div className="px-4 py-5 sm:p-6">
-            <dt className="text-sm font-medium text-gray-500 truncate">Avaliações Técnicas Realizadas</dt>
-            <dd className="mt-1 text-3xl font-semibold text-gray-900">{kpis.avaliacoes_concluidas}</dd>
+        <div className="bg-white overflow-hidden shadow-sm rounded-xl border border-slate-200">
+          <div className="px-5 py-5">
+            <dt className="text-sm font-medium text-slate-500 truncate">Em Negociação</dt>
+            <dd className="mt-1 text-3xl font-semibold text-yellow-600">{kpis.em_negociacao}</dd>
           </div>
         </div>
-        <div className="bg-white overflow-hidden shadow rounded-lg border-l-4 border-green-500">
-          <div className="px-4 py-5 sm:p-6">
-            <dt className="text-sm font-medium text-gray-500 truncate">Propostas OPEX (Ativas)</dt>
-            <dd className="mt-1 text-3xl font-semibold text-gray-900">{kpis.propostas_ativas}</dd>
+        <div className="bg-white overflow-hidden shadow-sm rounded-xl border border-slate-200">
+          <div className="px-5 py-5">
+            <dt className="text-sm font-medium text-slate-500 truncate">Fechado (Ganho)</dt>
+            <dd className="mt-1 text-3xl font-semibold text-green-600">{kpis.fechado_ganho}</dd>
+          </div>
+        </div>
+        <div className="bg-white overflow-hidden shadow-sm rounded-xl border border-slate-200 bg-slate-800">
+          <div className="px-5 py-5">
+            <dt className="text-sm font-medium text-slate-300 truncate">Contratos OPEX (Recorrente)</dt>
+            <dd className="mt-1 text-3xl font-semibold text-white">{kpis.contratos_ativos}</dd>
           </div>
         </div>
       </div>
 
-      {/* Tabela de Leads Real-Time */}
-      <div className="bg-white shadow rounded-lg">
-        <div className="px-4 py-5 border-b border-gray-200 sm:px-6 flex justify-between">
-          <h3 className="text-lg leading-6 font-medium text-gray-900">Pipeline de Síndicos</h3>
-          <button onClick={fetchDashboardData} className="text-sm text-blue-600 hover:text-blue-500">Atualizar</button>
+      {/* Tabela de Pipeline Enterprise Real-Time */}
+      <div className="bg-white shadow-sm rounded-xl border border-slate-200">
+        <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center">
+          <h3 className="text-lg font-semibold text-slate-800">Esteira de Negócios (Pipeline IA)</h3>
+          <button onClick={fetchDashboardData} className="text-sm font-medium text-blue-600 hover:text-blue-500">Sincronizar</button>
         </div>
-        <ul className="divide-y divide-gray-200 overflow-y-auto max-h-96">
+        <ul className="divide-y divide-slate-100 overflow-y-auto max-h-[600px]">
           {leads.map((lead) => (
-            <li key={lead.id} className="px-4 py-4 sm:px-6 hover:bg-gray-50 cursor-pointer" onClick={() => navigate(`/lead/${lead.id}`)}>
+            <li key={lead.id} className="px-6 py-5 hover:bg-slate-50 cursor-pointer transition-colors" onClick={() => navigate(`/lead/${lead.id}`)}>
               <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-blue-600 truncate">{lead.nome || 'Nome não informado'}</p>
+                <div className="flex items-center gap-3">
+                  <p className="text-base font-bold text-slate-900 truncate">
+                    {lead.empresa_condominio || lead.nome || 'Condomínio Não Informado'}
+                  </p>
+                  {lead.score_comercial > 80 && (
+                     <span className="bg-orange-100 text-orange-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Hot Lead</span>
+                  )}
+                </div>
                 <div className="ml-2 flex-shrink-0 flex">
-                  <p className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                    ${lead.status === 'novo' ? 'bg-blue-100 text-blue-800' :
-                      lead.status === 'triagem' ? 'bg-yellow-100 text-yellow-800' :
-                      lead.status === 'roteado' ? 'bg-indigo-100 text-indigo-800' :
-                      lead.status === 'proposta_gerada' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                    {lead.status.toUpperCase()}
+                  <p className={`px-3 py-1 inline-flex text-xs font-bold uppercase tracking-wider rounded-full
+                    ${lead.pipeline_stage === 'novo_lead' ? 'bg-blue-50 text-blue-700' :
+                      lead.pipeline_stage === 'triagem_ia' ? 'bg-indigo-50 text-indigo-700' :
+                      lead.pipeline_stage.includes('fechado_ganho') ? 'bg-green-100 text-green-800' :
+                      lead.pipeline_stage.includes('contrato') ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-700'}`}>
+                    {lead.pipeline_stage.replace('_', ' ')}
                   </p>
                 </div>
               </div>
-              <div className="mt-2 sm:flex sm:justify-between">
-                <div className="sm:flex">
-                  <p className="flex items-center text-sm text-gray-500 mr-4">
-                    📱 {lead.telefone}
+              <div className="mt-2 flex justify-between items-center">
+                <div className="flex items-center space-x-4">
+                  <p className="text-sm text-slate-500 font-medium">📱 {lead.telefone}</p>
+                  <p className="text-sm text-slate-500 capitalize">
+                    🔧 {lead.servico_desejado ? lead.servico_desejado.replace('_', ' ') : 'Pendente'}
                   </p>
-                  <p className="flex items-center text-sm text-gray-500 mr-4 font-semibold">
-                    Origem: {lead.origem || 'Não identificada'}
+                  <p className="text-sm text-slate-500 capitalize">
+                    🏢 {lead.tipo_cliente ? lead.tipo_cliente.replace('_', ' ') : 'Pendente'}
                   </p>
                 </div>
-                <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                  <p>{new Date(lead.criado_em).toLocaleDateString('pt-BR')}</p>
+                <div className="text-xs text-slate-400 font-medium">
+                  Última interação: {new Date(lead.ultima_interacao).toLocaleDateString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                 </div>
               </div>
             </li>
           ))}
           {leads.length === 0 && (
-            <li className="px-4 py-8 text-center text-gray-500">Nenhum lead encontrado no banco.</li>
+            <li className="px-6 py-12 text-center text-slate-500 font-medium">O Funil está vazio. Nenhuma oportunidade encontrada na V6.</li>
           )}
         </ul>
       </div>

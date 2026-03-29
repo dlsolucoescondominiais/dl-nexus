@@ -1,9 +1,9 @@
 version: '3.8'
 
 volumes:
-  caddy_data: {}
-  caddy_config: {}
-  n8n_data: {}
+  n8n_data:
+  caddy_data:
+  caddy_config:
 
 services:
   caddy:
@@ -13,27 +13,26 @@ services:
       - "80:80"
       - "443:443"
     volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
-      - ./Caddyfile:/etc/caddy/Caddyfile
-    
+
   n8n:
     image: docker.n8n.io/n8nio/n8n
     restart: always
     ports:
       - "5678:5678"
     environment:
-      - N8N_HOST=${DOMAIN_NAME}
+      - N8N_HOST=n8n.dlsolucoescondominiais.com.br
       - N8N_PORT=5678
       - N8N_PROTOCOL=https
       - NODE_ENV=production
-      - WEBHOOK_URL=https://${DOMAIN_NAME}/
-      - GENERIC_TIMEZONE=${TIMEZONE}
-      # The credentials below will be used to restrict access to the dashboard
-      - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=${N8N_ADMIN_USER}
-      - N8N_BASIC_AUTH_PASSWORD=${N8N_ADMIN_PASSWORD}
+      - WEBHOOK_URL=https://n8n.dlsolucoescondominiais.com.br/
+      - GENERIC_TIMEZONE=America/Sao_Paulo
+      # Credenciais do Arquivo Config N8N.md
+      - WHATSAPP_ACCESS_TOKEN=${WHATSAPP_ACCESS_TOKEN}
+      - WHATSAPP_PHONE_NUMBER_ID=${WHATSAPP_PHONE_NUMBER_ID}
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_API_KEY=${SUPABASE_API_KEY}
     volumes:
       - n8n_data:/home/node/.n8n
-    depends_on:
-      - caddy

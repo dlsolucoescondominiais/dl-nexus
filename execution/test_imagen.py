@@ -2,7 +2,7 @@ import os
 from google import genai
 from dotenv import load_dotenv
 
-load_dotenv("d:/AntiGravity/projeto_01/execution/.env")
+load_dotenv("/app/execution/.env")
 api_key = os.getenv("GEMINI_API_KEY")
 
 try:

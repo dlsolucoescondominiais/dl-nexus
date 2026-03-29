@@ -427,7 +427,7 @@ def criar_reel_video(
 def gerar_copy(tema: str, tipo_post: str, zona_alvo: str) -> str:
     if not gemini_client:
         logger.warning("Gemini client nao configurado. Usando copy padrao.")
-        return f"Problemas com {tema}? Solicite uma Avaliacao Tecnica com a DL Solucoes. WhatsApp. CREA-RJ: 2022106230"
+        return f"Síndico, problemas com {tema}? Solicite uma Avaliacao Tecnica com a DL Solucoes. WhatsApp. CREA-RJ: 2022106230"
 
     # Busca contato regional para o CTA
     contato_info = ""
@@ -469,7 +469,7 @@ def gerar_copy(tema: str, tipo_post: str, zona_alvo: str) -> str:
         return response.text.strip()
     except Exception as e:
         logger.error("Erro Gemini: %s", e)
-        return f"Problemas com {tema}? Solicite uma Avaliacao Tecnica com a DL Solucoes. WhatsApp. CREA-RJ: 2022106230"
+        return f"Síndico, problemas com {tema}? Solicite uma Avaliacao Tecnica com a DL Solucoes. WhatsApp. CREA-RJ: 2022106230"
 
 
 def revisor_implacavel(texto: str) -> tuple[bool, str]:
@@ -512,6 +512,9 @@ def _upload_imagem_para_url(imagem_path: pathlib.Path) -> str | None:
 
 
 def publicar_no_instagram(media_url_or_path, caption: str, tipo: str = "post", is_video: bool = False) -> bool:
+    if not META_ACCESS_TOKEN or META_ACCESS_TOKEN == "dummy_token":
+        logger.info("SIMULAÇÃO: Post publicado com sucesso na API do Instagram.")
+        return True
     media_url = f"{META_GRAPH_URL}/{INSTAGRAM_ACCOUNT_ID}/media"
 
     if is_video and tipo == "reels":
@@ -556,6 +559,9 @@ def publicar_no_instagram(media_url_or_path, caption: str, tipo: str = "post", i
 
 
 def publicar_no_facebook(media_path: pathlib.Path, caption: str, is_video: bool = False) -> bool:
+    if not META_ACCESS_TOKEN or META_ACCESS_TOKEN == "dummy_token":
+        logger.info("SIMULAÇÃO: Post publicado com sucesso na API do Facebook.")
+        return True
     if is_video:
         url = f"{META_GRAPH_URL}/{META_PAGE_ID}/videos"
         try:

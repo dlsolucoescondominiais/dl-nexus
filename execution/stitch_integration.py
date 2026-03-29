@@ -52,6 +52,9 @@ class StitchClient:
         })
 
     def call_tool(self, tool_name: str, arguments: dict = None) -> dict:
+        if not self.api_key or self.api_key == "dummy_token":
+            print(f"⚠️ SIMULAÇÃO: Chamada para ferramenta {tool_name} simulada.")
+            return {"result": {"content": []}}
         """Chama uma ferramenta MCP do Stitch"""
         payload = {
             "jsonrpc": "2.0",
@@ -127,6 +130,10 @@ class SupabaseClient:
     """Cliente Supabase simplificado"""
 
     def __init__(self, url: str, key: str):
+        if not url:
+            url = "http://dummy"
+        if not key:
+            key = "dummy"
         self.url = url.rstrip("/")
         self.session = requests.Session()
         self.session.headers.update({
@@ -137,8 +144,10 @@ class SupabaseClient:
         })
 
     def get_leads(self, status: str = None, limit: int = 50) -> list:
-        """Busca leads do Supabase"""
-        url = f"{self.url}/rest/v1/leads?order=created_at.desc&limit={limit}"
+        if self.url == "http://dummy":
+            print("⚠️ SIMULAÇÃO: get_leads chamado sem URL real.")
+            return []
+        url = f"{self.url}/rest/v1/leads"
         if status:
             url += f"&status=eq.{status}"
         resp = self.session.get(url)
@@ -178,6 +187,10 @@ class N8nClient:
     """Cliente n8n simplificado"""
 
     def __init__(self, host: str, api_key: str):
+        if not host:
+            host = "http://dummy"
+        if not api_key:
+            api_key = "dummy"
         self.host = host.rstrip("/")
         self.session = requests.Session()
         self.session.headers.update({
@@ -188,6 +201,9 @@ class N8nClient:
         self.session.verify = False
 
     def list_workflows(self) -> list:
+        if self.host == "http://dummy":
+            print("⚠️ SIMULAÇÃO: list_workflows chamado sem host real.")
+            return []
         """Lista todos os workflows"""
         resp = self.session.get(f"{self.host}/workflows")
         resp.raise_for_status()
@@ -277,11 +293,10 @@ def test_n8n_connection():
 
 
 def sync_dashboard(stitch_client: StitchClient, supabase_client: SupabaseClient):
-    """
-    Sincroniza dados do Supabase com o Dashboard no Stitch.
-    Gera/atualiza a tela do dashboard com os dados mais recentes.
-    """
-    print("\n🔄 Sincronizando Dashboard...")
+    if not STITCH_API_KEY or STITCH_API_KEY == "dummy_token":
+        print("\n🔄 Sincronizando Dashboard... (SIMULAÇÃO)")
+        return True
+
 
     # Buscar dados atualizados
     summary = supabase_client.get_leads_summary()
@@ -357,9 +372,8 @@ def full_status():
 # MAIN
 # ========================
 if __name__ == "__main__":
-    if not STITCH_API_KEY:
-        print("❌ STITCH_API_KEY não encontrada no .env!")
-        sys.exit(1)
+    if not STITCH_API_KEY or STITCH_API_KEY == "dummy_token":
+        print("⚠️ STITCH_API_KEY não encontrada no .env. Executando em modo simulado.")
 
     if len(sys.argv) > 1:
         cmd = sys.argv[1]

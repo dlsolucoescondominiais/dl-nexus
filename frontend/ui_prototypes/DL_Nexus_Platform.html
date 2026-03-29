@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DL Nexus – Plataforma Institucional</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-secondary": "#3f2e00",
+              "on-primary-container": "#004c1b",
+              "tertiary-fixed": "#d8e2ff",
+              "on-primary": "#003912",
+              "surface-dim": "#011230",
+              "surface-container-lowest": "#000d28",
+              "on-primary-fixed": "#002108",
+              "primary-fixed-dim": "#3ce36a",
+              "surface-bright": "#2a3958",
+              "primary-fixed": "#69ff87",
+              "surface-container-low": "#0a1b39",
+              "surface-variant": "#253453",
+              "on-surface": "#d8e2ff",
+              "on-tertiary-container": "#324160",
+              "on-primary-fixed-variant": "#00531e",
+              "tertiary-container": "#9eadd3",
+              "outline-variant": "#3c4a3c",
+              "on-error": "#690005",
+              "inverse-on-surface": "#21304f",
+              "on-error-container": "#ffdad6",
+              "secondary-container": "#fabd00",
+              "on-secondary-fixed": "#261a00",
+              "outline": "#869583",
+              "error-container": "#93000a",
+              "surface-container-highest": "#253453",
+              "on-tertiary": "#21304f",
+              "background": "#011230",
+              "on-secondary-fixed-variant": "#5b4300",
+              "primary-container": "#00c853",
+              "secondary": "#ffdf9e",
+              "on-secondary-container": "#6a4e00",
+              "secondary-fixed-dim": "#fabd00",
+              "surface": "#011230",
+              "error": "#ffb4ab",
+              "surface-container-high": "#1a2948",
+              "primary": "#3fe56c",
+              "on-surface-variant": "#bbcbb8",
+              "surface-tint": "#3ce36a",
+              "inverse-surface": "#d8e2ff",
+              "surface-container": "#0e1f3d",
+              "inverse-primary": "#006e2a",
+              "on-tertiary-fixed": "#0a1b39",
+              "on-background": "#d8e2ff",
+              "tertiary": "#b9c8ef",
+              "secondary-fixed": "#ffdf9e",
+              "tertiary-fixed-dim": "#b7c6ed",
+              "on-tertiary-fixed-variant": "#374667"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .font-space { font-family: 'Space Grotesk', sans-serif; }
+        .glass-card {
+            background: rgba(10, 27, 57, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(60, 74, 60, 0.15);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#011230] shadow-[0_20px_40px_rgba(0,200,83,0.06)]">
+<div class="flex items-center gap-4">
+<span class="text-xl font-bold tracking-tight text-[#3fe56c] font-['Space_Grotesk']">DL Nexus</span>
+<div class="hidden md:flex gap-6 ml-10">
+<a class="text-[#3fe56c] border-b-2 border-[#3fe56c] font-medium text-sm py-1" href="#">Monitoring</a>
+<a class="text-[#bbcbb8] hover:bg-[#253453] transition-colors font-medium text-sm py-1" href="#">Analytics</a>
+<a class="text-[#bbcbb8] hover:bg-[#253453] transition-colors font-medium text-sm py-1" href="#">Assets</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-[#bbcbb8] hover:bg-[#253453] p-2 rounded-full transition-transform active:scale-90" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined text-[#bbcbb8] hover:bg-[#253453] p-2 rounded-full transition-transform active:scale-90" data-icon="location_on">location_on</button>
+<button class="material-symbols-outlined text-[#bbcbb8] hover:bg-[#253453] p-2 rounded-full transition-transform active:scale-90" data-icon="settings_input_component">settings_input_component</button>
+<div class="w-8 h-8 rounded-full overflow-hidden ml-2 border border-outline-variant">
+<img alt="User profile switcher" data-alt="User avatar for profile management" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBXS67ee4aMWwk2yNW3v20KirG0vQAF2EBNAXg9HChb7oCCL-VV0MWZiMhAHhdtaEK45x9jD9QH3u9t7QUrjRol7DzNpX9LeM-fpRP7yXJymu3ekIFkQJo2MoY4tL3_IgiQE_K1vStP378irc2F9Uv_MFGO46MvmYAmShaysayJACnEaCl7xmrvHQhq1LmpuGH2laeHPrixncJOfnjiqYHnjWFUmD_MKnPb4lcR_hCe5zQ5nhdbd0IuttexjnK676pp_wiayE488DU"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-[#0a1b39] flex flex-col py-8 z-40 hidden md:flex">
+<div class="px-6 mb-10 mt-12">
+<h2 class="font-['Space_Grotesk'] font-bold text-[#3fe56c] text-lg">DL EcoVolt Solar™</h2>
+<p class="text-[#bbcbb8] opacity-70 text-xs tracking-widest uppercase mt-1">Kinetic Observatory</p>
+</div>
+<nav class="flex-1 px-4 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-[#00c853]/20 to-transparent text-[#3fe56c] border-l-4 border-[#3fe56c] font-['Manrope'] font-medium text-sm tracking-wide transition-all translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Overview
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#bbcbb8] opacity-70 hover:bg-[#253453] hover:text-white transition-all font-['Manrope'] font-medium text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="monitoring">monitoring</span>
+                Technical Monitoring
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#bbcbb8] opacity-70 hover:bg-[#253453] hover:text-white transition-all font-['Manrope'] font-medium text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="battery_charging_full">battery_charging_full</span>
+                Battery Status
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#bbcbb8] opacity-70 hover:bg-[#253453] hover:text-white transition-all font-['Manrope'] font-medium text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+                Savings
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#bbcbb8] opacity-70 hover:bg-[#253453] hover:text-white transition-all font-['Manrope'] font-medium text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="px-4 mt-auto space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-[#bbcbb8] opacity-70 hover:bg-[#253453] hover:text-white transition-all font-['Manrope'] font-medium text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+                Support
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#bbcbb8] opacity-70 hover:bg-[#253453] hover:text-white transition-all font-['Manrope'] font-medium text-sm tracking-wide" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                Logout
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 pt-24 px-6 pb-12 transition-all">
+<!-- DL Nexus Promotion Block -->
+<section class="mb-10">
+    <div class="glass-card rounded-xl p-10 relative overflow-hidden bg-gradient-to-br from-[#0a1b39] to-[#011230] border border-[#0056b3]/30">
+        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9IiM0ZjVlODAiIGZpbGwtb3BhY2l0eT0iMC4yIi8+PC9zdmc+')] opacity-20"></div>
+        <div class="relative z-10 max-w-3xl">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0056b3]/20 border border-[#0056b3]/50 text-[#acc7ff] text-xs font-bold uppercase tracking-widest mb-6">
+                <span class="w-2 h-2 rounded-full bg-[#3ce36a] animate-pulse"></span>
+                Plataforma Digital Oficial
+            </div>
+            <h1 class="text-4xl md:text-5xl font-['Manrope'] font-bold text-white mb-6 leading-tight">
+                DL Nexus: Sua Vantagem Competitiva Tecnológica
+            </h1>
+            <p class="text-lg text-[#bbcbb8] font-['Inter'] mb-8 leading-relaxed max-w-2xl">
+                O centro nervoso operacional da DL Soluções Condominiais. Transformamos dados técnicos complexos em decisões estratégicas claras para síndicos e gestores. Acompanhe vistorias, propostas e integrações em tempo real.
+            </p>
+            <a href="https://nexus.dlsolucoescondominiais.com.br" class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#0056b3] to-[#115cb9] text-white px-8 py-4 rounded-lg font-['Manrope'] font-bold text-sm uppercase tracking-wider hover:shadow-[0_0_20px_rgba(0,86,179,0.4)] transition-all">
+                Acessar DL Nexus
+                <span class="material-symbols-outlined text-lg" data-icon="arrow_forward">arrow_forward</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Core Features Grid -->
+<section class="mb-12">
+    <h2 class="text-2xl font-['Manrope'] font-bold text-white mb-8 border-b border-[#253453] pb-4">Arquitetura de Integração Total</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Feature 1 -->
+        <div class="bg-[#0a1b39] p-6 rounded-xl border border-[#253453] hover:border-[#115cb9]/50 transition-colors group">
+            <div class="w-12 h-12 rounded-lg bg-[#0056b3]/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-[#acc7ff]" data-icon="description">description</span>
+            </div>
+            <h3 class="text-lg font-['Manrope'] font-bold text-white mb-3">Acompanhamento de Propostas</h3>
+            <p class="text-[#8c909e] font-['Inter'] text-sm leading-relaxed">
+                Transparência total. Acompanhe o status das suas propostas comerciais, da elaboração técnica até a aprovação, com notificações em tempo real.
+            </p>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="bg-[#0a1b39] p-6 rounded-xl border border-[#253453] hover:border-[#115cb9]/50 transition-colors group">
+            <div class="w-12 h-12 rounded-lg bg-[#0056b3]/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-[#acc7ff]" data-icon="support_agent">support_agent</span>
+            </div>
+            <h3 class="text-lg font-['Manrope'] font-bold text-white mb-3">Gestão de Chamados</h3>
+            <p class="text-[#8c909e] font-['Inter'] text-sm leading-relaxed">
+                Abertura e tracking de chamados técnicos. SLA agressivo garantido pela conexão direta com nossos engenheiros de campo.
+            </p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="bg-[#0a1b39] p-6 rounded-xl border border-[#253453] hover:border-[#115cb9]/50 transition-colors group">
+            <div class="w-12 h-12 rounded-lg bg-[#0056b3]/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-[#acc7ff]" data-icon="engineering">engineering</span>
+            </div>
+            <h3 class="text-lg font-['Manrope'] font-bold text-white mb-3">Avaliações Técnicas</h3>
+            <p class="text-[#8c909e] font-['Inter'] text-sm leading-relaxed">
+                Dashboard gerencial exibindo laudos, pareceres de infraestrutura, elétrica e solar gerados diretamente pelas equipes operacionais.
+            </p>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="bg-[#0a1b39] p-6 rounded-xl border border-[#253453] hover:border-[#115cb9]/50 transition-colors group">
+            <div class="w-12 h-12 rounded-lg bg-[#0056b3]/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-[#acc7ff]" data-icon="account_tree">account_tree</span>
+            </div>
+            <h3 class="text-lg font-['Manrope'] font-bold text-white mb-3">Organização Operacional</h3>
+            <p class="text-[#8c909e] font-['Inter'] text-sm leading-relaxed">
+                Centralização de dados do condomínio. Contratos, plantas e relatórios organizados como um ecossistema definitivo de segurança.
+            </p>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="bg-[#0a1b39] p-6 rounded-xl border border-[#253453] hover:border-[#115cb9]/50 transition-colors group md:col-span-2 lg:col-span-1">
+            <div class="w-12 h-12 rounded-lg bg-[#0056b3]/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-[#acc7ff]" data-icon="hub">hub</span>
+            </div>
+            <h3 class="text-lg font-['Manrope'] font-bold text-white mb-3">Integração Total</h3>
+            <p class="text-[#8c909e] font-['Inter'] text-sm leading-relaxed">
+                A ponte perfeita entre o campo (Técnicos), o atendimento (IA Aninha) e o comercial. Nenhuma informação se perde.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Footer Banner -->
+<div class="mt-16 py-8 border-t border-[#253453] text-center">
+    <p class="text-[#8c909e] text-sm mb-4">DL Soluções Condominiais LTDA - CREA-RJ 2022106230</p>
+    <a href="https://nexus.dlsolucoescondominiais.com.br" class="text-[#acc7ff] hover:text-white hover:underline text-sm font-medium transition-colors">Acessar Plataforma DL Nexus</a>
+</div>
+</main>
+<!-- Floating Signature Action Button -->
+<button class="fixed bottom-8 right-8 w-14 h-14 rounded-xl bg-primary-container shadow-[0_10px_30px_rgba(0,200,83,0.3)] flex items-center justify-center transition-transform hover:scale-110 active:scale-95 group">
+<span class="material-symbols-outlined text-on-primary-container text-2xl group-hover:rotate-45 transition-transform" data-icon="add">add</span>
+</button>
+</body></html>

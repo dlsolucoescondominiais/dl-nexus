@@ -18,7 +18,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-jules",
+        "url": "http://n8n:5678/webhook/dl-jules",
         "sendBody": true
       },
       "id": "call-jules",

@@ -19,7 +19,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-aninha",
+        "url": "http://n8n:5678/webhook/dl-aninha",
         "sendBody": true,
         "bodyParameters": {
           "parameters": [

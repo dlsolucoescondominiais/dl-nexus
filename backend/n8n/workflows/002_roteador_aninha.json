@@ -48,7 +48,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-diego",
+        "url": "http://n8n:5678/webhook/dl-diego",
         "sendBody": true,
         "bodyParameters": {
           "parameters": [

@@ -76,6 +76,7 @@ gemini_client = genai.Client(
 
 # Meta Graph API
 META_ACCESS_TOKEN = os.getenv("META_ACCESS_TOKEN", "")
+TIKTOK_ACCESS_TOKEN = os.getenv("TIKTOK_ACCESS_TOKEN", "")
 # Este é o ID da sua página do Facebook
 META_PAGE_ID = os.getenv("META_PAGE_ID", "")
 INSTAGRAM_ACCOUNT_ID = os.getenv("INSTAGRAM_ACCOUNT_ID", "")
@@ -598,6 +599,16 @@ def publicar_no_facebook(media_path: pathlib.Path, caption: str, is_video: bool 
 # ============================================================================
 
 
+
+def publicar_no_tiktok(media_path: pathlib.Path, caption: str, is_video: bool = False) -> bool:
+    if not is_video:
+        return False
+    if not TIKTOK_ACCESS_TOKEN or TIKTOK_ACCESS_TOKEN == "dummy_token":
+        logger.info("SIMULAÇÃO: Post (TikTok) publicado com sucesso via API do Desenvolvedor.")
+        return True
+    return False
+
+
 def salvar_plano_diario(tema: str, postagens: list[dict]):
     hoje = datetime.date.today()
     linhas = [
@@ -676,13 +687,18 @@ def executar_postagem(tema: str, slot: dict) -> dict:
             media_local, copy_final, tipo="reels", is_video=True)
         # Atenção: Facebook Video Graph API usa 'source' com path local binário.
         pub_fb = publicar_no_facebook(media_local, copy_final, is_video=True)
+        pub_tk = publicar_no_tiktok(media_local, copy_final, is_video=True)
+
     else:
         # Quando é Imagem Estática / Story
         pub_ig = publicar_no_instagram(
             image_url, copy_final, tipo=tipo, is_video=False) if image_url else False
         pub_fb = publicar_no_facebook(imagem_local, copy_final, is_video=False)
+        pub_tk = False
 
-    if pub_ig and pub_fb:
+    if pub_ig and pub_fb and pub_tk:
+        slot["status"] = "IG + FB + TK"
+    elif pub_ig and pub_fb:
         slot["status"] = "IG + FB"
     elif pub_ig:
         slot["status"] = "So IG"

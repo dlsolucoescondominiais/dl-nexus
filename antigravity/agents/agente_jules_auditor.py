@@ -18,7 +18,7 @@ class JulesAuditorAgent:
             pass
 
         self.client = Anthropic(api_key=api_key)
-        self.model = "claude-3-opus-20240229" # Usando Opus para raciocínio complexo de engenharia/auditoria
+        self.model = "claude-3-5-sonnet-20240620" # Usando Opus para raciocínio complexo de engenharia/auditoria
 
         self.system_prompt = """
         Você é JULES, Auditor Técnico Sênior e Diretor de Qualidade (QA) da DL Soluções Condominiais.

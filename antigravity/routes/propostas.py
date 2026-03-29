@@ -2,9 +2,14 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Dict, Any, Optional
 from antigravity.agents.agente_jules_auditor import JulesAuditorAgent
+import os
+import openai
 
 router = APIRouter(prefix="/api/propostas", tags=["PROPOSTAS", "AUDITORIA"])
 jules_auditor = JulesAuditorAgent()
+
+# Inicialização segura do cliente OpenAI (Camada 4 da Pirâmide de Custos)
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 class PropostaRequest(BaseModel):
     lead_id: str
@@ -17,67 +22,81 @@ class PropostaRequest(BaseModel):
 async def gerar_e_auditar_proposta(req: PropostaRequest):
     """
     Simula o recebimento de uma proposta técnica elaborada por um agente especialista
-    (Elétrica, Solar, etc.) e OBRIGATORIAMENTE passa pelo crivo do Auditor Jules (Claude)
-    antes de ser disparada para o n8n ou cliente.
+    e OBRIGATORIAMENTE passa pelo crivo do Auditor Jules (Claude)
     """
     try:
-        # 1. Aqui seria o ponto onde o agente especialista já processou os dados.
-        #    Como recebemos a 'proposta_bruta' via POST, vamos assumir que ela já
-        #    foi gerada por outro LLM (ex: Agente Solar).
-
         texto_bruto = req.proposta_bruta
 
-        # Inserindo um erro proposital para testar a regra do "Diogo" se não houver no texto
         if "Diogo" not in texto_bruto:
              texto_bruto += "\n\nLaudo assinado por: Engenheiro Diogo."
 
-        # 2. A MÁGICA: Auditoria Técnica rigorosa com o Agente Jules (Claude)
         resultado_auditoria = jules_auditor.auditar_proposta(
             proposta_bruta=texto_bruto,
             dados_contexto=req.dados_tecnicos
         )
 
-        # 3. Tratamento pós-auditoria
-        if resultado_auditoria.get("status_auditoria") == "REJEITADO_REVISAO_PROFUNDA":
-            # Aqui você poderia acionar um webhook de erro no n8n alertando que
-            # a proposta foi muito ruim e requer intervenção humana do Diogo ou Raphael.
-            pass
-        elif resultado_auditoria.get("status_auditoria", "").startswith("ERRO"):
-            # Falha na API ou parsing. Retorna a bruta para não travar o processo,
-            # mas avisa no log.
+        if resultado_auditoria.get("status_auditoria", "").startswith("ERRO"):
             print(f"ALERTA: Falha na Auditoria Jules: {resultado_auditoria.get('notas_do_auditor')}")
         else:
-            # Substitui a proposta bruta pela corrigida para os próximos passos
             texto_final = resultado_auditoria.get("proposta_corrigida", req.proposta_bruta)
 
-        # 4. Retorno Estruturado para o n8n (que vai gerar o PDF e mandar no WhatsApp)
         return {
             "lead_id": req.lead_id,
             "servico": req.servico,
             "status": "aprovado_auditoria",
             "proposta_final": resultado_auditoria.get("proposta_corrigida", texto_bruto),
             "notas_qa": resultado_auditoria.get("notas_do_auditor", "Sem notas."),
-            "timestamp": "2024-03-24T20:00:00Z" # Substituir por datetime real
+            "timestamp": "2024-03-24T20:00:00Z"
         }
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro no pipeline de propostas: {str(e)}")
 
+
 class ArtigoRequest(BaseModel):
     prompt_gerador: str
     tema: Optional[str] = "Geral"
+
+SYSTEM_PROMPT_MARKETING = """
+Você é o Especialista de Marketing e Engenharia Comercial da DL Soluções Condominiais.
+Sua missão é criar postagens técnicas, persuasivas e focadas em conversão para síndicos profissionais e administradoras no Rio de Janeiro (Zonas Sul, Sudoeste, Oeste e Norte).
+
+PORTFÓLIO: Elétrica, Energia Solar, CFTV, Prevenção de Incêndio, Mobilidade (CVE).
+
+🚨 REGRA DE OURO (FOCO AGRESSIVO EM RECEITA RECORRENTE):
+Em 70% das suas criações, você deve dar ênfase máxima aos nossos serviços de assinatura:
+1. Portaria Autônoma: Foque na redução brutal de custos na folha de pagamento e aumento da segurança 24h.
+2. Plano DL Fortress: Destaque a nossa blindagem tecnológica e manutenção preventiva contínua.
+3. Plano DL Partner: Venda a tranquilidade do síndico ter uma infraestrutura que não quebra.
+
+TOM DE VOZ: Autoridade técnica impecável. Demonstre solidez empresarial. O líder da operação é um Tecnólogo especialista. Nunca prometa preços fixos, prometa "Avaliação Técnica".
+"""
 
 @router.post("/gerar-artigo")
 async def gerar_artigo_redes_sociais(req: ArtigoRequest):
     """
     Endpoint para geração de artigos técnicos e persuasivos para redes sociais.
     Consumido pelo Workflow 013 do n8n.
+    Utiliza OpenAI (Camada 4 - Copy Comercial).
     """
     try:
-        # Aqui, idealmente, você chamaria um Agente de Marketing (ex: openai ou anthropic)
-        # Para fins de simulação/resposta imediata (até plugar o LLM de marketing real):
+        if not openai.api_key:
+            return {
+                "status": "aviso_sem_chave",
+                "tema_solicitado": req.tema,
+                "texto_artigo": "🛠️ Aviso do Sistema: OpenAI API Key não configurada. Configure para gerar o texto real de marketing."
+            }
 
-        texto_gerado = f"🛠️ Você sabia que a manutenção preventiva de {req.tema} pode reduzir custos do seu condomínio em até 30%? \n\nNa DL Soluções Condominiais, nossos especialistas (supervisionados pelo Tecnólogo Diogo) garantem laudos técnicos precisos e execuções impecáveis. \n\nNão deixe a segurança do seu prédio para depois. Fale com a DL Soluções hoje mesmo e agende uma vistoria!\n\n#DLSolucoes #SindicanciaProfissional #ManutencaoCondominial #{req.tema.replace(' ', '')}"
+        resposta = openai.chat.completions.create(
+            model="gpt-4o-mini", # Custo baixo para tarefas recorrentes de copy
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT_MARKETING},
+                {"role": "user", "content": req.prompt_gerador}
+            ],
+            temperature=0.7
+        )
+
+        texto_gerado = resposta.choices[0].message.content
 
         return {
             "status": "sucesso",
@@ -86,4 +105,4 @@ async def gerar_artigo_redes_sociais(req: ArtigoRequest):
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erro ao gerar artigo: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao gerar artigo na OpenAI: {str(e)}")

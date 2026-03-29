@@ -25,11 +25,13 @@ class AgenteEspecialista:
         )
 
         categorias = {
-            "eletrica": "ÁREA DE ATUAÇÃO: Engenharia Elétrica, Quadros de Força, Retrofit Elétrico e Preventiva de Relógios PC.",
-            "solar": "ÁREA DE ATUAÇÃO: Energia Solar Fotovoltaica, Lei 14.300, Usinas em Telhados e Inversores.",
-            "incendio": "ÁREA DE ATUAÇÃO: Prevenção e Combate a Incêndio (PPCI), Bombas de Pressurização e Sprinklers.",
-            "seguranca": "ÁREA DE ATUAÇÃO: CFTV, Câmeras IP, Controle de Acesso Facial/Tag e Portaria Remota.",
-            "automacao": "ÁREA DE ATUAÇÃO: Automação Predial, IoT, Sensores de Nível de Caixa d'água e Iluminação Inteligente."
+            "eletrica": "ÁREA DE ATUAÇÃO: Engenharia Elétrica. Serviços Chave: DL Volt™ (Infraestrutura), DL Praxis Elétrica™ (Projetos/ART) e DL Energia™ (Consultoria).",
+            "solar": "ÁREA DE ATUAÇÃO: Energia Solar. Serviços Chave: DL EcoVolt Solar™ (Fotovoltaica híbrida/on-grid).",
+            "incendio": "ÁREA DE ATUAÇÃO: Combate a Incêndio. Serviços Chave: DL Alerta™ (Central de incêndio e sensores).",
+            "seguranca": "ÁREA DE ATUAÇÃO: Segurança. Serviços Chave: DL Guardião™ (CFTV/Forensics), DL Fortress™ (App Gestor) e DL Observer™.",
+            "automacao": "ÁREA DE ATUAÇÃO: Automação. Serviços Chave: DL Commander™ (Comandos elétricos) e DL Insight™.",
+            "mobilidade": "ÁREA DE ATUAÇÃO: Eletromobilidade. Serviços Chave: DL VoltCharge™ (VE Chargers)",
+            "consultoria": "ÁREA DE ATUAÇÃO: Gestão B2B. Serviços Chave: DL Partner™ (Seguro Hardware) e DL Support™."
         }
         
         # Garante fallback para um Técnico em Manutenção Geral se a categoria for desconhecida
@@ -47,7 +49,8 @@ class AgenteEspecialista:
         prompt_usuario = (
             f"O lead relatou o seguinte problema/necessidade: '{dor_do_cliente}'.\n"
             f"O sistema classificou a urgência como: {urgencia.upper()}.\n\n"
-            "Por favor, rascunhe a proposta técnica e os serviços recomendados para resolver este problema em nome da DL Soluções."
+            "Por favor, rascunhe a proposta técnica e de serviços recomendados.\n"
+            "OBRIGATÓRIO: Você deve utilizar e nomear os Produtos Premium da DL apropriados para esta dor, baseados nos Serviços Chave da sua área de atuação listados acima."
         )
 
         try:

@@ -6,6 +6,7 @@
         "httpMethod": "POST",
         "path": "dl-receptor",
         "authentication": "headerAuth",
+        "responseMode": "onReceived",
         "options": {
           "rateLimit": {
             "limit": 10,

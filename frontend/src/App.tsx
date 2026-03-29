@@ -3,6 +3,7 @@ import Login from './components/Login';
 import Dashboard from './components/Dashboard';
 import Checklist from './components/Checklist';
 import LeadDetails from './components/LeadDetails';
+import Marketing from './components/Marketing';
 
 function ChecklistWrapper() {
   const { leadId } = useParams();
@@ -17,7 +18,10 @@ function App() {
         <Route path="/login" element={<Login />} />
 
         {/* Painel do Tecnólogo/Admin */}
-                <Route path="/dashboard-tecnico" element={<Dashboard />} />
+                        <Route path="/dashboard-tecnico" element={<Dashboard />} />
+
+        {/* Motor de Atracao B2B (Redes Sociais) */}
+        <Route path="/marketing" element={<Marketing />} />
 
         {/* Raio-X B2B do Sindico */}
         <Route path="/lead/:id" element={<LeadDetails />} />

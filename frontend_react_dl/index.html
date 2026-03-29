@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DL Soluções Condominiais | Engenharia e DL Partner™</title>
+    
+    <!-- Estratégia de SEO Local B2B -->
+    <meta name="description" content="Engenharia de Manutenção contínua para condomínios no Rio de Janeiro. Conheça o DL Partner™: Seguro de SLA para CFTV, Elétrica, Incêndio e Solar na Zona Sul, Centro, Barra, Recreio e Jacarepaguá.">
+    <meta name="keywords" content="Manutenção de condomínios RJ, DL Partner, SLA para Síndicos, CFTV Barra da Tijuca, Empresa de energia solar Recreio, PC de Luz Zona Sul, Avaliação técnica predial">
+    
+    <!-- Fonte Oficial B2B -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons Nativo -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Tailwind CSS Engine -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            cyan: '#00f2fe',
+                            blue: '#4facfe',
+                            green: '#4ade80',
+                            red: '#ef4444',
+                            dark: '#0e1117',
+                            glass: 'rgba(255, 255, 255, 0.03)',
+                            border: 'rgba(255, 255, 255, 0.08)'
+                        }
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    animation: { 'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite' }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: var(--tw-colors-brand-glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--tw-colors-brand-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-glow {
+            position: absolute; width: 600px; height: 600px;
+            background: rgba(0, 242, 254, 0.15); filter: blur(140px);
+            border-radius: 50%; top: -150px; left: -150px; z-index: 0; pointer-events: none;
+        }
+    </style>
+
+    <!-- React 18 & Babel via CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body class="bg-brand-dark text-white font-sans antialiased overflow-x-hidden selection:bg-brand-cyan selection:text-black">
+    
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // ---------- COMPONENTES REATIVOS ----------
+
+        // 1. Navigation
+        const Navbar = () => (
+            <nav className="fixed w-full z-50 glass-card border-b border-brand-border top-0 transition-all duration-300">
+                <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+                    <div className="text-2xl font-extrabold tracking-tight">
+                        DL <span className="text-gradient">Soluções</span>
+                    </div>
+                    <div className="hidden md:flex space-x-8 text-sm font-semibold text-gray-300">
+                        <a href="#partner" className="hover:text-white transition">DL Partner™</a>
+                        <a href="#verticais" className="hover:text-white transition">Engenharia</a>
+                        <a href="#area" className="hover:text-white transition">Áreas Atendidas</a>
+                    </div>
+                    <a href="#avaliar" className="px-5 py-2 text-sm font-bold bg-white text-black rounded hover:bg-gray-200 transition">
+                        Solicitar Avaliação Técnica
+                    </a>
+                </div>
+            </nav>
+        );
+
+        // 2. Hero Section
+        const HeroSection = () => (
+            <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 px-6 overflow-hidden">
+                <div className="hero-glow"></div>
+                <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center relative z-10">
+                    <div className="space-y-8">
+                        <div className="inline-flex items-center px-3 py-1 rounded-full border border-brand-green/30 bg-brand-green/10 text-brand-green text-sm font-semibold tracking-wide uppercase">
+                            <span className="w-2 h-2 rounded-full bg-brand-green mr-2 animate-pulse"></span>
+                            Tecnologia em Operação
+                        </div>
+                        <h1 className="text-5xl lg:text-7xl font-extrabold leading-tight tracking-tight">
+                            A Engenharia que não deixa o seu <br/><span className="text-gradient">Condomínio Parar.</span>
+                        </h1>
+                        <p className="text-xl text-gray-400 max-w-lg leading-relaxed">
+                            Mais do que instalar câmeras. A DL Soluções entrega infraestrutura contínua e manutenção técnica recorrente com SLA agressivo para síndicos e administradoras no Rio de Janeiro.
+                        </p>
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <a href="#avaliar" className="px-8 py-4 bg-gradient-to-r from-brand-cyan to-brand-blue rounded-lg font-bold text-lg text-center hover:opacity-90 transition shadow-[0_0_20px_rgba(0,242,254,0.3)]">
+                                Agendar Avaliação Técnica
+                            </a>
+                            <a href="#partner" className="px-8 py-4 glass-card rounded-lg font-bold text-lg text-center hover:bg-white/10 transition">
+                                Conhecer Programa DL Partner
+                            </a>
+                        </div>
+                    </div>
+                    <div className="hidden lg:block relative">
+                        <div className="absolute inset-0 bg-gradient-to-tr from-brand-cyan/20 to-transparent rounded-2xl filter blur-3xl"></div>
+                        <div className="glass-card p-8 rounded-2xl relative border border-white/10 transform rotate-2 hover:rotate-0 transition duration-500">
+                            <div className="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
+                                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                            </div>
+                            <h3 className="text-2xl font-bold mb-4">Dash DL Partner™</h3>
+                            <div className="space-y-4">
+                                <div>
+                                    <div className="flex justify-between text-sm text-gray-400 mb-1">
+                                        <span>Garantia do Hardware (CFTV/Catracas)</span>
+                                        <span className="text-brand-green">100% Protegido</span>
+                                    </div>
+                                    <div className="w-full bg-white/5 rounded-full h-2"><div className="bg-brand-blue h-2 rounded-full" style={{width: '100%'}}></div></div>
+                                </div>
+                                <div>
+                                    <div className="flex justify-between text-sm text-gray-400 mb-1">
+                                        <span>Cumprimento de SLA TMEA (8 Horas)</span>
+                                        <span className="text-brand-green">Ativo On-Site</span>
+                                    </div>
+                                    <div className="w-full bg-white/5 rounded-full h-2"><div className="bg-brand-cyan h-2 rounded-full" style={{width: '100%'}}></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+
+        // 3. Risco Oculto (Dores B2B)
+        const RiskSection = () => (
+            <section className="py-20 bg-black/40 border-y border-white/5">
+                <div className="max-w-7xl mx-auto px-6">
+                    <h2 className="text-3xl font-bold mb-12 text-center">O Risco Oculto da Manutenção Reativa</h2>
+                    <div className="grid md:grid-cols-3 gap-8">
+                        <div className="glass-card p-8 rounded-xl border-t-2 border-t-brand-red/50">
+                            <i data-lucide="alert-triangle" className="text-brand-red w-10 h-10 mb-6"></i>
+                            <h3 className="text-xl font-bold mb-3">O Custo da Surpresa</h3>
+                            <p className="text-gray-400 leading-relaxed">Equipamentos de segurança que falham quando você mais precisa geram passivos milionários para o condomínio e para o síndico.</p>
+                        </div>
+                        <div className="glass-card p-8 rounded-xl border-t-2 border-t-yellow-500/50">
+                            <i data-lucide="zap-off" className="text-yellow-500 w-10 h-10 mb-6"></i>
+                            <h3 className="text-xl font-bold mb-3">Apagões e Sobrecargas</h3>
+                            <p className="text-gray-400 leading-relaxed">Infraestrutura elétrica obsoleta e gambiarras antigas de porteiro não suportam a rotina moderna de EVs e ar-condicionado.</p>
+                        </div>
+                        <div className="glass-card p-8 rounded-xl border-t-2 border-t-orange-500/50">
+                            <i data-lucide="users-x" className="text-orange-500 w-10 h-10 mb-6"></i>
+                            <h3 className="text-xl font-bold mb-3">Equipes Sem Metodologia</h3>
+                            <p className="text-gray-400 leading-relaxed">Diaristas e "faz-tudo" não entregam responsabilidade técnica documentada, deixando buracos fiscais e laudos incompletos.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+
+        // 4. A Jóia da Coroa: DL Partner
+        const PartnerSection = () => (
+            <section id="partner" className="py-32 px-6 relative">
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-96 h-96 bg-brand-blue/10 rounded-full filter blur-[100px]"></div>
+                <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-16 max-w-3xl mx-auto">
+                        <span className="text-brand-cyan font-bold tracking-widest uppercase text-sm mb-4 inline-block">Blindagem Patrimonial</span>
+                        <h2 className="text-4xl md:text-5xl font-extrabold mb-6">Conheça o Programa DL Partner™</h2>
+                        <p className="text-xl text-gray-400">A única assinatura tecnológica do Rio de Janeiro focada no nível de serviço (SLA). O fim das "surpresas de orçamento aprovado em assembleia".</p>
+                    </div>
+
+                    <div className="glass-card p-1 lg:p-2 rounded-2xl max-w-5xl mx-auto border-brand-cyan/20 overflow-hidden">
+                        <div className="bg-black/60 rounded-xl p-8 lg:p-12">
+                            <h3 className="text-2xl font-bold mb-8 border-b border-white/10 pb-4">A Anatomia do Contrato B2B Ideal</h3>
+                            <ul className="grid md:grid-cols-2 gap-x-12 gap-y-6">
+                                <li className="flex items-start gap-4">
+                                    <i data-lucide="check-circle" className="text-brand-green shrink-0 mt-1"></i>
+                                    <div><strong className="text-white block text-lg">Troca de Hardwares Ilimitada</strong><span className="text-gray-400 text-sm">Cobertura nativa para queimas de câmeras ou placas controladoras.</span></div>
+                                </li>
+                                <li className="flex items-start gap-4">
+                                    <i data-lucide="check-circle" className="text-brand-green shrink-0 mt-1"></i>
+                                    <div><strong className="text-white block text-lg">SLA Tático Rigoroso</strong><span className="text-gray-400 text-sm">Garantimos um técnico On-Site no seu condomínio em até 8 Horas.</span></div>
+                                </li>
+                                <li className="flex items-start gap-4">
+                                    <i data-lucide="check-circle" className="text-brand-green shrink-0 mt-1"></i>
+                                    <div><strong className="text-white block text-lg">Ronda Preventiva Mensal</strong><span className="text-gray-400 text-sm">Auditoria e limpeza proativa. Acabamos com a manutenção "apaga fogo".</span></div>
+                                </li>
+                                <li className="flex items-start gap-4">
+                                    <i data-lucide="check-circle" className="text-brand-green shrink-0 mt-1"></i>
+                                    <div><strong className="text-white block text-lg">Dossiê e Relatórios Executivos</strong><span className="text-gray-400 text-sm">Entrega fotográfica de todas as inconformidades mensais para o conselho.</span></div>
+                                </li>
+                            </ul>
+                            <div className="mt-12 text-center">
+                                <a href="#avaliar" className="inline-block px-10 py-4 border-2 border-brand-cyan text-brand-cyan rounded-lg font-bold hover:bg-brand-cyan hover:text-black transition uppercase tracking-wide">
+                                    Agendar Avaliação para o Condomínio
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+
+        // 5. Verticais de Serviço
+        const VerticaisSection = () => {
+            const servicos = [
+                { icon: "shield", title: "Segurança Eletrônica", tags: ["DL Guardião™", "DL Fortress™"], desc: "CFTV Forense e Portarias Autônomas Blindadas de alto padrão." },
+                { icon: "zap", title: "Elétrica & Infraestrutura", tags: ["DL Volt™", "DL Praxis™"], desc: "Retrofit de PCs, QDC e balanceamento com recolhimento de ART focado em conformidade NR." },
+                { icon: "flame", title: "Prevenção de Incêndio", tags: ["DL Alerta™"], desc: "Sistemas endereçáveis (PPCI), detecção de vazamento de gás homologados pelo CBMERJ." },
+                { icon: "sun", title: "Solar & EV Mobility", tags: ["DL EcoVolt Solar™", "VoltCharge™"], desc: "Projetos de captação fotovoltaica em telhados e instalação certificada de supercarregadores EV." },
+                { icon: "database", title: "Automação Predial", tags: ["DL Commander™", "DL Insight™"], desc: "Telemetria remota inteligente de bombas hídricas, cisternas e controle de áreas de lazer." }
+            ];
+
+            return (
+                <section id="verticais" className="py-20 px-6">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="mb-16">
+                            <h2 className="text-4xl font-bold mb-4">Arquitetura de Soluções</h2>
+                            <p className="text-xl text-gray-400 max-w-2xl">ADL atua nos vértices críticos do seu empreendimento com engenharia especializada e produtos premium proprietários.</p>
+                        </div>
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {servicos.map((s, i) => (
+                                <div key={i} className="glass-card p-8 rounded-xl hover:border-brand-cyan/40 group cursor-default">
+                                    <i data-lucide={s.icon} className="text-white w-8 h-8 mb-6 group-hover:text-brand-cyan transition"></i>
+                                    <h3 className="text-xl font-bold mb-2">{s.title}</h3>
+                                    <div className="flex flex-wrap gap-2 mb-4">
+                                        {s.tags.map((tag, j) => (
+                                            <span key={j} className="text-[10px] uppercase font-bold px-2 py-1 bg-white/10 rounded">{tag}</span>
+                                        ))}
+                                    </div>
+                                    <p className="text-gray-400 text-sm leading-relaxed">{s.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // 6. Área Geográfica e Autoridade
+        const GeolocationSection = () => (
+            <section id="area" className="py-24 bg-black border-y border-white/5 relative">
+                <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <h2 className="text-3xl font-bold mb-6">Cobertura Logística Tática (Rio de Janeiro)</h2>
+                        <p className="text-gray-400 text-lg mb-8 leading-relaxed">
+                            A capilaridade técnica define a nossa velocidade. Mantemos nosso escopo logístico limitado a regiões específicas do estado para garantir cumprimentos de contrato SLA implacáveis (até 8 Horas On-Site).
+                        </p>
+                        <div className="flex flex-wrap gap-3">
+                            {["Barra da Tijuca", "Recreio", "Zona Sul", "Centro", "Jacarepaguá", "Freguesia", "Camorim", "Vargem Grande", "Jardim Oceânico"].map((b,i)=> (
+                                <span key={i} className="px-4 py-2 glass-card border border-white/10 rounded-full text-sm font-semibold text-gray-300">{b}</span>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="glass-card p-8 rounded-2xl border-l-4 border-l-brand-blue">
+                        <i data-lucide="award" className="w-12 h-12 text-brand-blue mb-4"></i>
+                        <h3 className="text-2xl font-bold mb-2">Engenharia Liderada com Rigor</h3>
+                        <p className="text-gray-400 leading-relaxed">
+                            "A nossa arquitetura não tolera achismos. A operação tática da DL Soluções é conduzida e auditada 
+                            por <strong>Diogo Luiz de Oliveira</strong> (Tecnólogo em Infraestrutura e Pós-Graduado em Energia Solar), 
+                            garantindo que qualquer diagnóstico preventivo em campo seja irrefutável técnica e juridicamente."
+                        </p>
+                    </div>
+                </div>
+            </section>
+        );
+
+        // 7. Avaliação Técnica (CTA/Webhook Integrator)
+        const CTASection = () => {
+            const [status, setStatus] = useState("idle");
+
+            const handleAvaliacao = (e) => {
+                e.preventDefault();
+                setStatus("loading");
+                const payload = {
+                    origem: "nova_landing_dl_partner",
+                    nome_contato: e.target.nome.value,
+                    telefone: e.target.zap.value,
+                    cargo: e.target.cargo.value,
+                    mensagem: e.target.dor.value
+                };
+
+                fetch("https://n8n.dlsolucoescondominiais.com.br/webhook/dl-pre-receptor", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                }).then(r => {
+                    setStatus(r.ok ? "success" : "error");
+                }).catch(() => setStatus("error"));
+            };
+
+            return (
+                <section id="avaliar" className="py-32 px-6 bg-gradient-to-b from-brand-dark to-black">
+                    <div className="max-w-4xl mx-auto glass-card p-8 md:p-16 rounded-3xl border border-brand-cyan/20 shadow-2xl relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-cyan to-brand-green"></div>
+                        <div className="text-center mb-10">
+                            <h2 className="text-3xl md:text-5xl font-extrabold mb-4">Blindar seu Caixa é o 1º Passo.</h2>
+                            <p className="text-gray-400 text-lg">Nossa equipe de Inteligência e Liderança Técnica vai mapear suas plantas e enviar um Raio-X Operacional grátis.</p>
+                        </div>
+
+                        {status === "success" ? (
+                            <div className="text-center bg-brand-green/10 border border-brand-green p-8 rounded-xl">
+                                <i data-lucide="check-circle-2" className="text-brand-green w-16 h-16 mx-auto mb-4"></i>
+                                <h3 className="text-2xl font-bold text-brand-green mb-2">Avaliação Acionada!</h3>
+                                <p className="text-white">A nossa inteligência capturou seus dados. Nas próximas 2 horas um técnico especialista DL entrará em contato para agendar a agenda tática do seu condomínio.</p>
+                            </div>
+                        ) : (
+                            <form onSubmit={handleAvaliacao} className="space-y-6">
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <div><label className="block text-sm font-bold text-gray-400 mb-2">Nome do Condomínio / Síndico</label>
+                                    <input name="nome" type="text" required className="w-full bg-black/50 border border-white/10 rounded-lg p-4 text-white focus:border-brand-cyan outline-none transition" placeholder="Condomínio Órion..." /></div>
+                                    
+                                    <div><label className="block text-sm font-bold text-gray-400 mb-2">WhatsApp de Contato</label>
+                                    <input name="zap" type="text" required className="w-full bg-black/50 border border-white/10 rounded-lg p-4 text-white focus:border-brand-cyan outline-none transition" placeholder="(21) 99999-9999" /></div>
+                                </div>
+                                <div className="grid md:grid-cols-1 gap-6">
+                                    <div><label className="block text-sm font-bold text-gray-400 mb-2">Sua Função</label>
+                                    <select name="cargo" className="w-full bg-black/50 border border-white/10 rounded-lg p-4 text-white focus:border-brand-cyan outline-none transition">
+                                        <option value="Sindico">Síndico / Morador</option>
+                                        <option value="Administradora">Administradora</option>
+                                        <option value="Empresa">Gestor Comercial B2B</option>
+                                    </select></div>
+                                </div>
+                                <div><label className="block text-sm font-bold text-gray-400 mb-2">Qual a Dor ou Equipamento Atual Faltando?</label>
+                                    <textarea name="dor" required rows="4" className="w-full bg-black/50 border border-white/10 rounded-lg p-4 text-white focus:border-brand-cyan outline-none transition resize-none" placeholder="Ex: Queima constande nas bombas d'água / Câmeras antigas em Full HD..."></textarea>
+                                </div>
+                                
+                                <button type="submit" disabled={status==="loading"} className="w-full py-5 bg-gradient-to-r from-brand-cyan to-brand-blue rounded-xl font-extrabold text-xl text-center hover:opacity-90 transition shadow-[0_0_30px_rgba(0,242,254,0.2)] disabled:opacity-50 uppercase tracking-widest text-[#0a0d11]">
+                                    {status === "loading" ? "Processando Inteligência..." : "Requisitar Auditória Operacional"}
+                                </button>
+                                <p className="text-center text-xs text-gray-500 mt-4"><i data-lucide="lock" className="w-3 h-3 inline pb-0.5"></i> Dados seguros e processados por IA corporativa sob LGPD.</p>
+                            </form>
+                        )}
+                    </div>
+                </section>
+            );
+        }
+
+        // 8. Footer
+        const Footer = () => (
+            <footer className="border-t border-white/5 py-12 px-6 bg-black">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+                    <div className="mb-6 md:mb-0 text-center md:text-left">
+                        <div className="text-xl font-extrabold tracking-tight mb-2">
+                            DL <span className="text-gray-500">Soluções Corporativas</span>
+                        </div>
+                        <p className="text-gray-500 text-sm">Engenharia, Câmeras Inteligentes e Manutenção Preventiva.</p>
+                    </div>
+                    <div className="flex gap-6 text-sm font-bold text-gray-400">
+                        <a href="/politica-de-privacidade" className="hover:text-white">Termos de Serviço</a>
+                        <a href="/lgpd-gdpr" className="hover:text-white">Compliance LGPD</a>
+                    </div>
+                </div>
+            </footer>
+        );
+
+        // App Wrapper
+        const App = () => {
+            useEffect(() => {
+                lucide.createIcons();
+            }, []);
+            return (
+                <div className="min-h-screen">
+                    <Navbar />
+                    <HeroSection />
+                    <RiskSection />
+                    <VerticaisSection />
+                    <PartnerSection />
+                    <GeolocationSection />
+                    <CTASection />
+                    <Footer />
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

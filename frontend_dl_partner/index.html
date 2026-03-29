@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DL Partner™ | Excelência em SLA de Engenharia</title>
+    <!-- TikTok Verification Master Keys -->
+    <meta name="tiktok-developers-site-verification" content="VzZQZ1ez00iutP575e0gprCIV1Ga4KxR" />
+    <meta name="tiktok-developers-site-verification" content="2c0RYHb3NPc64dFZg4UcqIEk3k2mxWRO" />
+    <meta name="tiktok-developers-site-verification" content="g0Gcu2Xjv4jIDrGDQEEtTJeFLZuhHpws" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo-area">
+            <h1>DL <span>Partner™</span></h1>
+        </div>
+        <nav class="nav-links">
+            <a href="#services">Ecossistema</a>
+            <a href="#sla">Garantia Vitalícia</a>
+        </nav>
+        <div class="cta-nav">
+            <button class="btn-primary" onclick="scrollToContact()">Acionar Especialista</button>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="hero-content">
+                <span class="badge">O Padrão Ouro para Síndicos</span>
+                <h2 class="hero-title">O Fim das Queimas Surpresa e Manutenções Abusivas.</h2>
+                <p class="hero-subtitle">
+                    O <strong>DL Partner™</strong> é o serviço de "Seguro de Hardware" (SLA em até 8 horas) mais avançado do Rio de Janeiro. Esqueça orçamentos surpresas para câmeras quebradas, painéis queimados ou motores de portão pifados. Seu ativo em funcionamento contínuo, ou nós trocamos em tempo recorde.
+                </p>
+                <div class="hero-buttons">
+                    <button class="btn-glow" onclick="scrollToContact()">Quero Blindar Meu Condomínio</button>
+                    <a href="#features" class="btn-secondary">Explorar Vertical Técnica</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="glass-mockup">
+                    <div class="mockup-header">
+                        <span class="dot red"></span>
+                        <span class="dot yellow"></span>
+                        <span class="dot green"></span>
+                    </div>
+                    <div class="mockup-body">
+                        <h3>Status Operacional</h3>
+                        <div class="status-bar">
+                            <span>SLA 8 Horas:</span>
+                            <div class="progress-bar"><div class="fill green-fill" style="width:100%"></div></div>
+                        </div>
+                        <div class="status-bar">
+                            <span>Troca de Hardware (Garantia):</span>
+                            <div class="progress-bar"><div class="fill blue-fill" style="width:100%"></div></div>
+                        </div>
+                        <div class="status-sys">
+                            <span class="sys-badge">🛡️ Protegido pela Aninha AI</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Grade de Confiança -->
+        <section id="features" class="b2b-metrics">
+            <div class="metric-card">
+                <h2>R$ 0</h2>
+                <p>Custo extra com a reposição do hardware coberto pelo DL Partner™.</p>
+            </div>
+            <div class="metric-card">
+                <h2>8 Horas</h2>
+                <p>Tempo de Resposta Acordado (SLA Técnico On-Site).</p>
+            </div>
+            <div class="metric-card">
+                <h2>99.9%</h2>
+                <p>Tempo de Atividade (Uptime) Garantido das Câmeras e Catracas.</p>
+            </div>
+        </section>
+
+        <!-- Vertical de Serviços -->
+        <section id="services" class="services-grid">
+            <div class="section-title">
+                <h2>Integração Total com Nossas Verticais Técnicas</h2>
+                <p>O DL Partner™ oferece suporte preventivo vitalício para todas as camadas de engenharia abaixo.</p>
+            </div>
+            <div class="cards-container">
+                <div class="glass-card">
+                    <div class="icon-wrapper blue">⚡</div>
+                    <h3>DL Volt™ & VoltCharge™</h3>
+                    <p>Manutenção preventiva absoluta em retrofits elétricos, quadros QDCs e recarregadores EV.</p>
+                </div>
+                <div class="glass-card">
+                    <div class="icon-wrapper red">🛡️</div>
+                    <h3>DL Guardião™ & Fortress™</h3>
+                    <p>SLA Rigoroso para CFTV Forense e Portarias Autônomas. Câmera queimada? Trocamos sem custos ao síndico.</p>
+                </div>
+                <div class="glass-card">
+                    <div class="icon-wrapper green">☀️</div>
+                    <h3>DL EcoVolt Solar™</h3>
+                    <p>Mapeamento e monitoramento ativo do inversor fotovoltaico e painéis no telhado da instituição.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Webhook Trigger (N8N) -->
+        <section id="contact" class="call-to-action">
+            <div class="cta-box">
+                <h2>Diga Adeus às Despesas Inesperadas.</h2>
+                <p>Acione a nossa equipe de Inteligência para agendar uma vistoria de viabilidade de implantação.</p>
+                
+                <form id="leadForm" class="b2b-form" onsubmit="submitWebhook(event)">
+                    <div class="input-group">
+                        <input type="text" id="nome_contato" placeholder="Nome Completo (Síndico/Gestor)" required>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" id="telefone" placeholder="WhatsApp Corporativo" required>
+                    </div>
+                    <div class="input-group">
+                        <textarea id="mensagem" placeholder="Breve relato da sua dor (ex: Queima constante de placas de motor)..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-glow full-w">Acionar Avaliação Técnica</button>
+                    <p id="formStatus" style="display:none; color: #4ade80; margin-top: 15px;">Lead Qualificado processado. Especialista acionado com sucesso!</p>
+                </form>
+
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 DL Soluções Condominiais LTDA. Tecnologia alimentada por I.A.</p>
+        <div class="legal-links">
+            <a href="/lgpd-gdpr/">LGPD e Privacidade</a>
+            <a href="/politica-de-privacidade/">Termos de Serviço</a>
+        </div>
+    </footer>
+
+    <script>
+        function scrollToContact() {
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function submitWebhook(e) {
+            e.preventDefault();
+            const payload = {
+                origem: "site_dl_partner_b2b",
+                nome_contato: document.getElementById('nome_contato').value,
+                telefone: document.getElementById('telefone').value,
+                mensagem: document.getElementById('mensagem').value
+            };
+
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = "Processando no Motor I.A...";
+            btn.disabled = true;
+
+            try {
+                // Esse é exatamente o seu nó Verde (Webhook) lá do N8N 
+                const response = await fetch("https://n8n.dlsolucoescondominiais.com.br/webhook/dl-pre-receptor", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                
+                if(response.ok) {
+                    document.getElementById('formStatus').style.display = 'block';
+                    e.target.reset();
+                } else {
+                    document.getElementById('formStatus').innerText = "Falha no envio HTTP.";
+                    document.getElementById('formStatus').style.color = "red";
+                    document.getElementById('formStatus').style.display = 'block';
+                }
+            } catch (err) {
+                console.error(err);
+                document.getElementById('formStatus').innerText = "Erro na rede. Tente via WhatsApp.";
+                document.getElementById('formStatus').style.color = "red";
+                document.getElementById('formStatus').style.display = 'block';
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

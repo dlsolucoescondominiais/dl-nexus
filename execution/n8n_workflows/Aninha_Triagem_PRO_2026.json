@@ -5,7 +5,8 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "aninha-triagem-leads",
-        "options": {}
+        "options": {},
+        "authentication": "headerAuth"
       },
       "id": "e45dc112-2c64-4e78-90aa-bd8903c73489",
       "name": "Webhook Trigger",

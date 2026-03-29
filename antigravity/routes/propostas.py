@@ -62,3 +62,28 @@ async def gerar_e_auditar_proposta(req: PropostaRequest):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro no pipeline de propostas: {str(e)}")
+
+class ArtigoRequest(BaseModel):
+    prompt_gerador: str
+    tema: Optional[str] = "Geral"
+
+@router.post("/gerar-artigo")
+async def gerar_artigo_redes_sociais(req: ArtigoRequest):
+    """
+    Endpoint para geração de artigos técnicos e persuasivos para redes sociais.
+    Consumido pelo Workflow 013 do n8n.
+    """
+    try:
+        # Aqui, idealmente, você chamaria um Agente de Marketing (ex: openai ou anthropic)
+        # Para fins de simulação/resposta imediata (até plugar o LLM de marketing real):
+
+        texto_gerado = f"🛠️ Você sabia que a manutenção preventiva de {req.tema} pode reduzir custos do seu condomínio em até 30%? \n\nNa DL Soluções Condominiais, nossos especialistas (supervisionados pelo Tecnólogo Diogo) garantem laudos técnicos precisos e execuções impecáveis. \n\nNão deixe a segurança do seu prédio para depois. Fale com a DL Soluções hoje mesmo e agende uma vistoria!\n\n#DLSolucoes #SindicanciaProfissional #ManutencaoCondominial #{req.tema.replace(' ', '')}"
+
+        return {
+            "status": "sucesso",
+            "tema_solicitado": req.tema,
+            "texto_artigo": texto_gerado
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro ao gerar artigo: {str(e)}")

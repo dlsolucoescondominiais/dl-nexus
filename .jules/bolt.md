@@ -1,0 +1,3 @@
+## 2024-04-01 - [Google Drive API Caching]
+**Learning:** Checking for folder existence in Google Drive API multiple times during batch processing scripts (like `agente_zelador.py` and `agente_arquivista.py`) causes N+1 queries. We can eliminate duplicate network calls and prevent rate limiting by implementing a simple in-memory dictionary cache `_folder_id_cache` keyed by `(parent_id, folder_name)` or `(ARCHIVE_FOLDER_ID, folder_name)`.
+**Action:** Always implement dictionary caching for folder ID lookups when recursively or repeatedly querying the Google Drive API in batch processing scripts.

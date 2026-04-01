@@ -1,0 +1,3 @@
+## 2024-03-24 - [Google Drive API Directory Lookup Caching]
+**Learning:** Repeatedly checking for folder existence using `service.files().list(q=query)` is a major bottleneck in processing multiple files/images. Doing this without a cache leads to O(N * depth) API calls (N = number of files, depth = nested folders like category/year/month). This can cause severe rate limits and slow down the processing scripts significantly.
+**Action:** Implement a simple in-memory dictionary cache (e.g. `_pasta_cache`) keyed by `f"{parent_id}_{folder_name}"` to store and reuse retrieved folder IDs within the same execution cycle.

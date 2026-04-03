@@ -2,7 +2,6 @@ import os
 import sys
 import io
 import datetime
-import requests
 from google import genai
 from googleapiclient.http import MediaIoBaseDownload
 from dotenv import load_dotenv

@@ -4,6 +4,7 @@ volumes:
   caddy_data: {}
   caddy_config: {}
   n8n_data: {}
+  picoclaw_data: {}
 
 services:
   caddy:
@@ -37,3 +38,12 @@ services:
       - n8n_data:/home/node/.n8n
     depends_on:
       - caddy
+
+  picoclaw:
+    image: ghcr.io/sipeed/picoclaw:latest # Imagem de container padrão do projeto
+    restart: always
+    ports:
+      - "18800:18800" # Porta da interface web exposta na VPS
+      - "8080:8080"   # Porta nativa da API exposta na VPS
+    volumes:
+      - picoclaw_data:/app/data

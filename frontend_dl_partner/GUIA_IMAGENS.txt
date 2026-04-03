@@ -1,0 +1,59 @@
+# ═══════════════════════════════════════════════════════════════
+# GUIA DE IMAGENS — DL Soluções Condominiais Site v3
+# Salve todos os arquivos em:
+# d:\AntiGravity\projeto_01\frontend_dl_partner\assets\
+# ═══════════════════════════════════════════════════════════════
+
+━━━ HERO (Fundo principal) ━━━
+  Arquivo: hero_dl_parceiro.jpg
+  Foto:    Solar carport + técnico com tablet + Pão de Açúcar sob marquise DL Partner
+           (1ª foto do 2º lote enviado)
+
+━━━ LOGO ━━━
+  Arquivo: logo_dl.png
+  Foto:    Logo DL com círculos solar/raio/câmera + "Soluções Condominiais"
+
+━━━ SERVIÇOS — Cards ━━━
+
+  service_eletrica_curto.jpg
+  → CREA-RJ Diogo Luiz + quadro elétrico com curto circuito faíscas
+    (1ª foto do 3º lote — foto do curto/faíscas com carimbo CREA)
+
+  service_solar_inversor.jpg
+  → Técnico DL com inversor SolaX + Pão de Açúcar ao fundo
+    (3ª foto do 2º lote)
+
+  service_cftv_sindico.jpg
+  → Síndico/gestor com tablet mostrando DL Guardião (painel de câmeras)
+    (3ª foto do 3º lote — homem de camisa azul com tablet)
+
+  service_mobgate.jpg
+  → Screenshot do app MobGate — "Casa GINO 75" com botões Portão/Porta
+    (1ª foto do 3º lote — tela de celular com app)
+
+  service_incendio_real.jpg  → (gerada por IA — já na pasta brain/)
+  service_ev_rj.jpg          → Técnico EV charger externo + Pão de Açúcar (2ª do 2º lote)
+
+━━━ PORTFÓLIO DESTAQUE (full-width) ━━━
+  portfolio_solar_aereo.jpg
+  → Vista aérea drone solar carport com Pedra da Gávea e oceano
+    (5ª foto do 2º lote)
+
+━━━ DIFERENCIAIS / CREDENCIAIS ━━━
+  crea_handshake.jpg
+  → Aperto de mão técnico DL + engenheiro com fundo desfocado
+    Logo DL + selo CREA-RJ no canto
+    (4ª foto do 3º lote — handshake com DL e CREA-RJ)
+
+━━━ OPCIONAIS (outras seções futuras) ━━━
+  condo_rj.jpg               → Condomínio de luxo RJ ao pôr do sol (4ª foto 2º lote)
+  solar_carport_equipe.jpg   → Equipe instalando solar carport com prédios (5ª foto 1º lote)
+  solar_topo_rj.jpg          → Técnico instalando painel no telhado c/ skyline (3ª foto 1º lote)
+  service_ev_garagem.jpg     → Técnico com furadeira em garagem (2ª foto 1º lote)
+  service_acesso_carro.jpg   → Carro c/ app DL e portão bluetooth (4ª foto 1º lote)
+
+═══════════════════════════════════════════════════════════════
+INFORMAÇÃO CRÍTICA DESCOBERTA NAS IMAGENS:
+  Diogo Luiz de Oliveira — CREA-RJ Reg. 2022106230
+  (já adicionada ao site automaticamente)
+═══════════════════════════════════════════════════════════════

@@ -30,12 +30,33 @@ def main():
     query_mes = f"'{ano_folders[0]['id']}' in parents and trashed=false"
     mes_folders = service.files().list(q=query_mes, fields="files(id, name)").execute().get('files', [])
     
+    def batch_callback(request_id, response, exception):
+        if exception is not None:
+            print(f"Erro na requisição batch {request_id}: {exception}")
+        else:
+            pass # Sucesso
+
+    batch = service.new_batch_http_request(callback=batch_callback)
+    request_count = 0
+
     for mf in mes_folders:
         query_files = f"'{mf['id']}' in parents and trashed=false"
         arquivos = service.files().list(q=query_files, fields="files(id, name)").execute().get('files', [])
         for a in arquivos:
-            print(f"Voltando para root: {a['name']}")
-            service.files().update(fileId=a['id'], addParents='root', removeParents=mf['id']).execute()
+            print(f"Adicionando ao batch: voltando para root: {a['name']}")
+            update_req = service.files().update(fileId=a['id'], addParents='root', removeParents=mf['id'])
+            batch.add(update_req)
+            request_count += 1
+
+            if request_count >= 100:
+                print(f"Executando batch de {request_count} requisições...")
+                batch.execute()
+                batch = service.new_batch_http_request(callback=batch_callback)
+                request_count = 0
+
+    if request_count > 0:
+        print(f"Executando batch final de {request_count} requisições...")
+        batch.execute()
 
 if __name__ == '__main__':
     main()

@@ -1,63 +1,424 @@
 {
-  "name": "001_webhook_receptor",
+  "name": "001_webhook_receptor_enterprise",
   "nodes": [
     {
       "parameters": {
         "httpMethod": "POST",
         "path": "dl-receptor",
-        "options": {}
+        "authentication": "headerAuth",
+        "responseMode": "onReceived",
+        "options": {
+          "rateLimit": {
+            "limit": 10,
+            "interval": 60000
+          }
+        }
       },
-      "id": "wh-receptor-01",
-      "name": "Webhook Entradas",
+      "id": "webhook-entrada",
+      "name": "Meta API (Spam Protected)",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [
-        250,
-        300
-      ]
+      "position": [0, 300]
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-aninha",
-        "sendBody": true,
-        "bodyParameters": {
-          "parameters": [
+        "promptType": "define",
+        "text": "={{ $json.body.entry[0].changes[0].value.messages[0].text.body }}",
+        "options": {
+          "systemMessage": "Você é a Inteligência Artificial de Triagem da DL Soluções Condominiais.\nClassifique a intenção e o tipo de serviço exigido na mensagem. \nRetorne um JSON com: {\"categoria\": \"Emergencia_eletrica|Incendio_alarme|Energia_solar|Infra_rede|Seguranca_eletronica|Controle_acesso|Portaria_remota|Carregador_veicular|Escola|Condominio|Concorrencia|Lead_perdido|Sem_perfil\"}\n"
+        }
+      },
+      "id": "chain-gemini-triagem",
+      "name": "Triagem Avançada (Gemini Flash)",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "model": "models/gemini-2.5-flash"
+      },
+      "id": "llm-gemini-triagem",
+      "name": "Google Gemini",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [250, 500]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ JSON.parse($json.text).categoria }}",
+        "rules": {
+          "rules": [
             {
-              "name": "mensagem_original",
-              "value": "={{ $json.body.message.content || $json.body.mensagem }}"
+              "value2": "Emergencia_eletrica",
+              "output": 0
             },
             {
-              "name": "telefone",
-              "value": "={{ $json.body.sender.phone || $json.body.telefone }}"
+              "value2": "Incendio_alarme",
+              "output": 0
             },
             {
-              "name": "nome_contato",
-              "value": "={{ $json.body.sender.name || $json.body.nome }}"
+              "value2": "Infra_rede",
+              "output": 0
             },
             {
-              "name": "origem",
-              "value": "={{ $json.body.source || 'indeterminado' }}"
+              "value2": "Energia_solar",
+              "output": 1
+            },
+            {
+              "value2": "Portaria_remota",
+              "output": 1
+            },
+            {
+              "value2": "Sem_perfil",
+              "output": 2
+            }
+          ]
+        },
+        "fallbackOutput": 1
+      },
+      "id": "switch-roteamento",
+      "name": "Roteamento Otimizado",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Meta API (Spam Protected)').item.json.body.entry[0].changes[0].value.messages[0].text.body }}",
+        "options": {
+          "systemMessage": "Você é o Tecnólogo em Infraestrutura e Diretor da DL Soluções Condominiais (Zonas Sul, Sudoeste, Oeste, Norte do RJ). \nO cliente tem uma URGÊNCIA TÉCNICA (ex: elétrica, incêndio). Peça calma. Diga que temos CREA-RJ e ART. Convide para uma 'Avaliação Técnica' imediata. Nunca diga visita técnica e nunca chame a equipe de engenheiros."
+        }
+      },
+      "id": "chain-claude-urgencia",
+      "name": "Resposta Técnica (Sonnet)",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1,
+      "position": [800, 100],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": "claude-3-5-sonnet-20240620"
+      },
+      "id": "llm-claude-urgencia",
+      "name": "Anthropic Claude",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1,
+      "position": [800, 250]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Meta API (Spam Protected)').item.json.body.entry[0].changes[0].value.messages[0].text.body }}",
+        "options": {
+          "systemMessage": "Você é o Executivo B2B da DL Soluções Condominiais. Foco: Contratos recorrentes e OPEX. Reforce que temos CREA-RJ, que somos Tecnólogos e atendemos Colégios e Condomínios no RJ. Venda segurança jurídica e economia. Convide para uma 'Avaliação Técnica'."
+        }
+      },
+      "id": "chain-gpt4-comercial",
+      "name": "Resposta Comercial (GPT-4o)",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1,
+      "position": [800, 450],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o"
+      },
+      "id": "llm-gpt4-comercial",
+      "name": "OpenAI GPT-4o",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [800, 600]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Meta API (Spam Protected)').item.json.body.entry[0].changes[0].value.messages[0].text.body }}",
+        "options": {
+          "systemMessage": "A API principal falhou. Peça desculpas educadamente como a Assistente Aninha da DL Soluções, informe que o sistema técnico está passando por manutenção preventiva e que o Diogo Luiz entrará em contato em instantes."
+        }
+      },
+      "id": "chain-fallback-openai-mini",
+      "name": "Fallback 1 (GPT-4o Mini)",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1,
+      "position": [1100, 100],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini"
+      },
+      "id": "llm-gpt4-mini",
+      "name": "OpenAI Mini",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [1100, 250]
+    },
+    {
+      "parameters": {
+        "value": "Olá! Nosso cérebro de IA está temporariamente indisponível. Sou o assistente de contingência. A sua Avaliação Técnica será agendada assim que nosso Especialista em Infraestrutura visualizar sua mensagem."
+      },
+      "id": "set-contingencia",
+      "name": "Contingência Final (Texto Fixo)",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [1400, 100]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list"
+        },
+        "table": {
+          "__rl": true,
+          "value": "mensagens_whatsapp",
+          "mode": "list"
+        },
+        "columns": "telefone,mensagem,direcao,ia_utilizada,criado_em",
+        "dataMode": "define",
+        "values": {
+          "values": [
+            {
+              "column": "telefone",
+              "value": "={{ $('Meta API (Spam Protected)').item.json.body.entry[0].changes[0].value.messages[0].from }}"
+            },
+            {
+              "column": "mensagem",
+              "value": "={{ $json.text || $json.value }}"
+            },
+            {
+              "column": "direcao",
+              "value": "saida"
+            },
+            {
+              "column": "ia_utilizada",
+              "value": "={{ $('Resposta Técnica (Sonnet)').isExecuted ? 'claude_35_sonnet' : $('Resposta Comercial (GPT-4o)').isExecuted ? 'gpt_4o' : $('Fallback 1 (GPT-4o Mini)').isExecuted ? 'gpt_4o_mini' : 'fallback_padrao' }}"
+            },
+            {
+              "column": "criado_em",
+              "value": "={{ new Date().toISOString() }}"
             }
           ]
         }
       },
-      "id": "call-aninha-01",
-      "name": "Enviar para ANINHA (002)",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.1,
-      "position": [
-        500,
-        300
-      ]
+      "id": "supabase-insert-msg",
+      "name": "Persistência Pipeline",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1700, 300],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list"
+        },
+        "table": {
+          "__rl": true,
+          "value": "dl_erros_criticos",
+          "mode": "list"
+        },
+        "columns": "modulo,mensagem_erro",
+        "dataMode": "define",
+        "values": {
+          "values": [
+            {
+              "column": "modulo",
+              "value": "supabase_api"
+            },
+            {
+              "column": "mensagem_erro",
+              "value": "={{ $error.message }}"
+            }
+          ]
+        }
+      },
+      "id": "supabase-error-queue",
+      "name": "Salvar Fila de Erros",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1950, 300]
     }
   ],
   "connections": {
-    "Webhook Entradas": {
+    "Meta API (Spam Protected)": {
       "main": [
         [
           {
-            "node": "Enviar para ANINHA (002)",
+            "node": "Triagem Avançada (Gemini Flash)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Triagem Avançada (Gemini Flash)": {
+      "main": [
+        [
+          {
+            "node": "Roteamento Otimizado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Triagem Avançada (Gemini Flash)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Roteamento Otimizado": {
+      "main": [
+        [
+          {
+            "node": "Resposta Técnica (Sonnet)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Resposta Comercial (GPT-4o)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Resposta Comercial (GPT-4o)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resposta Técnica (Sonnet)": {
+      "main": [
+        [
+          {
+            "node": "Persistência Pipeline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ],
+      "error": [
+        [
+          {
+            "node": "Fallback 1 (GPT-4o Mini)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anthropic Claude": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Resposta Técnica (Sonnet)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resposta Comercial (GPT-4o)": {
+      "main": [
+        [
+          {
+            "node": "Persistência Pipeline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ],
+      "error": [
+        [
+          {
+            "node": "Fallback 1 (GPT-4o Mini)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI GPT-4o": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Resposta Comercial (GPT-4o)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fallback 1 (GPT-4o Mini)": {
+      "main": [
+        [
+          {
+            "node": "Persistência Pipeline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ],
+      "error": [
+        [
+          {
+            "node": "Contingência Final (Texto Fixo)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Fallback 1 (GPT-4o Mini)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contingência Final (Texto Fixo)": {
+      "main": [
+        [
+          {
+            "node": "Persistência Pipeline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Persistência Pipeline": {
+      "error": [
+        [
+          {
+            "node": "Salvar Fila de Erros",
             "type": "main",
             "index": 0
           }

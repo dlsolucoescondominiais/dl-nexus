@@ -26,22 +26,6 @@ export default function Dashboard() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchDashboardData();
-
-    // Subscribing ao Supabase Realtime V6
-    const subscription = supabase
-      .channel('public:leads')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, payload => {
-        fetchDashboardData();
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(subscription);
-    };
-  }, []);
-
   const fetchDashboardData = async () => {
     setLoading(true);
 
@@ -70,6 +54,22 @@ export default function Dashboard() {
 
     setLoading(false);
   };
+
+  useEffect(() => {
+    fetchDashboardData();
+
+    // Subscribing ao Supabase Realtime V6
+    const subscription = supabase
+      .channel('public:leads')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, payload => {
+        fetchDashboardData();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
+  }, []);
 
   if (loading && leads.length === 0) {
     return <div className="p-8 text-center text-slate-500">Inicializando DL Commander...</div>;

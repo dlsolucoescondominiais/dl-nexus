@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from antigravity.routes import aninha
 from antigravity.routes import marketing
 from antigravity.routes import mobile
+from antigravity.routes import infra
 
 # Carrega variáveis de ambiente
 load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env'))
@@ -69,6 +70,7 @@ async def verify_supabase_jwt(request: Request):
 app.include_router(aninha.router, dependencies=[Depends(verify_supabase_jwt)])
 app.include_router(marketing.router, dependencies=[Depends(verify_supabase_jwt)])
 app.include_router(mobile.router, dependencies=[Depends(verify_supabase_jwt)])
+app.include_router(infra.router, dependencies=[Depends(verify_supabase_jwt)])
 
 @app.get("/health")
 def health_check():

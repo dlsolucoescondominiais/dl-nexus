@@ -5,6 +5,6 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   build: {
-    outDir: 'build' // Muitas plataformas como Cloudflare Pages e React Create App assumem 'build' por padrão
+    outDir: 'dist'
   }
 })

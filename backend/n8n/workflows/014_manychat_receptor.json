@@ -1,0 +1,82 @@
+{
+  "name": "014_manychat_receptor",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "manychat-entrada",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-manychat",
+      "name": "ManyChat Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://api:8000/api/aninha/triagem",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "nome_condominio",
+              "value": "={{ $json.body.nome }}"
+            },
+            {
+              "name": "telefone",
+              "value": "={{ $json.body.telefone || '00000000000' }}"
+            },
+            {
+              "name": "email",
+              "value": "lead_manychat@nexus.local"
+            },
+            {
+              "name": "mensagem_original",
+              "value": "={{ $json.body.mensagem_original }}"
+            },
+            {
+              "name": "origem",
+              "value": "manychat_social"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-aninha-triagem",
+      "name": "Enviar para Aninha (Antigravity)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        500,
+        300
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "ManyChat Webhook": {
+      "main": [
+        [
+          {
+            "node": "Enviar para Aninha (Antigravity)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f789d231-1a2b-4c5d-8e9f-0a1b2c3d4e5f",
+  "id": "w_014_manychat_receptor",
+  "tags": []
+}

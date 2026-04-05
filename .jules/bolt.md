@@ -1,0 +1,3 @@
+## 2026-04-05 - Optimize data aggregation with single-pass loops
+**Learning:** For Python performance optimizations when grouping/aggregating data, replacing multiple generator comprehensions (which each scan the dataset) with a single-pass loop reduces network or array traversal overhead from O(M*N) to O(N). Similarly in React, using a single `reduce` pass over arrays avoids multiple O(N) `filter().length` passes, improving rendering performance during data hydration.
+**Action:** Always favor single-pass loops/reduces to perform multiple aggregations simultaneously over data sets instead of executing multiple separate O(N) operations.

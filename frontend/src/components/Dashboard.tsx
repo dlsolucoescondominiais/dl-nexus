@@ -57,7 +57,7 @@ export default function Dashboard() {
 
     // Calcula KPIs do Funil com uma única passagem (O(N) ao invés de O(3N))
     const total = leadsData?.length || 0;
-    const kpiCounts = leadsData?.reduce(
+    const kpiCounts = (leadsData || []).reduce(
       (acc, lead) => {
         if (lead.pipeline_stage === 'negociacao') acc.negociando++;
         else if (lead.pipeline_stage === 'fechado_ganho') acc.ganhos++;
@@ -65,7 +65,7 @@ export default function Dashboard() {
         return acc;
       },
       { negociando: 0, ganhos: 0, recorrentes: 0 }
-    ) || { negociando: 0, ganhos: 0, recorrentes: 0 };
+    );
 
     setKpis({
       total_leads: total,

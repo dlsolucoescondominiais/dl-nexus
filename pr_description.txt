@@ -1,0 +1,4 @@
+🎯 **What:** Removed the unused `import requests` statement from `execution/agente_zelador.py` (line 5).
+💡 **Why:** Static analysis flagged this import as unused. Removing it slightly reduces the file size, cleans up the namespace, and improves overall code readability and maintainability.
+✅ **Verification:** Ran syntax check using `python3 -m py_compile execution/agente_zelador.py` to confirm no syntax errors were introduced. Requested Code Review to ensure changes do not break existing logic.
+✨ **Result:** The code health issue is resolved, leaving the file cleaner without modifying any underlying behavior.

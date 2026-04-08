@@ -323,7 +323,7 @@ LAYOUT:
      CTA: "Conhecer DL Gatekeeper →"
 
   5. DL Alerta™ — Prevenção de Incêndio
-     "Sistemas de detecção e alarme eletrônico, sprinklers, sinalização de emergência. Adequação para AVCB/CBMERJ."
+     "Sistemas eletrônicos de detecção avançada, centrais de alarme e iluminação de emergência. Infraestrutura de precisão."
      CTA: "Saiba mais →"
 
   6. DL VoltCharge™ — Carregadores EV

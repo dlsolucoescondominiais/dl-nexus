@@ -2,11 +2,12 @@ import os
 import uuid
 from datetime import datetime
 import requests
-from fastapi import APIRouter, UploadFile, File, BackgroundTasks, HTTPException
+from fastapi import APIRouter, UploadFile, File, Form, BackgroundTasks, HTTPException
+from pydantic import BaseModel
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaIoBaseUpload
 from google import genai
+from typing import Optional
 
 router = APIRouter(prefix="/api/nexus", tags=["MOBILE", "INGESTÃO"])
 
@@ -90,38 +91,52 @@ def registrar_no_supabase(nome_salvo: str, link_drive: str):
     except Exception as e:
         print(f"Erro ao registrar no Supabase: {e}")
 
+class MoveFileRequest(BaseModel):
+    file_id: str
+    filename: str
+    mime_type: str
+
 @router.post("/organizar-mobile")
-async def organizar_mobile(bg_tasks: BackgroundTasks, file: UploadFile = File(...)):
+async def organizar_mobile(request: MoveFileRequest, bg_tasks: BackgroundTasks):
+    """
+    Move e renomeia um arquivo que JÁ ESTÁ no Google Drive (ex: upado pelo app nativo do celular
+    e pego pelo N8N, ou passado o ID para cá).
+    Evita duplicação fazendo update de parents no arquivo existente.
+    """
     if not INBOX_FOLDER_ID:
         raise HTTPException(status_code=500, detail="INBOX_FOLDER_ID não configurado.")
 
-    content = await file.read()
-    mime_type = file.content_type
-    extensao = os.path.splitext(file.filename)[1].lower()
+    mime_type = request.mime_type
+    extensao = os.path.splitext(request.filename)[1].lower()
 
     is_image = mime_type.startswith('image/')
     is_doc = mime_type.startswith('application/') or mime_type.startswith('text/')
     is_music = mime_type.startswith('audio/')
 
     data_atual = datetime.now().strftime("%Y%m%d")
-    file_id = str(uuid.uuid4())[:8]
+    short_id = str(uuid.uuid4())[:8]
 
     if is_image:
-        # Padroniza como JPG e usa terminologia "Avaliação Técnica" ao invés de visita técnica
-        novo_nome = f"dl_avaliacao_tecnica_{data_atual}_{file_id}.jpg"
+        # Mantém a extensão original (ex: .png, .jpeg) para não quebrar o arquivo
+        novo_nome = f"dl_avaliacao_tecnica_{data_atual}_{short_id}{extensao}"
         pasta_destino_nome = "02_Avaliacoes_Tecnicas_Campo"
     elif is_doc:
-        novo_nome = f"dl_doc_administrativo_{file.filename}"
-        pasta_destino_nome = analisar_tipo_documento(file.filename)
+        novo_nome = f"dl_doc_administrativo_{request.filename}"
+        pasta_destino_nome = analisar_tipo_documento(request.filename)
     elif is_music:
-        novo_nome = file.filename
+        novo_nome = request.filename
         pasta_destino_nome = "07_Midia_e_Pessoal/Musicas" # Pode precisar lidar com subpastas
     else:
-        novo_nome = file.filename
+        novo_nome = request.filename
         pasta_destino_nome = "03_Outros"
 
     try:
         service = get_drive_service()
+
+        # Obter parents atuais do arquivo para remover
+        file_meta = service.files().get(fileId=request.file_id, fields='parents, webViewLink').execute()
+        previous_parents = ",".join(file_meta.get('parents', []))
+        link_drive = file_meta.get('webViewLink', '')
 
         # Tratamento especial para pasta aninhada (Musicas)
         if "/" in pasta_destino_nome:
@@ -133,30 +148,24 @@ async def organizar_mobile(bg_tasks: BackgroundTasks, file: UploadFile = File(..
         else:
             pasta_destino_id = obter_ou_criar_pasta(service, pasta_destino_nome, INBOX_FOLDER_ID)
 
-        # Upload
-        file_metadata = {
-            'name': novo_nome,
-            'parents': [pasta_destino_id]
-        }
+        # Mover e Renomear o arquivo
+        file_metadata = {'name': novo_nome}
 
-        from io import BytesIO
-        media = MediaIoBaseUpload(BytesIO(content), mimetype=mime_type, resumable=True)
-
-        arquivo_drive = service.files().create(
+        arquivo_drive = service.files().update(
+            fileId=request.file_id,
+            addParents=pasta_destino_id,
+            removeParents=previous_parents,
             body=file_metadata,
-            media_body=media,
-            fields='id, webViewLink'
+            fields='id, parents, name'
         ).execute()
-
-        link_drive = arquivo_drive.get('webViewLink', '')
 
         # Registra no banco e notifica
         bg_tasks.add_task(registrar_no_supabase, novo_nome, link_drive)
 
-        mensagem = "Diogo, infraestrutura/arquivo processado com sucesso!"
+        mensagem = "Diogo, 1 novo arquivo do smartphone foi processado e organizado no Drive!"
         bg_tasks.add_task(disparar_notificacao_background, mensagem)
 
-        return {"status": "success", "file_id": arquivo_drive.get('id'), "nome_salvo": novo_nome}
+        return {"status": "success", "file_id": arquivo_drive.get('id'), "nome_salvo": novo_nome, "pasta_id": pasta_destino_id}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

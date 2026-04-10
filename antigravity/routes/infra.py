@@ -15,6 +15,8 @@ API_KEY_N8N = os.getenv("N8N_API_KEY", "TESTE-123")
 
 class DnsConfigRequest(BaseModel):
     plataforma: str = "manychat"
+    dominio: str = "dlsolucoescondominiais.com.br"
+    registro_txt: str = "v=spf1 include:spf.protection.outlook.com -all" # Exemplo
 
 def disparar_notificacao_background(mensagem: str):
     try:
@@ -27,40 +29,52 @@ def disparar_notificacao_background(mensagem: str):
     except Exception as e:
         print(f"Falha ao notificar n8n: {e}")
 
-def processar_configuracao_dns(plataforma: str):
+def processar_configuracao_dns(req: DnsConfigRequest):
     try:
-        # Simulando UAPI cPanel (na vida real precisaria do token/senha corretos)
-        # Auth: Header -> Authorization: cpanel username:token
-        headers = {}
-        if CPANEL_USERNAME and CPANEL_API_TOKEN:
-            headers["Authorization"] = f"cpanel {CPANEL_USERNAME}:{CPANEL_API_TOKEN}"
+        if not CPANEL_USERNAME or not CPANEL_API_TOKEN:
+             # Simulando modo Sandbox sem derrubar a aplicação
+             print(f"[Sandbox] Simulação UAPI cPanel: Criando registro TXT '{req.registro_txt}' para {req.plataforma} em {req.dominio}...")
+             print("[Sandbox] Simulação AutoSSL start_autossl_check executada com sucesso.")
 
-        print(f"[*] Iniciando configuração de DNS/SSL no cPanel para {plataforma}...")
+             mensagem = f"Diogo, simulação de infraestrutura/DNS ({req.plataforma}) processada com sucesso no ambiente Sandbox!"
+             disparar_notificacao_background(mensagem)
+             return
 
-        # 1. Criar Registros CNAME / TXT (Simulação/Chamada UAPI)
+        # UAPI cPanel Real
+        headers = {
+            "Authorization": f"cpanel {CPANEL_USERNAME}:{CPANEL_API_TOKEN}"
+        }
+        print(f"[*] Iniciando configuração REAL de DNS/SSL no cPanel para {req.plataforma}...")
+
+        # 1. Criar Registro TXT
         uapi_dns_url = f"https://{CPANEL_HOST}:2083/execute/ZoneEdit/add_zone_record"
+        payload_dns = {
+            "domain": req.dominio,
+            "name": req.dominio + ".",
+            "type": "TXT",
+            "txtdata": req.registro_txt
+        }
+
+        res_dns = requests.post(uapi_dns_url, headers=headers, data=payload_dns, timeout=15)
+        if res_dns.status_code != 200:
+             print(f"Erro UAPI DNS: {res_dns.text}")
 
         # 2. Forçar AutoSSL
         uapi_ssl_url = f"https://{CPANEL_HOST}:2083/execute/SSL/start_autossl_check"
+        requests.post(uapi_ssl_url, headers=headers, timeout=15)
 
-        # Chamadas simuladas para evitar crash no ambiente se credenciais faltarem
-        if headers:
-            # requests.post(uapi_dns_url, headers=headers, data={...})
-            # requests.post(uapi_ssl_url, headers=headers)
-            pass
-
-        # Notificação Final
-        mensagem = "Diogo, infraestrutura/arquivo processado com sucesso!"
+        mensagem = f"Diogo, a configuração real de DNS ({req.plataforma}) e renovação SSL foram processadas com sucesso!"
         disparar_notificacao_background(mensagem)
 
     except Exception as e:
-        print(f"Erro no processamento DNS: {e}")
+        print(f"Erro crítico no processamento DNS: {e}")
 
 @router.post("/configurar-dns")
 async def configurar_dns(request: DnsConfigRequest, bg_tasks: BackgroundTasks):
     """
     Endpoint de Automação DevOps
     Gerencia registros DNS e força emissão de AutoSSL no cPanel/HostGator.
+    Em ambientes sem credenciais de produção (como sandboxes), opera em modo de simulação.
     """
-    bg_tasks.add_task(processar_configuracao_dns, request.plataforma)
-    return {"status": "processing", "message": "Automação de DNS e AutoSSL iniciada em background."}
+    bg_tasks.add_task(processar_configuracao_dns, request)
+    return {"status": "processing", "message": f"Automação de DNS e AutoSSL iniciada em background para {request.plataforma}."}

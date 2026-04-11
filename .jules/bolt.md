@@ -1,0 +1,3 @@
+## 2024-05-22 - [React Frontend] Optimize data aggregation with single-pass `reduce`
+**Learning:** Multiple array `.filter().length` calls inside a component recalculation block (especially when the data size grows, like leads or dashboard data) can quickly cause O(M*N) operations. In `Dashboard.tsx`, there were multiple iterations over the same array to compute metrics, which can be inefficient on larger datasets.
+**Action:** Always prefer using a single `reduce` pass to tally multiple aggregations at once. This reduces array traversal to O(N) and creates a more optimized component render cycle.

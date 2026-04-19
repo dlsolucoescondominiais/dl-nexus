@@ -17,6 +17,7 @@ import datetime
 import pathlib
 import time
 from textwrap import dedent
+import functools
 
 from PIL import Image, ImageDraw, ImageFont
 import imageio_ffmpeg
@@ -149,6 +150,7 @@ CRONOGRAMA = [
 SCOPES_DRIVE = ["https://www.googleapis.com/auth/drive"]
 
 
+@functools.lru_cache(maxsize=1)
 def _autenticar_google_drive():
     creds = None
     if GOOGLE_TOKEN_PATH.exists():

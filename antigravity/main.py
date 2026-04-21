@@ -68,6 +68,10 @@ async def verify_supabase_jwt(request: Request):
 app.include_router(aninha.router, dependencies=[Depends(verify_supabase_jwt)])
 app.include_router(marketing.router, dependencies=[Depends(verify_supabase_jwt)])
 
+@app.get("/")
+def read_root():
+    return {"status": "DL Nexus Online", "version": "3.0"}
+
 @app.get("/health")
 def health_check():
     return {"status": "online", "motor": "Antigravity", "versao": "2.0"}

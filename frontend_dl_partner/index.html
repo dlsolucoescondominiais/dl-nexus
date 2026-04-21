@@ -137,6 +137,7 @@
   <div class="nav-links">
     <a href="#para-quem">Para Quem</a>
     <a href="#servicos">Serviços</a>
+    <a href="#investimento">Investimento</a>
     <a href="#nexus">DL Nexus</a>
     <a href="#avaliacoes">Avaliações</a>
     <a href="#contato">Contato</a>
@@ -155,6 +156,7 @@
   <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
   <a href="#para-quem" onclick="closeMobileNav()">Para Quem</a>
   <a href="#servicos" onclick="closeMobileNav()">Serviços</a>
+  <a href="#investimento" onclick="closeMobileNav()">Investimento</a>
   <a href="#nexus" onclick="closeMobileNav()">DL Nexus</a>
   <a href="#avaliacoes" onclick="closeMobileNav()">Avaliações</a>
   <a href="#contato" onclick="closeMobileNav()">Contato</a>
@@ -169,7 +171,7 @@
   <div class="container">
     <div class="hero-content">
       <div class="hero-badge">
-        <span>Rio de Janeiro · Zona Sul, Norte, Oeste e Baixada</span>
+        <span>Rio de Janeiro · Zonas Norte, Sul, Sudoeste e Oeste</span>
       </div>
       <h1>
         A <span class="accent">Infraestrutura Técnica</span><br>
@@ -270,18 +272,17 @@
     <!-- Credencial visual: handshake DL + CREA -->
     <div class="credencial-banner reveal" style="margin-top:2.5rem; position:relative; border-radius:16px; overflow:hidden; border:1px solid var(--border);">
       <img src="assets/crea_handshake.jpg" alt="DL Soluções Condominiais credenciada CREA-RJ - Parceria com síndicos" loading="lazy"
-        style="width:100%; height:280px; object-fit:cover; object-position:center 30%; display:block; filter:brightness(0.55);">
-      <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:space-between; padding:2.5rem;">
-        <div>
+        style="width:100%; height:320px; object-fit:cover; object-position:center 30%; display:block; filter:brightness(0.5);">
+      <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:space-between; padding:2.5rem; background:linear-gradient(to right, rgba(13,17,23,0.7) 0%, rgba(13,17,23,0.2) 50%, transparent 100%);">
+        <div style="max-width:500px; backdrop-filter:blur(4px); background:rgba(13,17,23,0.2); padding:1.5rem; border-radius:12px;">
           <div class="section-tag" style="margin-bottom:0.75rem">Tecnólogo Registrado · CREA-RJ</div>
-          <h3 style="font-family:var(--font-head); font-size:1.6rem; font-weight:800; margin-bottom:0.5rem;">Diogo Luiz de Oliveira</h3>
-          <p style="color:var(--text-muted); font-size:0.95rem;">Reg. 2022106230 · Tecnólogo responsável técnico<br>Laudos, projetos e ART emitidos por profissional habilitado.</p>
+          <h3 style="font-family:var(--font-head); font-size:1.8rem; font-weight:800; margin-bottom:0.75rem; color:var(--text-main);">Diogo Luiz de Oliveira</h3>
+          <p style="color:#ffffff; font-size:1.05rem; font-weight:600; line-height:1.6; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Reg. 2022106230 · Tecnólogo responsável técnico<br>Laudos, projetos e ART emitidos por profissional habilitado.</p>
         </div>
-        <div style="text-align:right;">
-          <div style="font-size:2.5rem; margin-bottom:0.5rem;">🏅</div>
-          <div style="font-family:var(--font-head); color:var(--amber); font-weight:800; font-size:1.1rem;">CREA-RJ</div>
-          <div style="color:var(--text-muted); font-size:0.8rem;">Conselho Regional de<br>Engenharia e Agronomia</div>
-          <!-- CREA-RJ: Diogo é Tecnólogo, não Engenheiro -->
+        <div style="text-align:right; display:flex; flex-direction:column; align-items:flex-end;">
+          <img src="assets/logo_crea_rj.png" alt="Selo Oficial CREA-RJ" style="height:80px; width:auto; border-radius:4px; box-shadow:0 4px 15px rgba(0,0,0,0.5); margin-bottom:1rem;">
+          <div style="font-family:var(--font-head); color:var(--amber); font-weight:800; font-size:1.2rem; letter-spacing:0.05em;">CREA-RJ</div>
+          <div style="color:rgba(255,255,255,0.8); font-size:0.85rem; font-weight:600;">Conselho Regional de<br>Engenharia e Agronomia</div>
         </div>
       </div>
     </div>
@@ -378,57 +379,213 @@
     </div>
 
   </div>
+<!-- ══════════════════════════════════ INVESTIMENTO & PLANOS ══════════════════ -->
+<section class="investimento" id="investimento">
+  <div class="container">
+    <div class="pricing-header reveal">
+      <div class="section-tag">Transparência Técnica</div>
+      <h2 class="section-title">Investimento Inteligente em Infraestrutura</h2>
+      <p class="section-sub">Modelos de negócio flexíveis para valorização patrimonial imediata (CAPEX) ou gestão preventiva contínua (OPEX).</p>
+      
+      <div class="pricing-switch-wrap">
+        <button class="pricing-switch-btn active" onclick="switchPricing('capex', this)">Implantação (CAPEX)</button>
+        <button class="pricing-switch-btn" onclick="switchPricing('opex', this)">DL Partner (OPEX)</button>
+      </div>
+    </div>
+
+    <!-- CONTAINER CAPEX -->
+    <div id="container-capex" class="pricing-container active">
+      <div class="capex-grid reveal">
+        <!-- Segurança -->
+        <div class="capex-card">
+          <span class="price-tag">Segurança Forense</span>
+          <h3><span style="color:var(--amber)">◈</span> DL Guardião™</h3>
+          <span class="price-value">A partir de R$ 4.800,00</span>
+          <ul>
+            <li>Retrofit de micro-condomínios</li>
+            <li>NVR dedicado + HD WD Purple</li>
+            <li>Cabeamento 100% cobre (Sem canaletas)</li>
+            <li>Configuração de acesso remoto mobile</li>
+          </ul>
+        </div>
+        <!-- Elétrica -->
+        <div class="capex-card">
+          <span class="price-tag">Energia & Retrofit</span>
+          <h3><span style="color:var(--electric)">⚡</span> DL Volt™ / Solar</h3>
+          <span class="price-value">A partir de R$ 8.500,00</span>
+          <ul>
+            <li>Modernização de Centro de Medição (PC)</li>
+            <li>Projetos Solares (EcoVolt) desde R$ 25k</li>
+            <li>Emissão de ART e Laudo Técnico</li>
+            <li>Padrão ABNT NBR 5410 rigoroso</li>
+          </ul>
+        </div>
+        <!-- Mobilidade -->
+        <div class="capex-card">
+          <span class="price-tag">Mobilidade Elétrica</span>
+          <h3><span style="color:var(--electric)">⛽</span> DL VoltCharge™</h3>
+          <span class="price-value">R$ 4.500,00 <small>/ vaga</small></span>
+          <ul>
+            <li>Fornecimento de Wallbox Intelbras/WEG</li>
+            <li>Circuito dedicado com proteção DR</li>
+            <li>Balanceamento de carga do PC</li>
+            <li>Pronto para faturamento individual</li>
+          </ul>
+        </div>
+        <!-- Automação -->
+        <div class="capex-card">
+          <span class="price-tag">Acesso Digital</span>
+          <h3><span style="color:var(--amber)">📱</span> DL Gatekeeper™</h3>
+          <span class="price-value">A partir de R$ 1.500,00</span>
+          <ul>
+            <li>Hardware MobGate (Bluetooth/WiFi)</li>
+            <li>Portão pelo Smartphone (Sem Tags)</li>
+            <li>Gestão centralizada de usuários</li>
+            <li>Instalação industrial sem fiação exposta</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top:2rem; text-align:center; color:var(--text-subtle); font-size:0.85rem;" class="reveal">
+        <p>⚠️ Os valores acima são <strong>pisos referenciais competivivos</strong> para o Rio de Janeiro. Requer avaliação técnica local.</p>
+      </div>
+    </div>
+
+    <!-- CONTAINER OPEX -->
+    <div id="container-opex" class="pricing-container">
+      <div class="opex-selector reveal">
+        <p>Selecione o porte do seu condomínio:</p>
+        <div class="size-switch">
+          <button class="size-btn active" onclick="updateOpex('P', this)">Pequeno (Até 30 un.)</button>
+          <button class="size-btn" onclick="updateOpex('M', this)">Médio (31 a 100 un.)</button>
+          <button class="size-btn" onclick="updateOpex('G', this)">Grande (101 a 300 un.)</button>
+          <button class="size-btn" onclick="updateOpex('C', this)">Complexo (>300 un.)</button>
+        </div>
+      </div>
+
+      <div class="opex-grid reveal">
+        <!-- Basic -->
+        <div class="pricing-card">
+          <h4>Partner Basic</h4>
+          <span class="plan-sla">SLA: 48 Horas</span>
+          <div class="plan-price">
+            <span class="currency">R$</span>
+            <span class="amount" id="price-basic">400</span>
+            <span class="period">/mês</span>
+          </div>
+          <ul>
+            <li>Mão de obra inclusa p/ chamados</li>
+            <li>Avaliação técnica mensal</li>
+            <li>Relatório de status via Nexus</li>
+            <li>Peças faturadas à parte</li>
+          </ul>
+          <button class="btn-outline" style="width:100%" onclick="document.getElementById('contato').scrollIntoView()">Assinar Basic</button>
+        </div>
+
+        <!-- Master -->
+        <div class="pricing-card popular">
+          <div class="popular-tag">Melhor Custo-Benefício</div>
+          <h4>Partner Master</h4>
+          <span class="plan-sla">SLA: 24 Horas</span>
+          <div class="plan-price">
+            <span class="currency">R$</span>
+            <span class="amount" id="price-master">600</span>
+            <span class="period">/mês</span>
+          </div>
+          <ul>
+            <li><strong>Tudo do Basic +</strong></li>
+            <li>Garantia em infra menor (fontes/conectores)</li>
+            <li>2 avaliações técnicas mensais</li>
+            <li>Suporte prioritário via WhatsApp</li>
+          </ul>
+          <button class="btn-primary" style="width:100%" onclick="document.getElementById('contato').scrollIntoView()">Assinar Master</button>
+        </div>
+
+        <!-- Premium -->
+        <div class="pricing-card">
+          <h4>Partner Premium</h4>
+          <span class="plan-sla">SLA: 08 Horas (Fura-fila)</span>
+          <div class="plan-price">
+            <span class="currency">R$</span>
+            <span class="amount" id="price-premium">1.000</span>
+            <span class="period">/mês</span>
+          </div>
+          <ul>
+            <li><strong>Tudo do Master +</strong></li>
+            <li>Cobertura total de hardware (DVR/HD)</li>
+            <li>Check-up semanal presencial</li>
+            <li>Consultor de compliance dedicado</li>
+          </ul>
+          <button class="btn-outline" style="width:100%" onclick="document.getElementById('contato').scrollIntoView()">Assinar Premium</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Catálogo de Engenharia (Accordions) -->
+    <div class="tech-accordion reveal">
+      <div class="section-tag" style="background:var(--electric-dark); color:var(--electric);">Catálogo de Engenharia Avançada</div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" onclick="toggleAccordion(this)">Eixo DL Volt™: Energia e Mobilidade</button>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            Projetos de reengenharia elétrica, diagramas unifilares e balanceamento de fases. Modernização de Centros de Medição (PCs) para eliminação de risco de incêndio. Inclui infraestrutura para DL VoltCharge™ (Eletromobilidade) e DL EcoVolt Solar™ (Usinas Fotovoltaicas Híbridas com baterias de lítio).
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" onclick="toggleAccordion(this)">Eixo DL Guardião™: Segurança Forense</button>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            Implementação de CFTV IP forense com análise proativa de vídeo (IA). Integração DL Observer™ para conexão com o canal 190 (PMERJ/Guarda Municipal). Proteção perimetral inteligente e monitoramento via fibra ótica dedicada.
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" onclick="toggleAccordion(this)">Eixo DL Commander™: Smart Building</button>
+        <div class="accordion-content">
+          <div class="accordion-body">
+            Automação de painéis de comandos elétricos para gestão de cisternas e reservatórios. Instalação de centrais de detecção de incêndio endereçáveis (DL Alerta™) e unificação de dados via Plataforma Whiteboard (DL Insight™).
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </section>
 
 <!-- ══════════════════════════════════ PARCEIROS & CERTIFICAÇÕES ═════════ -->
 <section style="padding:3rem 5%; background:rgba(255,255,255,0.015); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
   <div class="container">
     <div style="text-align:center; margin-bottom:2rem;">
-      <div class="section-tag">Certificações & Parceiros</div>
-      <p style="color:var(--text-muted); font-size:0.95rem;">Tecnologia de ponta. Parceiros certificados. Engenharia responsável.</p>
+      <div class="section-tag" style="background:rgba(255,200,0,0.1); color:var(--amber);">Credenciais & Autoridade Técnica</div>
+      <p style="color:#ffffff; font-size:1.1rem; font-weight:600; margin-top:1rem; text-shadow:0 2px 4px rgba(0,0,0,0.5);">Tecnologia de ponta. Profissionais certificados. Engenharia de precisão.</p>
     </div>
     <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:3rem;">
 
       <!-- CREA-RJ -->
-      <div style="text-align:center; opacity:0.85; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.85'">
-        <div style="font-weight:900; font-size:0.95rem; color:var(--amber); letter-spacing:0.05em;">CREA-RJ</div>
-        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.2rem;">Reg. 2022106230</div>
-        <div style="font-size:0.7rem; color:var(--text-subtle);">Diogo Luiz de Oliveira</div>
+      <div style="text-align:center; opacity:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem;">
+        <img src="assets/logo_crea_rj.png" alt="Selo Oficial CREA-RJ" style="height:65px; width:auto; border-radius:4px; box-shadow:0 4px 15px rgba(0,0,0,0.5);">
+        <div style="font-weight:900; font-size:1rem; color:var(--amber); letter-spacing:0.05em;">CREA-RJ</div>
+        <div style="font-size:0.85rem; color:#ffffff; font-weight:700;">Reg. 2022106230</div>
       </div>
 
-      <div style="width:1px; height:40px; background:var(--border);"></div>
+      <div style="width:1px; height:60px; background:rgba(255,255,255,0.1);"></div>
 
       <!-- ABESE -->
-      <div style="text-align:center; opacity:0.7; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
-        <img src="assets/logo_abese.png" alt="ABESE - Associação Brasileira de Empresas de Sistemas Eletrônicos de Segurança"
-          style="height:40px; width:auto; filter:brightness(0) invert(1);" loading="lazy">
-        <div style="font-size:0.7rem; color:var(--text-subtle); margin-top:0.4rem;">Membro Associado</div>
+      <div style="text-align:center; opacity:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem;">
+        <img src="assets/logo_abese.png" alt="Logo ABESE - Sistemas Eletrônicos de Segurança" 
+          style="height:50px; width:auto; filter:brightness(1) contrast(1.1); border-radius:4px;">
+        <div style="font-weight:800; font-size:0.95rem; color:#ffffff;">Membro Associado</div>
+        <div style="font-size:0.75rem; color:var(--text-muted);">Segurança Certificada</div>
       </div>
 
-      <div style="width:1px; height:40px; background:var(--border);"></div>
+      <div style="width:1px; height:60px; background:rgba(255,255,255,0.1);"></div>
 
-      <!-- Intelbras -->
-      <div style="text-align:center; opacity:0.7; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
-        <img src="assets/logo_intelbras.png" alt="Intelbras - Parceiro oficial de câmeras CFTV"
-          style="height:36px; width:auto; filter:brightness(0) invert(1);" loading="lazy">
-        <div style="font-size:0.7rem; color:var(--text-subtle); margin-top:0.4rem;">Parceiro CFTV</div>
+      <!-- SELO DL -->
+      <div style="text-align:center; opacity:1; display:flex; flex-direction:column; align-items:center; gap:0.5rem;">
+        <img src="assets/logo_dl.png" alt="Selo de Qualidade DL Soluções" style="height:45px; width:auto;">
+        <div style="font-weight:800; font-size:0.95rem; color:var(--electric);">Qualidade B2B</div>
+        <div style="font-size:0.75rem; color:var(--text-muted);">DL Partner™ Active</div>
       </div>
-
-      <div style="width:1px; height:40px; background:var(--border);"></div>
-
-      <!-- Condfy -->
-      <div style="text-align:center; opacity:0.7; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
-        <img src="assets/logo_condfy.png" alt="Condfy - App de gestão condominial integrado"
-          style="height:32px; width:auto; filter:brightness(0) invert(1);" loading="lazy">
-        <div style="font-size:0.7rem; color:var(--text-subtle); margin-top:0.4rem;">Integração App</div>
-      </div>
-
-      <div style="width:1px; height:40px; background:var(--border);"></div>
-
-      <!-- MobGate / Super Portaria -->
-      <div style="text-align:center; opacity:0.7; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
-        <div style="font-weight:800; font-size:1rem; color:var(--electric);">MobGate</div>
-        <div style="font-size:0.7rem; color:var(--text-subtle); margin-top:0.2rem;">Instituto de Controle de Acesso</div>
       </div>
 
     </div>
@@ -1019,7 +1176,7 @@
 
 <!-- ══════════════════════════════════ SCRIPTS ══════════════════════════════════ -->
 <script>
-const N8N_WEBHOOK = 'https://n8n.dlsolucoescondominiais.com.br/webhook/dl-pre-receptor';
+const N8N_WEBHOOK = 'https://n8n.dlsolucoescondominiais.com.br/webhook/dl-receptor';
 
 /* ─── Navbar scroll effect ─── */
 window.addEventListener('scroll', () => {
@@ -1207,6 +1364,43 @@ function closeInfoModal() {
 document.getElementById('infoModal').addEventListener('click', e => {
   if (e.target === document.getElementById('infoModal')) closeInfoModal();
 });
+</script>
+
+<!-- Interatividade de Preços -->
+<script>
+function switchPricing(type, btn) {
+  const btns = document.querySelectorAll('.pricing-switch-btn');
+  const containers = document.querySelectorAll('.pricing-container');
+  
+  btns.forEach(b => b.classList.remove('active'));
+  containers.forEach(c => c.classList.remove('active'));
+  
+  btn.classList.add('active');
+  document.getElementById('container-' + type).classList.add('active');
+}
+
+const prices = {
+  'P': { basic: 400, master: 600, premium: 1000 },
+  'M': { basic: 600, master: 900, premium: 1500 },
+  'G': { basic: 1000, master: 1500, premium: 2500 },
+  'C': { basic: 1500, master: 2500, premium: 5000 }
+};
+
+function updateOpex(size, btn) {
+  const btns = document.querySelectorAll('.size-btn');
+  btns.forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  
+  const data = prices[size];
+  document.getElementById('price-basic').innerText = data.basic.toLocaleString();
+  document.getElementById('price-master').innerText = data.master.toLocaleString();
+  document.getElementById('price-premium').innerText = data.premium.toLocaleString();
+}
+
+function toggleAccordion(btn) {
+  const item = btn.parentElement;
+  item.classList.toggle('active');
+}
 </script>
 
 </body>

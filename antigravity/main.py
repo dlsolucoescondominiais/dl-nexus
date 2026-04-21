@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from antigravity.routes import aninha
 from antigravity.routes import marketing
+from antigravity.routes import leads
 
 # Carrega variáveis de ambiente
 load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env'))
@@ -18,6 +19,7 @@ app = FastAPI(
 # 1. SEGURANÇA: Configuração rigorosa de CORS
 ALLOWED_ORIGINS = [
     "https://nexus.dlsolucoescondominiais.com.br",
+    "https://dlsolucoescondominiais.com",
     "http://localhost:5173"
 ]
 
@@ -67,6 +69,7 @@ async def verify_supabase_jwt(request: Request):
 # Anexando as rotas da Aninha protegidas
 app.include_router(aninha.router, dependencies=[Depends(verify_supabase_jwt)])
 app.include_router(marketing.router, dependencies=[Depends(verify_supabase_jwt)])
+app.include_router(leads.router) # Aberto para o webhook do site (validação interna via API Key)
 
 @app.get("/health")
 def health_check():

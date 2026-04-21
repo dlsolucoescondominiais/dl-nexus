@@ -57,22 +57,31 @@ STITCH_BASE_URL = os.getenv("STITCH_BASE_URL", "https://stitch.googleapis.com/mc
 PROJECT_ID = "1279935118882481507"
 
 # ========================
-# IDENTIDADE VISUAL DL
+# IDENTIDADE VISUAL DL (PADRÃO GLOBO.COM / HIGH-END B2B)
 # ========================
 DL_BRAND = """
-IDENTIDADE VISUAL DA DL SOLUÇÕES CONDOMINIAIS:
-- Paleta Principal: Background #060810 (escuro profundo), Cards #0D1117, Bordas #1E293B
-- Cor Destaque: Âmbar/Dourado #F5A623 (cor principal da marca)
-- Cor Elétrica: Ciano/Elétrico #00CFFF (cor secundária tech)
-- Cor Sucesso: #10B981
-- Tipografia Headlines: Manrope (Google Fonts), weight 800
-- Tipografia Body: Inter (Google Fonts), weight 400-600
-- Bordas: Arredondamento 16px (cards), 12px (inputs), 24px (botões pill)
-- Efeito: Glassmorphism sutil, gradientes amber → escuro
-- Shadow: 0 8px 32px rgba(245,166,35,0.15) para hover
-- Tom: Premium, moderno, dark-mode, engenharia de alto padrão
-- NUNCA usar cores chapadas (vermelho, azul puro). Sempre tons sofisticados.
-- Animações: Hover com translateY(-6px) e border-color transition
+IDENTIDADE VISUAL DA DL SOLUÇÕES CONDOMINIAIS (LEVEL: MASTER/PREMIUM):
+- Filosofia: Engenharia de Precisão & Autoridade Técnica (Style: Globo.com / Corporate High-End)
+- Paleta Primária: 
+    * Background: #05070A (Deep Space Black)
+    * Sections/Surfaces: #0C0F16 (Deep Charcoal)
+    * Cards/Elements: #141923 (Carbon Blue-Grey)
+    * Bordas: #1E293B (com 0.5px e opacidade 0.6 para efeito vidro)
+- Cores de Acento (Aura Branding):
+    * Âmbar Premium: #FFB347 (Golden Amber para ouro e confiança) - HEX: #FFB347
+    * Turquesa Elétrico: #00E5FF (Neon Cyan para tecnologia de ponta) - HEX: #00E5FF
+    * Glows: 0 0 50px rgba(255,179,71,0.08) (Amber) e 0 0 50px rgba(0,229,255,0.06) (Cyan)
+- Tipografia (Equilíbrio de Autoridade):
+    * Headlines: 'Outfit' (Google Fonts), weight 800-900, letter-spacing -0.04em
+    * Body/Technical: 'Inter' (Google Fonts), weight 400-600, line-height 1.7
+- Geometria:
+    * Arredondamento: 20px (Master Cards), 12px (Interactive Elements), 40px (Pill Buttons)
+    * Efeitos: Glassmorphism (Backdrop Filter: blur(16px)), Micro-gradientes lineares 135deg
+- Tom de Voz: Corporativo Sênior, Resolutivo, Inquestionável.
+- REGRAS CRÍTICAS:
+    * NUNCA usar sombras pesadas pretas; usar glows coloridos sutis.
+    * NUNCA usar canaletas plásticas ou cores saturadas simples.
+    * ESPAÇAMENTO: Margens generosas (8rem+ entre seções) para 'respiro' de marca premium.
 """
 
 DL_CONTEXT = """
@@ -210,25 +219,17 @@ SCREEN_PROMPTS = {
 {DL_BRAND}
 {DL_CONTEXT}
 
-Crie uma HERO SECTION espetacular para o site da DL Soluções Condominiais.
+Crie uma HERO SECTION de nível cinematográfico para a DL Soluções.
 
 LAYOUT:
-- Navbar fixa no topo: logo DL à esquerda (quadrada com bordas arredondadas), 
-  links de navegação (Para Quem, Serviços, DL Nexus, Avaliações, Contato),
-  botão "◈ Acessar Nexus" (cor ciano #00CFFF) e "Falar Agora" (outline âmbar).
-- Hero fullscreen com background escuro (#060810) com glow gradiente âmbar no canto inferior esquerdo 
-  e ciano no canto superior direito.
-- Badge no topo: "Rio de Janeiro · Zona Sul, Norte, Oeste e Baixada"
-- Título principal em 3 linhas:
-  Linha 1: "A" + "Infraestrutura Técnica" (cor âmbar #F5A623)
-  Linha 2: "que o seu Condomínio"
-  Linha 3: "Merece e Precisa." (segunda palavra em itálico sutil)
-- Subtítulo: "Elétrica, Energia Solar, CFTV, Automação e Prevenção de Incêndio — tudo em um único parceiro técnico. SLA de 8 horas e padrão ABNT. Sem gambiarras, sem canaleta plástica."
-- 2 botões CTA: "Solicitar Avaliação Técnica Gratuita" (botão primário âmbar), 
-  "Ver Portfólio de Serviços" (botão outline)
-- 3 stats em row: "5 ★ / 49 Avaliações Google" | "8h / SLA de Atendimento" | "100% / Padrão ABNT"
-- Font heading: Manrope 800, body: Inter 400-600
-- Tudo em dark mode premium
+- Navbar Ultra-Glass: Logo DL em alta definição, links com hover em amber glow, 
+  botão "◈ DL NEXUS" com animação de pulso ciano e botão "CONSULTORIA TÉCNICA" em outline golden.
+- Hero Visual: Dark deep background com partículas flutuantes sutis (glows).
+- Headline Disruptiva: 
+    "A <span class='amber'>INFRAESTRUTURA</span> QUE O SEU CONDOMÍNIO EXIGE. A <span class='cyan'>ENGENHARIA</span> QUE ELE MERECE."
+- Subheadline: "Especialistas em unificação de serviços críticos: Elétrica, Solar, CFTV e Automação. Zero canaletas, 100% conformidade técnica e SLA de resposta em 8 horas."
+- CTAs: "Acionar Diagnóstico Gratuito" (Primary Golden) e "Explorar Ecossistema DL" (Ghost button).
+- Social Proof: "49 Avaliações ⭐⭐⭐⭐⭐ Google Business | CREA-RJ Ativo"
 """
     },
 
@@ -497,10 +498,72 @@ LAYOUT MOBILE (390px width):
   Botão CTA empilhados (full-width)
   Stats em row (3 colunas compactas)
 - WhatsApp floating button no canto inferior direito (verde, ícone WPP)
-
-- Dark mode, mesma paleta, fontes menores, padding adaptado
 """
     },
+
+    "10_investimento_capex": {
+        "name": "Tabela de Investimento — CAPEX",
+        "device": "DESKTOP",
+        "prompt": f"""
+{DL_BRAND}
+{DL_CONTEXT}
+
+Crie a seção "TABELA REFERENCIAL DE PROJETOS (CAPEX)". 
+
+LAYOUT:
+- Background: #0C0F16 com bordas em Glassmorphism.
+- Header: Seção com descrição: "Valores Mínimos Competitivos para o Mercado do Rio de Janeiro. Infraestrutura escalável com hardware homologado (TWG, Intelbras, Hikvision, WEG)."
+- Tabela Técnica / Grid de Investimento:
+
+  1. DL Guardião™ & Observer™ (CFTV IP):
+     - Kit 4 Câmeras: A partir de R$ 4.800,00 (NVR 4Ch + HD 1TB)
+     - Kit 16 Câmeras: A partir de R$ 15.500,00 (NVR 16Ch + Switch PoE)
+     - Kit 64 Câmeras: A partir de R$ 55.000,00 (Multi-NVR e HDDs redundantes)
+     - DL Observer (Polícia 190): Setup R$ 1.800,00 + Mensalidade.
+
+  2. Energia & Automação:
+     - DL Volt™ (Reforma PC Luz): A partir de R$ 8.500,00 (Com ART)
+     - DL EcoVolt Solar™: A partir de R$ 25.000,00 (Híbrido com Backup)
+     - DL VoltCharge™ (EV): A partir de R$ 4.500,00 / vaga.
+     - DL Gatekeeper™ (Acesso): A partir de R$ 1.500,00 (Hardware MobGate).
+
+- Rodapé da tabela: "Considerações Operacionais Rigorosas: Proibido uso de canaletas plásticas. Apenas eletrodutos galvanizados ou embutidos."
+- Assinatura: Eng. Diogo Luiz de Oliveira - CREA-RJ: 2022106230.
+"""
+    },
+
+    "11_blindagem_opex": {
+        "name": "Planos DL Partner — OPEX",
+        "device": "DESKTOP",
+        "prompt": f"""
+{DL_BRAND}
+{DL_CONTEXT}
+
+Crie a seção de Planos de Blindagem Operacional (DL Partner™).
+
+LAYOUT:
+- Grid de 3 colunas (Pricing Cards):
+
+  PLAN 🟢 BASIC (Economia & MDO)
+  - SLA: Até 48 horas úteis.
+  - Cobertura: Mão de obra inclusa. Peças à parte.
+  - Taxa Base: Desde R$ 400,00/mês.
+
+  PLAN 🔵 MASTER (Equilíbrio & Prevenção)
+  - SLA: Até 24 horas úteis.
+  - Cobertura: MDO + Garantia Vitalícia em infra menor (conectores, fontes).
+  - Taxa Base: Desde R$ 600,00/mês.
+
+  PLAN 🟡 PREMIUM (Prioridade Máxima)
+  - SLA: Até 8 horas úteis.
+  - Cobertura: TOTAL (Incluindo DVRs e HDs após carência).
+  - Taxa Base: Desde R$ 1.000,00/mês.
+
+- Seletor de Categoria (Tabs ou Pill Switch):
+  [Pequeno <30 un] | [Médio 31-100] | [Grande 101-300] | [Complexo >300]
+- Tom: Solidez, Garantia e Tranquilidade para o Síndico.
+"""
+    }
 }
 
 

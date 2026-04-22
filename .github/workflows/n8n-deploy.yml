@@ -1,0 +1,212 @@
+name: "DL Nexus — Validação de Workflows n8n"
+
+# ═══════════════════════════════════════════════════════════
+# Pipeline CI/CD para workflows n8n da DL Soluções Condominiais
+# Dispara quando JSONs de workflow são alterados
+# ═══════════════════════════════════════════════════════════
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/n8n/workflows/**'
+      - 'execution/n8n_workflows/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'backend/n8n/workflows/**'
+      - 'execution/n8n_workflows/**'
+
+  # Deploy manual para o n8n remoto (futuro)
+  workflow_dispatch:
+    inputs:
+      deploy_to_n8n:
+        description: 'Fazer deploy dos workflows para o n8n remoto?'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  # ═══════════════════════════════════════════
+  # JOB 1: Validar estrutura JSON
+  # ═══════════════════════════════════════════
+  validate-json:
+    name: "🔍 Validar Workflows JSON"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validar JSON — backend/n8n/workflows
+        run: |
+          echo "╔══════════════════════════════════════╗"
+          echo "║  DL NEXUS — Validação de Workflows   ║"
+          echo "╚══════════════════════════════════════╝"
+          
+          ERRORS=0
+          
+          for file in backend/n8n/workflows/*.json; do
+            if [ -f "$file" ]; then
+              if python3 -m json.tool "$file" > /dev/null 2>&1; then
+                echo "✅ $file"
+              else
+                echo "❌ JSON INVÁLIDO: $file"
+                ERRORS=$((ERRORS + 1))
+              fi
+            fi
+          done
+          
+          for file in execution/n8n_workflows/*.json; do
+            if [ -f "$file" ]; then
+              if python3 -m json.tool "$file" > /dev/null 2>&1; then
+                echo "✅ $file"
+              else
+                echo "❌ JSON INVÁLIDO: $file"
+                ERRORS=$((ERRORS + 1))
+              fi
+            fi
+          done
+          
+          if [ $ERRORS -gt 0 ]; then
+            echo "🚫 $ERRORS arquivo(s) com JSON inválido!"
+            exit 1
+          fi
+          
+          echo "✅ Todos os workflows têm JSON válido"
+
+  # ═══════════════════════════════════════════
+  # JOB 2: Scan de segurança
+  # ═══════════════════════════════════════════
+  security-scan:
+    name: "🔐 Scan de Segurança"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verificar secrets hardcoded
+        run: |
+          echo "🔐 Scanning para API keys e secrets hardcoded..."
+          
+          LEAKS=0
+          PATTERNS=("sk_" "sk-svcacct" "sk-proj" "eyJhbGciOiJIUzI1NiIs" "Bearer ey")
+          
+          for file in backend/n8n/workflows/*.json execution/n8n_workflows/*.json; do
+            if [ -f "$file" ]; then
+              for pattern in "${PATTERNS[@]}"; do
+                if grep -q "$pattern" "$file" 2>/dev/null; then
+                  # Verificar se está dentro de um $env reference (seguro)
+                  if ! grep "$pattern" "$file" | grep -q '\$env\.' 2>/dev/null; then
+                    echo "🚨 LEAK DETECTADO em $file: padrão '$pattern'"
+                    LEAKS=$((LEAKS + 1))
+                  fi
+                fi
+              done
+            fi
+          done
+          
+          if [ $LEAKS -gt 0 ]; then
+            echo "🚫 $LEAKS secret(s) hardcoded detectado(s)!"
+            echo "   Corrija substituindo por \$env.NOME_DA_VARIAVEL"
+            exit 1
+          fi
+          
+          echo "✅ Nenhum secret hardcoded encontrado"
+
+  # ═══════════════════════════════════════════
+  # JOB 3: Validar estrutura de workflow n8n
+  # ═══════════════════════════════════════════
+  validate-structure:
+    name: "🏗️ Validar Estrutura n8n"
+    runs-on: ubuntu-latest
+    needs: [validate-json]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Validar campos obrigatórios
+        run: |
+          python3 << 'EOF'
+          import json
+          import sys
+          import os
+          
+          REQUIRED_FIELDS = ["name", "nodes", "connections"]
+          errors = 0
+          
+          dirs = ["backend/n8n/workflows", "execution/n8n_workflows"]
+          
+          for d in dirs:
+              if not os.path.exists(d):
+                  continue
+              for f in sorted(os.listdir(d)):
+                  if not f.endswith(".json"):
+                      continue
+                  filepath = os.path.join(d, f)
+                  with open(filepath, "r") as fh:
+                      try:
+                          data = json.load(fh)
+                      except json.JSONDecodeError:
+                          continue  # Já tratado no job anterior
+                  
+                  missing = [field for field in REQUIRED_FIELDS if field not in data]
+                  if missing:
+                      print(f"❌ {filepath}: campos ausentes: {missing}")
+                      errors += 1
+                  else:
+                      node_count = len(data.get("nodes", []))
+                      conn_count = len(data.get("connections", {}))
+                      print(f"✅ {filepath}: {node_count} nós, {conn_count} conexões")
+          
+          if errors > 0:
+              print(f"\n🚫 {errors} workflow(s) com estrutura inválida")
+              sys.exit(1)
+          
+          print("\n✅ Todos os workflows têm estrutura válida")
+          EOF
+
+  # ═══════════════════════════════════════════
+  # JOB 4: Deploy para n8n (FUTURO — manual)
+  # ═══════════════════════════════════════════
+  deploy-n8n:
+    name: "🚀 Deploy para n8n (Manual)"
+    runs-on: ubuntu-latest
+    needs: [validate-json, security-scan, validate-structure]
+    if: github.event.inputs.deploy_to_n8n == 'true'
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Instalar dependências
+        run: pip install requests
+
+      - name: Deploy workflows via API
+        env:
+          N8N_API_KEY: ${{ secrets.N8N_API_KEY }}
+          N8N_HOST: ${{ secrets.N8N_HOST }}
+        run: |
+          echo "🚀 Deploy para n8n..."
+          echo "⚠️  FUTURO: Este job será ativado quando a VPS estiver online"
+          echo "   N8N_HOST: $N8N_HOST"
+          echo "   Workflows a enviar:"
+          ls -la backend/n8n/workflows/*.json
+          
+          # Futuro: usar n8n_sync.py --push
+          # python execution/n8n_sync.py --push --log

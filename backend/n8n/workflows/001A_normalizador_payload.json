@@ -1,0 +1,100 @@
+{
+  "name": "001A_normalizador_payload",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-pre-receptor",
+        "options": {}
+      },
+      "id": "webhook-normalizador",
+      "name": "Webhook Entrada Bruta",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "/* Normalizador Bruto DL Soluções */\n\nconst item = $input.first().json.body || $input.first().json;\n\n// 1. Limpeza de formatação de telefone (remove parênteses, traços e espaços)\nlet rawPhone = item.telefone || item.sender?.phone || \"\";\nlet cleanPhone = rawPhone.replace(/\\D/g, \"\"); // Deixa apenas os números\n\n// 2. Padronização do nome do Condomínio / Contato (Trim e Title Case simpificado)\nlet rawName = item.nome_condominio || item.nome_contato || item.sender?.name || \"\";\nlet cleanName = rawName.replace(/\\s+/g, \" \").trim();\n\n// 3. Geração de UUID Simplificado e Carimbo de Data/Hora (Timestamp)\nfunction generateUUID() { \n    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) { \n        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8); \n        return v.toString(16); \n    }); \n}\n\nlet lead_id = generateUUID();\nlet created_at = new Date().toISOString();\n\n// 4. Payload Limpo e Final pronto para a ANINHA\nreturn {\n  json: {\n    lead_id: lead_id,\n    telefone_limpo: cleanPhone,\n    nome_padronizado: cleanName,\n    mensagem_original: item.mensagem || item.message?.content || \"\",\n    origem_limpa: (item.source || item.origem || \"organico\").toLowerCase().trim(),\n    created_at: created_at\n  }\n};"
+      },
+      "id": "code-normalizador",
+      "name": "Limpeza & UUID Code (JS)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-aninha",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "lead_id",
+              "value": "={{ $json.lead_id }}"
+            },
+            {
+              "name": "telefone",
+              "value": "={{ $json.telefone_limpo }}"
+            },
+            {
+              "name": "nome_contato",
+              "value": "={{ $json.nome_padronizado }}"
+            },
+            {
+              "name": "mensagem_original",
+              "value": "={{ $json.mensagem_original }}"
+            },
+            {
+              "name": "origem",
+              "value": "={{ $json.origem_limpa }}"
+            },
+            {
+              "name": "created_at",
+              "value": "={{ $json.created_at }}"
+            }
+          ]
+        }
+      },
+      "id": "dispatch-aninha",
+      "name": "Disparador Limpo para Aninha (002)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        700,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Entrada Bruta": {
+      "main": [
+        [
+          {
+            "node": "Limpeza & UUID Code (JS)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limpeza & UUID Code (JS)": {
+      "main": [
+        [
+          {
+            "node": "Disparador Limpo para Aninha (002)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

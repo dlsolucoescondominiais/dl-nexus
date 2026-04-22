@@ -1,0 +1,228 @@
+{
+  "name": "008_sync_git_backup",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 2,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      },
+      "id": "cron-backup",
+      "name": "CRON Diário (02:00 AM)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [100, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.N8N_HOST || 'http://localhost:5678/api/v1' }}/workflows",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-N8N-API-KEY",
+              "value": "={{ $env.N8N_API_KEY }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "get-all-workflows",
+      "name": "Listar Todos os Workflows",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [350, 300]
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "id": "split-workflows",
+      "name": "Separar Workflows",
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [600, 300]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "workflow_name",
+              "value": "={{ $json.name }}"
+            },
+            {
+              "name": "workflow_id",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "active",
+              "value": "={{ $json.active }}"
+            },
+            {
+              "name": "updated_at",
+              "value": "={{ $json.updatedAt }}"
+            },
+            {
+              "name": "backup_timestamp",
+              "value": "={{ new Date().toISOString() }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-metadata",
+      "name": "Preparar Metadados",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list"
+        },
+        "table": {
+          "__rl": true,
+          "value": "dl_sync_log",
+          "mode": "list"
+        },
+        "columns": "componente,acao,detalhes,status",
+        "dataMode": "define",
+        "values": {
+          "values": [
+            {
+              "column": "componente",
+              "value": "n8n"
+            },
+            {
+              "column": "acao",
+              "value": "export_git"
+            },
+            {
+              "column": "detalhes",
+              "value": "={{ JSON.stringify({ workflow: $json.workflow_name, id: $json.workflow_id, active: $json.active, backup_at: $json.backup_timestamp }) }}"
+            },
+            {
+              "column": "status",
+              "value": "ok"
+            }
+          ]
+        }
+      },
+      "id": "log-supabase",
+      "name": "Registrar Log (Supabase)",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1100, 300],
+      "credentials": {
+        "supabaseApi": {
+          "id": "QzziIRhKJMDNAE1m",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-notificacoes",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "titulo",
+              "value": "📦 Backup Diário n8n Concluído"
+            },
+            {
+              "name": "mensagem",
+              "value": "={{ $items().length }} workflow(s) exportados e logados às {{ new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) }}"
+            },
+            {
+              "name": "tipo",
+              "value": "sync_backup"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "notify-backup",
+      "name": "Notificar Backup (006)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1350, 300]
+    }
+  ],
+  "connections": {
+    "CRON Diário (02:00 AM)": {
+      "main": [
+        [
+          {
+            "node": "Listar Todos os Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Listar Todos os Workflows": {
+      "main": [
+        [
+          {
+            "node": "Separar Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Separar Workflows": {
+      "main": [
+        [
+          {
+            "node": "Preparar Metadados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Metadados": {
+      "main": [
+        [
+          {
+            "node": "Registrar Log (Supabase)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar Log (Supabase)": {
+      "main": [
+        [
+          {
+            "node": "Notificar Backup (006)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false
+}

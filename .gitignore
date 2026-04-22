@@ -6,14 +6,15 @@
 # Credenciais e Segredos (O COFRE FORTE)
 .env
 execution/.env
-*.json
-!package.json
-!package-lock.json
-!tsconfig.json
 
-# Tokens de autenticação
+# Tokens e credenciais JSON (NUNCA commitar secrets)
 token_*.json
 credentials_*.json
+**/spry-framework-*.json
+backend/n8n/credentials/
+
+# Export temporário do n8n desktop (lixo)
+*.n8n
 
 # Cache Python
 __pycache__/

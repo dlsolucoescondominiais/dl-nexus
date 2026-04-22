@@ -1,0 +1,212 @@
+{
+  "name": "DL Nexus — Motor de Triagem Inteligente (Central)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "triagem-central",
+        "options": {}
+      },
+      "id": "wh-central-01",
+      "name": "Entrada Central",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "6vi0QT6Qzz0DYWeb",
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "mensagem_original",
+              "value": "={{ $json.body.mensagem || $json.body.mensagem_original }}"
+            },
+            {
+              "name": "nome_condominio",
+              "value": "={{ $json.body.nome_condominio }}"
+            },
+            {
+              "name": "telefone",
+              "value": "={{ $json.body.telefone }}"
+            }
+          ]
+        }
+      },
+      "id": "call-aninha-pro",
+      "name": "Executar Aninha Pro",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        350,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.status }}",
+              "value2": "triado"
+            }
+          ]
+        }
+      },
+      "id": "if-triado",
+      "name": "Aprovado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        600,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "leads",
+        "filters": {
+          "conditions": [
+            {
+              "column": "telefone",
+              "value": "={{ $node[\"Entrada Central\"].json.body.telefone }}"
+            }
+          ]
+        },
+        "updateValues": {
+          "values": [
+            {
+              "column": "status",
+              "value": "triado"
+            },
+            {
+              "column": "tipo_servico",
+              "value": "={{ $json.tipo_servico }}"
+            },
+            {
+              "column": "valor_estimado",
+              "value": "={{ $json.valor_mensal_estimado }}"
+            },
+            {
+              "column": "prioridade",
+              "value": "alta"
+            }
+          ]
+        }
+      },
+      "id": "sb-update-01",
+      "name": "Atualizar Lead Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        850,
+        200
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "QzziIRhKJMDNAE1m",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.elevenlabs.io/v1/text-to-speech/{{ $node[\"Entrada Central\"].json.body.voice_id || 'aninha_dl' }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "xi-api-key",
+              "value": "={{ $env.ELEVENLABS_API_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ $node[\"Executar Aninha Pro\"].json.output }}"
+            },
+            {
+              "name": "model_id",
+              "value": "eleven_multilingual_v2"
+            }
+          ]
+        },
+        "options": {
+          "responseFormat": "file"
+        }
+      },
+      "id": "el-speech-01",
+      "name": "ElevenLabs (Voz da Aninha)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1100,
+        200
+      ]
+    }
+  ],
+  "connections": {
+    "Entrada Central": {
+      "main": [
+        [
+          {
+            "node": "Executar Aninha Pro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Executar Aninha Pro": {
+      "main": [
+        [
+          {
+            "node": "if-triado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "if-triado": {
+      "main": [
+        [
+          {
+            "node": "Atualizar Lead Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Atualizar Lead Supabase": {
+      "main": [
+        [
+          {
+            "node": "ElevenLabs (Voz da Aninha)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": false,
+  "versionId": "motor_central_v1",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "motor_central_dl",
+  "tags": []
+}

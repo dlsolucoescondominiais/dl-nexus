@@ -1,0 +1,112 @@
+{
+  "name": "000_email_receptor",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "markAsRead",
+        "format": "resolved",
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "downloadAttachments": false
+        }
+      },
+      "id": "imap-titan",
+      "name": "Ler E-mail (Atendimento DL)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ],
+      "credentials": {
+        "imap": {
+          "id": "WRd9Afv1meOJCSxs",
+          "name": "IMAP account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "textHtml",
+        "extractedData": {
+          "values": [
+            {
+              "key": "texto_puro",
+              "cssSelector": "body",
+              "returnValue": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "html-cleaner",
+      "name": "Limpar HTML para Texto Puro",
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1,
+      "position": [
+        500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-pre-receptor",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "nome_contato",
+              "value": "={{ $json.from.name || $json.from.address }}"
+            },
+            {
+              "name": "email",
+              "value": "={{ $json.from.address }}"
+            },
+            {
+              "name": "mensagem",
+              "value": "={{ $json.texto_puro || $json.textPlain || 'Email sem corpo legível.' }}"
+            },
+            {
+              "name": "origem",
+              "value": "email_dl_atendimento"
+            }
+          ]
+        }
+      },
+      "id": "post-esteira",
+      "name": "Injetar na Esteira V2.0 (DL-PRE)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        800,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Ler E-mail (Atendimento DL)": {
+      "main": [
+        [
+          {
+            "node": "Limpar HTML para Texto Puro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limpar HTML para Texto Puro": {
+      "main": [
+        [
+          {
+            "node": "Injetar na Esteira V2.0 (DL-PRE)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

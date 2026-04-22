@@ -1,0 +1,144 @@
+{
+  "name": "000_meta_receptor",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "dl-meta-inbox",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "meta-webhook-get",
+      "name": "Desafio Meta (GET)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        200,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.query['hub.challenge'] }}",
+        "options": {}
+      },
+      "id": "meta-respond-get",
+      "name": "Responder Desafio (200)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        500,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-meta-inbox",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "meta-webhook-post",
+      "name": "Recebimento Leads Meta (POST)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        200,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.entry[0].messaging[0].message ? 'SIM' : 'NAO' }}",
+              "value2": "SIM"
+            }
+          ]
+        }
+      },
+      "id": "meta-filtro-msg",
+      "name": "É Mensagem Real?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        500,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-pre-receptor",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "origem",
+              "value": "meta_instagram_fb"
+            },
+            {
+              "name": "telefone",
+              "value": "={{ $json.body.entry[0].messaging[0].sender.id }}"
+            },
+            {
+              "name": "nome_contato",
+              "value": "={{ $json.body.entry[0].messaging[0].sender.id }}"
+            },
+            {
+              "name": "mensagem",
+              "value": "={{ $json.body.entry[0].messaging[0].message.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "meta-push",
+      "name": "Injetar na Esteira V2.0",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        800,
+        480
+      ]
+    }
+  ],
+  "connections": {
+    "Desafio Meta (GET)": {
+      "main": [
+        [
+          {
+            "node": "Responder Desafio (200)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recebimento Leads Meta (POST)": {
+      "main": [
+        [
+          {
+            "node": "É Mensagem Real?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "É Mensagem Real?": {
+      "main": [
+        [
+          {
+            "node": "Injetar na Esteira V2.0",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

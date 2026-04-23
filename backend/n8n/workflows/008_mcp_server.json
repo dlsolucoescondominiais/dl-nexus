@@ -1,0 +1,64 @@
+{
+  "name": "008_mcp_server",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mcp-server/http",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook MCP Server",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ],
+      "webhookId": "mcp-server-http"
+    },
+    {
+      "parameters": {
+        "jsCode": "const payload = $input.item.json.body;\n\n// Process MCP instructions\nconst response = {\n  status: 'success',\n  message: 'Instruction received via MCP Server',\n  received_payload: payload\n};\n\nreturn response;"
+      },
+      "name": "Process Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook MCP Server": {
+      "main": [
+        [
+          {
+            "node": "Process Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "versionId": "f90c8f1e-f34b-4b21-8277-2f3b9c7b8d8f",
+  "triggerCount": 1,
+  "tags": [
+    {
+      "name": "MCP"
+    },
+    {
+      "name": "GitHub"
+    },
+    {
+      "name": "Antigravity"
+    }
+  ]
+}

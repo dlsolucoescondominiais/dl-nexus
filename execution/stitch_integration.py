@@ -149,18 +149,25 @@ class SupabaseClient:
         """Retorna resumo dos leads para o dashboard"""
         all_leads = self.get_leads(limit=1000)
         total = len(all_leads)
-        novos = sum(1 for l in all_leads if l.get("status") == "novo")
-        triados = sum(1 for l in all_leads if l.get("status") == "triado")
 
-        # Agrupar por tipo de serviço
+        # ⚡ BOLT: Otimização de performance - agregação em loop único
+        # Em vez de iterar sobre all_leads 4 vezes (2 geradores sum() e 2 loops for),
+        # iteramos apenas 1 vez para calcular todas as métricas simultaneamente.
+        novos = 0
+        triados = 0
         servicos = {}
+        portes = {}
+
         for lead in all_leads:
+            status = lead.get("status")
+            if status == "novo":
+                novos += 1
+            elif status == "triado":
+                triados += 1
+
             tipo = lead.get("tipo_servico") or "Não classificado"
             servicos[tipo] = servicos.get(tipo, 0) + 1
 
-        # Agrupar por porte
-        portes = {}
-        for lead in all_leads:
             porte = lead.get("porte") or "Não definido"
             portes[porte] = portes.get(porte, 0) + 1
 

@@ -4,44 +4,174 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "dl-especialistas"
+        "path": "dl-especialistas",
+        "options": {}
       },
       "id": "wh-spec",
-      "name": "Entrada Técnicos",
+      "name": "Entrada Jules",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [
-        100,
-        200
-      ]
+      "position": [100, 350]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.historico_dor }}",
+        "options": {
+          "systemMessage": "Você é o JULES — Inquisidor Técnico da DL Soluções Condominiais.\n\n╔══════════════════════════════════════╗\n║  REGRA DE OURO — NÃO NEGOCIÁVEL     ║\n║  JAMAIS DÊ PREÇOS OU COTAÇÕES.       ║\n╚══════════════════════════════════════╝\n\nSua missão: coletar, com precisão de engenheiro, todos os dados técnicos necessários para que o Diretor Técnico (Diogo Luiz) possa gerar uma proposta real. Você é o funil final antes da análise humana.\n\nDados que você DEVE extrair (adapte por persona):\n\n🔌 ELÉTRICA / GERAL\n- Idade aproximada do quadro elétrico (pré ou pós-2010?)\n- Padrão de entrada: monofásico, bifásico ou trifásico?\n- Tem SPDA (Para-raios) instalado?\n- Metragem total do complexo / área a atender\n\n☀️ SOLAR (se aplicável)\n- Tipo de telhado: cerâmica, fibrocimento, metálico, laje?\n- Área disponível para placas (m²)\n- Conta de energia atual (média mensal em R$ ou kWh)\n\n📷 CFTV / SEGURANÇA (se aplicável)\n- Quantas câmeras existem? Precisam ser substituídas ou é instalação nova?\n- Pontos críticos: portaria, garagem, corredores, área de lazer?\n- Existe cabeamento estruturado no local?\n\n🚪 CONTROLE DE ACESSO (se aplicável)\n- Quantidade de portas / entradas a controlar\n- Modelo atual: biometria, cartão, senha ou nenhum?\n\n🔥 PREVENÇÃO DE INCÊNDIO (se aplicável)\n- Possui AVCB (Auto de Vistoria do Corpo de Bombeiros) válido?\n- Sistema atual: sprinklers, detectores, extintores — qual o estado?\n\nConduta durante a conversa:\n- Faça máximo 3 perguntas por mensagem\n- Seja técnico mas acessível, não use jargão excessivo com leigos\n- Confirme os dados que já recebeu antes de avançar\n- Nunca prometa preço, prazo ou condições — tudo depende da Avaliação\n\nAo finalizar a coleta de dados, encerre com esta mensagem de fechamento (adapte naturalmente):\n\"Perfeito! Com essas informações, nosso Diretor Técnico Diogo Luiz vai analisar o cenário com cuidado e entrar em contato. Você receberá uma confirmação em breve. Obrigada pela confiança na DL Soluções!\"\n\nE adicione OBRIGATORIAMENTE a tag [AVALIACAO_TECNICA] ao final da sua mensagem de encerramento para acionar o fluxo interno."
+        }
+      },
+      "id": "ag-jules",
+      "name": "AI Agent Jules",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [380, 350]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": { "temperature": 0.2 }
+      },
+      "id": "llm-jules",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [380, 560]
+    },
+    {
+      "parameters": {
+        "sessionId": "={{ $('Entrada Jules').item.json.body.telefone || 'lead_sem_tel' }}"
+      },
+      "id": "mem-jules",
+      "name": "Memória Jules",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.2,
+      "position": [540, 560]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.output }}",
+              "operation": "contains",
+              "value2": "[AVALIACAO_TECNICA]"
+            }
+          ]
+        }
+      },
+      "id": "if-fim-jules",
+      "name": "Coleta Finalizada?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [720, 350]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "leads",
+        "filters": {
+          "conditions": [
+            {
+              "column": "telefone",
+              "value": "={{ $('Entrada Jules').item.json.body.telefone }}"
+            }
+          ]
+        },
+        "updateValues": {
+          "values": [
+            {
+              "column": "status",
+              "value": "Aguardando Avaliacao Tecnica"
+            },
+            {
+              "column": "historico_coleta",
+              "value": "={{ $json.output }}"
+            }
+          ]
+        }
+      },
+      "id": "supa-jules-final",
+      "name": "Atualiza Supabase - Status Final",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [980, 240],
+      "credentials": {
+        "supabaseApi": { "id": "QzziIRhKJMDNAE1m" }
+      }
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-jules",
-        "sendBody": true
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-notificacoes",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "titulo",
+              "value": "🔧 NOVA AVALIAÇÃO TÉCNICA SOLICITADA"
+            },
+            {
+              "name": "telefone",
+              "value": "={{ $('Entrada Jules').item.json.body.telefone }}"
+            },
+            {
+              "name": "persona",
+              "value": "={{ $('Entrada Jules').item.json.body.persona || 'indefinido' }}"
+            },
+            {
+              "name": "historico",
+              "value": "={{ $json.output }}"
+            },
+            {
+              "name": "mensagem",
+              "value": "Lead qualificado por Jules. Aguardando análise do Diretor Técnico Diogo Luiz."
+            }
+          ]
+        },
+        "options": {}
       },
-      "id": "call-jules",
-      "name": "Chamar Jules (005)",
+      "id": "push-006",
+      "name": "Notificar Diogo (006)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [
-        400,
-        200
-      ]
+      "position": [1240, 240]
     }
   ],
   "connections": {
-    "Entrada Técnicos": {
+    "Entrada Jules": {
       "main": [
-        [
-          {
-            "node": "Chamar Jules (005)",
-            "type": "main",
-            "index": 0
-          }
-        ]
+        [{ "node": "AI Agent Jules", "type": "main", "index": 0 }]
+      ]
+    },
+    "OpenAI": {
+      "ai_languageModel": [
+        [{ "node": "AI Agent Jules", "type": "ai_languageModel", "index": 0 }]
+      ]
+    },
+    "Memória Jules": {
+      "ai_memory": [
+        [{ "node": "AI Agent Jules", "type": "ai_memory", "index": 0 }]
+      ]
+    },
+    "AI Agent Jules": {
+      "main": [
+        [{ "node": "Coleta Finalizada?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Coleta Finalizada?": {
+      "main": [
+        [{ "node": "Atualiza Supabase - Status Final", "type": "main", "index": 0 }],
+        []
+      ]
+    },
+    "Atualiza Supabase - Status Final": {
+      "main": [
+        [{ "node": "Notificar Diogo (006)", "type": "main", "index": 0 }]
       ]
     }
+  },
+  "settings": {
+    "executionOrder": "v1"
   }
 }

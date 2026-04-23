@@ -61,9 +61,7 @@ logger = logging.getLogger("agencia_dl")
 # Google Drive
 GOOGLE_CREDENTIALS_PATH = pathlib.Path(
     os.getenv("GOOGLE_CREDENTIALS_PATH", "")
-) if os.getenv("GOOGLE_CREDENTIALS_PATH") else pathlib.Path(
-    r"C:\Users\Diogo\Documents\Arquivista_DL\credentials_drive.json"
-)
+) if os.getenv("GOOGLE_CREDENTIALS_PATH") else _EXECUTION_DIR / "credentials_drive.json"
 GOOGLE_TOKEN_PATH = _PROJECT_ROOT / "token_arquivista.json"
 GOOGLE_DRIVE_FOLDER_ID = os.getenv("GOOGLE_DRIVE_FOLDER_ID", "")
 

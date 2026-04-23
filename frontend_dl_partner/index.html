@@ -1,188 +1,1213 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DL Partner™ | Excelência em SLA de Engenharia</title>
-    <!-- TikTok Verification Master Keys -->
-    <meta name="tiktok-developers-site-verification" content="VzZQZ1ez00iutP575e0gprCIV1Ga4KxR" />
-    <meta name="tiktok-developers-site-verification" content="2c0RYHb3NPc64dFZg4UcqIEk3k2mxWRO" />
-    <meta name="tiktok-developers-site-verification" content="g0Gcu2Xjv4jIDrGDQEEtTJeFLZuhHpws" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DL Soluções Condominiais | Engenharia de Alto Padrão no Rio de Janeiro</title>
+  <meta name="description" content="A empresa de engenharia elétrica, energia solar, CFTV e automação predial de referência no Rio de Janeiro. Atendemos síndicos, administradoras e escolas com SLA de 8 horas e padrão ABNT.">
+  <meta name="keywords" content="engenharia condominial rio de janeiro, energia solar condomínio rj, CFTV condomínio rio, elétrica predial rj, síndico rio de janeiro, DL Soluções Condominiais">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="DL Soluções Condominiais | Engenharia de Alto Padrão no RJ">
+  <meta property="og:description" content="SLA de 8 horas, padrão ABNT, sem canaletas plásticas. A engenharia que o seu condomínio merece.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.dlsolucoescondominiais.com.br">
+  <!-- ═══ FAVICONS & PWA ═══════════════════════════════ -->
+  <link rel="icon" type="image/x-icon"             href="assets/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16"   href="assets/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32"   href="assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96"   href="assets/favicon-96x96.png">
+  <link rel="apple-touch-icon" sizes="180x180"      href="assets/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512x512.png">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <meta name="theme-color" content="#F5A623">
+  <meta name="msapplication-TileColor" content="#060810">
+  <meta name="msapplication-TileImage" content="assets/favicon-192x192.png">
+  <!-- Open Graph Image -->
+  <meta property="og:image" content="https://www.dlsolucoescondominiais.com.br/assets/og_image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="DL Soluções Condominiais - Engenharia de Alto Padrão no Rio de Janeiro">
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DL Soluções Condominiais | Engenharia de Alto Padrão no RJ">
+  <meta name="twitter:description" content="SLA de 8 horas, padrão ABNT, sem canaletas plásticas. 49 avaliações 5★ no Google.">
+  <meta name="twitter:image" content="https://www.dlsolucoescondominiais.com.br/assets/og_image.jpg">
+  <!-- ════════════════════════════════════════════════════ -->
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .nav-logo img {
+      height: 44px; width: auto;
+      border-radius: 8px; /* logo quadrada DL dark */
+    }
+    .footer-logo img {
+      height: 44px; width: auto;
+      border-radius: 8px;
+      opacity: 0.9;
+    }
+    /* hero override for real DL photo */
+    .hero-bg { background-image: url('assets/hero_dl_parceiro.jpg') !important; }
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    /* Portfolio aerial highlight */
+    .portfolio-destaque {
+      position: relative; overflow: hidden; border-radius: 20px;
+      border: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+    .portfolio-destaque img { width: 100%; height: 420px; object-fit: cover; object-position: center 30%;
+      filter: brightness(0.75); display: block;
+    }
+    .portfolio-destaque-overlay {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 2rem 2.5rem;
+      background: linear-gradient(transparent, rgba(5,7,13,0.95));
+    }
+    .portfolio-destaque-overlay h3 { font-family: var(--font-head); font-size: 1.6rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .portfolio-destaque-overlay p { color: var(--text-muted); font-size: 0.95rem; max-width: 600px; }
+    .portfolio-destaque-tag {
+      display: inline-block; margin-bottom: 0.75rem;
+      padding: 0.3rem 0.8rem;
+      background: var(--amber-dark); border: 1px solid rgba(245,166,35,0.3);
+      color: var(--amber); font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em; border-radius: 20px;
+    }
+
+    /* Condo photo on para-quem */
+    .personas-header-img {
+      width: 100%; height: 220px; object-fit: cover; object-position: center 40%;
+      border-radius: 16px; margin-bottom: 2.5rem;
+      filter: brightness(0.65);
+      position: relative;
+    }
+    .personas-img-wrap {
+      position: relative; border-radius: 16px; overflow: hidden;
+      margin-bottom: 2.5rem; border: 1px solid var(--border);
+    }
+    .personas-img-wrap img { width: 100%; height: 200px; object-fit: cover; object-position: center 55%; display: block; }
+    .personas-img-wrap-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(5,7,13,0.85) 0%, rgba(5,7,13,0.4) 60%, transparent 100%);
+      display: flex; align-items: center; padding: 2rem;
+    }
+    .personas-img-wrap-overlay h3 { font-family: var(--font-head); font-size: 1.5rem; font-weight: 800; max-width: 280px; line-height: 1.25; }
+    .personas-img-wrap-overlay span { color: var(--amber); }
+  </style>
+  <!-- Structured Data for Local Business -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "DL Soluções Condominiais LTDA",
+    "description": "Empresa de engenharia elétrica, energia solar, CFTV, automação predial e controle de acesso para condomínios e escolas no Rio de Janeiro.",
+    "telephone": "+55-21-96474-2458",
+    "email": "sac@dlsolucoescondominiais.com.br",
+    "url": "https://www.dlsolucoescondominiais.com.br",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Rio de Janeiro",
+      "addressRegion": "RJ",
+      "addressCountry": "BR"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "-22.9714",
+      "longitude": "-43.2215"
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+      "opens": "08:00",
+      "closes": "18:00"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5",
+      "reviewCount": "49"
+    }
+  }
+  </script>
 </head>
 <body>
 
-    <header class="navbar">
-        <div class="logo-area">
-            <h1>DL <span>Partner™</span></h1>
+<!-- ══════════════════════════════════ NAVBAR ══════════════════════════════════ -->
+<nav class="navbar" id="navbar">
+  <a href="#" class="nav-logo">
+    <img src="assets/logo_dl.png" alt="DL Soluções Condominiais" title="DL Soluções Condominiais">
+  </a>
+  <div class="nav-links">
+    <a href="#para-quem">Para Quem</a>
+    <a href="#servicos">Serviços</a>
+    <a href="#nexus">DL Nexus</a>
+    <a href="#avaliacoes">Avaliações</a>
+    <a href="#contato">Contato</a>
+  </div>
+  <div class="nav-cta">
+    <a href="#nexus" class="btn-nexus">◈ Acessar Nexus</a>
+    <button class="btn-outline" onclick="openWppModal()">Falar Agora</button>
+  </div>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
+  <a href="#para-quem" onclick="closeMobileNav()">Para Quem</a>
+  <a href="#servicos" onclick="closeMobileNav()">Serviços</a>
+  <a href="#nexus" onclick="closeMobileNav()">DL Nexus</a>
+  <a href="#avaliacoes" onclick="closeMobileNav()">Avaliações</a>
+  <a href="#contato" onclick="closeMobileNav()">Contato</a>
+  <a href="#contato" class="btn-primary" onclick="closeMobileNav()">Solicitar Avaliação</a>
+</div>
+
+<!-- ══════════════════════════════════ HERO ══════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-glow-1"></div>
+  <div class="hero-glow-2"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span>Rio de Janeiro · Zona Sul, Norte, Oeste e Baixada</span>
+      </div>
+      <h1>
+        A <span class="accent">Infraestrutura Técnica</span><br>
+        que o seu Condomínio<br>
+        <span class="accent-e">Merece e Precisa</span>.
+      </h1>
+      <p class="hero-desc">
+        Elétrica, Energia Solar, CFTV, Automação e Prevenção de Incêndio — tudo em um único parceiro técnico.
+        <strong>SLA de 8 horas e padrão ABNT</strong>. Sem gambiarras, sem canaleta plástica.
+      </p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="document.getElementById('contato').scrollIntoView({behavior:'smooth'})">
+          Solicitar Avaliação Técnica Gratuita
+        </button>
+        <button class="btn-outline" onclick="document.getElementById('servicos').scrollIntoView({behavior:'smooth'})">
+          Ver Portfólio de Serviços
+        </button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-num">5 ★</span>
+          <span class="stat-label">49 Avaliações Google</span>
         </div>
-        <nav class="nav-links">
-            <a href="#services">Ecossistema</a>
-            <a href="#sla">Garantia Vitalícia</a>
-        </nav>
-        <div class="cta-nav">
-            <button class="btn-primary" onclick="scrollToContact()">Acionar Especialista</button>
+        <div class="stat-item">
+          <span class="stat-num">8h</span>
+          <span class="stat-label">SLA de Atendimento</span>
         </div>
-    </header>
-
-    <main>
-        <section class="hero-section">
-            <div class="hero-content">
-                <span class="badge">O Padrão Ouro para Síndicos</span>
-                <h2 class="hero-title">O Fim das Queimas Surpresa e Manutenções Abusivas.</h2>
-                <p class="hero-subtitle">
-                    O <strong>DL Partner™</strong> é o serviço de "Seguro de Hardware" (SLA em até 8 horas) mais avançado do Rio de Janeiro. Esqueça orçamentos surpresas para câmeras quebradas, painéis queimados ou motores de portão pifados. Seu ativo em funcionamento contínuo, ou nós trocamos em tempo recorde.
-                </p>
-                <div class="hero-buttons">
-                    <button class="btn-glow" onclick="scrollToContact()">Quero Blindar Meu Condomínio</button>
-                    <a href="#features" class="btn-secondary">Explorar Vertical Técnica</a>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <div class="glass-mockup">
-                    <div class="mockup-header">
-                        <span class="dot red"></span>
-                        <span class="dot yellow"></span>
-                        <span class="dot green"></span>
-                    </div>
-                    <div class="mockup-body">
-                        <h3>Status Operacional</h3>
-                        <div class="status-bar">
-                            <span>SLA 8 Horas:</span>
-                            <div class="progress-bar"><div class="fill green-fill" style="width:100%"></div></div>
-                        </div>
-                        <div class="status-bar">
-                            <span>Troca de Hardware (Garantia):</span>
-                            <div class="progress-bar"><div class="fill blue-fill" style="width:100%"></div></div>
-                        </div>
-                        <div class="status-sys">
-                            <span class="sys-badge">🛡️ Protegido pela Aninha AI</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Grade de Confiança -->
-        <section id="features" class="b2b-metrics">
-            <div class="metric-card">
-                <h2>R$ 0</h2>
-                <p>Custo extra com a reposição do hardware coberto pelo DL Partner™.</p>
-            </div>
-            <div class="metric-card">
-                <h2>8 Horas</h2>
-                <p>Tempo de Resposta Acordado (SLA Técnico On-Site).</p>
-            </div>
-            <div class="metric-card">
-                <h2>99.9%</h2>
-                <p>Tempo de Atividade (Uptime) Garantido das Câmeras e Catracas.</p>
-            </div>
-        </section>
-
-        <!-- Vertical de Serviços -->
-        <section id="services" class="services-grid">
-            <div class="section-title">
-                <h2>Integração Total com Nossas Verticais Técnicas</h2>
-                <p>O DL Partner™ oferece suporte preventivo vitalício para todas as camadas de engenharia abaixo.</p>
-            </div>
-            <div class="cards-container">
-                <div class="glass-card">
-                    <div class="icon-wrapper blue">⚡</div>
-                    <h3>DL Volt™ & VoltCharge™</h3>
-                    <p>Manutenção preventiva absoluta em retrofits elétricos, quadros QDCs e recarregadores EV.</p>
-                </div>
-                <div class="glass-card">
-                    <div class="icon-wrapper red">🛡️</div>
-                    <h3>DL Guardião™ & Fortress™</h3>
-                    <p>SLA Rigoroso para CFTV Forense e Portarias Autônomas. Câmera queimada? Trocamos sem custos ao síndico.</p>
-                </div>
-                <div class="glass-card">
-                    <div class="icon-wrapper green">☀️</div>
-                    <h3>DL EcoVolt Solar™</h3>
-                    <p>Mapeamento e monitoramento ativo do inversor fotovoltaico e painéis no telhado da instituição.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Webhook Trigger (N8N) -->
-        <section id="contact" class="call-to-action">
-            <div class="cta-box">
-                <h2>Diga Adeus às Despesas Inesperadas.</h2>
-                <p>Acione a nossa equipe de Inteligência para agendar uma vistoria de viabilidade de implantação.</p>
-                
-                <form id="leadForm" class="b2b-form" onsubmit="submitWebhook(event)">
-                    <div class="input-group">
-                        <input type="text" id="nome_contato" placeholder="Nome Completo (Síndico/Gestor)" required>
-                    </div>
-                    <div class="input-group">
-                        <input type="text" id="telefone" placeholder="WhatsApp Corporativo" required>
-                    </div>
-                    <div class="input-group">
-                        <textarea id="mensagem" placeholder="Breve relato da sua dor (ex: Queima constante de placas de motor)..." required></textarea>
-                    </div>
-                    <button type="submit" class="btn-glow full-w">Acionar Avaliação Técnica</button>
-                    <p id="formStatus" style="display:none; color: #4ade80; margin-top: 15px;">Lead Qualificado processado. Especialista acionado com sucesso!</p>
-                </form>
-
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2026 DL Soluções Condominiais LTDA. Tecnologia alimentada por I.A.</p>
-        <div class="legal-links">
-            <a href="/lgpd-gdpr/">LGPD e Privacidade</a>
-            <a href="/politica-de-privacidade/">Termos de Serviço</a>
+        <div class="stat-item">
+          <span class="stat-num">100%</span>
+          <span class="stat-label">Padrão ABNT</span>
         </div>
-    </footer>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <script>
-        function scrollToContact() {
-            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
-        }
+<!-- ══════════════════════════════════ PARA QUEM ══════════════════════════════════ -->
+<section class="para-quem" id="para-quem">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Para Quem é a DL</div>
+      <h2 class="section-title">Cada Cliente tem uma Dor Diferente.<br>Nós Resolvemos a Sua.</h2>
+      <p class="section-sub">Entendemos as responsabilidades e pressões únicas de cada perfil. Por isso, nossa abordagem é personalizada desde o primeiro contato.</p>
+    </div>
+    <div class="personas-grid">
+      <div class="persona-card reveal">
+        <div class="persona-icon">🏢</div>
+        <h3>Síndico</h3>
+        <p>Você precisa de agilidade, resolução sem drama para os moradores e laudos técnicos claros para apresentar na assembleia. Precisa confiar que a execução é segura, normatizada e sem retrabalho.</p>
+        <span class="persona-tag">SLA de 8h · Laudos para Assembleia · Conformidade NR-10</span>
+      </div>
+      <div class="persona-card reveal">
+        <div class="persona-icon">🏗️</div>
+        <h3>Administradora de Condomínios</h3>
+        <p>Você gerencia múltiplos condomínios e precisa de um parceiro técnico que cumpra SLAs rigorosos, emita documentação técnica e entregue relatórios de compliance para o corpo diretivo.</p>
+        <span class="persona-tag">Parceria B2B · Multi-condomínio · Documentação Técnica</span>
+      </div>
+      <div class="persona-card reveal">
+        <div class="persona-icon">🏫</div>
+        <h3>Escola &amp; Colégio</h3>
+        <p>Segurança dos alunos é inegociável. Você precisa de CFTV forense, elétrica segura, energia eficiente e a certeza de que obras críticas serão executadas durante as férias escolares.</p>
+        <span class="persona-tag">CFTV · Obras nas Férias · AVCB · Energia Solar</span>
+      </div>
+    </div>
+  </div>
+</section>
 
-        async function submitWebhook(e) {
-            e.preventDefault();
-            const payload = {
-                origem: "site_dl_partner_b2b",
-                nome_contato: document.getElementById('nome_contato').value,
-                telefone: document.getElementById('telefone').value,
-                mensagem: document.getElementById('mensagem').value
-            };
+<!-- ══════════════════════════════════ DIFERENCIAIS ══════════════════════════════════ -->
+<section class="diferenciais">
+  <div class="container">
+    <div class="section-header center reveal">
+      <div class="section-tag">Nossos Diferenciais</div>
+      <h2 class="section-title">O Padrão DL que Fala por Si</h2>
+    </div>
+    <div class="dif-grid">
+      <div class="dif-card reveal">
+        <div class="dif-icon">⭐</div>
+        <div class="dif-num">5.0</div>
+        <div class="dif-label">Nota no Google (49 avaliações)</div>
+      </div>
+      <div class="dif-card reveal">
+        <div class="dif-icon">⚡</div>
+        <div class="dif-num">8h</div>
+        <div class="dif-label">SLA de atendimento on-site</div>
+      </div>
+      <div class="dif-card reveal">
+        <div class="dif-icon">🛡️</div>
+        <div class="dif-num">100%</div>
+        <div class="dif-label">Projetos com padrão ABNT</div>
+      </div>
+      <div class="dif-card reveal">
+        <div class="dif-icon">🎓</div>
+        <div class="dif-num" style="font-size:1.4rem">CREA-RJ</div>
+        <div class="dif-label">Reg. 2022106230 · Tec. Diogo Luiz de Oliveira</div>
+      </div>
+    </div>
 
-            const btn = e.target.querySelector('button');
-            const originalText = btn.innerText;
-            btn.innerText = "Processando no Motor I.A...";
-            btn.disabled = true;
+    <!-- Credencial visual: handshake DL + CREA -->
+    <div class="credencial-banner reveal" style="margin-top:2.5rem; position:relative; border-radius:16px; overflow:hidden; border:1px solid var(--border);">
+      <img src="assets/crea_handshake.jpg" alt="DL Soluções Condominiais credenciada CREA-RJ - Parceria com síndicos" loading="lazy"
+        style="width:100%; height:280px; object-fit:cover; object-position:center 30%; display:block; filter:brightness(0.55);">
+      <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:space-between; padding:2.5rem;">
+        <div>
+          <div class="section-tag" style="margin-bottom:0.75rem">Tecnólogo Registrado · CREA-RJ</div>
+          <h3 style="font-family:var(--font-head); font-size:1.6rem; font-weight:800; margin-bottom:0.5rem;">Diogo Luiz de Oliveira</h3>
+          <p style="color:var(--text-muted); font-size:0.95rem;">Reg. 2022106230 · Tecnólogo responsável técnico<br>Laudos, projetos e ART emitidos por profissional habilitado.</p>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:2.5rem; margin-bottom:0.5rem;">🏅</div>
+          <div style="font-family:var(--font-head); color:var(--amber); font-weight:800; font-size:1.1rem;">CREA-RJ</div>
+          <div style="color:var(--text-muted); font-size:0.8rem;">Conselho Regional de<br>Engenharia e Agronomia</div>
+          <!-- CREA-RJ: Diogo é Tecnólogo, não Engenheiro -->
+        </div>
+      </div>
+    </div>
 
-            try {
-                // Esse é exatamente o seu nó Verde (Webhook) lá do N8N 
-                const response = await fetch("https://n8n.dlsolucoescondominiais.com.br/webhook/dl-pre-receptor", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                });
-                
-                if(response.ok) {
-                    document.getElementById('formStatus').style.display = 'block';
-                    e.target.reset();
-                } else {
-                    document.getElementById('formStatus').innerText = "Falha no envio HTTP.";
-                    document.getElementById('formStatus').style.color = "red";
-                    document.getElementById('formStatus').style.display = 'block';
-                }
-            } catch (err) {
-                console.error(err);
-                document.getElementById('formStatus').innerText = "Erro na rede. Tente via WhatsApp.";
-                document.getElementById('formStatus').style.color = "red";
-                document.getElementById('formStatus').style.display = 'block';
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
-        }
-    </script>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════ SERVIÇOS ══════════════════════════════════ -->
+<section class="servicos" id="servicos">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Portfólio de Serviços</div>
+      <h2 class="section-title">Um Ecossistema Técnico Completo para o Seu Patrimônio</h2>
+      <p class="section-sub">Todas as verticais de engenharia que um condomínio moderno precisa, operadas por uma única empresa de confiança.</p>
+    </div>
+    <div class="servicos-grid">
+
+      <div class="servico-card reveal" onclick="openModal('eletrica')">
+        <div style="position:relative;">
+          <img src="assets/service_eletrica_real.jpg" alt="Técnico DL Soluções trabalhando em quadro elétrico predial" class="servico-img" loading="lazy" style="object-position:center center;">
+          <div style="position:absolute;top:0.75rem;right:0.75rem;background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.3);color:var(--amber);font-size:0.7rem;font-weight:700;padding:0.3rem 0.7rem;border-radius:20px;letter-spacing:0.05em;">CREA-RJ · ART Inclusa</div>
+        </div>
+        <div class="servico-body">
+          <div class="servico-marca">DL Volt™ · DL Praxis™</div>
+          <h3>Engenharia Elétrica Predial</h3>
+          <p>Retrofit elétrico completo, quadros QDC, eletrodutos metálicos galvanizados. Sem gambiarras. Laudo CREA-RJ e ART incluso. ABNT NBR 5410.</p>
+          <div class="servico-arrow">Solicitar Retrofit Elétrico →</div>
+        </div>
+      </div>
+
+      <div class="servico-card reveal" onclick="openModal('solar')">
+        <img src="assets/service_solar_inversor.jpg" alt="Monitoramento de Inversor Solar DL EcoVolt - Rio de Janeiro" class="servico-img" loading="lazy">
+        <div class="servico-body">
+          <div class="servico-marca">DL EcoVolt Solar™</div>
+          <h3>Energia Solar Fotovoltaica</h3>
+          <p>Projetos solares para redução de até 95% na conta de energia das áreas comuns. Homologação CEMIG/ENEL. Lei 14.300.</p>
+          <div class="servico-arrow">Saiba mais →</div>
+        </div>
+      </div>
+
+      <div class="servico-card reveal" onclick="openModal('cftv')">
+        <img src="assets/service_cftv_monitor.jpg" alt="Central de monitoramento CFTV Intelbras com múltiplas câmeras em condomínio" class="servico-img" loading="lazy">
+        <div class="servico-body">
+          <div class="servico-marca">DL Guardião™ · Intelbras</div>
+          <h3>CFTV Forense e Segurança</h3>
+          <p>Painel de monitoramento no tablet, Câmeras Full HD Intelbras, armazenamento cloud, acesso remoto. Qualidade jurídica de imagem para boletim de ocorrência.</p>
+          <div class="servico-arrow">Ver sistema CFTV →</div>
+        </div>
+      </div>
+
+      <div class="servico-card reveal" onclick="openModal('acesso')">
+        <div style="position:relative;">
+          <img src="assets/service_mobgate.jpg" alt="App MobGate DL - Abertura de portão e porta pedestre pelo celular" class="servico-img" loading="lazy" style="object-position:center top;">
+          <div style="position:absolute;top:0.75rem;right:0.75rem;background:rgba(0,207,255,0.12);border:1px solid rgba(0,207,255,0.3);color:var(--electric);font-size:0.7rem;font-weight:700;padding:0.3rem 0.7rem;border-radius:20px;letter-spacing:0.05em;">📱 App MobGate</div>
+        </div>
+        <div class="servico-body">
+          <div class="servico-marca">DL Gatekeeper™</div>
+          <h3>Controle de Acesso</h3>
+          <p>Portão de garagem e porta pedestre pelo celular, sem internet. Biometria, RFID, reconhecimento facial. Portaria autônoma e remota.</p>
+          <div class="servico-arrow">Conhecer DL Gatekeeper →</div>
+        </div>
+      </div>
+
+      <div class="servico-card reveal" onclick="openModal('incendio')">
+        <img src="assets/service_incendio_real.jpg" alt="Prevenção e Combate a Incêndio DL Alerta" class="servico-img" loading="lazy">
+        <div class="servico-body">
+          <div class="servico-marca">DL Alerta™</div>
+          <h3>Prevenção e Combate a Incêndio</h3>
+          <p>Sistemas de detecção e alarme eletrônico, sprinklers, sinalização de emergência. Adequação para AVCB/CBMERJ.</p>
+          <div class="servico-arrow">Saiba mais →</div>
+        </div>
+      </div>
+
+      <div class="servico-card reveal" onclick="openModal('ev')">
+        <img src="assets/service_ev_rj.jpg" alt="DL VoltCharge™ - Carregador de Veículo Elétrico com Pão de Açúcar ao fundo, Rio de Janeiro" class="servico-img" loading="lazy">
+        <div class="servico-body">
+          <div class="servico-marca">DL VoltCharge™</div>
+          <h3>Carregadores de Veículos Elétricos</h3>
+          <p>Instalação de wallboxes e eletropostos em garagens de condomínios e estacionamentos. Compatível com todos os EVs.</p>
+          <div class="servico-arrow">Saiba mais →</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Destaque Portfolio Aéreo -->
+    <div class="portfolio-destaque reveal">
+      <img src="assets/portfolio_solar_aereo.jpg" alt="Vista aérea de instalação solar em condomínio no Rio de Janeiro - DL EcoVolt Solar" loading="lazy">
+      <div class="portfolio-destaque-overlay">
+        <div class="portfolio-destaque-tag">🌞 Case DL EcoVolt Solar™ · Barra da Tijuca · Rio de Janeiro</div>
+        <h3>Solar em Escala no Coração do Rio</h3>
+        <p>Instalação de sistema solar carport sobre estacionamento condominial. Redução drástica na conta de energia das áreas comuns. Vista do Cristo Redentor e Pedra da Gávea ao fundo.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════ PARCEIROS & CERTIFICAÇÕES ═════════ -->
+<section style="padding:3rem 5%; background:rgba(255,255,255,0.015); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div style="text-align:center; margin-bottom:2rem;">
+      <div class="section-tag">Certificações & Parceiros</div>
+      <p style="color:var(--text-muted); font-size:0.95rem;">Tecnologia de ponta. Parceiros certificados. Engenharia responsável.</p>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:3rem;">
+
+      <!-- CREA-RJ -->
+      <div style="text-align:center; opacity:0.85; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.85'">
+        <div style="font-weight:900; font-size:0.95rem; color:var(--amber); letter-spacing:0.05em;">CREA-RJ</div>
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.2rem;">Reg. 2022106230</div>
+        <div style="font-size:0.7rem; color:var(--text-subtle);">Diogo Luiz de Oliveira</div>
+      </div>
+
+      <div style="width:1px; height:40px; background:var(--border);"></div>
+
+      <!-- ABESE -->
+      <div style="text-align:center; opacity:0.7; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
+        <img src="assets/logo_abese.png" alt="ABESE - Associação Brasileira de Empresas de Sistemas Eletrônicos de Segurança"
+          style="height:40px; width:auto; filter:brightness(0) invert(1);" loading="lazy">
+        <div style="font-size:0.7rem; color:var(--text-subtle); margin-top:0.4rem;">Membro Associado</div>
+      </div>
+
+      <div style="width:1px; height:40px; background:var(--border);"></div>
+
+      <!-- Intelbras -->
+      <div style="text-align:center; opacity:0.7; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
+        <img src="assets/logo_intelbras.png" alt="Intelbras - Parceiro oficial de câmeras CFTV"
+          style="height:36px; width:auto; filter:brightness(0) invert(1);" loading="lazy">
+        <div style="font-size:0.7rem; color:var(--text-subtle); margin-top:0.4rem;">Parceiro CFTV</div>
+      </div>
+
+      <div style="width:1px; height:40px; background:var(--border);"></div>
+
+      <!-- Condfy -->
+      <div style="text-align:center; opacity:0.7; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
+        <img src="assets/logo_condfy.png" alt="Condfy - App de gestão condominial integrado"
+          style="height:32px; width:auto; filter:brightness(0) invert(1);" loading="lazy">
+        <div style="font-size:0.7rem; color:var(--text-subtle); margin-top:0.4rem;">Integração App</div>
+      </div>
+
+      <div style="width:1px; height:40px; background:var(--border);"></div>
+
+      <!-- MobGate / Super Portaria -->
+      <div style="text-align:center; opacity:0.7; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
+        <div style="font-weight:800; font-size:1rem; color:var(--electric);">MobGate</div>
+        <div style="font-size:0.7rem; color:var(--text-subtle); margin-top:0.2rem;">Instituto de Controle de Acesso</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════ VÍDEOS DOS SERVIÇOS ════════════════ -->
+<style>
+  .videos-section { padding: var(--section-py) 5%; }
+  .videos-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .video-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden; transition: all 0.3s;
+  }
+  .video-card:hover { border-color: var(--border-hover); transform: translateY(-6px); box-shadow: var(--shadow-amber); }
+  .video-wrap {
+    position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; background: #0a0c14;
+  }
+  .video-wrap iframe {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;
+  }
+  /* Placeholder enquanto vídeo não existe */
+  .video-placeholder {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 0.75rem;
+    background: linear-gradient(135deg, #0a0c14, #111828);
+    cursor: pointer; transition: background 0.3s;
+  }
+  .video-placeholder:hover { background: linear-gradient(135deg, #111828, #162035); }
+  .video-play-btn {
+    width: 60px; height: 60px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--amber), #D4890F);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 20px var(--amber-glow);
+    transition: transform 0.2s;
+  }
+  .video-placeholder:hover .video-play-btn { transform: scale(1.1); }
+  .video-placeholder-label { font-size: 0.8rem; color: var(--text-muted); text-align: center; max-width: 180px; }
+  .video-card-body { padding: 1.25rem; }
+  .video-card-brand { color: var(--amber); font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.35rem; }
+  .video-card-body h4 { font-family: var(--font-head); font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .video-card-body p { font-size: 0.83rem; color: var(--text-muted); line-height: 1.5; }
+  .video-soon-tag { display: inline-block; margin-top: 0.75rem; padding: 0.25rem 0.65rem; background: var(--amber-dark); color: var(--amber); font-size: 0.7rem; font-weight: 600; border-radius: 20px; border: 1px solid rgba(245,166,35,0.2); }
+  @media (max-width: 768px) { .videos-grid { grid-template-columns: 1fr; } }
+</style>
+
+<section class="videos-section" id="videos">
+  <div class="container">
+    <div class="section-header center reveal">
+      <div class="section-tag">Videos Institucionais</div>
+      <h2 class="section-title">Veja Como Cada Serviço Transforma<br>o Seu Condomínio</h2>
+      <p class="section-sub">Explicações claras e diretas para você entender exatamente o que faremos no seu patrimônio — antes de qualquer orçamento.</p>
+    </div>
+    <div class="videos-grid">
+
+      <!-- VIDEO 1: Elétrica -->
+      <div class="video-card reveal">
+        <div class="video-wrap">
+          <!-- Substitua YOUTUBE_ID_ELETRICA pelo ID do seu vídeo após criar no Google Vids -->
+          <div class="video-placeholder" onclick="loadYT(this, 'YOUTUBE_ID_ELETRICA')">
+            <div class="video-play-btn">▶</div>
+            <div class="video-placeholder-label">DL Volt™ · Elétrica Predial</div>
+          </div>
+        </div>
+        <div class="video-card-body">
+          <div class="video-card-brand">DL Volt™ · DL Praxis™</div>
+          <h4>Engenharia Elétrica sem Gambiarras</h4>
+          <p>Por que retrofit elétrico é urgente e o que acontece quando você ignora os sinais de alerta.</p>
+          <span class="video-soon-tag">🎬 Em breve no YouTube</span>
+        </div>
+      </div>
+
+      <!-- VIDEO 2: Solar -->
+      <div class="video-card reveal">
+        <div class="video-wrap">
+          <div class="video-placeholder" onclick="loadYT(this, 'YOUTUBE_ID_SOLAR')">
+            <div class="video-play-btn">▶</div>
+            <div class="video-placeholder-label">DL EcoVolt Solar™ · Energia Solar</div>
+          </div>
+        </div>
+        <div class="video-card-body">
+          <div class="video-card-brand">DL EcoVolt Solar™</div>
+          <h4>Energia Solar que Paga Sozinha</h4>
+          <p>Como funciona o solar carport, quanto economiza na conta e o que a Lei 14.300 garante ao seu condomínio.</p>
+          <span class="video-soon-tag">🎬 Em breve no YouTube</span>
+        </div>
+      </div>
+
+      <!-- VIDEO 3: CFTV -->
+      <div class="video-card reveal">
+        <div class="video-wrap">
+          <div class="video-placeholder" onclick="loadYT(this, 'YOUTUBE_ID_CFTV')">
+            <div class="video-play-btn">▶</div>
+            <div class="video-placeholder-label">DL Guardião™ · CFTV Forense</div>
+          </div>
+        </div>
+        <div class="video-card-body">
+          <div class="video-card-brand">DL Guardião™ · Intelbras</div>
+          <h4>CFTV que o Síndico Acessa do Celular</h4>
+          <p>Qualidade forense de imagem, acesso remoto e como um sistema bem instalado protege juridicamente o condomínio.</p>
+          <span class="video-soon-tag">🎬 Em breve no YouTube</span>
+        </div>
+      </div>
+
+      <!-- VIDEO 4: Controle de Acesso -->
+      <div class="video-card reveal">
+        <div class="video-wrap">
+          <div class="video-placeholder" onclick="loadYT(this, 'YOUTUBE_ID_ACESSO')">
+            <div class="video-play-btn">▶</div>
+            <div class="video-placeholder-label">DL Gatekeeper™ · Acesso MobGate</div>
+          </div>
+        </div>
+        <div class="video-card-body">
+          <div class="video-card-brand">DL Gatekeeper™ · MobGate</div>
+          <h4>Portão pelo Celular, sem Internet</h4>
+          <p>Como a tecnologia MobGate funciona e por que é a solução mais segura para portarias sem porteiro.</p>
+          <span class="video-soon-tag">🎬 Em breve no YouTube</span>
+        </div>
+      </div>
+
+      <!-- VIDEO 5: Incêndio -->
+      <div class="video-card reveal">
+        <div class="video-wrap">
+          <div class="video-placeholder" onclick="loadYT(this, 'YOUTUBE_ID_INCENDIO')">
+            <div class="video-play-btn">▶</div>
+            <div class="video-placeholder-label">DL Alerta™ · Prevenção</div>
+          </div>
+        </div>
+        <div class="video-card-body">
+          <div class="video-card-brand">DL Alerta™</div>
+          <h4>AVCB: Obrigatório e Salva Vidas</h4>
+          <p>O que é o AVCB, por que seu condomínio precisa e quais as sanções por não ter. A DL resolve.</p>
+          <span class="video-soon-tag">🎬 Em breve no YouTube</span>
+        </div>
+      </div>
+
+      <!-- VIDEO 6: EV Charging -->
+      <div class="video-card reveal">
+        <div class="video-wrap">
+          <div class="video-placeholder" onclick="loadYT(this, 'YOUTUBE_ID_EV')">
+            <div class="video-play-btn">▶</div>
+            <div class="video-placeholder-label">DL VoltCharge™ · EV</div>
+          </div>
+        </div>
+        <div class="video-card-body">
+          <div class="video-card-brand">DL VoltCharge™</div>
+          <h4>Garagem com Carregador Elétrico</h4>
+          <p>Como instalar wallboxes no condomínio, dividir o custo entre os moradores e valorizar o imóvel.</p>
+          <span class="video-soon-tag">🎬 Em breve no YouTube</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════ NEXUS ══════════════════════════════════ -->
+<section class="nexus-section" id="nexus">
+  <div class="container">
+    <div class="nexus-inner">
+      <div class="nexus-content reveal">
+        <div class="section-tag">Portal Tecnológico</div>
+        <h2 class="section-title">Conheça o <span style="color:var(--electric)">DL Nexus</span></h2>
+        <p class="nexus-desc">
+          O DL Nexus é o nosso sistema inteligente de gestão de atendimento e orçamentos.
+          Por ele, o seu pedido de avaliação técnica chega diretamente à nossa equipe de engenharia,
+          é triado automaticamente e escalado para o Diretor Técnico sem burocracia.
+        </p>
+        <div class="nexus-features">
+          <div class="nexus-feat">
+            <div class="nexus-feat-icon">🤖</div>
+            <span>Atendimento inteligente 24/7 com triagem automática por IA</span>
+          </div>
+          <div class="nexus-feat">
+            <div class="nexus-feat-icon">📋</div>
+            <span>Coleta técnica de dados precisos para orçamento real</span>
+          </div>
+          <div class="nexus-feat">
+            <div class="nexus-feat-icon">🔔</div>
+            <span>Notificação direta ao Diretor Técnico Diogo Luiz</span>
+          </div>
+          <div class="nexus-feat">
+            <div class="nexus-feat-icon">🔒</div>
+            <span>Seus dados são 100% seguros e privados — LGPD compliant</span>
+          </div>
+        </div>
+        <button class="btn-nexus-large" onclick="document.getElementById('contato').scrollIntoView({behavior:'smooth'})">
+          ◈ Acionar o DL Nexus →
+        </button>
+      </div>
+
+      <div class="nexus-visual reveal">
+        <div class="nexus-monitor-top">
+          <span class="nexus-brand">◈ DL Nexus</span>
+          <span class="nexus-status"><span class="nexus-dot"></span> Sistema Ativo</span>
+        </div>
+        <div class="nexus-row">
+          <span class="nexus-row-label">Lead triado pela Aninha</span>
+          <span class="nexus-row-val" style="color:var(--success)">✓ Classificado</span>
+        </div>
+        <div>
+          <div class="nexus-row">
+            <span class="nexus-row-label">Progresso da Avaliação</span>
+            <span class="nexus-row-val" style="color:var(--amber)">Em andamento</span>
+          </div>
+          <div class="nexus-progress"><div class="nexus-fill fill-amber" style="width:65%"></div></div>
+        </div>
+        <div style="margin-top:1rem">
+          <div class="nexus-row">
+            <span class="nexus-row-label">SLA de Resposta</span>
+            <span class="nexus-row-val" style="color:var(--electric)">7h 20min restantes</span>
+          </div>
+          <div class="nexus-progress"><div class="nexus-fill fill-electric" style="width:88%"></div></div>
+        </div>
+        <div style="margin-top:1rem">
+          <div class="nexus-row">
+            <span class="nexus-row-label">Satisfação do Cliente</span>
+            <span class="nexus-row-val" style="color:var(--success)">5.0 / 5.0</span>
+          </div>
+          <div class="nexus-progress"><div class="nexus-fill fill-green" style="width:100%"></div></div>
+        </div>
+        <div class="nexus-metric-row">
+          <div class="nmr-item">
+            <div class="nmr-num">49</div>
+            <div class="nmr-label">Avaliações</div>
+          </div>
+          <div class="nmr-item">
+            <div class="nmr-num">8h</div>
+            <div class="nmr-label">SLA</div>
+          </div>
+          <div class="nmr-item">
+            <div class="nmr-num">100%</div>
+            <div class="nmr-label">ABNT</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════ AVALIAÇÕES + MAPA ══════════════════════════════════ -->
+<section class="social-proof" id="avaliacoes">
+  <!-- hero-bg bug removed: was overriding the hero background -->
+  <div class="container">
+    <div class="section-header center reveal">
+      <div class="section-tag">Prova Social</div>
+      <h2 class="section-title">O Que Nossos Clientes Dizem</h2>
+    </div>
+    <div class="proof-grid">
+      <div>
+        <div class="reviews-header reveal">
+          <span class="google-logo">Google</span>
+          <div>
+            <div class="stars">★★★★★</div>
+            <div class="rating-count"><strong>5,0</strong> · 49 avaliações no Google</div>
+          </div>
+        </div>
+        <div class="reviews-list">
+          <div class="review-card reveal">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"Empresa super profissional! Resolveram o problema elétrico do nosso condomínio rápido, com laudo técnico e tudo certinho. Recomendo muito!"</p>
+            <div class="review-author">
+              <div class="review-avatar">MF</div>
+              <div>
+                <div class="review-name">Marcia Freitas</div>
+                <div class="review-date">Novembro 2025</div>
+              </div>
+            </div>
+          </div>
+          <div class="review-card reveal">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"Instalaram o sistema de câmeras no nosso condomínio. Excelente qualidade de imagem, SLA cumprido à risca e a equipe foi extremamente profissional."</p>
+            <div class="review-author">
+              <div class="review-avatar">AN</div>
+              <div>
+                <div class="review-name">Antonio Neto</div>
+                <div class="review-date">Junho 2025</div>
+              </div>
+            </div>
+          </div>
+          <div class="review-card reveal">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"Fizeram o projeto de energia solar para as áreas comuns. Já vemos a economia na conta. Equipe super competente, vale muito a pena!"</p>
+            <div class="review-author">
+              <div class="review-avatar">CM</div>
+              <div>
+                <div class="review-name">Christian Marques</div>
+                <div class="review-date">Junho 2025</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:1.5rem; text-align:center;">
+          <a href="https://g.page/r/dlsolucoescondominiais/review" target="_blank" rel="noopener" class="btn-outline" style="display:inline-block;padding:0.7rem 1.5rem;font-size:0.9rem;">
+            Ver todas as 49 avaliações no Google ↗
+          </a>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <div class="map-wrapper">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.0!2d-43.3639!3d-22.9514!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sDL%20Solu%C3%A7%C3%B5es%20Condomíniais!5e0!3m2!1spt!2sbr!4v1680000000000!5m2!1spt!2sbr"
+            allowfullscreen="" loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="DL Soluções Condominiais no Google Maps - Rio de Janeiro">
+          </iframe>
+        </div>
+        <div style="margin-top:1.25rem; background:var(--bg-card); border:1px solid var(--border); border-radius:12px; padding:1.25rem;">
+          <h4 style="font-family:var(--font-head); font-weight:700; margin-bottom:0.75rem;">📍 Atendemos todo o Rio de Janeiro</h4>
+          <p style="font-size:0.875rem; color:var(--text-muted); line-height:1.6;">
+            Zona Sul · Zona Norte · Zona Oeste · Baixada Fluminense · Niterói e Região Metropolitana
+          </p>
+          <div style="margin-top:1rem; display:flex; gap:1rem;">
+            <a href="tel:+5521964742458" style="font-size:0.85rem; color:var(--amber); font-weight:600;">📞 (21) 96474-2458</a>
+            <a href="tel:+5521968782196" style="font-size:0.85rem; color:var(--amber); font-weight:600;">📞 (21) 96878-2196</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════ FORMULÁRIO / CTA ══════════════════════════════════ -->
+<section class="cta-section" id="contato">
+  <div class="container">
+    <div class="cta-inner reveal">
+      <div class="cta-header">
+        <div class="section-tag">Avaliação Técnica Gratuita</div>
+        <h2 class="section-title">Pronto para Resolver de Vez?</h2>
+        <p style="color:var(--text-muted);margin-top:0.5rem">Preencha abaixo. Nossa equipe analisará o seu cenário e o Diretor Técnico<br><strong>Diogo Luiz</strong> entrará em contato em até 8 horas.</p>
+      </div>
+
+      <form class="lead-form" id="leadForm" onsubmit="submitLead(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nome">Nome Completo</label>
+            <input type="text" id="nome" placeholder="Seu nome" required>
+          </div>
+          <div class="form-group">
+            <label for="telefone">WhatsApp</label>
+            <input type="tel" id="telefone" placeholder="(21) 9 0000-0000" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="tipo_cliente">Você é</label>
+            <select id="tipo_cliente" required>
+              <option value="" disabled selected>Selecione seu perfil</option>
+              <option value="sindico">Síndico(a)</option>
+              <option value="admin_condominio">Administradora de Condomínios</option>
+              <option value="admin_escola">Administrador(a) de Escola/Colégio</option>
+              <option value="outro">Outro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="servico">Serviço de Interesse</label>
+            <select id="servico">
+              <option value="" disabled selected>Qual serviço?</option>
+              <option value="eletrica">Elétrica Predial (DL Volt™)</option>
+              <option value="solar">Energia Solar (DL EcoVolt™)</option>
+              <option value="cftv">CFTV/Segurança (DL Guardião™)</option>
+              <option value="acesso">Controle de Acesso (DL Gatekeeper™)</option>
+              <option value="incendio">Prevenção de Incêndio (DL Alerta™)</option>
+              <option value="ev">Carregador Elétrico (DL VoltCharge™)</option>
+              <option value="multiplo">Múltiplos Serviços</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="mensagem">Descreva sua necessidade</label>
+          <textarea id="mensagem" placeholder="Ex: Temos 80 unidades, o quadro elétrico é de 2008, precisamos de retrofit e gostaríamos de instalar energia solar nas áreas comuns..."></textarea>
+        </div>
+        <button type="submit" class="btn-submit" id="submitBtn">
+          ⚡ Acionar Avaliação Técnica Gratuita
+        </button>
+        <div id="form-status"></div>
+        <p class="form-legal">
+          Ao enviar, você concorda com nossa <a href="/politica-de-privacidade/">Política de Privacidade</a>.
+          Seus dados são protegidos pela LGPD e nunca compartilhados com terceiros.
+        </p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════ FOOTER ══════════════════════════════════ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo"><img src="assets/logo_dl.png" alt="DL Soluções Condominiais"></div>
+        <p>Engenharia elétrica, energia solar, CFTV, automação e prevenção de incêndio para condomínios e escolas no Rio de Janeiro. Padrão ABNT. SLA de 8 horas.</p>
+        <div class="footer-social">
+          <a href="https://instagram.com/dlsolucoescondominiais" target="_blank" rel="noopener" aria-label="Instagram">📸</a>
+          <a href="https://facebook.com/dlsolucoescondominiais" target="_blank" rel="noopener" aria-label="Facebook">📘</a>
+          <a href="https://youtube.com/@dlsolucoes" target="_blank" rel="noopener" aria-label="YouTube">▶️</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Serviços</h4>
+        <ul>
+          <li><a href="#servicos">DL Volt™ — Elétrica</a></li>
+          <li><a href="#servicos">DL EcoVolt Solar™</a></li>
+          <li><a href="#servicos">DL Guardião™ — CFTV</a></li>
+          <li><a href="#servicos">DL Gatekeeper™ — Acesso</a></li>
+          <li><a href="#servicos">DL Alerta™ — Incêndio</a></li>
+          <li><a href="#servicos">DL VoltCharge™ — EV</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Empresa</h4>
+        <ul>
+          <li><a href="#para-quem">Quem Atendemos</a></li>
+          <li><a href="#nexus">DL Nexus</a></li>
+          <li><a href="#avaliacoes">Avaliações Google</a></li>
+          <li><a href="#contato">Solicitar Avaliação</a></li>
+          <li><a href="/politica-de-privacidade/">Política de Privacidade</a></li>
+          <li><a href="/lgpd-gdpr/">LGPD</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contato</h4>
+        <div class="contact-line">📞 <a href="tel:+5521964742458">(21) 96474-2458</a></div>
+        <div class="contact-line">📞 <a href="tel:+5521968782196">(21) 96878-2196</a></div>
+        <div class="contact-line">✉️ <a href="mailto:sac@dlsolucoescondominiais.com.br">sac@dlsolucoescondominiais.com.br</a></div>
+        <div class="contact-line" style="margin-top:0.5rem">📍 Rio de Janeiro, RJ</div>
+        <div style="margin-top:1.25rem;">
+          <a href="https://g.page/r/dlsolucoescondominiais/review" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:var(--amber);font-weight:600;">
+            ⭐ Nos avalie no Google →
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 DL Soluções Condominiais LTDA · CNPJ registrado · Rio de Janeiro, RJ</span>
+      <div class="footer-bottom-links">
+        <a href="/politica-de-privacidade/">Privacidade</a>
+        <a href="/lgpd-gdpr/">LGPD</a>
+        <a href="#contato">Contato</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════ WHATSAPP FLOAT ══════════════════════════════════ -->
+<div class="wpp-float" id="wppFloat">
+  <div class="wpp-tooltip" id="wppTooltip">Fale com nossa equipe! 👋</div>
+  <button class="wpp-btn" onclick="openWppModal()" aria-label="Falar pelo WhatsApp">
+    <svg viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+      <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-23.1-115-65.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+    </svg>
+  </button>
+</div>
+
+<!-- WhatsApp Modal -->
+<div class="wpp-modal-overlay" id="wppModal">
+  <div class="wpp-modal">
+    <div class="wpp-modal-header">
+      <div class="wpp-modal-brand">
+        <div class="wpp-logo-circle">
+          <svg viewBox="0 0 448 512" width="22" fill="#fff" xmlns="http://www.w3.org/2000/svg">
+            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-23.1-115-65.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+          </svg>
+        </div>
+        <div class="wpp-modal-brand-text">
+          <h4>DL Soluções Condominiais</h4>
+          <p>🟢 Equipe disponível</p>
+        </div>
+      </div>
+      <button class="wpp-close" onclick="closeWppModal()">✕</button>
+    </div>
+    <div class="wpp-modal-body">
+      <p class="wpp-greeting">👋 Olá! Como podemos ajudar?<br>Deixe seu nome e WhatsApp — nossa equipe entra em contato rapidinho!</p>
+      <input class="wpp-input" id="wppNome" type="text" placeholder="Seu nome" autocomplete="name">
+      <input class="wpp-input" id="wppTel" type="tel" placeholder="WhatsApp (21) 9 0000-0000" autocomplete="tel">
+      <input class="wpp-input" id="wppMsg" type="text" placeholder="Assunto (ex: CFTV para condomínio)">
+      <button class="btn-wpp-send" onclick="submitWpp()">Enviar Mensagem →</button>
+      <div id="wpp-status" style="display:none;text-align:center;font-size:0.85rem;color:var(--success);padding:0.5rem;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ SERVICE DETAIL MODAL ═══════════════ -->
+<style>
+  .smodal-overlay {
+    display:none; position:fixed; inset:0; z-index:8600;
+    background:rgba(0,0,0,0.8); backdrop-filter:blur(6px);
+    align-items:center; justify-content:center; padding:1.5rem;
+  }
+  .smodal-overlay.open { display:flex; }
+  .smodal {
+    width:100%; max-width:520px; background:#0d1117;
+    border:1px solid var(--border); border-radius:20px;
+    overflow:hidden; box-shadow: 0 24px 80px rgba(0,0,0,0.7);
+    animation: slideUp 0.3s ease;
+  }
+  .smodal-top {
+    padding:2rem 2rem 0; text-align:center;
+  }
+  .smodal-icon { font-size:3rem; margin-bottom:1rem; }
+  .smodal-title {
+    font-family:var(--font-head); font-size:1.5rem; font-weight:800;
+    margin-bottom:1rem; line-height:1.2;
+  }
+  .smodal-desc {
+    font-size:0.95rem; color:var(--text-muted); line-height:1.7;
+    padding:0 1rem; margin-bottom:1.25rem;
+  }
+  .smodal-tags {
+    display:flex; flex-wrap:wrap; gap:0.5rem; justify-content:center;
+    margin-bottom:1.5rem;
+  }
+  .smodal-tag {
+    padding:0.3rem 0.7rem; background:var(--amber-dark);
+    border:1px solid rgba(245,166,35,0.2); color:var(--amber);
+    font-size:0.72rem; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.06em; border-radius:20px;
+  }
+  .smodal-actions {
+    display:flex; border-top:1px solid var(--border);
+  }
+  .smodal-btn {
+    flex:1; padding:1.1rem; text-align:center; cursor:pointer;
+    font-family:var(--font-body); font-weight:700; font-size:0.95rem;
+    border:none; transition:all 0.2s;
+  }
+  .smodal-close-btn {
+    background:transparent; color:var(--text-muted);
+    border-right:1px solid var(--border);
+  }
+  .smodal-close-btn:hover { background:var(--bg-card); color:var(--text-main); }
+  .smodal-cta-btn {
+    background:linear-gradient(135deg, var(--amber), #D4890F);
+    color:#060810;
+  }
+  .smodal-cta-btn:hover { filter:brightness(1.1); }
+
+  /* Info modal (genérico) */
+  .info-modal-overlay {
+    display:none; position:fixed; inset:0; z-index:8700;
+    background:rgba(0,0,0,0.8); backdrop-filter:blur(6px);
+    align-items:center; justify-content:center; padding:1.5rem;
+  }
+  .info-modal-overlay.open { display:flex; }
+  .info-modal {
+    width:100%; max-width:440px; background:#0d1117;
+    border:1px solid var(--border); border-radius:16px; padding:2.5rem;
+    text-align:center; box-shadow: 0 24px 80px rgba(0,0,0,0.7);
+    animation: slideUp 0.3s ease;
+  }
+  .info-modal h3 { font-family:var(--font-head); font-size:1.3rem; font-weight:800; margin-bottom:1rem; }
+  .info-modal p { font-size:0.95rem; color:var(--text-muted); line-height:1.7; margin-bottom:1.5rem; white-space: pre-line; }
+  .info-modal-close {
+    padding:0.8rem 2rem; background:var(--bg-card); border:1px solid var(--border);
+    color:var(--text-main); font-weight:600; border-radius:8px; cursor:pointer;
+    transition:all 0.2s; font-family:var(--font-body);
+  }
+  .info-modal-close:hover { border-color:var(--amber); color:var(--amber); }
+</style>
+
+<div class="smodal-overlay" id="serviceModal">
+  <div class="smodal">
+    <div class="smodal-top">
+      <div class="smodal-icon" id="serviceModalIcon"></div>
+      <h3 class="smodal-title" id="serviceModalTitle"></h3>
+      <p class="smodal-desc" id="serviceModalDesc"></p>
+      <div class="smodal-tags" id="serviceModalTags"></div>
+    </div>
+    <div class="smodal-actions">
+      <button class="smodal-btn smodal-close-btn" onclick="closeServiceModal()">Fechar</button>
+      <button class="smodal-btn smodal-cta-btn" id="serviceModalCTA">⚡ Solicitar Avaliação</button>
+    </div>
+  </div>
+</div>
+
+<div class="info-modal-overlay" id="infoModal">
+  <div class="info-modal">
+    <h3 id="infoModalTitle"></h3>
+    <p id="infoModalMsg"></p>
+    <button class="info-modal-close" onclick="closeInfoModal()">Entendi</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════ SCRIPTS ══════════════════════════════════ -->
+<script>
+const N8N_WEBHOOK = 'https://n8n.dlsolucoescondominiais.com.br/webhook/dl-pre-receptor';
+
+/* ─── Navbar scroll effect ─── */
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+/* ─── Tooltip WPP auto-hide ─── */
+setTimeout(() => {
+  const t = document.getElementById('wppTooltip');
+  if (t) t.style.display = 'none';
+}, 5000);
+
+/* ─── Mobile nav ─── */
+document.getElementById('hamburgerBtn').onclick = () => {
+  document.getElementById('mobileNav').classList.add('open');
+  document.body.style.overflow = 'hidden';
+};
+function closeMobileNav() {
+  document.getElementById('mobileNav').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ─── WPP Modal ─── */
+function openWppModal() {
+  document.getElementById('wppModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeWppModal() {
+  document.getElementById('wppModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('wppModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('wppModal')) closeWppModal();
+});
+
+async function submitWpp() {
+  const nome = document.getElementById('wppNome').value.trim();
+  const tel  = document.getElementById('wppTel').value.trim();
+  const msg  = document.getElementById('wppMsg').value.trim();
+  if (!nome || !tel) { alert('Por favor, preencha nome e WhatsApp.'); return; }
+
+  const btn = document.querySelector('.btn-wpp-send');
+  btn.textContent = 'Enviando...'; btn.disabled = true;
+
+  try {
+    await fetch(N8N_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        origem: 'site_wpp_modal',
+        nome_contato: nome,
+        telefone: tel,
+        mensagem: msg || 'Contato via botão WhatsApp do site',
+        tipo_cliente: ''
+      })
+    });
+  } catch (_) {}
+
+  const status = document.getElementById('wpp-status');
+  status.textContent = '✅ Recebemos! Nossa equipe entra em contato em breve.';
+  status.style.display = 'block';
+  btn.style.display = 'none';
+
+  /* Opcional: abre WhatsApp em paralelo */
+  const waMsg = encodeURIComponent(`Olá! Meu nome é ${nome}. ${msg}`);
+  // setTimeout(() => window.open(`https://wa.me/5521964742458?text=${waMsg}`, '_blank'), 1500);
+}
+
+/* ─── Formulário principal ─── */
+async function submitLead(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  const status = document.getElementById('form-status');
+  btn.disabled = true;
+  btn.textContent = '⏳ Enviando para a equipe...';
+  status.style.display = 'none';
+
+  const payload = {
+    origem:       'site_dl_v3_formulario',
+    nome_contato: document.getElementById('nome').value,
+    telefone:     document.getElementById('telefone').value,
+    tipo_cliente: document.getElementById('tipo_cliente').value,
+    servico:      document.getElementById('servico').value,
+    mensagem:     document.getElementById('mensagem').value
+  };
+
+  try {
+    const res = await fetch(N8N_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      status.className = 'success';
+      status.innerHTML = '✅ Avaliação técnica solicitada com sucesso!<br><small>Nossa equipe de engenharia analisará o seu cenário. Você receberá um contato em até 8 horas.</small>';
+      document.getElementById('leadForm').reset();
+    } else {
+      throw new Error('HTTP ' + res.status);
+    }
+  } catch (err) {
+    status.className = 'error';
+    status.innerHTML = '⚠️ Falha no envio. Por favor, ligue: <a href="tel:+5521964742458" style="color:inherit;font-weight:700">(21) 96474-2458</a>';
+  }
+
+  status.style.display = 'block';
+  btn.disabled = false;
+  btn.textContent = '⚡ Acionar Avaliação Técnica Gratuita';
+}
+
+/* ─── Reveal on scroll ─── */
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+
+/* ─── Serviço modal customizado ─── */
+const servicoInfo = {
+  eletrica: { title: 'DL Volt™ — Elétrica Predial', icon: '⚡', desc: 'Retrofit elétrico completo, quadros QDC, SPDA (para-raios), eletrodutos de aço galvanizado. Execução 100% normatizada NR-10 e ABNT NBR 5410. Laudo técnico ART incluso para assembleia.', tags: ['NR-10', 'ABNT NBR 5410', 'ART Inclusa'] },
+  solar: { title: 'DL EcoVolt Solar™ — Energia Solar', icon: '☀️', desc: 'Projetos fotovoltaicos dimensionados para as áreas comuns. Homologação ENEL/CEMIG. Financiamento disponível. Redução de até 95% na conta de energia. Conforme Lei 14.300.', tags: ['Lei 14.300', 'Até 95% economia', 'Homologação'] },
+  cftv: { title: 'DL Guardião™ — CFTV Forense', icon: '📹', desc: 'Câmeras Full HD e 4K, infravermelho, armazenamento cloud e local. Qualidade forense de imagem (válida para boletim de ocorrência). Acesso remoto pelo celular.', tags: ['Full HD / 4K', 'Acesso Remoto', 'Forense'] },
+  acesso: { title: 'DL Gatekeeper™ — Controle de Acesso', icon: '🔐', desc: 'Biometria, cartão RFID, reconhecimento facial, controle de catracas e portões. Integração com interfone e portaria remota. Listas de acesso por app.', tags: ['Biometria', 'RFID', 'App MobGate'] },
+  incendio: { title: 'DL Alerta™ — Prevenção de Incêndio', icon: '🔥', desc: 'Detecção e alarme eletrônico, sprinklers, sinalização de emergência e planos de evacuação. Adequação completa para AVCB/CBMERJ. Vistorias periódicas inclusas.', tags: ['AVCB', 'CBMERJ', 'Sprinklers'] },
+  ev: { title: 'DL VoltCharge™ — Carregadores EV', icon: '🔋', desc: 'Instalação de wallboxes e eletropostos para veículos elétricos em garagens condominiais. Compatível com todos os modelos. Projeto elétrico e ART inclusos.', tags: ['Wallbox', 'Todos os EVs', 'ART Inclusa'] }
+};
+
+function openModal(key) {
+  const info = servicoInfo[key];
+  if (!info) return;
+  const modal = document.getElementById('serviceModal');
+  document.getElementById('serviceModalIcon').textContent = info.icon;
+  document.getElementById('serviceModalTitle').textContent = info.title;
+  document.getElementById('serviceModalDesc').textContent = info.desc;
+  const tagsEl = document.getElementById('serviceModalTags');
+  tagsEl.innerHTML = info.tags.map(t => `<span class="smodal-tag">${t}</span>`).join('');
+  document.getElementById('serviceModalCTA').onclick = () => {
+    closeServiceModal();
+    document.getElementById('servico').value = key;
+    setTimeout(() => document.getElementById('contato').scrollIntoView({ behavior: 'smooth' }), 300);
+  };
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeServiceModal() {
+  document.getElementById('serviceModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('serviceModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('serviceModal')) closeServiceModal();
+});
+
+// ── YouTube lazy loader ─────────────────────────────────────────
+function loadYT(placeholder, videoId) {
+  if (!videoId || videoId.startsWith('YOUTUBE_ID_')) {
+    openInfoModal('📹 Vídeo em Produção!', 'Estamos gravando o conteúdo explicativo para este serviço. Em breve disponível no nosso canal do YouTube.\n\nEnquanto isso, solicite uma avaliação técnica gratuita!');
+    return;
+  }
+  const wrap = placeholder.parentElement;
+  const iframe = document.createElement('iframe');
+  iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+  iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+  iframe.allowFullscreen = true;
+  iframe.setAttribute('loading', 'lazy');
+  wrap.innerHTML = '';
+  wrap.appendChild(iframe);
+}
+
+/* ─── Info modal genérico ─── */
+function openInfoModal(title, msg) {
+  document.getElementById('infoModalTitle').textContent = title;
+  document.getElementById('infoModalMsg').textContent = msg;
+  document.getElementById('infoModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeInfoModal() {
+  document.getElementById('infoModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('infoModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('infoModal')) closeInfoModal();
+});
+</script>
+
 </body>
 </html>

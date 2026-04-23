@@ -113,15 +113,23 @@ Caso a mídia não carregue ou o arquivo não seja compatível, retorne ERRO_LEI
         print(f"   [!] Erro de Visao Computacional (Falha no motor Gemini): {e}")
         return "ERRO_LEITURA"
 
+_pasta_cache = {}
+
 def obter_ou_criar_pasta(service_drive, nome_pasta, parent_id):
     """Cria ou recupera gaveta no Drive."""
+    cache_key = f"{parent_id}_{nome_pasta}"
+    if cache_key in _pasta_cache:
+        return _pasta_cache[cache_key]
+
     query = f"name='{nome_pasta}' and mimeType='application/vnd.google-apps.folder' and '{parent_id}' in parents and trashed=false"
     resultados = service_drive.files().list(q=query, fields="files(id, name)").execute().get('files', [])
     if resultados:
+        _pasta_cache[cache_key] = resultados[0]['id']
         return resultados[0]['id']
     else:
         metadata = {'name': nome_pasta, 'mimeType': 'application/vnd.google-apps.folder', 'parents': [parent_id]}
         pasta = service_drive.files().create(body=metadata, fields='id').execute()
+        _pasta_cache[cache_key] = pasta.get('id')
         return pasta.get('id')
 
 def obter_ou_criar_album_fotos(service_fotos, titulo_album):

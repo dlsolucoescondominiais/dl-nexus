@@ -49,9 +49,3 @@ class N8nMCPClient:
                 "message": str(e),
                 "action": action
             }
-
-# Example Usage:
-# if __name__ == "__main__":
-#     client = N8nMCPClient()
-#     res = client.send_instruction(action="test_connection", data={"key": "value"})
-#     print(res)

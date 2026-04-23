@@ -1,0 +1,21 @@
+name: Sync to n8n MCP
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify-n8n:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Notify n8n Webhook
+        env:
+          N8N_WEBHOOK_URL: "https://n8n.dlsolucoescondominiais.com.br/webhook/mcp-server/http"
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d "{\"agent\": \"github_actions\", \"action\": \"sync_repository\", \"repository\": \"${{ github.repository }}\", \"commit\": \"${{ github.sha }}\"}" \
+          $N8N_WEBHOOK_URL

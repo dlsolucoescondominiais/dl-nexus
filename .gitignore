@@ -6,7 +6,8 @@
 # Credenciais e Segredos (O COFRE FORTE)
 .env
 execution/.env
-*.json
+# *.json
+!backend/n8n/workflows/*.json
 !package.json
 !package-lock.json
 !tsconfig.json

@@ -21,13 +21,14 @@ ARCHIVE_FOLDER_ID = os.getenv("ARCHIVE_FOLDER_ID")
 def autenticar_drive():
     """Valida o crachá do Agente para mexer nos ficheiros."""
     creds = None
-    if os.path.exists(''):
+    if os.path.exists('token_arquivista.json'):
         creds = Credentials.from_authorized_user_file('token_arquivista.json', SCOPES)
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file(r'C:\Users\Diogo\Documents\Arquivista_DL\credentials_drive.json', SCOPES)
+            caminho_cred = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'credentials_drive.json')
+            flow = InstalledAppFlow.from_client_secrets_file(caminho_cred, SCOPES)
             creds = flow.run_local_server(port=0)
         with open('token_arquivista.json', 'w') as token:
             token.write(creds.to_json())
@@ -55,12 +56,19 @@ def classificar_arquivo_com_ia(nome_arquivo, tipo_arquivo):
     )
     return response.choices[0].message.content.strip()
 
+_pasta_cache = {}
+
 def obter_ou_criar_pasta(service, nome_pasta):
     """A Mão do Agente: Cria a gaveta caso ela ainda não exista."""
+    cache_key = f"{ARCHIVE_FOLDER_ID}_{nome_pasta}"
+    if cache_key in _pasta_cache:
+        return _pasta_cache[cache_key]
+
     query = f"name='{nome_pasta}' and mimeType='application/vnd.google-apps.folder' and '{ARCHIVE_FOLDER_ID}' in parents and trashed=false"
     resultados = service.files().list(q=query, fields="files(id, name)").execute().get('files', [])
     
     if resultados:
+        _pasta_cache[cache_key] = resultados[0]['id']
         return resultados[0]['id']
     else:
         # Cria a pasta nova dentro do Gabinete
@@ -71,6 +79,7 @@ def obter_ou_criar_pasta(service, nome_pasta):
         }
         pasta = service.files().create(body=metadata, fields='id').execute()
         print(f"📂 Nova Gaveta Criada automaticamente: {nome_pasta}")
+        _pasta_cache[cache_key] = pasta.get('id')
         return pasta.get('id')
 
 def rodar_triagem_corporativa():

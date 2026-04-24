@@ -1,0 +1,3 @@
+## 2024-04-24 - FastAPI Event Loop Starvation with Synchronous I/O
+**Learning:** In FastAPI, declaring an endpoint with `async def` runs it directly on the main event loop. If that endpoint contains synchronous, blocking I/O (like `requests.post` or OpenAI's synchronous client), it starves the event loop and blocks the entire application from handling concurrent requests.
+**Action:** When a FastAPI route performs blocking synchronous operations, always declare it with `def` instead of `async def` so FastAPI executes it in an external thread pool, or switch to an asynchronous library (like `httpx`).

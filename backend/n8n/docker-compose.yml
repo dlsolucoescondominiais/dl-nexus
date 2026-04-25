@@ -48,3 +48,17 @@ services:
       - "8080:8080"   # Porta nativa da API exposta na VPS
     volumes:
       - picoclaw_data:/app/data
+
+  antigravity:
+    build:
+      context: ../../
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - SUPABASE_JWT_SECRET=${SUPABASE_JWT_SECRET}
+      # Outras variaveis que o Antigravity precisar (como GEMINI_API_KEY) devem ser injetadas aqui ou no arquivo .env da HostGator
+      - N8N_INTERNAL_URL=http://n8n:5678
+    depends_on:
+      - n8n

@@ -30,12 +30,28 @@ def main():
     query_mes = f"'{ano_folders[0]['id']}' in parents and trashed=false"
     mes_folders = service.files().list(q=query_mes, fields="files(id, name)").execute().get('files', [])
     
+    def batch_callback(request_id, response, exception):
+        if exception:
+            print(f"Erro ao mover arquivo: {exception}")
+
     for mf in mes_folders:
         query_files = f"'{mf['id']}' in parents and trashed=false"
         arquivos = service.files().list(q=query_files, fields="files(id, name)").execute().get('files', [])
+
+        batch = service.new_batch_http_request(callback=batch_callback)
+        count = 0
         for a in arquivos:
-            print(f"Voltando para root: {a['name']}")
-            service.files().update(fileId=a['id'], addParents='root', removeParents=mf['id']).execute()
+            print(f"Preparando para voltar para root: {a['name']}")
+            req = service.files().update(fileId=a['id'], addParents='root', removeParents=mf['id'])
+            batch.add(req)
+            count += 1
+            if count >= 100:
+                batch.execute()
+                batch = service.new_batch_http_request(callback=batch_callback)
+                count = 0
+
+        if count > 0:
+            batch.execute()
 
 if __name__ == '__main__':
     main()

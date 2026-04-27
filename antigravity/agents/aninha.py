@@ -37,7 +37,7 @@ class AninhaAgent:
     def __init__(self):
         # API Key via variável de ambiente 
         api_key = os.getenv("OPENAI_API_KEY") 
-        self.client = openai.OpenAI(api_key=api_key) if api_key else None
+        self.client = openai.AsyncOpenAI(api_key=api_key) if api_key else None
         
         self.system_prompt = """
         Você é a ANINHA - Especialista Arquiteta e Engenharia B2B da DL Soluções Condominiais.
@@ -87,7 +87,7 @@ class AninhaAgent:
         if num_unidades <= 300: return Porte.GRANDE
         return Porte.COMPLEXO
 
-    def analisar_mensagem_ia(self, mensagem_cliente: str) -> Dict[str, Any]:
+    async def analisar_mensagem_ia(self, mensagem_cliente: str) -> Dict[str, Any]:
         """A IA lê a mensagem e gera o Json rigoroso"""
         if not self.client:
             return {
@@ -97,7 +97,7 @@ class AninhaAgent:
             }
 
         try:
-            response = self.client.chat.completions.create(
+            response = await self.client.chat.completions.create(
                 model="gpt-4o",
                 response_format={ "type": "json_object" },
                 messages=[
@@ -126,13 +126,13 @@ class AninhaAgent:
                 "parecer": f"Falha na IA: {str(e)}"
             }
 
-    def fazer_triagem(self, lead_data: Dict) -> Dict:
+    async def fazer_triagem(self, lead_data: Dict) -> Dict:
         """
         Substitui a lógica de Regras Antiga pela lógica de IA da V2.0
         """
         mensagem = lead_data.get("mensagem_original", "")
         # Processa com IA
-        resultado_ia = self.analisar_mensagem_ia(mensagem)
+        resultado_ia = await self.analisar_mensagem_ia(mensagem)
         
         porte = self.calcular_porte(lead_data.get("num_unidades"))
         

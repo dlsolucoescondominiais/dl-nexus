@@ -2,6 +2,7 @@
  * DL Nexus - Camada de Comunicação Externa (Antigravity & Integrações B2B)
  */
 import { supabase } from './supabaseClient';
+import { logger } from './logger';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.dlsolucoescondominiais.com.br';
 
@@ -31,7 +32,7 @@ export const apiClient = {
 
       return await response.json();
     } catch (error) {
-      console.error(`Falha no apiClient.post(${endpoint}):`, error);
+      logger.error(`Falha no apiClient.post(${endpoint}):`, error);
       throw error;
     }
   }

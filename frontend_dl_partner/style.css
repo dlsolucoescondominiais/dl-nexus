@@ -449,7 +449,7 @@ body::before {
 .nmr-label { font-size:0.7rem; color:var(--text-muted); margin-top:0.2rem; }
 
 /* ── GOOGLE REVIEWS + MAP ───────────────────────────── */
-.social-proof { padding: var(--section-py) 5%; background: rgba(255,255,255,0.015); }
+.social-proof { padding: var(--section-py) 5%; background: rgba(255,255,255,0.015); position: relative; overflow: hidden; }
 .proof-grid { display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:start; }
 
 .reviews-header {

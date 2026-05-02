@@ -1,3 +1,4 @@
+import { logger } from './logger';
 /**
  * DL Nexus - Camada de Comunicação Externa (Antigravity & Integrações B2B)
  */
@@ -31,7 +32,7 @@ export const apiClient = {
 
       return await response.json();
     } catch (error) {
-      console.error(`Falha no apiClient.post(${endpoint}):`, error);
+      logger.error(`Falha no apiClient.post(${endpoint}):`, error);
       throw error;
     }
   }

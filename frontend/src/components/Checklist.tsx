@@ -1,3 +1,4 @@
+import { logger } from '../lib/logger';
 import React, { useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 
@@ -64,7 +65,7 @@ export default function ChecklistMobile({ leadId = 'a1b2c3d4-e5f6-7890-1234-5678
 
       setMensagem('Avaliação Técnica salva! O DL Nexus já vai processar a Proposta.');
     } catch (err: any) {
-      console.error('Erro ao salvar Avaliação:', err);
+      logger.error('Erro ao salvar Avaliação:', err);
       setMensagem(`Falha: ${err.message}`);
     } finally {
       setLoading(false);

@@ -1,8 +1,221 @@
 {
   "name": "030_ANINHA_TRIAGEM",
-  "nodes": [],
-  "connections": {},
+  "nodes": [
+    {
+      "parameters": {
+        "path": "dl-aninha-triagem",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook_aninha_entrada",
+      "name": "Entrada Omnichannel - Aninha",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || $json;\n\nconst forbiddenTerms = [\n  'visita técnica',\n  'visita tecnica',\n  'agendar visita',\n  'marcar visita',\n  'registrar visita',\n  'vistoria'\n];\n\nconst officialTerm = 'Avaliação Técnica';\n\nfunction cleanText(value) {\n  if (!value || typeof value !== 'string') return value || '';\n  let text = value;\n  for (const term of forbiddenTerms) {\n    const regex = new RegExp(term, 'gi');\n    text = text.replace(regex, officialTerm);\n  }\n  return text.trim();\n}\n\nconst normalized = {\n  origem: body.origem || body.source || 'canal_nao_identificado',\n  canal: body.canal || body.channel || 'desconhecido',\n  nome: cleanText(body.nome || body.name || ''),\n  telefone: String(body.telefone || body.phone || body.whatsapp || '').replace(/\\D/g, ''),\n  email: String(body.email || '').toLowerCase().trim(),\n  bairro: cleanText(body.bairro || body.region || ''),\n  mensagem_original: cleanText(body.mensagem || body.message || body.text || ''),\n  perfil_cliente: cleanText(body.perfil_cliente || body.tipo_cliente || ''),\n  teste: body.teste === true || body.origem === 'TESTE_DL_NEXUS',\n  termo_oficial: officialTerm,\n  regra_vocabulario: 'PROIBIDO_USAR_VISITA_TECNICA_USAR_AVALIACAO_TECNICA',\n  timestamp: new Date().toISOString()\n};\n\nreturn [{ json: normalized }];"
+      },
+      "id": "normalizar_payload",
+      "name": "Normalizar Payload e Vocabulário",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        520,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const msg = ($json.mensagem_original || '').toLowerCase();\n\nconst servicos = {\n  seguranca: ['camera', 'câmera', 'cftv', 'controle de acesso', 'facial', 'biometria', 'portaria', 'cerca elétrica', 'cerca eletrica'],\n  incendio: ['incêndio', 'incendio', 'alarme de incêndio', 'detector', 'sirene', 'acionador', 'iluminação de emergência'],\n  eletrica: ['elétrica', 'eletrica', 'quadro', 'disjuntor', 'painel', 'carga', 'curto', 'iluminação', 'bomba'],\n  solar: ['solar', 'fotovoltaico', 'inversor', 'placa solar', 'energia solar', 'híbrido', 'hibrido'],\n  automacao: ['automação', 'automacao', 'alexa', 'google assistente', 'portão', 'portao', 'wi-fi', 'bluetooth'],\n  commander_nexus: ['cisterna', 'recalque', 'boia', 'bóia', 'nível', 'nivel', 'bomba', 'painel de comando', 'alarme de nível', 'falha de bomba'],\n  contrato: ['contrato', 'manutenção preventiva', 'manutencao preventiva', 'sistema recorrente', 'sla', 'relatório mensal']\n};\n\nconst bloqueioHidraulico = ['vazamento', 'encanamento', 'cano', 'mangueira', 'hidráulica pura', 'hidraulica pura', 'sprinkler hidráulico', 'sprinkler hidraulico'];\n\nlet area = 'nao_classificado';\nlet prioridade = 'media';\nlet escopo_bloqueado = false;\nlet motivo_bloqueio = '';\n\nfor (const [key, palavras] of Object.entries(servicos)) {\n  if (palavras.some(p => msg.includes(p))) {\n    area = key;\n    break;\n  }\n}\n\nif (bloqueioHidraulico.some(p => msg.includes(p))) {\n  escopo_bloqueado = true;\n  motivo_bloqueio = 'Pedido aparenta ser manutenção hidráulica pura. Redirecionar para escopo elétrico, comando, automação, proteção ou monitoramento.';\n}\n\nif (['urgente', 'emergência', 'emergencia', 'parou', 'queimou', 'sem energia', 'alarme disparando', 'bomba parada'].some(p => msg.includes(p))) {\n  prioridade = 'alta';\n}\n\nif (area === 'commander_nexus') {\n  prioridade = 'alta';\n}\n\nreturn [{\n  json: {\n    ...$json,\n    area_interesse: area,\n    prioridade,\n    escopo_bloqueado,\n    motivo_bloqueio,\n    produto_estrategico: area === 'commander_nexus' ? 'DL Commander Nexus' : null\n  }\n}];"
+      },
+      "id": "classificar_intencao_servico",
+      "name": "Classificar Intenção e Serviço",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const j = $json;\n\nlet resposta = '';\nlet proxima_acao = '';\n\nif (j.escopo_bloqueado) {\n  resposta = `Olá${j.nome ? ', ' + j.nome : ''}. A DL Soluções atua na parte elétrica, comando, automação, proteção, monitoramento e inteligência preventiva dos sistemas do condomínio. Para intervenção hidráulica pura, o ideal é acionar um profissional hidráulico. Podemos realizar uma Avaliação Técnica da parte elétrica, comando, automação e prevenção de falhas do sistema.`;\n  proxima_acao = 'encaminhar_para_avaliacao_escopo_eletrico_automacao';\n} else if (j.area_interesse === 'commander_nexus') {\n  resposta = `Olá${j.nome ? ', ' + j.nome : ''}. Pelo seu relato, isso pode envolver sistema crítico de bomba, cisterna, recalque, boia, nível ou painel de comando. A solução indicada é uma Avaliação Técnica para verificar a parte elétrica, comando, automação e prevenção de falhas. A DL pode avaliar a aplicação do DL Commander Nexus para monitoramento e controle inteligente do sistema.`;\n  proxima_acao = 'acionar_diego_para_dl_commander_nexus';\n} else if (j.area_interesse === 'nao_classificado') {\n  resposta = `Olá${j.nome ? ', ' + j.nome : ''}. Recebemos sua mensagem. Para direcionar corretamente, por gentileza informe qual sistema precisa de atendimento: segurança eletrônica, elétrica, incêndio, energia solar, automação, bombas/cisterna ou contrato de manutenção.`;\n  proxima_acao = 'solicitar_qualificacao';\n} else {\n  resposta = `Olá${j.nome ? ', ' + j.nome : ''}. Recebemos sua solicitação sobre ${j.area_interesse}. Para avançarmos com segurança, o próximo passo é uma Avaliação Técnica da DL Soluções, onde analisamos o cenário, riscos, infraestrutura e melhor solução para o condomínio.`;\n  proxima_acao = 'encaminhar_para_diego';\n}\n\nreturn [{\n  json: {\n    ...j,\n    resposta_aninha: resposta,\n    proxima_acao,\n    status: 'triado_aninha',\n    agente: 'Aninha',\n    linguagem_validada: true,\n    termo_comercial_obrigatorio: 'Avaliação Técnica'\n  }\n}];"
+      },
+      "id": "gerar_resposta_aninha",
+      "name": "Gerar Resposta Aninha",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = JSON.stringify($json).toLowerCase();\n\nconst proibidos = [\n  'visita técnica',\n  'visita tecnica',\n  'agendar visita',\n  'marcar visita',\n  'registrar visita',\n  'canaleta plástica',\n  'canaleta plastica'\n];\n\nconst encontrados = proibidos.filter(t => text.includes(t));\n\nif (encontrados.length > 0) {\n  return [{\n    json: {\n      ...$json,\n      killcritic_status: 'BLOQUEADO',\n      termos_proibidos_encontrados: encontrados,\n      erro_critico: 'Resposta contém termo proibido ou fora do posicionamento DL.'\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    ...$json,\n    killcritic_status: 'APROVADO',\n    termos_proibidos_encontrados: []\n  }\n}];"
+      },
+      "id": "killcritic_validator",
+      "name": "KILLCRITIC - Validador de Linguagem",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1360,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.killcritic_status}}",
+              "operation": "equals",
+              "value2": "APROVADO"
+            }
+          ]
+        }
+      },
+      "id": "if_aprovado",
+      "name": "Linguagem Aprovada?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1620,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "id": "resposta_ok",
+      "name": "Responder OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1900,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"status\": \"BLOQUEADO_KILLCRITIC\", \"erro\": $json.erro_critico, \"termos\": $json.termos_proibidos_encontrados } }}",
+        "options": {
+          "responseCode": 422
+        }
+      },
+      "id": "resposta_bloqueada",
+      "name": "Responder Bloqueio KILLCRITIC",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1900,
+        420
+      ]
+    }
+  ],
+  "connections": {
+    "Entrada Omnichannel - Aninha": {
+      "main": [
+        [
+          {
+            "node": "Normalizar Payload e Vocabulário",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizar Payload e Vocabulário": {
+      "main": [
+        [
+          {
+            "node": "Classificar Intenção e Serviço",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classificar Intenção e Serviço": {
+      "main": [
+        [
+          {
+            "node": "Gerar Resposta Aninha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gerar Resposta Aninha": {
+      "main": [
+        [
+          {
+            "node": "KILLCRITIC - Validador de Linguagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KILLCRITIC - Validador de Linguagem": {
+      "main": [
+        [
+          {
+            "node": "Linguagem Aprovada?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Linguagem Aprovada?": {
+      "main": [
+        [
+          {
+            "node": "Responder OK",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder Bloqueio KILLCRITIC",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
   "settings": {
     "executionOrder": "v1"
-  }
+  },
+  "pinData": {},
+  "active": false,
+  "versionId": "DL_NEXUS_V3_KILLCRITIC_030_ANINHA",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    {
+      "name": "DL_NEXUS"
+    },
+    {
+      "name": "KILLCRITIC"
+    },
+    {
+      "name": "ANINHA"
+    }
+  ]
 }

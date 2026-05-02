@@ -176,3 +176,6 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
+
+# Allow tracking of specific generated workflow directories
+!backend/n8n/workflows/v3/**/*.json

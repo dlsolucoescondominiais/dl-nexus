@@ -9,7 +9,6 @@ da IA e salvamento no Supabase ANTES da produção oficial.
 """
 
 import requests
-import json
 import time
 
 # ============================================================================

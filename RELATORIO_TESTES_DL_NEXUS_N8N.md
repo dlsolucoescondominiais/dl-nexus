@@ -23,7 +23,7 @@ Esta auditoria avaliou a arquitetura e fluxos operacionais do ecossistema n8n da
 *Nota: Várias rotas internas não possuem autenticação, o que pode permitir injeção direta de chamadas e abuso dos agentes de IA se os links vazarem.*
 
 ## 4. Credenciais analisadas
-- **Supabase**: `QzziIRhKJMDNAE1m` presente e vinculada a diversos nós em 002, 003, 004 e 007.
+- **Supabase**: `[REDACTED]` presente e vinculada a diversos nós em 002, 003, 004 e 007.
 - **Header Auth**: Requerido no 001 e 006, indicando proteção de borda.
 - **Variáveis de Ambiente**: `$env.ELEVENLABS_VOICE_ID` e `$env.ELEVENLABS_API_KEY` utilizadas em 006.
 

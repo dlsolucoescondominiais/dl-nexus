@@ -7,7 +7,9 @@ router = APIRouter(prefix="/api/marketing", tags=["MARKETING", "AUTOMAÇÃO"])
 
 # URL do n8n que escuta a sua aprovação manual
 WEBHOOK_APROVACAO_N8N = os.getenv("N8N_WEBHOOK_URL", "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-aprovar-post")
-API_KEY_N8N = os.getenv("N8N_API_KEY", "dl-nexus-auth-2026")
+API_KEY_N8N = os.getenv("N8N_API_KEY")
+if not API_KEY_N8N:
+    raise ValueError("N8N_API_KEY environment variable is missing")
 
 class PostApprovalRequest(BaseModel):
     post_id: str

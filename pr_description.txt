@@ -1,0 +1,11 @@
+🎯 **What:** The testing gap addressed
+This PR addresses the lack of test coverage for the `triagem_lead` endpoint in `antigravity/routes/aninha.py`. Previously, this endpoint was entirely untested, leaving critical lead triaging logic without a safety net.
+
+📊 **Coverage:** What scenarios are now tested
+1.  **Happy Path:** Simulates a successful lead submission, mocking the AninhaAgent (`agente_aninha`) to return a successful status and verifying that the `TestClient` responds with a 200 OK and the correct JSON structure. It also verifies that the background task (`disparar_webhook_n8n_background`) is correctly registered.
+2.  **Exception Path:** Simulates a failure within the AninhaAgent, verifying that the endpoint correctly catches the error and returns a 500 Internal Server Error, and that no background task is registered.
+3.  **Background Task Success:** Isolates and tests the `disparar_webhook_n8n_background` function directly, mocking the `requests.post` call to return a 200 status and verifying the correct payload and headers are sent.
+4.  **Background Task Failure:** Isolates and tests the webhook function when a connection timeout or other exception occurs, ensuring the exception is swallowed safely as designed.
+
+✨ **Result:** The improvement in test coverage
+The `triagem_lead` endpoint and its associated background tasks are now fully covered by isolated unit tests that do not rely on external services or live LLM inferences, significantly improving the reliability of the Antigravity backend.

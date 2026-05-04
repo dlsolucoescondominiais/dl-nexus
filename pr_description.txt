@@ -1,0 +1,7 @@
+🎯 **What:** Added Vitest configuration to the project and created an explicit unit test file for `authService.login` to cover error handling logic, specifically when unexpected errors are thrown in the `catch` block as requested.
+📊 **Coverage:** Covered 4 scenarios for the `login` function:
+1. Happy path (successful login returning user data).
+2. Supabase API returning an error object (simulating wrong credentials).
+3. Supabase throwing an Error instance (simulating network error caught by the catch block).
+4. Supabase throwing a generic string or object without a `message` property (covering the default unexpected error fallback logic).
+✨ **Result:** Enhanced the test coverage for authentication services by installing `vitest` and asserting that errors correctly propagate the required `{ success, data, error }` data structure across all known failure scenarios.

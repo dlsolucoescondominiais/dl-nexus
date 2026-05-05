@@ -1,0 +1,121 @@
+{
+  "name": "012_ENTRADA_WHATSAPP_META",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "whatsapp-meta-in",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook WhatsApp Meta",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "whatsapp-meta-in"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "telefone",
+              "value": "={{$json.body.entry[0].changes[0].value.contacts[0].wa_id}}"
+            },
+            {
+              "name": "nome",
+              "value": "={{$json.body.entry[0].changes[0].value.contacts[0].profile.name}}"
+            },
+            {
+              "name": "mensagem",
+              "value": "={{$json.body.entry[0].changes[0].value.messages[0].text.body}}"
+            },
+            {
+              "name": "tipo_midia",
+              "value": "={{$json.body.entry[0].changes[0].value.messages[0].type}}"
+            },
+            {
+              "name": "canal",
+              "value": "whatsapp"
+            },
+            {
+              "name": "timestamp",
+              "value": "={{$json.body.entry[0].changes[0].value.messages[0].timestamp}}"
+            },
+            {
+              "name": "message_id",
+              "value": "={{$json.body.entry[0].changes[0].value.messages[0].id}}"
+            },
+            {
+              "name": "origem",
+              "value": "Meta WhatsApp"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2",
+      "name": "Extrair e Normalizar",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://dlnexus-orchestrator/receive",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "payload",
+              "value": "={{$json}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3",
+      "name": "Encaminhar para DL Nexus",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook WhatsApp Meta": {
+      "main": [
+        [
+          {
+            "node": "Extrair e Normalizar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair e Normalizar": {
+      "main": [
+        [
+          {
+            "node": "Encaminhar para DL Nexus",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "1"
+}

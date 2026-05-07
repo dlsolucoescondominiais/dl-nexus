@@ -1,0 +1,3 @@
+## 2026-05-07 - [Event Loop Starvation with Sync I/O in FastAPI]
+**Learning:** In FastAPI, declaring routes containing synchronous I/O operations (like `requests.post` or synchronous external SDK clients like `openai.OpenAI`) with `async def` completely halts the single-threaded event loop, leading to severe performance bottlenecks.
+**Action:** When a route must perform synchronous network I/O and synchronous alternatives aren't available, declare the route with `def` instead of `async def`. FastAPI will automatically offload these synchronous endpoints to an external thread pool, preserving event loop concurrency.

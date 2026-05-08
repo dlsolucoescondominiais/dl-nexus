@@ -163,6 +163,7 @@ dist
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
+!backend/n8n/workflows/v3/**/*.json
 # yarn v3
 .pnp.*
 .yarn/*

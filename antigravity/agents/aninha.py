@@ -42,6 +42,8 @@ class AninhaAgent:
         self.system_prompt = """
         Você é a ANINHA - Especialista Arquiteta e Engenharia B2B da DL Soluções Condominiais.
         A sua função é conversar com o cliente, entender a dor dele e classificar a demanda pareando com os nossos Produtos Oficiais Premium.
+        O principal objetivo de todo funil comercial é agendar uma "Avaliação Técnica" com nossos especialistas. Nunca use o termo "visita técnica" ou "vistoria". Em hipótese alguma sugira "canaleta plástica" ou materiais frágeis. A infraestrutura deve usar apenas "eletrodutos galvanizados" e "cabeamento 100% cobre".
+        Além disso, se a demanda for sobre "bomba" ou "cisterna", você deve focar no produto "DL Commander Nexus" e não em manutenção hidráulica pura, a qual é estritamente proibida.
         
         EIXO ENERGIA/ELÉTRICA (categoria: eletrica, solar, mobilidade):
         - "DL Volt™": Infraestrutura de potência e painéis QDC/PC de Luz.
@@ -57,7 +59,7 @@ class AninhaAgent:
         - "DL Gatekeeper™": Chave virtual WiFi/Bluetooth.
         
         EIXO AUTOMAÇÃO E PREVENÇÃO (categoria: automacao, incendio):
-        - "DL Commander™": Automação de cisterna, bombas e telemetria.
+        - "DL Commander Nexus™": Automação de cisterna, bombas e telemetria.
         - "DL Alerta™": Prevenção a incêndio, fumaça e gás.
         - "DL Insight™": Dashboard Plataforma Whiteboard.
         
@@ -67,18 +69,28 @@ class AninhaAgent:
         - "DL Sustentia™" e "DL Praxis™": Metodologias e sustentabilidade.
 
         Sempre que processar um novo lead, você é OBRIGADA a devolver UM ÚNICO OUTPUT no formato JSON rigoroso.
+        A resposta ("resposta_cliente") deve usar linguagem comercial clara. Evite ser genérica. Formule perguntas de qualificação se necessário para coletar dados que faltam, focando em converter o atendimento para agendamento de "Avaliação Técnica".
         
         {
-            "urgencia": "<valor>",
-            "categoria_servico": "<valor>",
+            "nome": "<Nome do cliente identificado, ou null>",
+            "telefone": "<Telefone, se fornecido, ou null>",
+            "email": "<Email, se fornecido, ou null>",
+            "tipo_local": "<condominio, empresa, residencia, escola ou null>",
+            "bairro": "<Bairro identificado, ou null>",
+            "categoria_servico": "<eletrica, solar, incendio, seguranca, mobilidade, automacao, ou indefinida>",
+            "urgencia": "<baixa, media, alta, critica>",
+            "perfil_cliente": "<sindico, administradora, morador, zelador, empresa ou null>",
+            "lead_real": <true para potencial cliente, false para mensagem irrelevante ou spam>,
+            "tipo_demanda": "<orcamento ou suporte_tecnico>",
+            "tipo_trabalho": "<manutencao ou nova_instalacao>",
+            "perguntas_qualificacao": ["<Pergunta 1 para o cliente>", "<Pergunta 2>"],
+            "resposta_cliente": "<Texto da resposta da Aninha direcionada ao cliente, com tom comercial e tentando agendar uma Avaliação Técnica, sem usar o termo 'visita técnica' ou falar de preço>",
+            "acionar_diego": <true se o cliente demonstrou querer agendar algo, false caso contrário>,
+            "acionar_especialista": <true se for urgência alta/crítica ou demanda altamente técnica, false caso contrário>,
+            "encaminhar_humano": <true se o lead pedir para falar com atendente ou se as respostas não forem suficientes, false caso contrário>,
             "parecer": "<Breve resumo da dor, apontando obrigatoriamente para qual Produto Oficial da DL resolve o problema>"
         }
-        
-        REGRAS DE VALORES:
-        - urgencia: Deve ser EXATAMENTE "baixa", "media", "alta", ou "critica".
-        - categoria_servico: Deve ser EXATAMENTE "eletrica", "solar", "incendio", "seguranca", "mobilidade", "automacao" ou "indefinida".
-        - Exemplo de Parecer Ideal: "Síndico reclama de sobrecarga de carros. Lead qualificado para DL Praxis Elétrica™ e DL VoltCharge™."
-        """
+"""
 
     def calcular_porte(self, num_unidades: Optional[int]) -> Porte:
         if not num_unidades: return Porte.PEQUENO
@@ -93,7 +105,9 @@ class AninhaAgent:
             return {
                 "urgencia": "alta", 
                 "categoria_servico": "eletrica", 
-                "parecer": "Falha - OPENAI_API_KEY não configurada."
+                "parecer": "Falha - OPENAI_API_KEY não configurada.",
+                "lead_real": False,
+                "resposta_cliente": "Nossa inteligência artificial está temporariamente offline. Por favor, aguarde o contato de um humano."
             }
 
         try:
@@ -123,7 +137,9 @@ class AninhaAgent:
             return {
                 "urgencia": "alta", 
                 "categoria_servico": "indefinida", 
-                "parecer": f"Falha na IA: {str(e)}"
+                "parecer": f"Falha na IA: {str(e)}",
+                "lead_real": False,
+                "resposta_cliente": "Tivemos um problema de comunicação interno. Um especialista humano falará com você em breve."
             }
 
     def fazer_triagem(self, lead_data: Dict) -> Dict:
@@ -146,10 +162,24 @@ class AninhaAgent:
             "categoria_servico": resultado_ia.get("categoria_servico"),
             "porte": porte.value,
             "proxima_acao_obrigatoria": "Agendar Avaliação Técnica",
-            "nome_condominio": lead_data.get("nome_condominio"),
-            "telefone": lead_data.get("telefone"),
-            "email": lead_data.get("email"),
-            "origem": lead_data.get("origem")
+
+            # Campos preenchidos pela IA ou pelo payload original (priorizando original se existir)
+            "nome": resultado_ia.get("nome"),
+            "nome_condominio": lead_data.get("nome_condominio") or resultado_ia.get("nome") or "Não Identificado",
+            "telefone": lead_data.get("telefone") or resultado_ia.get("telefone"),
+            "email": lead_data.get("email") or resultado_ia.get("email"),
+            "origem": lead_data.get("origem"),
+            "tipo_local": resultado_ia.get("tipo_local"),
+            "bairro": resultado_ia.get("bairro"),
+            "perfil_cliente": resultado_ia.get("perfil_cliente"),
+            "lead_real": resultado_ia.get("lead_real", True),
+            "tipo_demanda": resultado_ia.get("tipo_demanda"),
+            "tipo_trabalho": resultado_ia.get("tipo_trabalho"),
+            "perguntas_qualificacao": resultado_ia.get("perguntas_qualificacao", []),
+            "resposta_cliente": resultado_ia.get("resposta_cliente", ""),
+            "acionar_diego": resultado_ia.get("acionar_diego", False),
+            "acionar_especialista": resultado_ia.get("acionar_especialista", False),
+            "encaminhar_humano": resultado_ia.get("encaminhar_humano", False)
         }
         
         return payload_final

@@ -1,0 +1,376 @@
+{
+  "name": "008_receptor_email",
+  "nodes": [
+    {
+      "parameters": {
+        "postProcessAction": "nothing",
+        "downloadAttachments": true,
+        "dataPropertyAttachments": "attachment_",
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "customEmailConfig": "[\"UNSEEN\"]"
+        }
+      },
+      "id": "trigger-imap",
+      "name": "Ler Emails Recebidos",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "credentials": {
+        "imap": {
+          "id": "IMAP_CREDENTIALS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.header['auto-submitted'] || '' }}",
+              "operation": "notContains",
+              "value2": "auto-"
+            },
+            {
+              "value1": "={{ $json.from }}",
+              "operation": "notContains",
+              "value2": "noreply"
+            },
+            {
+              "value1": "={{ $json.from }}",
+              "operation": "notContains",
+              "value2": "daemon"
+            }
+          ]
+        }
+      },
+      "id": "filter-loop",
+      "name": "Evitar Loop Auto-Reply",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o"
+      },
+      "id": "llm-openai",
+      "name": "OpenAI Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        500,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text || $json.html }}",
+        "options": {
+          "systemMessage": "Você é um classificador de e-mails da DL Soluções Condominiais.\nRegra KILLCRITIC: Bloqueie estritamente escopos de manutenção hidráulica. Redirecione emergências de bombas/cisternas para 'DL Commander Nexus'.\nProibido sugerir eletrocalhas não galvanizadas.\nNunca diga Avaliação Inicial, sempre use 'Avaliação Técnica'.\n\nAnalise o e-mail e retorne um JSON com:\n- 'classificacao': 'comercial', 'spam', 'cobranca_notificacao', 'orcamento', 'suporte', 'manutencao', 'outro'\n- 'nome': Nome do remetente (se não tiver, extraia do inicio do email ou retorne 'Não identificado')\n- 'telefone': Telefone (se não tiver, retorne 'Não identificado')\n- 'texto_limpo': Mensagem principal sem a assinatura do e-mail.\n- 'tem_anexo': true/false (baseado na existência de texto falando de anexo ou se a engine informou)"
+        }
+      },
+      "id": "agent-classificador",
+      "name": "Classificar e Extrair Dados",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1,
+      "position": [
+        500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.output.classificacao }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "orcamento",
+              "output": 0
+            },
+            {
+              "value2": "suporte",
+              "output": 0
+            },
+            {
+              "value2": "manutencao",
+              "output": 0
+            },
+            {
+              "value2": "outro",
+              "output": 0
+            },
+            {
+              "value2": "comercial",
+              "output": 1
+            },
+            {
+              "value2": "spam",
+              "output": 1
+            },
+            {
+              "value2": "cobranca_notificacao",
+              "output": 1
+            }
+          ]
+        },
+        "fallbackOutput": 1
+      },
+      "id": "switch-filtros",
+      "name": "Filtrar Spams e Comerciais",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        800,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list"
+        },
+        "table": {
+          "__rl": true,
+          "value": "leads",
+          "mode": "list"
+        },
+        "columns": "nome_contato,email,telefone,mensagem,origem",
+        "dataMode": "define",
+        "values": {
+          "values": [
+            {
+              "column": "nome_contato",
+              "value": "={{ $json.output.nome !== 'Não identificado' ? $json.output.nome : $json.from.split('@')[0] }}"
+            },
+            {
+              "column": "email",
+              "value": "={{ $json.from }}"
+            },
+            {
+              "column": "telefone",
+              "value": "={{ $json.output.telefone !== 'Não identificado' ? $json.output.telefone : null }}"
+            },
+            {
+              "column": "mensagem",
+              "value": "={{ $json.output.texto_limpo }}"
+            },
+            {
+              "column": "origem",
+              "value": "email"
+            }
+          ]
+        }
+      },
+      "id": "supabase-lead",
+      "name": "Registrar Lead Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:8000/api/aninha/triagem",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "nome_condominio",
+              "value": "={{ $json.output.nome !== 'Não identificado' ? $json.output.nome : 'Cliente' }}"
+            },
+            {
+              "name": "telefone",
+              "value": "={{ $json.output.telefone }}"
+            },
+            {
+              "name": "email",
+              "value": "={{ $('Ler Emails Recebidos').item.json.from }}"
+            },
+            {
+              "name": "mensagem_original",
+              "value": "={{ $json.output.texto_limpo }}"
+            },
+            {
+              "name": "origem",
+              "value": "email"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "encaminhar-aninha",
+      "name": "Encaminhar para Aninha",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1350,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "contato@dlsolucoescondominiais.com.br",
+        "toEmail": "={{ $('Ler Emails Recebidos').item.json.from }}",
+        "subject": "Recebemos sua solicitação - DL Soluções Condominiais",
+        "html": "Olá {{ $json.output.nome !== 'Não identificado' ? $json.output.nome : '' }}!<br><br>Recebemos o seu e-mail e nossa IA Aninha já está analisando seu pedido de {{ $json.output.classificacao }}.<br><br>{{ $json.output.telefone === 'Não identificado' ? 'Notamos que você não deixou um telefone de contato. Poderia nos informar seu WhatsApp para agilizarmos o atendimento?' : '' }}<br><br>Em breve, um de nossos especialistas entrará em contato para agendar uma Avaliação Técnica.<br><br>Atenciosamente,<br>DL Soluções Condominiais"
+      },
+      "id": "email-resposta",
+      "name": "Responder Automaticamente",
+      "type": "n8n-nodes-base.emailSendSmtp",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        200
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "SMTP_CREDENTIALS"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $('Ler Emails Recebidos').item.binary !== undefined }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-anexos",
+      "name": "Tratar Anexos",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        400
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "upload-anexo",
+      "name": "Fazer Upload (Mock)",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1350,
+        400
+      ]
+    }
+  ],
+  "connections": {
+    "Ler Emails Recebidos": {
+      "main": [
+        [
+          {
+            "node": "Evitar Loop Auto-Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evitar Loop Auto-Reply": {
+      "main": [
+        [
+          {
+            "node": "Classificar e Extrair Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Classificar e Extrair Dados",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classificar e Extrair Dados": {
+      "main": [
+        [
+          {
+            "node": "Filtrar Spams e Comerciais",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar Spams e Comerciais": {
+      "main": [
+        [
+          {
+            "node": "Registrar Lead Supabase",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Tratar Anexos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar Lead Supabase": {
+      "main": [
+        [
+          {
+            "node": "Encaminhar para Aninha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encaminhar para Aninha": {
+      "main": [
+        [
+          {
+            "node": "Responder Automaticamente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tratar Anexos": {
+      "main": [
+        [
+          {
+            "node": "Upload Anexo (Mock)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

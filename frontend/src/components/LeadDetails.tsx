@@ -114,7 +114,7 @@ const LeadDetails = () => {
               onClick={() => navigate(`/checklist/${lead.id}`)}
               className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-500 shadow-sm"
             >
-              Fazer Vistoria
+              Fazer Avaliação Técnica
             </button>
           </div>
         </div>

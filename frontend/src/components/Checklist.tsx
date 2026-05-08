@@ -113,7 +113,7 @@ export default function ChecklistMobile({ leadId = 'a1b2c3d4-e5f6-7890-1234-5678
 
           <div className="space-y-4">
             <div>
-               <label htmlFor="score" className="block text-sm font-medium text-gray-700">Score da Vistoria (0 a 100)</label>
+               <label htmlFor="score" className="block text-sm font-medium text-gray-700">Score da Avaliação Técnica (0 a 100)</label>
                <input type="number" name="score" min="0" max="100" value={checklist.score} onChange={handleChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3 border"/>
             </div>
 

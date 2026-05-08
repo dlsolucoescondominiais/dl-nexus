@@ -7,7 +7,7 @@
 Cada nova mensagem de WhatsApp que passa pela "Aninha" agora nasce como um **Lead Controlado** na tabela, caminhando automaticamente pelas seguintes etapas:
 1. `novo_lead`: Webhook recebeu contato.
 2. `triagem_ia`: Gemini Flash avaliou se é urgente, qualificação, ou lixo.
-3. `avaliacao_agendada`: O Síndico aceitou a nossa visita (nunca chamada de 'visita técnica').
+3. `avaliacao_agendada`: O Síndico aceitou a nossa Avaliação Técnica.
 4. `proposta_enviada`: Antigravity e GPT-4o geraram a oferta.
 5. `negociacao`: Você está no Whatsapp quebrando objeções de preço.
 6. `fechado_ganho`: Pix na conta.

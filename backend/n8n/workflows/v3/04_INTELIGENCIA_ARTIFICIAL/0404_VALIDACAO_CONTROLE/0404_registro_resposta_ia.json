@@ -1,0 +1,14 @@
+{
+  "name": "Registro da resposta da IA",
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "14b86146-09a2-452d-bbdd-cb6d8607037d",
+  "tags": []
+}

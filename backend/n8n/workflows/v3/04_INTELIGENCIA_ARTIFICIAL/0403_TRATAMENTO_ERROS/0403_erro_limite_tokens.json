@@ -1,0 +1,14 @@
+{
+  "name": "Tratamento de limite de tokens",
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "243f838a-694b-42a0-89dc-f421b3b1d7c9",
+  "tags": []
+}

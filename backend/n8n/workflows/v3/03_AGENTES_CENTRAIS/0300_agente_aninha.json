@@ -1,0 +1,14 @@
+{
+  "name": "Agente Aninha",
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "2f60e3c1-bfb9-4e2f-9859-42c80157f8a7",
+  "tags": []
+}

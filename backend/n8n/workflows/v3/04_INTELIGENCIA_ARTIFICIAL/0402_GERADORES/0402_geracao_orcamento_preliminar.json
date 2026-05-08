@@ -1,0 +1,14 @@
+{
+  "name": "Geração de orçamento preliminar",
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "4ecdebe8-394c-4a62-b05c-9eb4cc4b4944",
+  "tags": []
+}

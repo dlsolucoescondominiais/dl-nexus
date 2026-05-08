@@ -1,0 +1,14 @@
+{
+  "name": "ChatGPT para resposta comercial",
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "ee06c445-b67f-4eee-b064-d7c232f37c59",
+  "tags": []
+}

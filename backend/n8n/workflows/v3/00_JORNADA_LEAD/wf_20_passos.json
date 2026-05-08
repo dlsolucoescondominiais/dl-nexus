@@ -1,0 +1,206 @@
+{
+  "name": "Jornada do Lead Completa (20 Passos)",
+  "nodes": [
+    {
+      "parameters": {"path": "receber_lead", "httpMethod": "POST"},
+      "name": "1_Receber_leads",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {"operation": "insert", "table": "leads"},
+      "name": "2_Registrar_leads",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [200, 0]
+    },
+    {
+      "parameters": {"text": "Agendar Avaliação Técnica para DL Commander Nexus"},
+      "name": "3_Classificar_leads",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1,
+      "position": [400, 0]
+    },
+    {
+      "parameters": {"text": "Agendar Avaliação Técnica para DL Commander Nexus"},
+      "name": "4_Qualificar_leads",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1,
+      "position": [600, 0]
+    },
+    {
+      "parameters": {},
+      "name": "5_Roteirizar_atendimento",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [800, 0]
+    },
+    {
+      "parameters": {"workflowId": "004_roteador_agentes_especializados"},
+      "name": "6_Acionar_agente_correto",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [1000, 0]
+    },
+    {
+      "parameters": {"message": "Sua Avaliação Técnica foi solicitada"},
+      "name": "7_Responder_automaticamente",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [1200, 0]
+    },
+    {
+      "parameters": {"operation": "insert", "table": "avaliacoes_tecnicas"},
+      "name": "8_Agendar_atendimento",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1400, 0]
+    },
+    {
+      "parameters": {"operation": "insert", "table": "mensagens_whatsapp"},
+      "name": "9_Registrar_historico",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1600, 0]
+    },
+    {
+      "parameters": {},
+      "name": "10_Gerar_tarefa_tecnica",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [1800, 0]
+    },
+    {
+      "parameters": {"operation": "insert", "table": "propostas"},
+      "name": "11_Criar_oportunidade_comercial",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [2000, 0]
+    },
+    {
+      "parameters": {"operation": "update", "table": "leads"},
+      "name": "12_Atualizar_status_do_lead",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [2200, 0]
+    },
+    {
+      "parameters": {"workflowId": "006_notificacoes"},
+      "name": "13_Enviar_notificacao_interna",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [2400, 0]
+    },
+    {
+      "parameters": {"operation": "upload", "fileId": "evidence"},
+      "name": "14_Salvar_evidencias_no_Google_Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "position": [2600, 0]
+    },
+    {
+      "parameters": {"operation": "get", "table": "leads"},
+      "name": "15_Consultar_dados_no_Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [2800, 0]
+    },
+    {
+      "parameters": {"operation": "update", "table": "leads"},
+      "name": "16_Atualizar_dados_no_Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [3000, 0]
+    },
+    {
+      "parameters": {"operation": "update", "table": "leads", "updateKey": "status"},
+      "name": "17_Encerrar_atendimento",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [3200, 0]
+    },
+    {
+      "parameters": {"operation": "update", "table": "leads", "updateKey": "status"},
+      "name": "18_Reabrir_atendimento",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [3400, 0]
+    },
+    {
+      "parameters": {"operation": "update", "table": "leads", "updateKey": "status"},
+      "name": "19_Escalar_atendimento_para_humano",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [3600, 0]
+    },
+    {
+      "parameters": {"operation": "append", "spreadsheetId": "report"},
+      "name": "20_Gerar_relatorio_operacional",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 2,
+      "position": [3800, 0]
+    }
+  ],
+  "connections": {
+    "1_Receber_leads": {
+      "main": [[{"node": "2_Registrar_leads", "type": "main", "index": 0}]]
+    },
+    "2_Registrar_leads": {
+      "main": [[{"node": "3_Classificar_leads", "type": "main", "index": 0}]]
+    },
+    "3_Classificar_leads": {
+      "main": [[{"node": "4_Qualificar_leads", "type": "main", "index": 0}]]
+    },
+    "4_Qualificar_leads": {
+      "main": [[{"node": "5_Roteirizar_atendimento", "type": "main", "index": 0}]]
+    },
+    "5_Roteirizar_atendimento": {
+      "main": [[{"node": "6_Acionar_agente_correto", "type": "main", "index": 0}]]
+    },
+    "6_Acionar_agente_correto": {
+      "main": [[{"node": "7_Responder_automaticamente", "type": "main", "index": 0}]]
+    },
+    "7_Responder_automaticamente": {
+      "main": [[{"node": "8_Agendar_atendimento", "type": "main", "index": 0}]]
+    },
+    "8_Agendar_atendimento": {
+      "main": [[{"node": "9_Registrar_historico", "type": "main", "index": 0}]]
+    },
+    "9_Registrar_historico": {
+      "main": [[{"node": "10_Gerar_tarefa_tecnica", "type": "main", "index": 0}]]
+    },
+    "10_Gerar_tarefa_tecnica": {
+      "main": [[{"node": "11_Criar_oportunidade_comercial", "type": "main", "index": 0}]]
+    },
+    "11_Criar_oportunidade_comercial": {
+      "main": [[{"node": "12_Atualizar_status_do_lead", "type": "main", "index": 0}]]
+    },
+    "12_Atualizar_status_do_lead": {
+      "main": [[{"node": "13_Enviar_notificacao_interna", "type": "main", "index": 0}]]
+    },
+    "13_Enviar_notificacao_interna": {
+      "main": [[{"node": "14_Salvar_evidencias_no_Google_Drive", "type": "main", "index": 0}]]
+    },
+    "14_Salvar_evidencias_no_Google_Drive": {
+      "main": [[{"node": "15_Consultar_dados_no_Supabase", "type": "main", "index": 0}]]
+    },
+    "15_Consultar_dados_no_Supabase": {
+      "main": [[{"node": "16_Atualizar_dados_no_Supabase", "type": "main", "index": 0}]]
+    },
+    "16_Atualizar_dados_no_Supabase": {
+      "main": [[{"node": "17_Encerrar_atendimento", "type": "main", "index": 0}]]
+    },
+    "17_Encerrar_atendimento": {
+      "main": [[{"node": "18_Reabrir_atendimento", "type": "main", "index": 0}]]
+    },
+    "18_Reabrir_atendimento": {
+      "main": [[{"node": "19_Escalar_atendimento_para_humano", "type": "main", "index": 0}]]
+    },
+    "19_Escalar_atendimento_para_humano": {
+      "main": [[{"node": "20_Gerar_relatorio_operacional", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {"executionOrder": "v1"},
+  "id": "workflow-jornada-lead-20-passos"
+}

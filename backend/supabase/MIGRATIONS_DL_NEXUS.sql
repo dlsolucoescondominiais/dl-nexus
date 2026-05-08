@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS leads (
     valor_estimado NUMERIC(15,2),
     status TEXT DEFAULT 'novo', -- novo, triado, agendado, avaliado, proposta, fechado
     prioridade TEXT DEFAULT 'baixa',
-    origem TEXT, -- whatsapp, site, email
+    origem TEXT, -- whatsapp, telegram, email, site, instagram, facebook, google_meu_negocio, manual, formulario, google_ads, indicacao
     created_at TIMESTAMPTZ DEFAULT now()
 );
 

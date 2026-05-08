@@ -11,7 +11,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- ----------------------------------------------------------------------------
 DO $$ BEGIN
     CREATE TYPE tipo_usuario AS ENUM ('sindico', 'admin', 'agente');
-    CREATE TYPE origem_lead AS ENUM ('whatsapp', 'telegram', 'email', 'site');
+    CREATE TYPE origem_lead AS ENUM ('whatsapp', 'telegram', 'email', 'site', 'instagram', 'facebook', 'google_meu_negocio', 'manual', 'formulario', 'google_ads', 'indicacao');
     CREATE TYPE status_lead AS ENUM ('novo', 'triagem', 'roteado', 'proposta_gerada', 'aceito', 'rejeitado');
     CREATE TYPE viabilidade_avaliacao AS ENUM ('alta', 'media', 'baixa');
     CREATE TYPE status_proposta AS ENUM ('rascunho', 'enviada', 'visualizada', 'aceita', 'rejeitada');

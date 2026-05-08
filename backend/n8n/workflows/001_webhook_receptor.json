@@ -18,7 +18,10 @@
       "name": "Meta API (Spam Protected)",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [0, 300]
+      "position": [
+        0,
+        300
+      ]
     },
     {
       "parameters": {
@@ -32,7 +35,10 @@
       "name": "Triagem Avançada (Gemini Flash)",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1,
-      "position": [250, 300]
+      "position": [
+        250,
+        300
+      ]
     },
     {
       "parameters": {
@@ -42,7 +48,10 @@
       "name": "Google Gemini",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1,
-      "position": [250, 500]
+      "position": [
+        250,
+        500
+      ]
     },
     {
       "parameters": {
@@ -82,21 +91,27 @@
       "name": "Roteamento Otimizado",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3,
-      "position": [500, 300]
+      "position": [
+        500,
+        300
+      ]
     },
     {
       "parameters": {
         "promptType": "define",
         "text": "={{ $('Meta API (Spam Protected)').item.json.body.entry[0].changes[0].value.messages[0].text.body }}",
         "options": {
-          "systemMessage": "Você é o Tecnólogo em Infraestrutura e Diretor da DL Soluções Condominiais (Zonas Sul, Sudoeste, Oeste, Norte do RJ). \nO cliente tem uma URGÊNCIA TÉCNICA (ex: elétrica, incêndio). Peça calma. Diga que temos CREA-RJ e ART. Convide para uma 'Avaliação Técnica' imediata. Nunca diga visita técnica e nunca chame a equipe de engenheiros."
+          "systemMessage": "Você é o Tecnólogo em Infraestrutura e Diretor da DL Soluções Condominiais (Zonas Sul, Sudoeste, Oeste, Norte do RJ). \nO cliente tem uma URGÊNCIA TÉCNICA (ex: elétrica, incêndio). Peça calma. Diga que temos CREA-RJ e ART. Convide para uma 'Avaliação Técnica' imediata. Sempre utilize o termo Avaliação Técnica e nunca chame a equipe de engenheiros."
         }
       },
       "id": "chain-claude-urgencia",
       "name": "Resposta Técnica (Sonnet)",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1,
-      "position": [800, 100],
+      "position": [
+        800,
+        100
+      ],
       "onError": "continueErrorOutput"
     },
     {
@@ -107,7 +122,10 @@
       "name": "Anthropic Claude",
       "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
       "typeVersion": 1,
-      "position": [800, 250]
+      "position": [
+        800,
+        250
+      ]
     },
     {
       "parameters": {
@@ -121,7 +139,10 @@
       "name": "Resposta Comercial (GPT-4o)",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1,
-      "position": [800, 450],
+      "position": [
+        800,
+        450
+      ],
       "onError": "continueErrorOutput"
     },
     {
@@ -132,7 +153,10 @@
       "name": "OpenAI GPT-4o",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1,
-      "position": [800, 600]
+      "position": [
+        800,
+        600
+      ]
     },
     {
       "parameters": {
@@ -146,7 +170,10 @@
       "name": "Fallback 1 (GPT-4o Mini)",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1,
-      "position": [1100, 100],
+      "position": [
+        1100,
+        100
+      ],
       "onError": "continueErrorOutput"
     },
     {
@@ -157,7 +184,10 @@
       "name": "OpenAI Mini",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1,
-      "position": [1100, 250]
+      "position": [
+        1100,
+        250
+      ]
     },
     {
       "parameters": {
@@ -167,7 +197,10 @@
       "name": "Contingência Final (Texto Fixo)",
       "type": "n8n-nodes-base.set",
       "typeVersion": 1,
-      "position": [1400, 100]
+      "position": [
+        1400,
+        100
+      ]
     },
     {
       "parameters": {
@@ -213,7 +246,10 @@
       "name": "Persistência Pipeline",
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
-      "position": [1700, 300],
+      "position": [
+        1700,
+        300
+      ],
       "onError": "continueErrorOutput"
     },
     {
@@ -248,7 +284,10 @@
       "name": "Salvar Fila de Erros",
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
-      "position": [1950, 300]
+      "position": [
+        1950,
+        300
+      ]
     }
   ],
   "connections": {

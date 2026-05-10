@@ -1,0 +1,21 @@
+{
+  "id": "019-gerador-orcamento-rapido",
+  "name": "019_GERADOR_ORCAMENTO_RAPIDO",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "gerador-orcamento",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-orcamento",
+      "name": "Webhook Orcamento",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    }
+  ],
+  "connections": {},
+  "active": false,
+  "settings": {}
+}

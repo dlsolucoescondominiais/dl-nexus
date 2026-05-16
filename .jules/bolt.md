@@ -1,0 +1,3 @@
+## 2025-05-16 - Offload Synchronous I/O in FastAPI Routes
+**Learning:** In FastAPI, declaring routes as `async def` makes them run on the main event loop thread. If a synchronous I/O operation (like `requests.post` or an external synchronous API call like OpenAI) is executed inside an `async def` route, it completely halts the single-threaded event loop, creating a major performance bottleneck under load and preventing concurrent request handling.
+**Action:** When a route performs synchronous network I/O or blocks the thread, declare it using `def` instead of `async def`. FastAPI will automatically offload the execution of `def` routes to an external thread pool, preserving the responsiveness of the main event loop.

@@ -176,3 +176,11 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
+!DL_NEXUS_V3_LOCAL/**/*.json
+
+*.env
+*token*
+*secret*
+*credentials*
+cookies
+dumps

@@ -1,0 +1,19 @@
+Relatório de Importação n8n:
+
+VPS:
+ssh root@129.121.35.90 -p 22022
+
+Container:
+n8n-main
+
+Comandos para importar:
+docker cp /tmp/dl_nexus_import/004_skill_router_dl_nexus_v3.json n8n-main:/tmp/004_skill_router_dl_nexus_v3.json
+docker exec -it n8n-main n8n import:workflow --input=/tmp/004_skill_router_dl_nexus_v3.json
+
+docker cp /tmp/dl_nexus_import/060_AGENT_MANUS_PROSPECCAO_ATIVA.json n8n-main:/tmp/060_AGENT_MANUS_PROSPECCAO_ATIVA.json
+docker exec -it n8n-main n8n import:workflow --input=/tmp/060_AGENT_MANUS_PROSPECCAO_ATIVA.json
+
+docker cp /tmp/dl_nexus_import/019_GERADOR_ORCAMENTO_RAPIDO.json n8n-main:/tmp/019_GERADOR_ORCAMENTO_RAPIDO.json
+docker exec -it n8n-main n8n import:workflow --input=/tmp/019_GERADOR_ORCAMENTO_RAPIDO.json
+
+docker restart n8n-main

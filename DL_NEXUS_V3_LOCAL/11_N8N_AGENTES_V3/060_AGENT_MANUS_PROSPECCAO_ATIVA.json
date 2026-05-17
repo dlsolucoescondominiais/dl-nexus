@@ -1,0 +1,67 @@
+{
+  "id": "060-agent-manus-prospeccao-ativa",
+  "name": "060_AGENT_MANUS_PROSPECCAO_ATIVA",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "dl-manus-leads",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-leads",
+      "name": "Webhook Leads",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "path": "dl-manus-posts",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-posts",
+      "name": "Webhook Posts",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 400]
+    },
+    {
+      "parameters": {
+        "path": "dl-manus-propostas",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-propostas",
+      "name": "Webhook Propostas",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 500]
+    },
+    {
+      "parameters": {
+        "path": "dl-manus-status",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-status",
+      "name": "Webhook Status",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 600]
+    },
+    {
+      "parameters": {
+        "jsCode": "// DL Prospecção Econômica 300 Créditos\n// testes: 3 leads, depois 10 leads, depois 15 leads/dia\n// NO MESSAGES, NO PUBLICATION, NO PRICE PROMISE\n// Always use Avaliação Técnica\nreturn items;"
+      },
+      "id": "code-prospeccao",
+      "name": "Prospeccao",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [450, 300]
+    }
+  ],
+  "connections": {},
+  "active": false,
+  "settings": {}
+}

@@ -1,0 +1,530 @@
+{
+  "name": "020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger_manual",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"tema\": \"Manutenção Preventiva de Bombas\",\n  \"produto\": \"DL Acqua\",\n  \"publico_alvo\": \"Síndicos e Administradoras\",\n  \"bairro\": \"Tijuca\",\n  \"canal_destino\": \"Facebook, Instagram, Telegram\",\n  \"objetivo\": \"Gerar engajamento e agendar Avaliação Técnica\",\n  \"image_url\": \"https://dlsolucoescondominiais.com.br/wp-content/uploads/2023/10/dl-acqua.jpg\"\n}",
+        "options": {}
+      },
+      "id": "set_entrada",
+      "name": "Entrada do Post",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        200,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "messages": {
+          "messageValues": [
+            {
+              "content": "Você é o copywriter da DL Soluções Condominiais. Escreva posts B2B profissionais. O CTA DEVE ser sempre 'Avaliação Técnica'."
+            },
+            {
+              "role": "user",
+              "content": "={{ 'Tema: ' + $json.tema + '\\nProduto: ' + $json.produto + '\\nPúblico: ' + $json.publico_alvo + '\\nBairro/Região: ' + $json.bairro + '\\nCanal: ' + $json.canal_destino + '\\nObjetivo: ' + $json.objetivo + '\\n\\nCanais Oficiais DL Soluções (use sempre no CTA):\\n- Site: https://dlsolucoescondominiais.com\\n- Instagram: https://www.instagram.com/dl.solucoescondominiais/\\n- Facebook: https://www.facebook.com/dlsolucoescondominiais\\n- YouTube: https://www.youtube.com/@DLSolucoesCondominiais\\n- Google Perfil: https://share.google/NGEzAoHXg890EjyiR\\n- Spotify: https://open.spotify.com/episode/2yIqmHsnKLhFF76XKR1j2u?si=aMBi9LKJRZO1tlgxACWhDg&nd=1&dlsi=3b72e847f2044e18\\n- WhatsApp CTA (link passivo, não disparar): https://wa.me/5521964742458?text=Quero+saber+sobre+Recupera%C3%A7%C3%A3o+de+Dados\\n\\nRegras obrigatórias:\\n- O CTA DEVE sempre ser \"Avaliação Técnica\".\\n- Diogo deve ser chamado de \"Tecnólogo Responsável\", nunca de engenheiro.\\n- Incluir o link do WhatsApp como botão de contato no final de cada post.\\n- NÃO prometer preço final, garantia vitalícia ou visita técnica.\\n\\nForneça uma resposta em JSON estrito com as chaves: legenda_facebook, legenda_instagram, texto_telegram, hashtags, cta' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "gerar_textos_ia",
+      "name": "Gerar Textos IA",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        0
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Conta OpenAi",
+          "name": "Conta OpenAi"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const entrada = $('Entrada do Post').item.json || {};\nlet conteudo = $json.message ? $json.message.content : (typeof $json === 'string' ? $json : JSON.stringify($json));\n\nlet parsed = {};\nlet status_parse = 'SUCESSO';\nlet observacao = 'JSON parseado com sucesso.';\n\ntry {\n  const jsonMatch = conteudo.match(/```(?:json)?\\n([\\s\\S]*?)\\n```/) || conteudo.match(/{[\\s\\S]*}/);\n  if (jsonMatch && jsonMatch[1]) {\n    parsed = JSON.parse(jsonMatch[1]);\n  } else if (jsonMatch && jsonMatch[0]) {\n    parsed = JSON.parse(jsonMatch[0]);\n  } else {\n    parsed = JSON.parse(conteudo);\n  }\n} catch (e) {\n  status_parse = 'FALHOU_USANDO_FALLBACK';\n  observacao = 'IA não retornou JSON válido; fallback aplicado';\n  parsed = {\n    legenda_facebook: conteudo,\n    legenda_instagram: conteudo,\n    texto_telegram: conteudo,\n    hashtags: []\n  };\n}\n\nreturn {\n  json: {\n    post_id: Date.now().toString(),\n    tema: entrada.tema || 'N/A',\n    produto: entrada.produto || 'N/A',\n    legenda_facebook: parsed.legenda_facebook || parsed.facebook_legenda || parsed.facebook || conteudo,\n    legenda_instagram: parsed.legenda_instagram || parsed.instagram_legenda || parsed.instagram || conteudo,\n    texto_telegram: parsed.texto_telegram || parsed.telegram_texto || parsed.telegram || conteudo,\n    hashtags: parsed.hashtags || [],\n    image_url: entrada.image_url || '',\n    observacoes: [observacao],\n    status_parse_ia: status_parse\n  }\n};"
+      },
+      "id": "normalizar_saida_ia",
+      "name": "NORMALIZAR_SAIDA_IA_SOCIAL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        600,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const jsonStr = JSON.stringify($json).toLowerCase();\nconst proibidos = [\n  'visita técnica', 'visita tecnica', 'canaleta plástica', 'canaleta plastica',\n  'garantia vitalícia', 'garantia vitalicia', 'hidráulica pura', 'hidraulica pura',\n  'engenheiro diogo', 'preço final', 'preco final', 'preço fechado automático', 'preco fechado automatico'\n];\nconst obrigatorios = ['avaliação técnica', 'avaliacao tecnica'];\n\nconst violacoes = proibidos.filter(t => jsonStr.includes(t));\nconst possuiObrigatorio = obrigatorios.some(t => jsonStr.includes(t));\n\nlet status_killcritic = 'APROVADO';\nif (violacoes.length > 0) status_killcritic = 'REPROVADO_POR_TERMOS_PROIBIDOS';\nif (!possuiObrigatorio) status_killcritic = 'REPROVADO_POR_FALTA_DE_CTA_AVALIACAO_TECNICA';\n\nreturn {\n  json: {\n    ...$json,\n    status_killcritic,\n    violacoes\n  }\n};"
+      },
+      "id": "code_killcritic",
+      "name": "KILLCRITIC Social",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.status_killcritic}}",
+              "operation": "equal",
+              "value2": "APROVADO"
+            }
+          ]
+        }
+      },
+      "id": "if_killcritic",
+      "name": "IF KILLCRITIC Aprovado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "={{ 'BLOQUEIO KILLCRITIC no post sobre ' + $('Entrada do Post').item.json.tema + '. Motivo: ' + $json.status_killcritic + '\\nViolações: ' + $json.violacoes.join(', ') }}",
+        "additionalFields": {}
+      },
+      "id": "telegram_reprovado",
+      "name": "Telegram Alerta Bloqueio",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1200,
+        200
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "Conta do Telegram",
+          "name": "Conta do Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "={{ 'NOVO POST PARA APROVAÇÃO (DL Nexus V3)\\n\\nTema: ' + $('Entrada do Post').item.json.tema + '\\nProduto: ' + $('Entrada do Post').item.json.produto + '\\n\\nLegenda FB:\\n' + $json.legenda_facebook + '\\n\\nLegenda IG:\\n' + $json.legenda_instagram + '\\n\\nTexto Telegram:\\n' + $json.texto_telegram + '\\n\\nStatus KILLCRITIC: ' + $json.status_killcritic + '\\n\\n⚠️ Aprovação manual obrigatória antes de publicar.\\nAcesse o endpoint para aprovar: /webhook/aprovar-post-dl-nexus-v3' }}",
+        "additionalFields": {}
+      },
+      "id": "telegram_previa",
+      "name": "Telegram Enviar Prévia",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1200,
+        -100
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "Conta do Telegram",
+          "name": "Conta do Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resume": "webhook",
+        "path": "aprovar-post-dl-nexus-v3",
+        "options": {}
+      },
+      "id": "wait_aprovacao",
+      "name": "Wait Aprovação Webhook",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        1400,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.body.decisao}}",
+              "operation": "equal",
+              "value2": "aprovar"
+            }
+          ]
+        }
+      },
+      "id": "if_aprovado",
+      "name": "IF Decisão Aprovada?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1600,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "O post foi REPROVADO manualmente e não será publicado.",
+        "additionalFields": {}
+      },
+      "id": "telegram_reprovado_manual",
+      "name": "Telegram Reprovado Manual",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1800,
+        100
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "Conta do Telegram",
+          "name": "Conta do Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $('Entrada do Post').item.json.image_url ? 'https://graph.facebook.com/v19.0/PAGE_ID_AQUI/photos' : 'https://graph.facebook.com/v19.0/PAGE_ID_AQUI/feed' }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "={{ $('NORMALIZAR_SAIDA_IA_SOCIAL').item.json.legenda_facebook }}"
+            },
+            {
+              "name": "url",
+              "value": "={{ $('Entrada do Post').item.json.image_url }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "facebook_api",
+      "name": "Facebook Publish",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1800,
+        -300
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "Aplicativo do Facebook",
+          "name": "Aplicativo do Facebook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v19.0/INSTAGRAM_BUSINESS_ACCOUNT_ID_AQUI/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "={{ $('Entrada do Post').item.json.image_url }}"
+            },
+            {
+              "name": "caption",
+              "value": "={{ $('NORMALIZAR_SAIDA_IA_SOCIAL').item.json.legenda_instagram }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "instagram_media",
+      "name": "Instagram Media Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2000,
+        -300
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "Aplicativo do Facebook",
+          "name": "Aplicativo do Facebook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v19.0/INSTAGRAM_BUSINESS_ACCOUNT_ID_AQUI/media_publish",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "creation_id",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "instagram_publish",
+      "name": "Instagram Publish Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2200,
+        -300
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "Aplicativo do Facebook",
+          "name": "Aplicativo do Facebook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "={{ $('NORMALIZAR_SAIDA_IA_SOCIAL').item.json.texto_telegram }}",
+        "additionalFields": {}
+      },
+      "id": "telegram_publish",
+      "name": "Telegram Publish",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        2400,
+        -300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "Conta do Telegram",
+          "name": "Conta do Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "suporte@dlsolucoescondominiais.com.br",
+        "toEmail": "suporte@dlsolucoescondominiais.com.br",
+        "subject": "Relatório de Postagem Social DL Nexus",
+        "html": "={{ 'Publicação executada com sucesso.<br>Status Aprovação: ' + $('Wait Aprovação Webhook').item.json.body.decisao }}",
+        "options": {}
+      },
+      "id": "smtp_report",
+      "name": "SMTP Relatório Final",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        2600,
+        -300
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "SMTP - Suporte DL",
+          "name": "SMTP - Suporte DL"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Entrada do Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Entrada do Post": {
+      "main": [
+        [
+          {
+            "node": "Gerar Textos IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gerar Textos IA": {
+      "main": [
+        [
+          {
+            "node": "NORMALIZAR_SAIDA_IA_SOCIAL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NORMALIZAR_SAIDA_IA_SOCIAL": {
+      "main": [
+        [
+          {
+            "node": "KILLCRITIC Social",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KILLCRITIC Social": {
+      "main": [
+        [
+          {
+            "node": "IF KILLCRITIC Aprovado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF KILLCRITIC Aprovado?": {
+      "main": [
+        [
+          {
+            "node": "Telegram Enviar Prévia",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram Alerta Bloqueio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Enviar Prévia": {
+      "main": [
+        [
+          {
+            "node": "Wait Aprovação Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait Aprovação Webhook": {
+      "main": [
+        [
+          {
+            "node": "IF Decisão Aprovada?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Decisão Aprovada?": {
+      "main": [
+        [
+          {
+            "node": "Facebook Publish",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram Reprovado Manual",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Publish": {
+      "main": [
+        [
+          {
+            "node": "Instagram Media Container",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Instagram Media Container": {
+      "main": [
+        [
+          {
+            "node": "Instagram Publish Container",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Instagram Publish Container": {
+      "main": [
+        [
+          {
+            "node": "Telegram Publish",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Publish": {
+      "main": [
+        [
+          {
+            "node": "SMTP Relatório Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "DL_NEXUS_V3"
+    },
+    {
+      "name": "SOCIAL"
+    },
+    {
+      "name": "KILLCRITIC"
+    }
+  ]
+}

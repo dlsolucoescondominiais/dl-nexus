@@ -1,0 +1,40 @@
+{
+  "_meta": {
+    "documento": "Canais Oficiais DL Soluções Condominiais",
+    "versao": "1.0",
+    "data": "2026-05-18",
+    "responsavel": "Diogo Luiz de Oliveira — Tecnólogo Responsável",
+    "politica": "Uso passivo como CTA. PROIBIDO disparo automático de WhatsApp. PROIBIDO uso como nó ativo no n8n.",
+    "killcritic": "ATIVO"
+  },
+  "empresa": {
+    "nome": "DL Soluções Condominiais",
+    "nome_responsavel": "Diogo Luiz de Oliveira",
+    "titulo_responsavel": "Tecnólogo Responsável",
+    "dominio_site": "https://dlsolucoescondominiais.com",
+    "dominio_n8n": "https://n8n.dlsolucoescondominiais.com.br",
+    "dominio_email": "@dlsolucoescondominiais.com.br"
+  },
+  "canais": {
+    "site": "https://dlsolucoescondominiais.com",
+    "facebook": "https://www.facebook.com/dlsolucoescondominiais",
+    "instagram": "https://www.instagram.com/dl.solucoescondominiais/",
+    "youtube": "https://www.youtube.com/@DLSolucoesCondominiais",
+    "spotify": "https://open.spotify.com/episode/2yIqmHsnKLhFF76XKR1j2u?si=aMBi9LKJRZO1tlgxACWhDg&nd=1&dlsi=3b72e847f2044e18",
+    "google_meu_negocio_link": "https://share.google/NGEzAoHXg890EjyiR",
+    "google_meu_negocio_ludocid_backup": "4598240236200505615",
+    "whatsapp_cta": "https://wa.me/5521964742458?text=Quero+saber+sobre+Recupera%C3%A7%C3%A3o+de+Dados",
+    "whatsapp_numero_publico": "+5521964742458"
+  },
+  "cta_templates": {
+    "cta_padrao": "📲 Solicite sua Avaliação Técnica: https://wa.me/5521964742458?text=Quero+saber+sobre+Recupera%C3%A7%C3%A3o+de+Dados",
+    "cta_assinatura": "🌐 dlsolucoescondominiais.com | 📘 fb.com/dlsolucoescondominiais | 📸 @dl.solucoescondominiais",
+    "cta_completo": "📲 Solicite sua Avaliação Técnica sem compromisso:\nhttps://wa.me/5521964742458?text=Quero+saber+sobre+Recupera%C3%A7%C3%A3o+de+Dados\n\n🌐 Site: https://dlsolucoescondominiais.com\n📘 Facebook: https://www.facebook.com/dlsolucoescondominiais\n📸 Instagram: https://www.instagram.com/dl.solucoescondominiais/"
+  },
+  "restricoes": {
+    "whatsapp_disparo_automatico": false,
+    "whatsapp_uso_como_no_ativo": false,
+    "alterar_meta_whatsapp_api": false,
+    "publicar_sem_aprovacao_humana": false
+  }
+}

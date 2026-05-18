@@ -1,0 +1,88 @@
+{
+  "name": "003_roteador_diego_v3_killcritic",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "roteador-diego-tecnico-v3",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook_diego_v3",
+      "name": "Webhook Entrada Diego",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || $json;\n\nfunction normalizeText(value) {\n  return String(value || '')\n    .toLowerCase()\n    .normalize('NFD')\n    .replace(/[\\u0300-\\u036f]/g, '')\n    .trim();\n}\n\nconst rawMessage = body.mensagem || body.message || body.text || body.mensagem_cliente || '';\nconst msg = normalizeText(rawMessage);\n\nconst origem = body.origem || body.canal || body.channel || 'nao_informado';\nconst nome = body.nome || body.name || '';\nconst telefone = body.telefone || body.phone || body.whatsapp || '';\nconst email = body.email || '';\nconst condominio = body.condominio || body.empresa || body.condominio_escola_empresa || '';\nconst bairro = body.bairro || '';\n\nfunction hasAny(list) {\n  return list.some(term => msg.includes(normalizeText(term)));\n}\n\nconst termosProibidos = [\n  'visita técnica',\n  'visita tecnica',\n  'marcar visita',\n  'agendar visita',\n  'canaleta plástica',\n  'canaleta plastica',\n  'garantia vitalícia',\n  'garantia vitalicia'\n];\n\nconst termosProibidosEncontrados = termosProibidos.filter(term => msg.includes(normalizeText(term)));\n\nconst escopoHidraulicoPuro = hasAny([\n  'vazamento',\n  'cano furado',\n  'encanamento',\n  'troca de cano',\n  'troca de tubulacao hidraulica',\n  'troca de tubulação hidráulica',\n  'conserto hidraulico',\n  'conserto hidráulico',\n  'manutencao hidraulica pura',\n  'manutenção hidráulica pura',\n  'reparo hidraulico',\n  'reparo hidráulico',\n  'mangueira estourada'\n]);\n\nconst demandas = {\n  dl_acqua_commander: hasAny([\n    'bomba', 'cisterna', 'caixa dagua', 'caixa d agua', 'caixa d’água', 'boia', 'boia eletrica', 'nivel', 'sensor de nivel', 'recalque', 'painel de bomba', 'bomba parada', 'falta dagua', 'falta d agua', 'transbordando', 'transbordamento'\n  ]),\n  fortress: hasAny([\n    'portaria', 'portaria autonoma', 'controle de acesso', 'facial', 'biometria', 'qr code', 'condfy', 'morador', 'visitante', 'prestador', 'acesso de moradores', 'cadastro de moradores'\n  ]),\n  gatekeeper: hasAny([\n    'portao', 'portão', 'bluetooth', 'wireless', 'mobgate', 'controle remoto', 'abertura de portao', 'porta de rolagem', 'acesso por aplicativo'\n  ]),\n  cftv: hasAny([\n    'camera', 'câmera', 'cftv', 'dvr', 'nvr', 'sem imagem', 'imagem ruim', 'camera offline', 'poe', 'switch poe', 'gravacao', 'gravação', 'hd do dvr', 'hikvision', 'intelbras'\n  ]),\n  eletrica: hasAny([\n    'eletrica', 'elétrica', 'curto', 'disjuntor', 'quadro', 'queda de energia', 'sem energia', 'dps', 'dr', 'aterramento', 'circuito', 'iluminacao', 'iluminação', 'cabo aquecendo'\n  ]),\n  comandos: hasAny([\n    'comando eletrico', 'comando elétrico', 'painel de comando', 'contator', 'rele', 'relé', 'temporizador', 'chave contatora', 'inversor de frequencia', 'inversor de frequência', 'botoeira', 'sinaleiro'\n  ]),\n  redes: hasAny([\n    'rede', 'internet', 'roteador', 'switch', 'vlan', 'cabeamento estruturado', 'fibra', 'rack', 'wifi', 'wi-fi', 'ip', 'ping', 'infraestrutura de rede'\n  ]),\n  solar: hasAny([\n    'solar', 'fotovoltaico', 'inversor solar', 'placa solar', 'painel solar', 'string', 'microinversor', 'bateria', 'sistema hibrido', 'sistema híbrido', 'off grid', 'on grid', 'geracao baixa', 'geração baixa'\n  ]),\n  incendio: hasAny([\n    'incendio', 'incêndio', 'alarme de incendio', 'central de incendio', 'detector de fumaca', 'detector de fumaça', 'sirene', 'acionador manual', 'iluminacao de emergencia', 'iluminação de emergência'\n  ]),\n  recorrencia: hasAny([\n    'contrato', 'manutencao preventiva', 'manutenção preventiva', 'manutencao recorrente', 'manutenção recorrente', 'sla', 'partner', 'acompanhamento mensal', 'plano mensal'\n  ])\n};\n\nlet produto_indicado = 'nao_classificado';\nlet area_tecnica = 'nao_classificada';\nlet prioridade = normalizeText(body.prioridade || 'media');\nlet risco = 'risco_nao_identificado';\nlet dados = [];\nlet encaminhar_para = 'Humano';\nlet precisa_avaliacao_tecnica = true;\nlet escopo_invalido = false;\nlet observacoes = [];\n\nif (escopoHidraulicoPuro && !demandas.dl_acqua_commander && !demandas.comandos && !demandas.eletrica) {\n  escopo_invalido = true;\n  produto_indicado = 'fora_do_escopo_principal_dl';\n  area_tecnica = 'hidraulica_pura';\n  prioridade = 'media';\n  risco = 'demanda_hidraulica_pura_fora_do_escopo_dl';\n  encaminhar_para = 'Humano';\n  dados = ['descrição do problema', 'fotos ou vídeos', 'informar se existe bomba, painel, boia, comando ou automação envolvidos'];\n  observacoes.push('Demanda parece hidráulica pura. DL não deve assumir execution hidráulica direta.');\n} else if (demandas.dl_acqua_commander || demandas.comandos) {\n  produto_indicado = 'DL Acqua / DL Commander';\n  area_tecnica = 'bombas_cisternas_comandos_automacao';\n  prioridade = 'alta';\n  risco = 'risco_de_falta_dagua_transbordamento_falha_de_bomba_ou_falha_de_comando';\n  encaminhar_para = 'Orcamento';\n  dados = ['fotos do painel de comando', 'foto da bomba', 'foto da boia ou sensor', 'descrição da falha', 'nome do condomínio ou escola', 'bairro', 'urgência', 'se o sistema está parado ou intermitente'];\n} else if (demandas.fortress) {\n  produto_indicado = 'Fortress';\n  area_tecnica = 'portaria_autonoma_controle_de_acesso';\n  prioridade = 'media';\n  risco = 'risco_de_acesso_desorganizado_sem_rastreabilidade';\n  encaminhar_para = 'Orcamento';\n  dados = ['quantidade de acessos', 'quantidade aproximada de unidades ou usuários', 'sistema atual', 'se já existe controle facial ou biometria', 'bairro', 'fotos da portaria e acessos'];\n} else if (demandas.gatekeeper) {\n  produto_indicado = 'Gatekeeper';\n  area_tecnica = 'automacao_de_portoes_e_acessos';\n  prioridade = 'media';\n  risco = 'risco_de_acesso_sem_controle_ou_sem_rastreabilidade';\n  encaminhar_para = 'Orcamento';\n  dados = ['tipo de portão', 'quantidade de usuários', 'local de instalação', 'tipo de acionamento atual', 'fotos do motor/comando quando houver'];\n} else if (demandas.cftv) {\n  produto_indicado = 'DL Guardião';\n  area_tecnica = 'cftv_seguranca_eletronica';\n  prioridade = msg.includes('sem imagem') || msg.includes('offline') ? 'alta' : 'media';\n  risco = 'risco_de_perda_de_imagens_gravacao_ou_monitoramento';\n  encaminhar_para = 'Suporte';\n  dados = ['marca/modelo do DVR/NVR', 'quantidade de câmeras', 'foto da tela com erro', 'se há acesso remoto', 'se o gravador está ligado', 'fotos do rack ou equipamento'];\n} else if (demandas.eletrica) {\n  produto_indicado = 'DL Volt';\n  area_tecnica = 'eletrica_infraestrutura';\n  prioridade = hasAny(['curto', 'sem energia', 'cabo aquecendo', 'cheiro de queimado']) ? 'critica' : 'alta';\n  risco = 'risco_eletrico_operacional_ou_de_seguranca';\n  encaminhar_para = 'Suporte';\n  dados = ['foto do quadro', 'descrição da falha', 'o que desarma', 'quando ocorre', 'carga envolvida', 'bairro', 'urgência'];\n} else if (demandas.redes) {\n  produto_indicado = 'Infraestrutura de Redes';\n  area_tecnica = 'redes_de_computadores';\n  prioridade = 'media';\n  risco = 'risco_de_indisponibilidade_de_comunicacao_cftv_automacao_ou_acesso';\n  encaminhar_para = 'Suporte';\n  dados = ['topologia atual se existir', 'equipamentos envolvidos', 'foto do rack', 'quantidade de pontos', 'se há CFTV/controle de acesso na rede'];\n} else if (demandas.solar) {\n  produto_indicado = 'DL EcoVolt';\n  area_tecnica = 'energia_solar';\n  prioridade = 'media';\n  risco = 'risco_de_baixa_geracao_falha_de_inversor_ou_dimensionamento_inadequado';\n  encaminhar_para = 'Orcamento';\n  dados = ['conta de energia', 'tipo de sistema desejado', 'foto do local de instalação', 'se há inversor instalado', 'se deseja bateria ou sistema híbrido'];\n} else if (demandas.incendio) {\n  produto_indicado = 'DL Alerta';\n  area_tecnica = 'sistema_de_incendio_prevencao';\n  prioridade = 'alta';\n  risco = 'risco_de_falha_em_sistema_de_alerta_ou_prevencao';\n  encaminhar_para = 'Suporte';\n  dados = ['foto da central', 'mensagem de falha', 'quantidade de detectores', 'se há sirene/acionadores', 'bairro', 'urgência'];\n} else if (demandas.recorrencia) {\n  produto_indicado = 'DL Partner';\n  area_tecnica = 'contrato_recorrente';\n  prioridade = 'media';\n  risco = 'risco_de_manutencao_corretiva_sem_previsibilidade';\n  encaminhar_para = 'Orcamento';\n  dados = ['sistemas existentes', 'quantidade de equipamentos', 'histórico de falhas', 'bairro', 'prioridade de SLA desejada'];\n}\n\nif (['critica', 'crítica'].includes(prioridade)) {\n  encaminhar_para = 'Humano';\n}\n\nlet resposta_cliente = '';\n\nif (escopo_invalido) {\n  resposta_cliente = 'A DL Soluções atua na parte elétrica, comando, automação, proteção, monitoramento e inteligência preventiva dos sistemas. Para intervenção hidráulica pura, como vazamento em canos ou reparo direto de encanamento, o ideal é acionar um profissional hidráulico. Caso o problema envolva bomba, painel, boia, recalque, proteção elétrica ou automação, podemos realizar uma Avaliação Técnica da parte elétrica e de comando.';\n} else if (produto_indicado === 'nao_classificado') {\n  resposta_cliente = 'Recebemos a solicitação. Para direcionarmos corretamente, precisamos entender melhor qual sistema está envolvido: elétrica, CFTV, controle de acesso, portões, cisterna, caixa d’água, energia solar, incêndio, redes ou contrato recorrente. Com essas informações, conseguimos indicar a próxima etapa com segurança.';\n  precisa_avaliacao_tecnica = false;\n  encaminhar_para = 'Aninha';\n} else {\n  resposta_cliente = `Análise técnica preliminar: a demanda foi relacionada a ${produto_indicado}. Para definir o escopo correto, infraestrutura, riscos, responsabilidades, setup, mensalidade, SLA, equipamentos, peças e chamados avulsos, o próximo passo recomendado é uma Avaliação Técnica da DL Soluções. Essa etapa evita orçamento incorreto e permite indicar a solução adequada para o condomínio ou escola.`;\n}\n\nif (demandas.recorrencia && produto_indicado !== 'DL Partner') {\n  observacoes.push('Existe oportunidade de recorrência DL Partner associada a esta demanda.');\n}\n\nconst saidaString = normalizeText(JSON.stringify({ resposta_cliente, produto_indicado, area_tecnica, risco }));\nconst violacoesSaida = termosProibidos.filter(term => saidaString.includes(normalizeText(term)));\n\nlet killcritic_status = violacoesSaida.length > 0 ? 'BLOQUEADO' : 'APROVADO';\n\nif (killcritic_status === 'BLOQUEADO') {\n  resposta_cliente = 'Recebemos a solicitação. Para avançarmos corretamente, o próximo passo recomendado é uma Avaliação Técnica da DL Soluções, com análise do cenário, riscos, infraestrutura e melhor solução para o condomínio ou escola.';\n}\n\nreturn [{\n  json: {\n    agente: 'Diego',\n    versao: 'v3_killcritic',\n    canal_origem: origem,\n    nome,\n    telefone,\n    email,\n    condominio_escola_empresa: condominio,\n    bairro,\n    mensagem_original: rawMessage,\n    area_tecnica,\n    produto_indicado,\n    prioridade,\n    risco_tecnico: risco,\n    escopo_invalido,\n    precisa_avaliacao_tecnica,\n    dados_necessarios: dados,\n    resposta_cliente,\n    encaminhar_para,\n    oportunidade_dl_partner: demandas.recorrencia || ['DL Acqua / DL Commander', 'Fortress', 'Gatekeeper', 'DL Guardião', 'DL Volt'].includes(produto_indicado),\n    killcritic_status,\n    termos_proibidos_entrada: termosProibidosEncontrados,\n    termos_proibidos_saida: violacoesSaida,\n    observacoes,\n    proxima_acao: escopo_invalido ? 'validar_se_existe_escopo_eletrico_comando_automacao' : 'coletar_dados_minimos_e_preparar_avaliacao_tecnica',\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "code_diego_logic",
+      "name": "Motor de Decisão Diego V3 KILLCRITIC",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "id": "respond_diego",
+      "name": "Responder Diagnóstico",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        720,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Entrada Diego": {
+      "main": [
+        [
+          {
+            "node": "Motor de Decisão Diego V3 KILLCRITIC",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Motor de Decisão Diego V3 KILLCRITIC": {
+      "main": [
+        [
+          {
+            "node": "Responder Diagnóstico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "DL_NEXUS_V3"
+    },
+    {
+      "name": "DIEGO"
+    },
+    {
+      "name": "KILLCRITIC"
+    }
+  ]
+}

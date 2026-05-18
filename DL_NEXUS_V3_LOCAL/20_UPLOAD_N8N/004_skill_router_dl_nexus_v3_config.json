@@ -1,0 +1,88 @@
+{
+  "name": "004_skill_router_dl_nexus_v3",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "skill-router-dl-nexus-v3",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook_skill_router",
+      "name": "Webhook Entrada Router",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || $json;\n\nfunction normalizeText(value) {\n  return String(value || '')\n    .toLowerCase()\n    .normalize('NFD')\n    .replace(/[\\u0300-\\u036f]/g, '')\n    .trim();\n}\n\nconst rawMessage = body.mensagem || body.message || body.text || '';\nconst msg = normalizeText(rawMessage);\n\nlet status = 'roteado';\nlet agente = 'Aninha';\nlet skill = 'vendas_condominios';\nlet produto = 'nao_classificado';\nlet prioridade = body.prioridade || 'media';\nlet proxima_acao = 'coletar_dados';\nlet precisa_avaliacao_tecnica = true;\nlet encaminhar_para = 'Humano';\nlet observacoes = [];\n\nfunction hasAny(list) {\n  return list.some(term => msg.includes(normalizeText(term)));\n}\n\nif (hasAny(['cisterna', 'caixa dagua', 'bomba', 'boia', 'nivel', 'recalque', 'painel'])) {\n  agente = 'Diego';\n  skill = hasAny(['painel', 'comando']) ? 'comandos_eletricos' : 'automacao_condominio';\n  produto = 'DL Acqua / DL Commander';\n  proxima_acao = 'agendar_avaliacao_tecnica';\n  encaminhar_para = 'Orcamento';\n} else if (hasAny(['portao', 'bluetooth', 'wireless', 'mobgate', 'abertura de acesso', 'porta de rolagem', 'controle remoto'])) {\n  agente = 'Diego';\n  skill = 'controle_acesso';\n  produto = 'Gatekeeper';\n  proxima_acao = 'agendar_avaliacao_tecnica';\n  encaminhar_para = 'Orcamento';\n} else if (hasAny(['condominio', 'sindico', 'portaria', 'morador', 'visitante', 'prestador', 'controle de acesso', 'condfy'])) {\n  agente = 'Aninha';\n  skill = 'vendas_condominios';\n  produto = 'Fortress';\n  proxima_acao = 'qualificar_lead';\n  encaminhar_para = 'Orcamento';\n} else if (hasAny(['camera', 'cftv', 'dvr', 'nvr', 'gravacao', 'camera offline', 'intelbras', 'hikvision'])) {\n  agente = 'Diego';\n  skill = 'suporte_cftv';\n  produto = 'DL Guardião';\n  proxima_acao = 'agendar_avaliacao_tecnica';\n  encaminhar_para = 'Suporte';\n} else if (hasAny(['eletrica', 'quadro', 'disjuntor', 'dr', 'dps', 'curto', 'circuito', 'iluminacao', 'energia'])) {\n  agente = 'Diego';\n  skill = 'suporte_eletrico';\n  produto = 'DL Volt';\n  proxima_acao = 'agendar_avaliacao_tecnica';\n  encaminhar_para = 'Suporte';\n} else if (hasAny(['rede', 'ip', 'vlan', 'switch', 'rack', 'wifi', 'fibra', 'cabeamento estruturado', 'internet'])) {\n  agente = 'Diego';\n  skill = 'infra_redes';\n  produto = 'Infraestrutura de Redes';\n  proxima_acao = 'agendar_avaliacao_tecnica';\n  encaminhar_para = 'Suporte';\n} else if (hasAny(['solar', 'inversor', 'placa', 'string', 'microinversor', 'bateria', 'on-grid', 'on grid', 'off-grid', 'off grid', 'hibrido'])) {\n  agente = 'Diego';\n  if (hasAny(['bateria', 'off-grid', 'off grid'])) {\n    skill = 'solar_baterias';\n  } else if (hasAny(['hibrido'])) {\n    skill = 'solar_hibrida';\n  } else {\n    skill = 'solar_conexao_placas';\n  }\n  produto = 'DL EcoVolt';\n  proxima_acao = 'agendar_avaliacao_tecnica';\n  encaminhar_para = 'Orcamento';\n} else if (hasAny(['post', 'postagem', 'instagram', 'facebook', 'tiktok', 'google meu negocio', 'legenda', 'conteudo', 'midia'])) {\n  agente = 'SocialPilot';\n  skill = 'postagem_social';\n  produto = 'Marketing DL';\n  proxima_acao = 'gerar_conteudo_pendente_aprovacao';\n  precisa_avaliacao_tecnica = false;\n  encaminhar_para = 'Marketing';\n} else if (hasAny(['orcamento', 'proposta', 'valor', 'preco', 'material', 'compra', 'cotacao', 'suprimentos'])) {\n  agente = 'Procurement';\n  skill = 'orcamentacao_suprimentos';\n  produto = 'Orçamento';\n  proxima_acao = 'gerar_orcamento_pendente_aprovacao';\n  encaminhar_para = 'Orcamento';\n} else if (hasAny(['agenda', 'campo', 'equipe', 'execucao', 'material', 'rota', 'os', 'ordem de servico'])) {\n  agente = 'Dispatcher';\n  skill = 'field_ops_dispatcher';\n  produto = 'Operação de Campo';\n  proxima_acao = 'agendar_servico_campo';\n  encaminhar_para = 'Operacional';\n} else if (hasAny(['pos-venda', 'manutencao mensal', 'contrato', 'sla', 'recorrencia', 'acompanhamento', 'renovacao'])) {\n  agente = 'Customer Success';\n  skill = 'customer_success';\n  produto = 'DL Partner';\n  proxima_acao = 'revisar_sla_contrato';\n  encaminhar_para = 'Atendimento';\n} else if (hasAny(['banco', 'log', 'supabase', 'dados', 'duplicidade', 'crm', 'historico'])) {\n  agente = 'DBA';\n  skill = 'dba_supabase';\n  produto = 'Dados / Supabase';\n  proxima_acao = 'consultar_banco';\n  precisa_avaliacao_tecnica = false;\n  encaminhar_para = 'TI';\n}\n\nconst termosProibidos = [\n  'visita técnica',\n  'visita tecnica',\n  'diogo engenheiro',\n  'engenheiro diogo',\n  'canaleta plástica',\n  'canaleta plastica',\n  'hidráulica pura',\n  'hidraulica pura'\n];\n\nconst infracoes = termosProibidos.filter(t => msg.includes(normalizeText(t)));\n\nif (infracoes.length > 0) {\n  observacoes.push(`Bloqueio KILLCRITIC: Termos proibidos ignorados (${infracoes.join(', ')}).`);\n}\n\nobservacoes.push('KILLCRITIC Activo: Usar Avaliação Técnica. Tecnólogo responsável em vez de Engenheiro. Sem hidráulica pura. Sem canaleta plástica. Separar escopo comercial (setup, SLA, peças, equipamentos). Priorizar DL Partner. Tudo requer aprovação humana.');\n\nreturn [{\n  json: {\n    status,\n    agente,\n    skill,\n    produto,\n    prioridade,\n    proxima_acao,\n    precisa_avaliacao_tecnica,\n    encaminhar_para,\n    observacoes\n  }\n}];"
+      },
+      "id": "code_skill_router_logic",
+      "name": "Motor de Roteamento de Skills",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "id": "respond_skill_router",
+      "name": "Responder Diagnóstico",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        720,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Entrada Router": {
+      "main": [
+        [
+          {
+            "node": "Motor de Roteamento de Skills",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Motor de Roteamento de Skills": {
+      "main": [
+        [
+          {
+            "node": "Responder Diagnóstico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "DL_NEXUS_V3"
+    },
+    {
+      "name": "SKILL_ROUTER"
+    },
+    {
+      "name": "KILLCRITIC"
+    }
+  ]
+}

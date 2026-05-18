@@ -1,0 +1,131 @@
+{
+  "meta": {
+    "gerado_por": "gerar_prospeccao_condominios_dl.py",
+    "data": "2026-05-09",
+    "hora": "14:59",
+    "killcritic": "aprovado",
+    "total_leads": 10
+  },
+  "leads": [
+    {
+      "id": 1,
+      "nome": "Colégio Evolução",
+      "tipo": "colégio",
+      "bairro": "Freguesia",
+      "dor": "custo alto com porteiro 24h",
+      "produto": "Fortress",
+      "justificativa": "Portaria autônoma e gestão de acesso (Condfy) resolve diretamente a dor: custo alto com porteiro 24h.",
+      "abordagem": "Apresentar Fortress como solução para custo alto com porteiro 24h. Sugerir Avaliação Técnica gratuita para mapear cenário e infraestrutura. Destacar recorrência e SLA do contrato DL Partner.",
+      "prioridade": "média",
+      "fonte": "base pública / prospecção ativa"
+    },
+    {
+      "id": 2,
+      "nome": "Gestão Condominial Atlântica",
+      "tipo": "administradora",
+      "bairro": "Tanque",
+      "dor": "portaria desorganizada",
+      "produto": "Fortress",
+      "justificativa": "Portaria autônoma e gestão de acesso (Condfy) resolve diretamente a dor: portaria desorganizada.",
+      "abordagem": "Apresentar Fortress como solução para portaria desorganizada. Sugerir Avaliação Técnica gratuita para mapear cenário e infraestrutura. Destacar recorrência e SLA do contrato DL Partner.",
+      "prioridade": "média",
+      "fonte": "base pública / prospecção ativa"
+    },
+    {
+      "id": 3,
+      "nome": "Colégio Santa Clara",
+      "tipo": "escola",
+      "bairro": "Taquara",
+      "dor": "acesso de veículos descontrolado",
+      "produto": "Gatekeeper",
+      "justificativa": "Automação de portões e acessos via Bluetooth/wireless (Mobgate) resolve diretamente a dor: acesso de veículos descontrolado.",
+      "abordagem": "Apresentar Gatekeeper como solução para acesso de veículos descontrolado. Sugerir Avaliação Técnica gratuita para mapear cenário e infraestrutura. Destacar recorrência e SLA do contrato DL Partner.",
+      "prioridade": "baixa",
+      "fonte": "base pública / prospecção ativa"
+    },
+    {
+      "id": 4,
+      "nome": "Colégio Evolução",
+      "tipo": "escola",
+      "bairro": "Recreio dos Bandeirantes",
+      "dor": "loja sem controle de acesso",
+      "produto": "Gatekeeper",
+      "justificativa": "Automação de portões e acessos via Bluetooth/wireless (Mobgate) resolve diretamente a dor: loja sem controle de acesso.",
+      "abordagem": "Apresentar Gatekeeper como solução para loja sem controle de acesso. Sugerir Avaliação Técnica gratuita para mapear cenário e infraestrutura. Destacar recorrência e SLA do contrato DL Partner.",
+      "prioridade": "alta",
+      "fonte": "base pública / prospecção ativa"
+    },
+    {
+      "id": 5,
+      "nome": "Escola Nova Era",
+      "tipo": "colégio",
+      "bairro": "Centro",
+      "dor": "sem preventiva",
+      "produto": "DL Partner",
+      "justificativa": "Contrato recorrente de manutenção preventiva/corretiva com SLA resolve diretamente a dor: sem preventiva.",
+      "abordagem": "Apresentar DL Partner como solução para sem preventiva. Sugerir Avaliação Técnica gratuita para mapear cenário e infraestrutura. Destacar recorrência e SLA do contrato DL Partner.",
+      "prioridade": "média",
+      "fonte": "base pública / prospecção ativa"
+    },
+    {
+      "id": 6,
+      "nome": "Condomínio Morada do Sol",
+      "tipo": "condomínio",
+      "bairro": "Copacabana",
+      "dor": "cisterna transbordando",
+      "produto": "DL Acqua",
+      "justificativa": "Monitoramento e automação de cisternas e caixas d'água (Metabo) resolve diretamente a dor: cisterna transbordando.",
+      "abordagem": "Apresentar DL Acqua como solução para cisterna transbordando. Sugerir Avaliação Técnica gratuita para mapear cenário e infraestrutura. Destacar recorrência e SLA do contrato DL Partner.",
+      "prioridade": "média",
+      "fonte": "base pública / prospecção ativa"
+    },
+    {
+      "id": 7,
+      "nome": "Colégio Evolução",
+      "tipo": "escola",
+      "bairro": "Vargem Pequena",
+      "dor": "sem rastreabilidade de abertura",
+      "produto": "Gatekeeper",
+      "justificativa": "Automação de portões e acessos via Bluetooth/wireless (Mobgate) resolve diretamente a dor: sem rastreabilidade de abertura.",
+      "abordagem": "Apresentar Gatekeeper como solução para sem rastreabilidade de abertura. Sugerir Avaliação Técnica gratuita para mapear cenário e infraestrutura. Destacar recorrência e SLA do contrato DL Partner.",
+      "prioridade": "alta",
+      "fonte": "base pública / prospecção ativa"
+    },
+    {
+      "id": 8,
+      "nome": "Predial Master RJ",
+      "tipo": "administradora",
+      "bairro": "Taquara",
+      "dor": "sem preventiva",
+      "produto": "DL Partner",
+      "justificativa": "Contrato recorrente de manutenção preventiva/corretiva com SLA resolve diretamente a dor: sem preventiva.",
+      "abordagem": "Apresentar DL Partner como solução para sem preventiva. Sugerir Avaliação Técnica gratuita para mapear cenário e infraestrutura. Destacar recorrência e SLA do contrato DL Partner.",
+      "prioridade": "média",
+      "fonte": "base pública / prospecção ativa"
+    },
+    {
+      "id": 9,
+      "nome": "Escola Construir",
+      "tipo": "escola",
+      "bairro": "Centro",
+      "dor": "portaria desorganizada",
+      "produto": "Fortress",
+      "justificativa": "Portaria autônoma e gestão de acesso (Condfy) resolve diretamente a dor: portaria desorganizada.",
+      "abordagem": "Apresentar Fortress como solução para portaria desorganizada. Sugerir Avaliação Técnica gratuita para mapear cenário e infraestrutura. Destacar recorrência e SLA do contrato DL Partner.",
+      "prioridade": "média",
+      "fonte": "base pública / prospecção ativa"
+    },
+    {
+      "id": 10,
+      "nome": "Instituto Educacional Progresso",
+      "tipo": "escola",
+      "bairro": "Recreio dos Bandeirantes",
+      "dor": "sem relatórios de manutenção",
+      "produto": "DL Partner",
+      "justificativa": "Contrato recorrente de manutenção preventiva/corretiva com SLA resolve diretamente a dor: sem relatórios de manutenção.",
+      "abordagem": "Apresentar DL Partner como solução para sem relatórios de manutenção. Sugerir Avaliação Técnica gratuita para mapear cenário e infraestrutura. Destacar recorrência e SLA do contrato DL Partner.",
+      "prioridade": "média",
+      "fonte": "base pública / prospecção ativa"
+    }
+  ]
+}

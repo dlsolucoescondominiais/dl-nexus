@@ -1,0 +1,109 @@
+{
+  "name": "019_GERADOR_ORCAMENTO_RAPIDO",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual_trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\"produto\": \"Fortress\", \"nome_cliente\": \"Síndico João\", \"condominio_escola\": \"Residencial Solar do Bosque\", \"bairro\": \"Barra da Tijuca\", \"demanda\": \"Controle de acesso desorganizado, portaria sem rastreabilidade de visitantes e prestadores.\", \"observacoes\": \"Condomínio com 3 blocos, 120 unidades, 2 portões de veículos e 1 de pedestres.\"}",
+        "options": {}
+      },
+      "id": "set_dados",
+      "name": "Set: Dados da Proposta",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        440,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst d = $json;\n\n// ── KILLCRITIC inline ──\nconst proibidos = [\n  \"visita técnica\",\"visita tecnica\",\"agendar visita\",\"marcar visita\",\n  \"canaleta plástica\",\"canaleta plastica\",\"portaria remota\",\n  \"manutenção hidráulica pura\",\"manutencao hidraulica pura\"\n];\nconst texto_lower = JSON.stringify(d).toLowerCase();\nconst violacoes = proibidos.filter(t => texto_lower.includes(t));\n\n// ── Catálogo de produtos ──\nconst catalogo = {\n  \"Fortress\": {\n    nome_completo: \"Fortress — Portaria Autônoma e Gestão de Acesso\",\n    base: \"Condfy\",\n    descricao: \"Sistema de portaria autônoma com controle de moradores, visitantes, convidados, prestadores e integração com gestão condominial.\",\n    mrr_minimo: \"R$ 450,00/mês\",\n    custo_interno: \"R$ 140,00/mês\",\n    itens_separados: [\"Setup/implantação\", \"Mensalidade (MRR)\", \"Equipamentos\", \"SLA\", \"Peças\", \"Chamados avulsos\"],\n    regra: \"Nunca chamar de portaria remota. Usar: portaria autônoma.\"\n  },\n  \"DL Acqua\": {\n    nome_completo: \"DL Acqua — Monitoramento e Automação de Cisternas\",\n    base: \"Metabo\",\n    descricao: \"Controle, automação e monitoramento de cisternas e caixas d'água. Nível em tempo real, alertas, proteção de bomba, prevenção de falta d'água e transbordamento.\",\n    mrr_minimo: \"Sob Avaliação Técnica\",\n    custo_interno: \"Variável\",\n    itens_separados: [\"Setup/implantação\", \"Mensalidade (MRR)\", \"Sensores\", \"SLA\", \"Peças\", \"Chamados avulsos\"],\n    regra: \"A DL atua em elétrica, comando, automação, proteção e monitoramento. Não vender hidráulica pura.\"\n  },\n  \"Gatekeeper\": {\n    nome_completo: \"Gatekeeper — Automação de Portões e Acessos\",\n    base: \"Mobgate\",\n    descricao: \"Automação de portões e acessos via Bluetooth/wireless. Controle compartilhado, rastreabilidade e abertura de veículos, pedestres, lojas e acessos restritos.\",\n    mrr_minimo: \"Sob Avaliação Técnica\",\n    custo_interno: \"Variável\",\n    itens_separados: [\"Setup/implantação\", \"Mensalidade (MRR)\", \"Módulos\", \"SLA\", \"Peças\", \"Chamados avulsos\"],\n    regra: \"Foco em rastreabilidade e controle. Sem controle remoto clonável.\"\n  },\n  \"DL Partner\": {\n    nome_completo: \"DL Partner — Contrato Recorrente de Manutenção\",\n    base: \"DL Soluções\",\n    descricao: \"Contrato recorrente com manutenção preventiva, corretiva, relatórios, SLA prioritário e garantia estendida enquanto durar o contrato.\",\n    mrr_minimo: \"Sob Avaliação Técnica\",\n    custo_interno: \"Variável\",\n    itens_separados: [\"Setup/implantação\", \"Mensalidade (MRR)\", \"SLA\", \"Peças (fora da mensalidade)\", \"Chamados avulsos\"],\n    regra: \"Defeito físico, peça queimada, raio, vandalismo e mau uso são separados da mensalidade.\"\n  },\n  \"DL Guardião\": {\n    nome_completo: \"DL Guardião — CFTV e Segurança Eletrônica\",\n    base: \"DL Soluções\",\n    descricao: \"CFTV, câmeras, controle de acesso facial, biometria, QR Code, cerca elétrica e automação de portões.\",\n    mrr_minimo: \"Sob Avaliação Técnica\",\n    custo_interno: \"Variável\",\n    itens_separados: [\"Setup/implantação\", \"Mensalidade (MRR)\", \"Equipamentos\", \"SLA\", \"Peças\", \"Chamados avulsos\"],\n    regra: \"Priorizar infraestrutura profissional: eletrodutos, conduletes, sealtubo.\"\n  },\n  \"DL Volt\": {\n    nome_completo: \"DL Volt — Elétrica e Comandos\",\n    base: \"DL Soluções\",\n    descricao: \"Elétrica predial, quadros, painéis, bombas, iluminação e comandos.\",\n    mrr_minimo: \"Sob Avaliação Técnica\",\n    custo_interno: \"Variável\",\n    itens_separados: [\"Serviço\", \"Material\", \"Peças\", \"Chamados avulsos\"],\n    regra: \"Nunca sugerir canaleta plástica como padrão.\"\n  },\n  \"DL EcoVolt\": {\n    nome_completo: \"DL EcoVolt — Energia Solar\",\n    base: \"DL Soluções\",\n    descricao: \"Energia solar on-grid, off-grid, híbrida, manutenção solar e carport solar.\",\n    mrr_minimo: \"Sob Avaliação Técnica\",\n    custo_interno: \"Variável\",\n    itens_separados: [\"Setup/implantação\", \"Mensalidade (MRR)\", \"Equipamentos\", \"Manutenção\"],\n    regra: \"Usar Lei 14.300 como argumento. Não prometer conta zerada.\"\n  }\n};\n\n// ── Dados da proposta ──\nconst produto_key = d.produto || \"Fortress\";\nconst produto = catalogo[produto_key] || catalogo[\"Fortress\"];\n\nconst cliente = d.nome_cliente || \"Cliente\";\nconst local = d.condominio_escola || \"Condomínio/Escola\";\nconst bairro = d.bairro || \"Rio de Janeiro\";\nconst demanda = d.demanda || \"Solução de controle e automação\";\nconst observacoes = d.observacoes || \"\";\n\n// ── Montar proposta ──\nconst agora = new Date().toISOString().slice(0, 10);\n\nlet proposta = `# PROPOSTA COMERCIAL — DL SOLUÇÕES CONDOMINIAIS\\n`;\nproposta += `**Data:** ${agora}\\n`;\nproposta += `**Cliente:** ${cliente}\\n`;\nproposta += `**Local:** ${local} — ${bairro}\\n`;\nproposta += `**Produto:** ${produto.nome_completo}\\n`;\nproposta += `**Base tecnológica:** ${produto.base}\\n\\n`;\nproposta += `---\\n\\n`;\nproposta += `## Descrição da Solução\\n\\n`;\nproposta += `${produto.descricao}\\n\\n`;\nproposta += `## Demanda Identificada\\n\\n`;\nproposta += `${demanda}\\n\\n`;\n\nif (observacoes) {\n  proposta += `## Observações\\n\\n${observacoes}\\n\\n`;\n}\n\nproposta += `## Estrutura de Custos\\n\\n`;\nproposta += `| Componente | Valor |\\n`;\nproposta += `|-----------|-------|\\n`;\nproduto.itens_separados.forEach(item => {\n  proposta += `| ${item} | Sob Avaliação Técnica |\\n`;\n});\nproposta += `\\n**Valor mínimo recorrente:** ${produto.mrr_minimo}\\n\\n`;\nproposta += `> **Nota:** Os valores finais serão definidos após Avaliação Técnica, `;\nproposta += `onde analisamos o cenário, a infraestrutura existente, os riscos e a melhor solução.\\n\\n`;\n\nproposta += `## Regras Aplicáveis\\n\\n`;\nproposta += `- ${produto.regra}\\n`;\nproposta += `- Setup, mensalidade, SLA, peças, equipamentos e chamados avulsos são separados.\\n`;\nproposta += `- Defeito físico, peça queimada, raio, vandalismo e mau uso são separados da mensalidade.\\n`;\nproposta += `- Nenhum preço final é definido sem Avaliação Técnica.\\n\\n`;\n\nproposta += `## Próximo Passo\\n\\n`;\nproposta += `Recomendamos uma **Avaliação Técnica** para mapear cenário, infraestrutura e definir escopo com precisão.\\n\\n`;\n\nproposta += `---\\n`;\nproposta += `*DL Soluções Condominiais LTDA — CREA-RJ*\\n`;\nproposta += `*contato@dlsolucoescondominiais.com.br*\\n`;\n\nreturn [{\n  json: {\n    status: \"proposta_gerada\",\n    killcritic_violacoes: violacoes,\n    killcritic_status: violacoes.length === 0 ? \"APROVADO\" : \"VIOLACAO_DETECTADA\",\n    produto: produto_key,\n    cliente,\n    local,\n    bairro,\n    demanda,\n    proposta_markdown: proposta,\n    proxima_acao: \"enviar_para_aprovacao_humana\",\n    data_geracao: agora\n  }\n}];\n"
+      },
+      "id": "code_proposta",
+      "name": "Code: Montar Texto da Proposta",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "id": "output",
+      "name": "Output: Resultado Final",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        960,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set: Dados da Proposta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: Dados da Proposta": {
+      "main": [
+        [
+          {
+            "node": "Code: Montar Texto da Proposta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Montar Texto da Proposta": {
+      "main": [
+        [
+          {
+            "node": "Output: Resultado Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "DL_NEXUS_V3"
+    },
+    {
+      "name": "ORCAMENTO"
+    },
+    {
+      "name": "PROPOSTA"
+    }
+  ]
+}

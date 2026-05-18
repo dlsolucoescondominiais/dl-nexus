@@ -1,0 +1,6 @@
+ID;Nome;Tipo;Bairro;Telefone;Produto_Sugerido;Prioridade;Necessidade
+1001;Condomínio Solar da Tijuca;condomínio;Tijuca;(21) 98888-1111;DL Guardião;Alta;Câmeras inoperantes e DVR apitando
+1002;Colégio Batista Carioca;escola;Tijuca;(21) 97777-2222;DL Volt;Alta;Quedas de energia nos laboratórios
+1003;Condomínio Bosque da Barra;condomínio;Barra da Tijuca;(21) 95555-4444;DL Acqua;Alta;Cisterna transbordando, painel antigo
+1004;Condomínio Botafogo Towers;condomínio;Botafogo;(21) 94444-5555;Fortress;Média;Interesse em controle de acesso facial
+1005;Pró-Síndicos Centro;administradora;Centro;(21) 96666-3333;DL Partner;Média;Precisam de SLA para 10 prédios

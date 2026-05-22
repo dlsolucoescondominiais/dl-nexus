@@ -1,0 +1,110 @@
+{
+  "name": "084_PUBLICADOR_TIKTOK_ASSISTIDO",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "publicador-tiktok-assistido",
+        "options": {}
+      },
+      "id": "webhook-084",
+      "name": "Webhook In",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.body.approved }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-approved",
+      "name": "Check Approved",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const baseContent = $json.body.base_content || '';\nconst killTerms = ['visita técnica', 'canaleta plástica', 'manutenção hidráulica pura', 'garantia vitalícia'];\nlet hasKillTerm = false;\nfor (const term of killTerms) {\n  if (baseContent.toLowerCase().includes(term)) {\n    hasKillTerm = true;\n    break;\n  }\n}\nif (hasKillTerm) {\n  throw new Error('Conteúdo contém termos proibidos pelo KILLCRITIC');\n}\n\n// Gerar pacote assistido (Mockado/Formatado)\nconst roteiro = `Roteiro Curto para TikTok:\\n1. Gancho: Você sabia que a segurança do seu condomínio...\\n2. Desenvolvimento: Baseado no conteúdo aprovado.\\n3. CTA: Clique no link da bio!`;\nconst hashtags = '#DLSolucoes #Seguranca #Condominio';\n\nreturn [{\n  json: {\n    roteiro: roteiro,\n    legenda: baseContent + '\\n\\n' + hashtags,\n    hashtags: hashtags,\n    status: 'PACOTE_GERADO'\n  }\n}];"
+      },
+      "id": "code-generate-package",
+      "name": "Generate Package",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "TELEGRAM_CHAT_ID",
+        "text": "={{ '📦 PACOTE TIKTOK ASSISTIDO PRONTO\\n\\nLegenda:\\n' + $json.legenda + '\\n\\nRoteiro:\\n' + $json.roteiro }}"
+      },
+      "id": "telegram-notify",
+      "name": "Notify Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        700,
+        280
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook In": {
+      "main": [
+        [
+          {
+            "node": "Check Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Approved": {
+      "main": [
+        [
+          {
+            "node": "Generate Package",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Package": {
+      "main": [
+        [
+          {
+            "node": "Notify Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "v1",
+  "id": "workflow-084-publicador-tiktok-nexus-v3",
+  "tags": []
+}

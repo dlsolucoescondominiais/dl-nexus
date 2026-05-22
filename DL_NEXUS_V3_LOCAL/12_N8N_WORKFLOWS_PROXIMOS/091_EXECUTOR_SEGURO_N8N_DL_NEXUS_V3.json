@@ -1,0 +1,81 @@
+{
+  "name": "091_EXECUTOR_SEGURO_N8N_DL_NEXUS_V3",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "executor-seguro-n8n-dl-nexus-v3",
+        "options": {}
+      },
+      "id": "webhook-091",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "executor-seguro-webhook-id"
+    },
+    {
+      "parameters": {
+        "jsCode": "const acao = $input.item.json.body.acao || 'UNKNOWN';\nconst allowedActions = [\n  'VALIDAR_JSON',\n  'GERAR_FIXED_JSON',\n  'FORCAR_ACTIVE_FALSE',\n  'GERAR_RELATORIO',\n  'CRIAR_BACKUP',\n  'VALIDAR_KILLCRITIC'\n];\nconst forbiddenActions = [\n  'DELETE_WORKFLOW',\n  'ACTIVATE_WORKFLOW',\n  'PUBLISH_SOCIAL',\n  'SEND_WHATSAPP',\n  'CHANGE_CREDENTIAL',\n  'RESTART_CONTAINER'\n];\n\nlet permitido = false;\nlet precisa_aprovacao = false;\nlet motivo = '';\n\nif (forbiddenActions.includes(acao)) {\n  permitido = false;\n  motivo = 'Ação expressamente proibida pelo protocolo KILLCRITIC/DL NEXUS V3.';\n} else if (allowedActions.includes(acao)) {\n  permitido = true;\n  motivo = 'Ação segura (não destrutiva) permitida.';\n} else {\n  permitido = false;\n  precisa_aprovacao = true;\n  motivo = 'Ação não mapeada, requer aprovação operacional.';\n}\n\nreturn [\n  {\n    json: {\n      status: permitido ? 'success' : 'blocked',\n      acao: acao,\n      permitido: permitido,\n      executado: permitido,\n      precisa_aprovacao: precisa_aprovacao,\n      motivo: motivo\n    }\n  }\n];"
+      },
+      "id": "code-validate-action",
+      "name": "Validate Action",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "webhook-response-091",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Action",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Action": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "v1",
+  "id": "workflow-091-executor-seguro-nexus-v3",
+  "tags": []
+}

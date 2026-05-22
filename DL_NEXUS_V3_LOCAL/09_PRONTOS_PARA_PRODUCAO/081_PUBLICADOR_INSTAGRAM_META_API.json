@@ -1,0 +1,163 @@
+{
+  "name": "081_PUBLICADOR_INSTAGRAM_META_API",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "publicador-instagram",
+        "options": {}
+      },
+      "id": "webhook-081",
+      "name": "Webhook In",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.body.approved }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-approved",
+      "name": "Check Approved",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const caption = $json.body.caption || '';\nconst killTerms = ['visita técnica', 'canaleta plástica', 'manutenção hidráulica pura', 'garantia vitalícia'];\nlet hasKillTerm = false;\nfor (const term of killTerms) {\n  if (caption.toLowerCase().includes(term)) {\n    hasKillTerm = true;\n    break;\n  }\n}\nif (hasKillTerm) {\n  throw new Error('Conteúdo contém termos proibidos pelo KILLCRITIC');\n}\nreturn [{ json: $json.body }];"
+      },
+      "id": "code-killcritic",
+      "name": "KILLCRITIC Check",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v20.0/{{$json.instagram_account_id}}/media",
+        "method": "POST",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "={{$json.image_url}}"
+            },
+            {
+              "name": "caption",
+              "value": "={{$json.caption}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-ig-media",
+      "name": "Create Media Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        700,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v20.0/{{$node['Webhook In'].json.body.instagram_account_id}}/media_publish",
+        "method": "POST",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "creation_id",
+              "value": "={{$json.id}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-ig-publish",
+      "name": "Publish Media Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        280
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook In": {
+      "main": [
+        [
+          {
+            "node": "Check Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Approved": {
+      "main": [
+        [
+          {
+            "node": "KILLCRITIC Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KILLCRITIC Check": {
+      "main": [
+        [
+          {
+            "node": "Create Media Container",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Media Container": {
+      "main": [
+        [
+          {
+            "node": "Publish Media Container",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "v1",
+  "id": "workflow-081-publicador-instagram-nexus-v3",
+  "tags": []
+}

@@ -1,0 +1,142 @@
+{
+  "name": "092_APROVACAO_OPERACIONAL_TELEGRAM",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "aprovacao-operacional-dl-nexus",
+        "options": {}
+      },
+      "id": "webhook-092",
+      "name": "Webhook Aprovação",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "aprovacao-webhook-id"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.item.json.body || {};\nconst acao = body.acao;\nconst risco = body.risco;\nconst solicitante = body.solicitante;\nconst aprovado_no_telegram = body.aprovado_no_telegram || false;\n\nlet resposta = {\n  status: 'PENDENTE',\n  motivo: '',\n  encaminhar_executor: false\n};\n\nif (risco === 'ALTO') {\n  resposta.status = 'BLOQUEADO';\n  resposta.motivo = 'Ação de ALTO RISCO exige aprovação manual fora do fluxo automatizado (ex: deploy manual/VPS).';\n} else if (risco === 'PROIBIDO') {\n  resposta.status = 'BLOQUEADO_KILLCRITIC';\n  resposta.motivo = 'Ação PROIBIDA pelo protocolo KILLCRITIC.';\n} else if (risco === 'MEDIO' && aprovado_no_telegram) {\n  resposta.status = 'APROVADO';\n  resposta.motivo = 'Ação de RISCO MÉDIO aprovada via Telegram.';\n  resposta.encaminhar_executor = true;\n} else if (risco === 'BAIXO') {\n  resposta.status = 'APROVADO';\n  resposta.motivo = 'Ação de BAIXO RISCO, auto-aprovada.';\n  resposta.encaminhar_executor = true;\n} else {\n  resposta.status = 'PENDENTE_APROVACAO';\n  resposta.motivo = 'Aguardando decisão humana no Telegram.';\n}\n\nreturn [{ json: resposta }];"
+      },
+      "id": "code-validate-risk",
+      "name": "Validate Risk & Decision",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.encaminhar_executor }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-forward",
+      "name": "Encaminhar para Executor?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://n8n:5678/webhook/executor-seguro-n8n-dl-nexus-v3",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "acao",
+              "value": "={{ $node['Webhook Aprovação'].json.body.acao }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-forward-executor",
+      "name": "Call Executor 091",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        850,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "TELEGRAM_CHAT_ID",
+        "text": "={{ 'Decisão Registrada: ' + $json.status + '\\nMotivo: ' + $json.motivo }}"
+      },
+      "id": "telegram-log",
+      "name": "Telegram Log",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        850,
+        400
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Aprovação": {
+      "main": [
+        [
+          {
+            "node": "Validate Risk & Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Risk & Decision": {
+      "main": [
+        [
+          {
+            "node": "Encaminhar para Executor?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encaminhar para Executor?": {
+      "main": [
+        [
+          {
+            "node": "Call Executor 091",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "v1",
+  "id": "workflow-092-aprovacao-telegram-nexus-v3",
+  "tags": []
+}

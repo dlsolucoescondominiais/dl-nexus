@@ -1,0 +1,221 @@
+{
+  "name": "090_GUARDIAO_N8N_DL_NEXUS_V3",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger-090",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://n8n:5678/healthz",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "http-healthcheck",
+      "name": "Healthcheck n8n",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        450,
+        300
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "http://n8n:5678/api/v1/workflows",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "n8nApi",
+        "options": {}
+      },
+      "id": "http-list-workflows",
+      "name": "List Workflows",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        650,
+        300
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "http://n8n:5678/api/v1/executions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "n8nApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "error"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-list-executions",
+      "name": "List Executions Error",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        850,
+        300
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "let errors = [];\n// classificar falhas\nconst items = $input.all();\nfor (const item of items) {\n  let errorType = 'ERRO_DESCONHECIDO';\n  const errorText = JSON.stringify(item.json);\n  if (errorText.includes('credential')) errorType = 'CREDENCIAL_AUSENTE';\n  else if (errorText.includes('expired')) errorType = 'TOKEN_EXPIRADO';\n  else if (errorText.includes('timeout') || errorText.includes('ECONNREFUSED')) errorType = 'WEBHOOK_SEM_RESPOSTA';\n  else if (errorText.includes('duplicate')) errorType = 'WORKFLOW_DUPLICADO';\n  else if (errorText.includes('no id')) errorType = 'WORKFLOW_SEM_ID';\n  else if (errorText.includes('node')) errorType = 'NODE_COM_ERRO';\n  else if (errorText.includes('json')) errorType = 'JSON_INVALIDO';\n  else if (errorText.includes('meta api restricted') || errorText.includes('WhatsApp')) errorType = 'META_API_RESTRITA';\n  else if (errorText.includes('google api request denied')) errorType = 'GOOGLE_API_REQUEST_DENIED';\n  else if (errorText.includes('insufficient_balance') || errorText.includes('deepseek')) errorType = 'DEEPSEEK_SALDO_INSUFICIENTE';\n  else if (errorText.includes('restart loop')) errorType = 'CONTAINER_RESTART_LOOP';\n  else if (errorText.includes('picolaw')) errorType = 'PICOLAW_RESTART_LOOP';\n  item.json.errorType = errorType;\n  errors.push(item);\n}\nreturn errors;"
+      },
+      "id": "code-classify",
+      "name": "Classificar Falhas",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1050,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "TELEGRAM_CHAT_ID",
+        "text": "={{ 'ALERTA N8N: Erro detectado - ' + $json.errorType }}"
+      },
+      "id": "telegram-alert",
+      "name": "Telegram Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://SUPABASE_URL/rest/v1/n8n_logs",
+        "method": "POST",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "error_type",
+              "value": "={{ $json.errorType }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "supabase-log",
+      "name": "Supabase Log",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1250,
+        500
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Healthcheck n8n",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Healthcheck n8n": {
+      "main": [
+        [
+          {
+            "node": "List Workflows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Workflows": {
+      "main": [
+        [
+          {
+            "node": "List Executions Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List Executions Error": {
+      "main": [
+        [
+          {
+            "node": "Classificar Falhas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classificar Falhas": {
+      "main": [
+        [
+          {
+            "node": "Telegram Alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Supabase Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "v1",
+  "id": "workflow-090-guardiao-n8n-nexus-v3",
+  "tags": []
+}

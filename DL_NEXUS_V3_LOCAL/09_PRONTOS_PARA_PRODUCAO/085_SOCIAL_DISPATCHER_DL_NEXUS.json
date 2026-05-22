@@ -1,0 +1,435 @@
+{
+  "name": "085_SOCIAL_DISPATCHER_DL_NEXUS",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dispatcher-social-dl-nexus",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "node-001-webhook",
+      "name": "Webhook - Dispatcher Social",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "085-social-dispatcher-dl-nexus"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-approved",
+              "leftValue": "={{ $json.body.approved }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "rightType": "any"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "node-002-if-approved",
+      "name": "IF: approved=true",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "// ============================================================\n// VALIDADOR DE PAYLOAD - 085_SOCIAL_DISPATCHER_DL_NEXUS\n// Verifica campos obrigatórios antes de disparar para os canais\n// ============================================================\n\nconst body = $input.item.json.body || $input.item.json;\n\nconst camposObrigatorios = ['tema', 'texto', 'canal_destino'];\nconst camposFaltando = [];\n\nfor (const campo of camposObrigatorios) {\n  if (!body[campo] || String(body[campo]).trim() === '') {\n    camposFaltando.push(campo);\n  }\n}\n\nif (camposFaltando.length > 0) {\n  throw new Error(\n    `Payload inválido. Campos obrigatórios ausentes: ${camposFaltando.join(', ')}. ` +\n    `Payload recebido: ${JSON.stringify(body)}`\n  );\n}\n\n// Normaliza canal_destino para array\nlet canais = body.canal_destino;\nif (typeof canais === 'string') {\n  canais = canais.split(',').map(c => c.trim().toLowerCase());\n} else if (!Array.isArray(canais)) {\n  canais = ['instagram', 'facebook', 'google_business', 'tiktok'];\n}\n\n// Monta payload enriquecido\nconst payloadValidado = {\n  ...body,\n  approved: true,\n  canal_destino: canais,\n  dispatch_timestamp: new Date().toISOString(),\n  workflow_origem: '085_SOCIAL_DISPATCHER_DL_NEXUS',\n  versao: 'DL_NEXUS_V3'\n};\n\nreturn [{ json: payloadValidado }];"
+      },
+      "id": "node-003-code-validar",
+      "name": "Code: Validar Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [720, 180]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/publicar-instagram-dl-nexus",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": []
+        },
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": false
+            }
+          }
+        }
+      },
+      "id": "node-004-http-instagram",
+      "name": "HTTP: Dispatch → Instagram (081)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1000, 60]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/publicar-facebook-dl-nexus",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": []
+        },
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": false
+            }
+          }
+        }
+      },
+      "id": "node-005-http-facebook",
+      "name": "HTTP: Dispatch → Facebook (082)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1000, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/publicar-google-business-dl-nexus",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": []
+        },
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": false
+            }
+          }
+        }
+      },
+      "id": "node-006-http-google",
+      "name": "HTTP: Dispatch → Google Business (083)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1000, 340]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/tiktok-assistido-dl-nexus",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": []
+        },
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": false
+            }
+          }
+        }
+      },
+      "id": "node-007-http-tiktok",
+      "name": "HTTP: Dispatch → TikTok Assistido (084)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1000, 480]
+    },
+    {
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "// ============================================================\n// AGREGADOR DE RESULTADOS DE DISPATCH\n// Consolida respostas de todos os canais\n// ============================================================\n\n// Coleta os itens anteriores de todos os branches\nconst items = $input.all();\n\nconst canaisDisparados = [\n  'Instagram (081)',\n  'Facebook (082)',\n  'Google Business (083)',\n  'TikTok Assistido (084)'\n];\n\nconst timestamp = new Date().toISOString();\n\nreturn [{\n  json: {\n    status: 'DISPATCH_CONCLUIDO',\n    canais_disparados: canaisDisparados,\n    total_canais: canaisDisparados.length,\n    timestamp_conclusao: timestamp,\n    workflow: '085_SOCIAL_DISPATCHER_DL_NEXUS',\n    mensagem: `✅ Dispatch concluído em ${canaisDisparados.length} canais às ${timestamp}`\n  }\n}];"
+      },
+      "id": "node-008-code-aggregate",
+      "name": "Code: Agregar Resultados",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1260, 270]
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "=✅ *DL NEXUS V3 — DISPATCH SOCIAL CONCLUÍDO*\n\n📣 *Workflow:* 085_SOCIAL_DISPATCHER_DL_NEXUS\n⏱ *Timestamp:* {{ $json.timestamp_conclusao }}\n\n📡 *Canais disparados ({{ $json.total_canais }}):*\n{{ $json.canais_disparados.map(c => '• ' + c).join('\\n') }}\n\n📌 *Status:* {{ $json.status }}\n\n_DL Soluções Condominiais — Automação Social Ativa_",
+        "additionalFields": {
+          "parse_mode": "Markdown",
+          "disable_notification": false
+        }
+      },
+      "id": "node-009-telegram-ok",
+      "name": "Telegram: Confirmação Dispatch",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1500, 270],
+      "credentials": {
+        "telegramApi": {
+          "id": "cred-telegram-dl",
+          "name": "Conta do Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "=⚠️ *DL NEXUS V3 — DISPATCH BLOQUEADO*\n\n🚫 *Workflow:* 085_SOCIAL_DISPATCHER_DL_NEXUS\n⏱ *Timestamp:* {{ new Date().toISOString() }}\n\n❌ *Motivo:* Post NÃO aprovado (approved ≠ true)\n\n📦 *Payload recebido:*\n```\n{{ JSON.stringify($json.body || $json, null, 2).substring(0, 500) }}\n```\n\n_Ação requerida: Revisar aprovação no workflow 020 antes de reenviar._",
+        "additionalFields": {
+          "parse_mode": "Markdown",
+          "disable_notification": false
+        }
+      },
+      "id": "node-010-telegram-nok",
+      "name": "Telegram: Alerta Não Aprovado",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [720, 460],
+      "credentials": {
+        "telegramApi": {
+          "id": "cred-telegram-dl",
+          "name": "Conta do Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "errorWorkflow": ""
+      },
+      "id": "node-011-error-trigger",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [240, 540]
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "=🔴 *DL NEXUS V3 — ERRO CRÍTICO NO DISPATCHER*\n\n⚙️ *Workflow:* 085_SOCIAL_DISPATCHER_DL_NEXUS\n⏱ *Timestamp:* {{ new Date().toISOString() }}\n\n❌ *Erro:* {{ $json.error.message }}\n🔗 *Nó:* {{ $json.error.node.name }}\n\n```\n{{ $json.error.stack ? $json.error.stack.substring(0, 400) : 'Stack não disponível' }}\n```\n\n🔧 *Ação:* Verificar logs no n8n e reenviar o payload após correção.",
+        "additionalFields": {
+          "parse_mode": "Markdown",
+          "disable_notification": false
+        }
+      },
+      "id": "node-012-telegram-error",
+      "name": "Telegram: Alerta Erro Crítico",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [480, 540],
+      "credentials": {
+        "telegramApi": {
+          "id": "cred-telegram-dl",
+          "name": "Conta do Telegram"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook - Dispatcher Social": {
+      "main": [
+        [
+          {
+            "node": "IF: approved=true",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: approved=true": {
+      "main": [
+        [
+          {
+            "node": "Code: Validar Payload",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram: Alerta Não Aprovado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Validar Payload": {
+      "main": [
+        [
+          {
+            "node": "HTTP: Dispatch → Instagram (081)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP: Dispatch → Facebook (082)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP: Dispatch → Google Business (083)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP: Dispatch → TikTok Assistido (084)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Dispatch → Instagram (081)": {
+      "main": [
+        [
+          {
+            "node": "Code: Agregar Resultados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Dispatch → Facebook (082)": {
+      "main": [
+        [
+          {
+            "node": "Code: Agregar Resultados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Dispatch → Google Business (083)": {
+      "main": [
+        [
+          {
+            "node": "Code: Agregar Resultados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Dispatch → TikTok Assistido (084)": {
+      "main": [
+        [
+          {
+            "node": "Code: Agregar Resultados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Agregar Resultados": {
+      "main": [
+        [
+          {
+            "node": "Telegram: Confirmação Dispatch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Telegram: Alerta Erro Crítico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2026-05-22T23:00:00.000Z",
+      "updatedAt": "2026-05-22T23:00:00.000Z",
+      "id": "tag-social-dispatcher",
+      "name": "social-dispatcher"
+    },
+    {
+      "createdAt": "2026-05-22T23:00:00.000Z",
+      "updatedAt": "2026-05-22T23:00:00.000Z",
+      "id": "tag-dl-nexus-v3",
+      "name": "DL_NEXUS_V3"
+    },
+    {
+      "createdAt": "2026-05-22T23:00:00.000Z",
+      "updatedAt": "2026-05-22T23:00:00.000Z",
+      "id": "tag-marketing",
+      "name": "marketing"
+    }
+  ],
+  "triggerCount": 0,
+  "updatedAt": "2026-05-22T23:00:00.000Z",
+  "versionId": "085-v1.0.0-dl-nexus"
+}

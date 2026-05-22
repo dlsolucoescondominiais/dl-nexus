@@ -1,0 +1,469 @@
+{
+  "name": "082_PUBLICADOR_FACEBOOK_META_API",
+  "active": false,
+  "meta": {
+    "instanceId": "dl-nexus-v3",
+    "templateCredsSetupCompleted": false
+  },
+  "tags": [
+    { "name": "DL_NEXUS_V3" },
+    { "name": "FACEBOOK" },
+    { "name": "META_API" },
+    { "name": "MARKETING" },
+    { "name": "KILLCRITIC" }
+  ],
+  "nodes": [
+    {
+      "id": "node_webhook_trigger",
+      "name": "Webhook Trigger - Publicar Facebook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 400],
+      "webhookId": "publicar-facebook-dl-nexus",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "publicar-facebook-dl-nexus",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      }
+    },
+    {
+      "id": "node_if_approved",
+      "name": "IF: approved=true?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [450, 400],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition_approved",
+              "leftValue": "={{ $json.body.approved }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "node_code_killcritic",
+      "name": "Code KILLCRITIC - Verificação de Termos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [700, 300],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// ============================================================\n// KILLCRITIC - DL Nexus V3\n// Verificação de termos proibidos e validação de conteúdo\n// ============================================================\n\nconst TERMOS_PROIBIDOS = [\n  // Proibições legais / regulatórias\n  'garantimos retorno',\n  'lucro garantido',\n  'sem risco',\n  'investimento seguro',\n  'proibido',\n  'ilegal',\n  // Proibições de conteúdo\n  'whatsapp',\n  'zap',\n  'clique aqui e ganhe',\n  'grátis por tempo limitado',\n  // Sensacionalismo\n  'urgente!!!',\n  'imperdível!!!',\n  'milagre',\n  // Dados sensíveis\n  'cpf',\n  'senha',\n  'token',\n  'api_key',\n  'secret'\n];\n\nconst TERMOS_OBRIGATORIOS_CONTEXTO = [\n  'avaliação técnica',\n  'avaliacao tecnica',\n  'diagnóstico',\n  'diagnóstico gratuito',\n  'visita técnica',\n  'visita tecnica',\n  'dl soluções',\n  'dl solucoes',\n  'condomínio',\n  'condominio'\n];\n\nconst items = $input.all();\nconst resultados = [];\n\nfor (const item of items) {\n  const body = item.json.body || {};\n  const message = (body.message || '').toLowerCase();\n  const imageUrl = body.image_url || '';\n  const approved = body.approved;\n\n  // Validações básicas\n  if (!message || message.trim().length === 0) {\n    resultados.push({\n      json: {\n        ...item.json,\n        killcritic_status: 'BLOQUEADO',\n        killcritic_motivo: 'Mensagem vazia. Campo message é obrigatório.',\n        killcritic_aprovado: false\n      }\n    });\n    continue;\n  }\n\n  if (message.length < 10) {\n    resultados.push({\n      json: {\n        ...item.json,\n        killcritic_status: 'BLOQUEADO',\n        killcritic_motivo: 'Mensagem muito curta (mínimo 10 caracteres).',\n        killcritic_aprovado: false\n      }\n    });\n    continue;\n  }\n\n  if (message.length > 63206) {\n    resultados.push({\n      json: {\n        ...item.json,\n        killcritic_status: 'BLOQUEADO',\n        killcritic_motivo: 'Mensagem excede o limite do Facebook (63.206 caracteres).',\n        killcritic_aprovado: false\n      }\n    });\n    continue;\n  }\n\n  // Verificação de termos proibidos\n  const termosEncontrados = TERMOS_PROIBIDOS.filter(termo =>\n    message.includes(termo.toLowerCase())\n  );\n\n  if (termosEncontrados.length > 0) {\n    resultados.push({\n      json: {\n        ...item.json,\n        killcritic_status: 'BLOQUEADO',\n        killcritic_motivo: `Termos proibidos detectados: ${termosEncontrados.join(', ')}`,\n        killcritic_aprovado: false,\n        killcritic_termos_detectados: termosEncontrados\n      }\n    });\n    continue;\n  }\n\n  // Verificação de contexto obrigatório (pelo menos 1 termo de contexto)\n  const temContexto = TERMOS_OBRIGATORIOS_CONTEXTO.some(termo =>\n    message.includes(termo.toLowerCase())\n  );\n\n  if (!temContexto) {\n    resultados.push({\n      json: {\n        ...item.json,\n        killcritic_status: 'BLOQUEADO',\n        killcritic_motivo: 'Post não menciona contexto DL / condomínio / avaliação técnica. Revisar alinhamento com identidade da marca.',\n        killcritic_aprovado: false\n      }\n    });\n    continue;\n  }\n\n  // Validação de URL de imagem (se fornecida)\n  if (imageUrl) {\n    const urlValida = /^https?:\\/\\/.+\\.(jpg|jpeg|png|gif|webp)(\\?.*)?$/i.test(imageUrl);\n    if (!urlValida) {\n      resultados.push({\n        json: {\n          ...item.json,\n          killcritic_status: 'BLOQUEADO',\n          killcritic_motivo: 'image_url fornecida não é uma URL de imagem válida (deve terminar em .jpg, .jpeg, .png, .gif ou .webp).',\n          killcritic_aprovado: false\n        }\n      });\n      continue;\n    }\n  }\n\n  // APROVADO\n  resultados.push({\n    json: {\n      ...item.json,\n      killcritic_status: 'APROVADO',\n      killcritic_motivo: 'Conteúdo validado com sucesso pelo KILLCRITIC.',\n      killcritic_aprovado: true,\n      killcritic_timestamp: new Date().toISOString()\n    }\n  });\n}\n\nreturn resultados;"
+      }
+    },
+    {
+      "id": "node_if_killcritic",
+      "name": "IF: KILLCRITIC Aprovado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [950, 300],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition_killcritic",
+              "leftValue": "={{ $json.killcritic_aprovado }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "node_if_image_url",
+      "name": "IF: image_url existe?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1200, 200],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "condition_image_url",
+              "leftValue": "={{ $json.body.image_url }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "id": "node_http_post_photo",
+      "name": "HTTP POST: Facebook /photos (com imagem)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1450, 100],
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v19.0/PAGE_ID_AQUI/photos",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "={{ $json.body.message }}"
+            },
+            {
+              "name": "url",
+              "value": "={{ $json.body.image_url }}"
+            },
+            {
+              "name": "published",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": false,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000,
+          "redirect": {
+            "redirect": {
+              "followRedirects": true,
+              "maxRedirects": 5
+            }
+          }
+        }
+      },
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "cred_facebook_graph_api",
+          "name": "Aplicativo do Facebook"
+        }
+      }
+    },
+    {
+      "id": "node_http_post_feed",
+      "name": "HTTP POST: Facebook /feed (sem imagem)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1450, 320],
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v19.0/PAGE_ID_AQUI/feed",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "={{ $json.body.message }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": false,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 30000,
+          "redirect": {
+            "redirect": {
+              "followRedirects": true,
+              "maxRedirects": 5
+            }
+          }
+        }
+      },
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "cred_facebook_graph_api",
+          "name": "Aplicativo do Facebook"
+        }
+      }
+    },
+    {
+      "id": "node_telegram_confirmacao",
+      "name": "Telegram: Confirmação de Publicação",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1700, 200],
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "={{ '✅ *FACEBOOK PUBLICADO COM SUCESSO*\\n\\n' + '📄 *Post ID:* ' + ($json.id || 'N/A') + '\\n' + '📝 *Mensagem:* ' + ($json.body?.message?.substring(0, 100) || 'N/A') + '...\\n' + '🕐 *Horário:* ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n' + '🤖 *Workflow:* 082_PUBLICADOR_FACEBOOK_META_API\\n' + '🛡️ *KILLCRITIC:* ' + ($json.killcritic_status || 'N/A') }}",
+        "additionalFields": {
+          "parse_mode": "Markdown",
+          "disable_notification": false
+        }
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "cred_telegram_api",
+          "name": "Conta do Telegram"
+        }
+      }
+    },
+    {
+      "id": "node_telegram_alerta_bloqueio",
+      "name": "Telegram: Alerta de Bloqueio KILLCRITIC",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1200, 500],
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "={{ '🚫 *PUBLICAÇÃO BLOQUEADA - KILLCRITIC*\\n\\n' + '❌ *Status:* ' + ($json.killcritic_status || 'NÃO APROVADO') + '\\n' + '📌 *Motivo:* ' + ($json.killcritic_motivo || 'approved=false ou validação reprovada') + '\\n' + '🕐 *Horário:* ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n' + '🤖 *Workflow:* 082_PUBLICADOR_FACEBOOK_META_API\\n' + '⚠️ *Ação necessária:* Revisar o payload e reenviar com approved=true e conteúdo validado.' }}",
+        "additionalFields": {
+          "parse_mode": "Markdown",
+          "disable_notification": false
+        }
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "cred_telegram_api",
+          "name": "Conta do Telegram"
+        }
+      }
+    },
+    {
+      "id": "node_webhook_response_success",
+      "name": "Webhook Response: Sucesso",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1950, 200],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'success', workflow: '082_PUBLICADOR_FACEBOOK_META_API', facebook_post_id: $json.id || null, killcritic_status: $json.killcritic_status, timestamp: new Date().toISOString() }) }}",
+        "options": {
+          "responseCode": 200
+        }
+      }
+    },
+    {
+      "id": "node_webhook_response_blocked",
+      "name": "Webhook Response: Bloqueado",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1450, 500],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'blocked', workflow: '082_PUBLICADOR_FACEBOOK_META_API', killcritic_status: $json.killcritic_status || 'NOT_APPROVED', motivo: $json.killcritic_motivo || 'approved=false', timestamp: new Date().toISOString() }) }}",
+        "options": {
+          "responseCode": 403
+        }
+      }
+    },
+    {
+      "id": "node_error_trigger",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [200, 650],
+      "parameters": {}
+    },
+    {
+      "id": "node_telegram_erro",
+      "name": "Telegram: Alerta de Erro Crítico",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [450, 650],
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "={{ '🔴 *ERRO CRÍTICO - 082_PUBLICADOR_FACEBOOK_META_API*\\n\\n' + '💥 *Erro:* ' + ($json.error?.message || 'Erro desconhecido') + '\\n' + '📍 *Nó:* ' + ($json.execution?.lastNodeExecuted || 'N/A') + '\\n' + '🔗 *Execution ID:* ' + ($json.execution?.id || 'N/A') + '\\n' + '🕐 *Horário:* ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n' + '⚠️ *Verificar:* Credenciais Meta API / payload enviado.' }}",
+        "additionalFields": {
+          "parse_mode": "Markdown",
+          "disable_notification": false
+        }
+      },
+      "credentials": {
+        "telegramApi": {
+          "id": "cred_telegram_api",
+          "name": "Conta do Telegram"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Trigger - Publicar Facebook": {
+      "main": [
+        [
+          {
+            "node": "IF: approved=true?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: approved=true?": {
+      "main": [
+        [
+          {
+            "node": "Code KILLCRITIC - Verificação de Termos",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram: Alerta de Bloqueio KILLCRITIC",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code KILLCRITIC - Verificação de Termos": {
+      "main": [
+        [
+          {
+            "node": "IF: KILLCRITIC Aprovado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: KILLCRITIC Aprovado?": {
+      "main": [
+        [
+          {
+            "node": "IF: image_url existe?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram: Alerta de Bloqueio KILLCRITIC",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: image_url existe?": {
+      "main": [
+        [
+          {
+            "node": "HTTP POST: Facebook /photos (com imagem)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP POST: Facebook /feed (sem imagem)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP POST: Facebook /photos (com imagem)": {
+      "main": [
+        [
+          {
+            "node": "Telegram: Confirmação de Publicação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP POST: Facebook /feed (sem imagem)": {
+      "main": [
+        [
+          {
+            "node": "Telegram: Confirmação de Publicação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram: Confirmação de Publicação": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response: Sucesso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram: Alerta de Bloqueio KILLCRITIC": {
+      "main": [
+        [
+          {
+            "node": "Webhook Response: Bloqueado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Telegram: Alerta de Erro Crítico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "",
+    "saveExecutionProgress": true,
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "executionTimeout": 300
+  },
+  "staticData": null,
+  "pinData": {}
+}

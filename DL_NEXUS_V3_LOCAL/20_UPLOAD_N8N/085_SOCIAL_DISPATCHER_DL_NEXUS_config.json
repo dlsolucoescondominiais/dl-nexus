@@ -1,0 +1,116 @@
+{
+  "meta": {
+    "workflow_id": "085_SOCIAL_DISPATCHER_DL_NEXUS",
+    "versao": "1.0.0",
+    "stack": "DL_NEXUS_V3",
+    "data_criacao": "2026-05-22T23:00:00.000Z",
+    "status": "AGUARDANDO_KILLCRITIC",
+    "approved": false,
+    "ambiente": "producao",
+    "autor": "Antigravity - Engenheiro de Integração Sênior"
+  },
+  "descricao": "Dispatcher central que recebe posts aprovados pelo workflow 020 e distribui para os 4 canais de publicação (081 Instagram, 082 Facebook, 083 Google Business, 084 TikTok Assistido). Valida aprovação, verifica payload e dispara em paralelo para todos os canais configurados.",
+  "webhook": {
+    "path": "dispatcher-social-dl-nexus",
+    "method": "POST",
+    "url_completa": "https://n8n.dlsolucoescondominiais.com.br/webhook/dispatcher-social-dl-nexus",
+    "responseMode": "onReceived"
+  },
+  "canais_destino": [
+    {
+      "id": "081",
+      "nome": "Instagram",
+      "webhook_path": "publicar-instagram-dl-nexus",
+      "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/publicar-instagram-dl-nexus"
+    },
+    {
+      "id": "082",
+      "nome": "Facebook",
+      "webhook_path": "publicar-facebook-dl-nexus",
+      "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/publicar-facebook-dl-nexus"
+    },
+    {
+      "id": "083",
+      "nome": "Google Business",
+      "webhook_path": "publicar-google-business-dl-nexus",
+      "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/publicar-google-business-dl-nexus"
+    },
+    {
+      "id": "084",
+      "nome": "TikTok Assistido",
+      "webhook_path": "tiktok-assistido-dl-nexus",
+      "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/tiktok-assistido-dl-nexus"
+    }
+  ],
+  "credenciais": {
+    "telegram": {
+      "nome": "Conta do Telegram",
+      "tipo": "telegramApi",
+      "chat_id": "CHAT_ID_AQUI"
+    }
+  },
+  "campos_obrigatorios_payload": [
+    "tema",
+    "texto",
+    "canal_destino",
+    "approved"
+  ],
+  "dependencias": {
+    "upstream": [
+      {
+        "workflow_id": "020",
+        "descricao": "KILLCRITIC - Avaliador e aprovador de conteúdo",
+        "campo_aprovacao": "approved=true"
+      }
+    ],
+    "downstream": [
+      {
+        "workflow_id": "081",
+        "descricao": "Publicador Instagram",
+        "credencial": "Aplicativo do Facebook",
+        "account_id": "INSTAGRAM_BUSINESS_ACCOUNT_ID_AQUI"
+      },
+      {
+        "workflow_id": "082",
+        "descricao": "Publicador Facebook",
+        "credencial": "Aplicativo do Facebook",
+        "page_id": "PAGE_ID_AQUI"
+      },
+      {
+        "workflow_id": "083",
+        "descricao": "Publicador Google Business",
+        "credencial": "Google OAuth2"
+      },
+      {
+        "workflow_id": "084",
+        "descricao": "TikTok Assistido (semi-manual)",
+        "credencial": "Manual / Revisão humana"
+      }
+    ]
+  },
+  "ordem_ativacao": [
+    "1. Ativar 081_PUBLICADOR_INSTAGRAM_DL_NEXUS",
+    "2. Ativar 082_PUBLICADOR_FACEBOOK_DL_NEXUS",
+    "3. Ativar 083_PUBLICADOR_GOOGLE_BUSINESS_DL_NEXUS",
+    "4. Ativar 084_TIKTOK_ASSISTIDO_DL_NEXUS",
+    "5. Ativar 085_SOCIAL_DISPATCHER_DL_NEXUS (este workflow - ÚLTIMO)"
+  ],
+  "checklist_pre_ativacao": [
+    "[ ] KILLCRITIC executado e aprovado",
+    "[ ] Workflows 081, 082, 083, 084 ativos e testados",
+    "[ ] CHAT_ID_AQUI substituído pelo ID real do grupo Telegram",
+    "[ ] Credencial 'Conta do Telegram' configurada no n8n",
+    "[ ] Teste de payload enviado via Postman/Insomnia",
+    "[ ] approved=true confirmado na resposta do 020"
+  ],
+  "payload_exemplo": {
+    "tema": "energia_solar",
+    "texto": "Economize até 95% na conta de energia do seu condomínio com energia solar. A DL Soluções Condominiais transforma seu prédio em potência verde. Solicite sua avaliação gratuita!",
+    "canal_destino": ["instagram", "facebook", "google_business", "tiktok"],
+    "imagem_url": "https://storage.dlsolucoescondominiais.com.br/posts/post_energia_solar_001.jpg",
+    "hashtags": "#EnergiasSolar #Condominio #DLSolucoes #EconomiaDeEnergia #RioDeJaneiro",
+    "approved": true,
+    "aprovado_por": "020_KILLCRITIC",
+    "timestamp_aprovacao": "2026-05-22T23:00:00.000Z"
+  }
+}

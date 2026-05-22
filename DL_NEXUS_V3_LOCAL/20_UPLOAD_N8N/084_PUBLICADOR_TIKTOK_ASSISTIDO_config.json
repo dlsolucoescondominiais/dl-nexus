@@ -1,0 +1,376 @@
+{
+  "name": "084_PUBLICADOR_TIKTOK_ASSISTIDO",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tiktok-assistido-dl-nexus",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook_trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [0, 0],
+      "webhookId": "084-tiktok-assistido-dl-nexus"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.body.approved }}",
+              "operation": "equal",
+              "value2": "true"
+            }
+          ]
+        }
+      },
+      "id": "if_approved",
+      "name": "IF: approved=true",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [240, 0]
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "={{ '⛔ [084] Requisição bloqueada: campo approved não é true.\\nPayload recebido: ' + JSON.stringify($json.body) }}",
+        "additionalFields": {}
+      },
+      "id": "telegram_nao_aprovado",
+      "name": "Telegram: Não Aprovado",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [480, 200],
+      "credentials": {
+        "telegramApi": {
+          "id": "Conta do Telegram",
+          "name": "Conta do Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─────────────────────────────────────────────\n// KILLCRITIC 084 - TikTok Assistido DL Nexus V3\n// Valida termos proibidos e presença do CTA obrigatório\n// ─────────────────────────────────────────────\nconst payload = $json.body || {};\nconst texto = JSON.stringify(payload).toLowerCase();\n\nconst termos_proibidos = [\n  'visita técnica', 'visita tecnica',\n  'garantia vitalícia', 'garantia vitalicia',\n  'engenheiro diogo', 'preço final', 'preco final',\n  'preço fechado', 'preco fechado',\n  'canaleta plástica', 'canaleta plastica',\n  'hidráulica pura', 'hidraulica pura',\n  'preço fechado automático', 'preco fechado automatico'\n];\n\nconst termos_obrigatorios = [\n  'avaliação técnica', 'avaliacao tecnica',\n  'tecnólogo', 'tecnologo'\n];\n\nconst violacoes = termos_proibidos.filter(t => texto.includes(t));\nconst possui_obrigatorio = termos_obrigatorios.some(t => texto.includes(t));\n\nlet status_killcritic = 'APROVADO';\nlet motivo = 'Nenhuma violação detectada.';\n\nif (violacoes.length > 0) {\n  status_killcritic = 'REPROVADO_TERMOS_PROIBIDOS';\n  motivo = 'Termos proibidos encontrados: ' + violacoes.join(', ');\n}\n\nif (!possui_obrigatorio) {\n  status_killcritic = 'REPROVADO_SEM_CTA_OBRIGATORIO';\n  motivo = (motivo === 'Nenhuma violação detectada.'\n    ? ''\n    : motivo + ' | ') + 'CTA obrigatório ausente (avaliação técnica / tecnólogo).';\n}\n\nreturn {\n  json: {\n    ...payload,\n    status_killcritic,\n    killcritic_violacoes: violacoes,\n    killcritic_motivo: motivo,\n    killcritic_timestamp: new Date().toISOString()\n  }\n};"
+      },
+      "id": "code_killcritic",
+      "name": "Code KILLCRITIC",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.status_killcritic }}",
+              "operation": "equal",
+              "value2": "APROVADO"
+            }
+          ]
+        }
+      },
+      "id": "if_killcritic",
+      "name": "IF: KILLCRITIC aprovado",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [720, 0]
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "={{ '🚫 [KILLCRITIC 084] Pacote TikTok BLOQUEADO.\\n\\nMotivo: ' + $json.killcritic_motivo + '\\nViolações: ' + ($json.killcritic_violacoes.length > 0 ? $json.killcritic_violacoes.join(', ') : 'Nenhuma') + '\\nTimestamp: ' + $json.killcritic_timestamp }}",
+        "additionalFields": {}
+      },
+      "id": "telegram_killcritic_bloqueado",
+      "name": "Telegram: KILLCRITIC Bloqueado",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [960, 200],
+      "credentials": {
+        "telegramApi": {
+          "id": "Conta do Telegram",
+          "name": "Conta do Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ─────────────────────────────────────────────\n// Code: Gerar Pacote TikTok - DL Nexus V3\n// Gera roteiro, legenda e hashtags para postagem MANUAL\n// ─────────────────────────────────────────────\nconst tema = $json.tema || 'N/A';\nconst produto = $json.produto || 'N/A';\nconst legenda = $json.texto || '';\n\nconst roteiro = '🎬 ROTEIRO TIKTOK DL SOLUÇÕES\\n\\n[0-3s] Hook: Mostre o problema do condomínio\\n[3-10s] Apresente a solução: ' + produto + '\\n[10-25s] Demonstre o resultado da Avaliação Técnica\\n[25-30s] CTA: Fale com o Tecnólogo Responsável';\n\nconst hashtags = '#DLSolucoes #Condominio #Sindico #AvaliacaoTecnica #EngenhariaCondominal #RiodeJaneiro';\n\nreturn {\n  json: {\n    roteiro,\n    legenda_sugerida: legenda,\n    hashtags,\n    tema,\n    produto,\n    instrucao: 'Grave o vídeo seguindo o roteiro acima e poste manualmente no TikTok com a legenda e hashtags fornecidas.',\n    pacote_gerado_em: new Date().toISOString(),\n    workflow: '084_PUBLICADOR_TIKTOK_ASSISTIDO',\n    status_killcritic: $json.status_killcritic\n  }\n};"
+      },
+      "id": "code_gerar_pacote",
+      "name": "Code: Gerar Pacote TikTok",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [960, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "tiktok_pacote_roteiro",
+              "name": "tiktok_pacote.roteiro",
+              "value": "={{ $json.roteiro }}",
+              "type": "string"
+            },
+            {
+              "id": "tiktok_pacote_legenda",
+              "name": "tiktok_pacote.legenda_sugerida",
+              "value": "={{ $json.legenda_sugerida }}",
+              "type": "string"
+            },
+            {
+              "id": "tiktok_pacote_hashtags",
+              "name": "tiktok_pacote.hashtags",
+              "value": "={{ $json.hashtags }}",
+              "type": "string"
+            },
+            {
+              "id": "tiktok_pacote_tema",
+              "name": "tiktok_pacote.tema",
+              "value": "={{ $json.tema }}",
+              "type": "string"
+            },
+            {
+              "id": "tiktok_pacote_produto",
+              "name": "tiktok_pacote.produto",
+              "value": "={{ $json.produto }}",
+              "type": "string"
+            },
+            {
+              "id": "tiktok_pacote_instrucao",
+              "name": "tiktok_pacote.instrucao",
+              "value": "={{ $json.instrucao }}",
+              "type": "string"
+            },
+            {
+              "id": "tiktok_pacote_gerado_em",
+              "name": "tiktok_pacote.pacote_gerado_em",
+              "value": "={{ $json.pacote_gerado_em }}",
+              "type": "string"
+            },
+            {
+              "id": "tiktok_pacote_workflow",
+              "name": "tiktok_pacote.workflow",
+              "value": "={{ $json.workflow }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set_tiktok_pacote",
+      "name": "Set: salvar tiktok_pacote",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1200, 0]
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "={{ '📦 [084] PACOTE TIKTOK GERADO - DL SOLUÇÕES\\n\\n📌 Tema: ' + $json['tiktok_pacote.tema'] + '\\n🛠️ Produto: ' + $json['tiktok_pacote.produto'] + '\\n\\n🎬 ROTEIRO:\\n' + $json['tiktok_pacote.roteiro'] + '\\n\\n✍️ LEGENDA SUGERIDA:\\n' + $json['tiktok_pacote.legenda_sugerida'] + '\\n\\n🏷️ HASHTAGS:\\n' + $json['tiktok_pacote.hashtags'] + '\\n\\n📋 INSTRUÇÃO:\\n' + $json['tiktok_pacote.instrucao'] + '\\n\\n⏰ Gerado em: ' + $json['tiktok_pacote.pacote_gerado_em'] + '\\n\\n⚠️ Este workflow NÃO publica automaticamente. Siga o roteiro e poste manualmente no TikTok.' }}",
+        "additionalFields": {}
+      },
+      "id": "telegram_enviar_pacote",
+      "name": "Telegram: Enviar Pacote TikTok",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [1440, 0],
+      "credentials": {
+        "telegramApi": {
+          "id": "Conta do Telegram",
+          "name": "Conta do Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'PACOTE_TIKTOK_GERADO', workflow: '084_PUBLICADOR_TIKTOK_ASSISTIDO', tema: $('Set: salvar tiktok_pacote').item.json['tiktok_pacote.tema'], produto: $('Set: salvar tiktok_pacote').item.json['tiktok_pacote.produto'], gerado_em: $('Set: salvar tiktok_pacote').item.json['tiktok_pacote.pacote_gerado_em'], instrucao: 'Postagem manual obrigatória no TikTok.' }) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "respond_webhook_ok",
+      "name": "Respond: Pacote Gerado OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1680, 0]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'BLOQUEADO_KILLCRITIC', workflow: '084_PUBLICADOR_TIKTOK_ASSISTIDO', motivo: $json.killcritic_motivo, violacoes: $json.killcritic_violacoes }) }}",
+        "options": {
+          "responseCode": 422
+        }
+      },
+      "id": "respond_webhook_bloqueado",
+      "name": "Respond: KILLCRITIC Bloqueado",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1200, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'REJEITADO', workflow: '084_PUBLICADOR_TIKTOK_ASSISTIDO', motivo: 'Campo approved não é true. Requisição rejeitada.' }) }}",
+        "options": {
+          "responseCode": 403
+        }
+      },
+      "id": "respond_webhook_nao_aprovado",
+      "name": "Respond: Não Aprovado",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [720, 200]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "IF: approved=true",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: approved=true": {
+      "main": [
+        [
+          {
+            "node": "Code KILLCRITIC",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram: Não Aprovado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram: Não Aprovado": {
+      "main": [
+        [
+          {
+            "node": "Respond: Não Aprovado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code KILLCRITIC": {
+      "main": [
+        [
+          {
+            "node": "IF: KILLCRITIC aprovado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: KILLCRITIC aprovado": {
+      "main": [
+        [
+          {
+            "node": "Code: Gerar Pacote TikTok",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram: KILLCRITIC Bloqueado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram: KILLCRITIC Bloqueado": {
+      "main": [
+        [
+          {
+            "node": "Respond: KILLCRITIC Bloqueado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Gerar Pacote TikTok": {
+      "main": [
+        [
+          {
+            "node": "Set: salvar tiktok_pacote",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: salvar tiktok_pacote": {
+      "main": [
+        [
+          {
+            "node": "Telegram: Enviar Pacote TikTok",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram: Enviar Pacote TikTok": {
+      "main": [
+        [
+          {
+            "node": "Respond: Pacote Gerado OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "DL_NEXUS_V3"
+    },
+    {
+      "name": "TIKTOK"
+    },
+    {
+      "name": "ASSISTIDO"
+    },
+    {
+      "name": "KILLCRITIC"
+    },
+    {
+      "name": "MARKETING"
+    }
+  ],
+  "meta": {
+    "description": "Workflow assistido para geração de pacote TikTok (roteiro, legenda, hashtags). NÃO publica automaticamente. A postagem é sempre manual pelo operador.",
+    "version": "1.0.0",
+    "criado_em": "2026-05-22",
+    "autor": "DL Nexus V3 - Arquiteto de Automação",
+    "nota": "Sem tokens, sem API keys. CHAT_ID_AQUI é placeholder obrigatório. active=false."
+  }
+}

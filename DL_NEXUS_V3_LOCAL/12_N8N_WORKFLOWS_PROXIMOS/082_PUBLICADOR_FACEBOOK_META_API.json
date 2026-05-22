@@ -1,0 +1,126 @@
+{
+  "name": "082_PUBLICADOR_FACEBOOK_META_API",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "publicador-facebook",
+        "options": {}
+      },
+      "id": "webhook-082",
+      "name": "Webhook In",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.body.approved }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-approved",
+      "name": "Check Approved",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const caption = $json.body.caption || '';\nconst killTerms = ['visita técnica', 'canaleta plástica', 'manutenção hidráulica pura', 'garantia vitalícia'];\nlet hasKillTerm = false;\nfor (const term of killTerms) {\n  if (caption.toLowerCase().includes(term)) {\n    hasKillTerm = true;\n    break;\n  }\n}\nif (hasKillTerm) {\n  throw new Error('Conteúdo contém termos proibidos pelo KILLCRITIC');\n}\nreturn [{ json: $json.body }];"
+      },
+      "id": "code-killcritic",
+      "name": "KILLCRITIC Check",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.image_url ? 'https://graph.facebook.com/v20.0/' + $json.page_id + '/photos' : 'https://graph.facebook.com/v20.0/' + $json.page_id + '/feed' }}",
+        "method": "POST",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "={{$json.caption}}"
+            },
+            {
+              "name": "url",
+              "value": "={{$json.image_url || ''}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-fb-publish",
+      "name": "Publish to Facebook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        700,
+        280
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook In": {
+      "main": [
+        [
+          {
+            "node": "Check Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Approved": {
+      "main": [
+        [
+          {
+            "node": "KILLCRITIC Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KILLCRITIC Check": {
+      "main": [
+        [
+          {
+            "node": "Publish to Facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "v1",
+  "id": "workflow-082-publicador-facebook-nexus-v3",
+  "tags": []
+}

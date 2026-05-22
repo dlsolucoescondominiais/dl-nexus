@@ -1,0 +1,254 @@
+{
+  "name": "085_SOCIAL_DISPATCHER_DL_NEXUS",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "social-dispatcher",
+        "options": {}
+      },
+      "id": "webhook-085",
+      "name": "Webhook In",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.body.approved }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-approved",
+      "name": "Check Global Approval",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "chooseBranch",
+        "output": "={{ $json.body.platforms || ['TELEGRAM'] }}"
+      },
+      "id": "switch-platforms",
+      "name": "Switch Platforms",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        500,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://n8n:5678/webhook/publicador-instagram",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "approved",
+              "value": true
+            },
+            {
+              "name": "image_url",
+              "value": "={{ $json.body.image_url }}"
+            },
+            {
+              "name": "caption",
+              "value": "={{ $json.body.caption }}"
+            },
+            {
+              "name": "instagram_account_id",
+              "value": "={{ $json.body.instagram_account_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-dispatch-ig",
+      "name": "Dispatch Instagram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        700,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://n8n:5678/webhook/publicador-facebook",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "approved",
+              "value": true
+            },
+            {
+              "name": "image_url",
+              "value": "={{ $json.body.image_url }}"
+            },
+            {
+              "name": "caption",
+              "value": "={{ $json.body.caption }}"
+            },
+            {
+              "name": "page_id",
+              "value": "={{ $json.body.page_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-dispatch-fb",
+      "name": "Dispatch Facebook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        700,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://n8n:5678/webhook/publicador-google-business",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "approved",
+              "value": true
+            },
+            {
+              "name": "summary",
+              "value": "={{ $json.body.caption }}"
+            },
+            {
+              "name": "google_account_id",
+              "value": "={{ $json.body.google_account_id }}"
+            },
+            {
+              "name": "google_location_id",
+              "value": "={{ $json.body.google_location_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-dispatch-gmb",
+      "name": "Dispatch Google Business",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        700,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://n8n:5678/webhook/publicador-tiktok-assistido",
+        "method": "POST",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "approved",
+              "value": true
+            },
+            {
+              "name": "base_content",
+              "value": "={{ $json.body.caption }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-dispatch-tiktok",
+      "name": "Dispatch TikTok",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        700,
+        640
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook In": {
+      "main": [
+        [
+          {
+            "node": "Check Global Approval",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Global Approval": {
+      "main": [
+        [
+          {
+            "node": "Switch Platforms",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Platforms": {
+      "main": [
+        [
+          {
+            "node": "Dispatch Instagram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Dispatch Facebook",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Dispatch Google Business",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Dispatch TikTok",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "v1",
+  "id": "workflow-085-social-dispatcher-nexus-v3",
+  "tags": []
+}

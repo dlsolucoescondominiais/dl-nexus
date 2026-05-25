@@ -1,0 +1,3 @@
+## 2026-05-25 - Loop Fusion Optimization in `get_leads_summary`
+**Learning:** Found multiple iterations (4 in total: 2 sum comprehensions and 2 sequential loops) over the same data set (`all_leads`) within `SupabaseClient.get_leads_summary`. This represents O(4N) overhead which is problematic given the 1,000 item limit. While Python sum comprehensions are nice visually, merging these tallies into a single pass loop reduces total loop overhead.
+**Action:** Replace sequential passes (like multiple `.count()` or list comprehensions) over large datasets with a single loop that aggregates all required metrics simultaneously (loop fusion).

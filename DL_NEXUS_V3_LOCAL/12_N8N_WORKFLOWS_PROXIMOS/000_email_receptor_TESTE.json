@@ -1,0 +1,79 @@
+{
+  "name": "000_email_receptor_TESTE",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger_email",
+      "name": "Email Trigger",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "if ($json.textPlain && $json.textPlain.trim() !== '') {\n  return [{ json: { ...$json, texto_final: $json.textPlain } }];\n} else {\n  return [{ json: { ...$json, texto_final: $json.textHtml || '' } }];\n}"
+      },
+      "id": "code_normalizar",
+      "name": "NORMALIZAR_TEXTO_EMAIL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "textHtml",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "texto_limpo",
+              "cssSelector": "body",
+              "returnValue": "text"
+            }
+          ]
+        }
+      },
+      "id": "html_extract",
+      "name": "Limpar HTML para Texto Puro",
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1,
+      "position": [
+        400,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Email Trigger": {
+      "main": [
+        [
+          {
+            "node": "NORMALIZAR_TEXTO_EMAIL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NORMALIZAR_TEXTO_EMAIL": {
+      "main": [
+        [
+          {
+            "node": "Limpar HTML para Texto Puro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": "2ea22837-804e-4200-afc0-789f3d0b8eb9"
+}

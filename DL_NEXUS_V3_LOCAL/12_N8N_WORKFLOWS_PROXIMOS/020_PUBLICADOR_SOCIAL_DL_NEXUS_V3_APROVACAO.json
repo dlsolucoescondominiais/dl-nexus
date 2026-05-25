@@ -129,8 +129,50 @@
     {
       "parameters": {
         "chatId": "CHAT_ID_AQUI",
-        "text": "={{ 'NOVO POST PARA APROVAÇÃO (DL Nexus V3)\\n\\nTema: ' + $('Entrada do Post').item.json.tema + '\\nProduto: ' + $('Entrada do Post').item.json.produto + '\\n\\nLegenda FB:\\n' + $json.legenda_facebook + '\\n\\nLegenda IG:\\n' + $json.legenda_instagram + '\\n\\nTexto Telegram:\\n' + $json.texto_telegram + '\\n\\nStatus KILLCRITIC: ' + $json.status_killcritic + '\\n\\n⚠️ Aprovação manual obrigatória antes de publicar.\\nAcesse o endpoint para aprovar: /webhook/aprovar-post-dl-nexus-v3' }}",
-        "additionalFields": {}
+        "text": "={{ '📌 DL Nexus — Prévia de Post\\n\\nTema:\\n' + $('Entrada do Post').item.json.tema + '\\n\\nCanal sugerido:\\n' + ($('Entrada do Post').item.json.canal_destino || 'Multicanal') + '\\n\\nProduto/Solução:\\n' + $('Entrada do Post').item.json.produto + '\\n\\nTítulo:\\n' + ($json.titulo || 'Novo Post') + '\\n\\nLegenda:\\n' + ($json.legenda_instagram || $json.legenda_facebook || $json.texto_telegram) + '\\n\\nCTA principal:\\nhttps://dlsolucoescondominiais.com\\n\\nCTA secundário:\\nhttps://wa.me/5521964742458\\n\\nStatus:\\nAguardando aprovação.\\n\\nAções:\\n✅ Aprovar\\n✏️ Revisar\\n❌ Reprovar\\n📌 Enviar para fila' }}",
+        "additionalFields": {
+          "replyMarkup": "inlineKeyboard",
+          "inlineKeyboard": {
+            "rows": [
+              {
+                "row": {
+                  "buttons": [
+                    {
+                      "text": "✅ Aprovar",
+                      "additionalFields": {
+                        "callback_data": "APROVAR 020"
+                      }
+                    },
+                    {
+                      "text": "✏️ Revisar",
+                      "additionalFields": {
+                        "callback_data": "REVISAR 020"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "row": {
+                  "buttons": [
+                    {
+                      "text": "❌ Reprovar",
+                      "additionalFields": {
+                        "callback_data": "REPROVAR 020"
+                      }
+                    },
+                    {
+                      "text": "📌 Enviar para fila",
+                      "additionalFields": {
+                        "callback_data": "FILA 020"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
       },
       "id": "telegram_previa",
       "name": "Telegram Enviar Prévia",
@@ -526,5 +568,6 @@
     {
       "name": "KILLCRITIC"
     }
-  ]
+  ],
+  "id": "fefe6d84-3b1a-43dd-9f31-946f10f739e4"
 }

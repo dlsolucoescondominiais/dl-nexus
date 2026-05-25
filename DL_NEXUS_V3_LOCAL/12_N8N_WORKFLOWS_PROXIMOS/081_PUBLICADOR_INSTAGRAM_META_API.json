@@ -13,7 +13,10 @@
       "name": "Webhook Trigger",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [200, 300],
+      "position": [
+        200,
+        300
+      ],
       "webhookId": "081-publicador-instagram-dl-nexus"
     },
     {
@@ -43,7 +46,10 @@
       "name": "IF: approved=true",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [420, 300]
+      "position": [
+        420,
+        300
+      ]
     },
     {
       "parameters": {
@@ -72,7 +78,10 @@
       "name": "IF: image_url existe",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [640, 200]
+      "position": [
+        640,
+        200
+      ]
     },
     {
       "parameters": {
@@ -82,7 +91,10 @@
       "name": "Code KILLCRITIC",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [860, 200]
+      "position": [
+        860,
+        200
+      ]
     },
     {
       "parameters": {
@@ -111,7 +123,10 @@
       "name": "IF: KILLCRITIC APROVADO",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [1080, 200]
+      "position": [
+        1080,
+        200
+      ]
     },
     {
       "parameters": {
@@ -148,7 +163,10 @@
       "name": "HTTP: Criar Container de Mídia",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1300, 100],
+      "position": [
+        1300,
+        100
+      ],
       "credentials": {
         "facebookGraphApi": {
           "id": "cred-facebook-graph",
@@ -183,7 +201,10 @@
       "name": "HTTP: Publicar no Instagram",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1520, 100],
+      "position": [
+        1520,
+        100
+      ],
       "credentials": {
         "facebookGraphApi": {
           "id": "cred-facebook-graph",
@@ -203,7 +224,10 @@
       "name": "Telegram: Confirmação de Publicação",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [1740, 100],
+      "position": [
+        1740,
+        100
+      ],
       "credentials": {
         "telegramApi": {
           "id": "cred-telegram",
@@ -223,7 +247,10 @@
       "name": "Telegram: Alerta KILLCRITIC Bloqueado",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [1300, 340],
+      "position": [
+        1300,
+        340
+      ],
       "credentials": {
         "telegramApi": {
           "id": "cred-telegram",
@@ -243,7 +270,10 @@
       "name": "Telegram: Alerta Não Aprovado",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [640, 460],
+      "position": [
+        640,
+        460
+      ],
       "credentials": {
         "telegramApi": {
           "id": "cred-telegram",
@@ -263,7 +293,10 @@
       "name": "Telegram: Alerta Sem Imagem",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [860, 400],
+      "position": [
+        860,
+        400
+      ],
       "credentials": {
         "telegramApi": {
           "id": "cred-telegram",
@@ -281,7 +314,10 @@
       "name": "Response: Sucesso",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [1960, 100]
+      "position": [
+        1960,
+        100
+      ]
     },
     {
       "parameters": {
@@ -295,7 +331,10 @@
       "name": "Response: Bloqueado",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [1520, 400]
+      "position": [
+        1520,
+        400
+      ]
     },
     {
       "parameters": {
@@ -305,7 +344,10 @@
       "name": "Error Trigger",
       "type": "n8n-nodes-base.errorTrigger",
       "typeVersion": 1,
-      "position": [200, 560]
+      "position": [
+        200,
+        560
+      ]
     },
     {
       "parameters": {
@@ -319,7 +361,10 @@
       "name": "Telegram: Erro Crítico",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [420, 560],
+      "position": [
+        420,
+        560
+      ],
       "credentials": {
         "telegramApi": {
           "id": "cred-telegram",
@@ -522,5 +567,6 @@
       "id": "tag-killcritic",
       "name": "killcritic"
     }
-  ]
+  ],
+  "id": "e25620e0-440b-469f-b72d-b84cb6b5aecc"
 }

@@ -1,0 +1,45 @@
+{
+  "name": "091_SENTINELA_AUDITORIA_N8N_DL_NEXUS",
+  "id": "sentinelaAuditoriaN8nDlNexus091",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "/* Sentinela Auditoria: diagnosticar credenciais, execuções e sub-workflows */\nreturn items;"
+      },
+      "id": "2",
+      "name": "Auditoria N8N",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Auditoria N8N",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {"name": "Sentinela"},
+    {"name": "Auditoria"}
+  ]
+}

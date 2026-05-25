@@ -1,0 +1,46 @@
+{
+  "name": "092_MESA_APROVACAO_TELEGRAM_ANINHA",
+  "id": "mesaAprovacaoTelegramAninha092",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "/* Receber comandos de aprovação: APROVAR 020, REVISAR 020, etc. */\nreturn items;"
+      },
+      "id": "2",
+      "name": "Processar Comando",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Processar Comando",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {"name": "Aninha"},
+    {"name": "Telegram"},
+    {"name": "Aprovação"}
+  ]
+}

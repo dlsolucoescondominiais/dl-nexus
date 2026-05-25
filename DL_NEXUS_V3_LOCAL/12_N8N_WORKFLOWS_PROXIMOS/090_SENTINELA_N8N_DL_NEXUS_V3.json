@@ -1,0 +1,60 @@
+{
+  "name": "090_SENTINELA_N8N_DL_NEXUS_V3",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger_90",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "table": {
+          "__rl": true,
+          "value": "dl_nexus_monitoramento_n8n",
+          "mode": "name"
+        },
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "name"
+        },
+        "columns": "workflow_nome, workflow_id, execucao_id, status, severidade, falha_critica, titulo, resumo, acao_recomendada, origem, agente, payload",
+        "options": {}
+      },
+      "id": "supabase_insert",
+      "name": "Supabase Registra Monitoramento (TEMPORARIAMENTE DESATIVADO)",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        200,
+        0
+      ],
+      "disabled": true,
+      "notesInFlow": true,
+      "notes": "Desativado temporariamente devido à falta de credencial Supabase. SQL para criar tabela: create table if not exists public.dl_nexus_monitoramento_n8n ( id uuid primary key default gen_random_uuid(), created_at timestamptz not null default now(), workflow_nome text, workflow_id text, execucao_id text, status text, severidade text, falha_critica boolean default false, titulo text, resumo text, acao_recomendada text, origem text default 'n8n', agente text default 'Sentinela', payload jsonb );"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Supabase Registra Monitoramento (TEMPORARIAMENTE DESATIVADO)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": "e71d32bb-847f-416e-b680-a7327eb7f064"
+}

@@ -1,0 +1,77 @@
+{
+  "name": "140_ZELADOR_MIDIAS_GOOGLE_DRIVE",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger_140",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "MODO_EXECUCAO",
+              "value": "DRY_RUN"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set_dry_run",
+      "name": "Config DRY RUN",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        200,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// MOCK Lógica de Listagem (Sem apagar, renomear ou mover)\nreturn [{ json: {\n  status: 'DRY_RUN',\n  arquivos_listados: 5,\n  acoes_tomadas: ['listar arquivos', 'classificar', 'sugerir destino', 'sugerir novo nome', 'apontar risco de privacidade', 'gerar relatório'],\n  acoes_bloqueadas: ['mover arquivo', 'renomear arquivo', 'apagar arquivo', 'publicar conteúdo', 'enviar WhatsApp']\n}}];"
+      },
+      "id": "code_dry_run_logic",
+      "name": "Logica Zelador DRY RUN",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Config DRY RUN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Config DRY RUN": {
+      "main": [
+        [
+          {
+            "node": "Logica Zelador DRY RUN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "id": "176058d8-5273-4040-a250-889d96cf79b2"
+}

@@ -13,7 +13,10 @@
       "name": "Webhook - Dispatcher Social",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [240, 300],
+      "position": [
+        240,
+        300
+      ],
       "webhookId": "085-social-dispatcher-dl-nexus"
     },
     {
@@ -44,7 +47,10 @@
       "name": "IF: approved=true",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [480, 300]
+      "position": [
+        480,
+        300
+      ]
     },
     {
       "parameters": {
@@ -55,7 +61,10 @@
       "name": "Code: Validar Payload",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [720, 180]
+      "position": [
+        720,
+        180
+      ]
     },
     {
       "parameters": {
@@ -89,7 +98,10 @@
       "name": "HTTP: Dispatch → Instagram (081)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1000, 60]
+      "position": [
+        1000,
+        60
+      ]
     },
     {
       "parameters": {
@@ -123,7 +135,10 @@
       "name": "HTTP: Dispatch → Facebook (082)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1000, 200]
+      "position": [
+        1000,
+        200
+      ]
     },
     {
       "parameters": {
@@ -157,7 +172,10 @@
       "name": "HTTP: Dispatch → Google Business (083)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1000, 340]
+      "position": [
+        1000,
+        340
+      ]
     },
     {
       "parameters": {
@@ -191,7 +209,10 @@
       "name": "HTTP: Dispatch → TikTok Assistido (084)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1000, 480]
+      "position": [
+        1000,
+        480
+      ]
     },
     {
       "parameters": {
@@ -202,7 +223,10 @@
       "name": "Code: Agregar Resultados",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1260, 270]
+      "position": [
+        1260,
+        270
+      ]
     },
     {
       "parameters": {
@@ -217,7 +241,10 @@
       "name": "Telegram: Confirmação Dispatch",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [1500, 270],
+      "position": [
+        1500,
+        270
+      ],
       "credentials": {
         "telegramApi": {
           "id": "cred-telegram-dl",
@@ -238,7 +265,10 @@
       "name": "Telegram: Alerta Não Aprovado",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [720, 460],
+      "position": [
+        720,
+        460
+      ],
       "credentials": {
         "telegramApi": {
           "id": "cred-telegram-dl",
@@ -254,7 +284,10 @@
       "name": "Error Trigger",
       "type": "n8n-nodes-base.errorTrigger",
       "typeVersion": 1,
-      "position": [240, 540]
+      "position": [
+        240,
+        540
+      ]
     },
     {
       "parameters": {
@@ -269,7 +302,10 @@
       "name": "Telegram: Alerta Erro Crítico",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [480, 540],
+      "position": [
+        480,
+        540
+      ],
       "credentials": {
         "telegramApi": {
           "id": "cred-telegram-dl",
@@ -431,5 +467,6 @@
   ],
   "triggerCount": 0,
   "updatedAt": "2026-05-22T23:00:00.000Z",
-  "versionId": "085-v1.0.0-dl-nexus"
+  "versionId": "085-v1.0.0-dl-nexus",
+  "id": "6d9c3b2c-9c74-4870-92f8-3b8871badc8a"
 }

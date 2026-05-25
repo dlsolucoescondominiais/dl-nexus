@@ -1,0 +1,21 @@
+{
+  "canais": ["Instagram", "Facebook", "Google Meu Negócio", "TikTok assistido"],
+  "regras_publicacao": {
+    "auto_publish": false,
+    "fase_atual": "Gerar conteúdo pronto e status AGUARDANDO_APROVACAO"
+  },
+  "ctas": {
+    "principal": "https://dlsolucoescondominiais.com",
+    "secundario": "https://wa.me/5521964742458"
+  },
+  "restricoes_revisor_ia": [
+    "bloquear visita técnica, trocar por Avaliação Técnica",
+    "bloquear promessa exagerada",
+    "bloquear notícia sem fonte",
+    "bloquear tom sensacionalista",
+    "bloquear imagem sensível",
+    "bloquear CTA errado",
+    "garantir foco B2B",
+    "garantir CTA para site"
+  ]
+}

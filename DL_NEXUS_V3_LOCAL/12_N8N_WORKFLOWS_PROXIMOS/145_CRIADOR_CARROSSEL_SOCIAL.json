@@ -1,0 +1,41 @@
+{
+  "name": "145_CRIADOR_CARROSSEL_SOCIAL",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Estrutura do Carrossel (Gancho, Problema, Risco, Solução, Produto, CTA)\nreturn items;"
+      },
+      "id": "2",
+      "name": "Gerar Carrossel",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Gerar Carrossel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [{"name": "Social Media"}, {"name": "Carrossel"}]
+}

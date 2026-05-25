@@ -1,0 +1,123 @@
+{
+  "name": "135 Relatorio Comercial Diario DL Nexus",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 18 * * *"
+            }
+          ]
+        }
+      },
+      "id": "b3e3fc00-de4e-4b7f-8c34-eb1f4c759c23",
+      "name": "Cron às 18h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "leads_prospeccao_dl",
+        "limit": 1000
+      },
+      "id": "e4f5fc00-de4e-4b7f-8c34-eb1f4c759c24",
+      "name": "Ler tabela leads_prospeccao_dl",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        200,
+        0
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUPABASE_CRED_ID_AQUI",
+          "name": "Supabase API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extrai leads do Supabase\nconst leads = $input.all().map(item => item.json);\n\n// Filtra leads de hoje (simulado ou baseado na data de criacao)\nconst hoje = new Date().toISOString().split('T')[0];\nconst novos = leads.filter(l => l.data_criacao && l.data_criacao.startsWith(hoje)).length;\n\n// Metricas gerais\nconst aprovados = leads.filter(l => l.status === 'aprovado').length;\nconst pendentes = leads.filter(l => l.status === 'pendente' || l.status === 'em_negociacao').length;\n\n// Bairros\nconst bairros = {};\nleads.forEach(l => {\n  if(l.bairro) {\n    bairros[l.bairro] = (bairros[l.bairro] || 0) + 1;\n  }\n});\nconst topBairros = Object.entries(bairros).sort((a,b) => b[1] - a[1]).slice(0,3).map(b => b[0]).join(', ') || 'N/A';\n\n// Gargalos\nlet gargalos = 'Sem gargalos identificados.';\nif (pendentes > 15) {\n  gargalos = 'Alto numero de leads pendentes no funil. Necessario follow-up intenso.';\n} else if (aprovados === 0 && novos > 10) {\n  gargalos = 'Baixa conversao de novos leads. Revisar abordagens de Avaliação Técnica.';\n}\n\n// Monta o resumo para a Diretoria (Diogo/Raphael)\nconst mensagem = `📊 *Relatório Comercial Diário - DL Nexus*\\n\\n📈 *Métricas:*\\n- Novos Leads (Hoje): ${novos}\\n- Propostas Aprovadas: ${aprovados}\\n- Leads Pendentes: ${pendentes}\\n\\n📍 *Melhores Bairros (Volume):*\\n- ${topBairros}\\n\\n⚠️ *Análise de Gargalos:*\\n- ${gargalos}\\n\\n_A Avaliação Técnica para leads avançados deve ser avaliada pelo Tecnólogo Responsável._`;\n\nreturn [{ json: { mensagem } }];"
+      },
+      "id": "e5f5fc00-de4e-4b7f-8c34-eb1f4c759c25",
+      "name": "Agregar Métricas",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "={{ $json.mensagem }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "e6f5fc00-de4e-4b7f-8c34-eb1f4c759c26",
+      "name": "Enviar Resumo (Telegram)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        600,
+        0
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TELEGRAM_CRED_ID_AQUI",
+          "name": "Conta do Telegram"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Cron às 18h": {
+      "main": [
+        [
+          {
+            "node": "Ler tabela leads_prospeccao_dl",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler tabela leads_prospeccao_dl": {
+      "main": [
+        [
+          {
+            "node": "Agregar Métricas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agregar Métricas": {
+      "main": [
+        [
+          {
+            "node": "Enviar Resumo (Telegram)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "relatorioComercialDiario135DlNexus20260523",
+  "tags": []
+}

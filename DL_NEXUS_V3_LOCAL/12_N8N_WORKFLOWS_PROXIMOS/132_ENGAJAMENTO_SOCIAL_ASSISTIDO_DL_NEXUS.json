@@ -1,0 +1,57 @@
+{
+  "name": "132_ENGAJAMENTO_SOCIAL_ASSISTIDO_DL_NEXUS",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-nexus-engajamento-assistido-132",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputData = $input.item.json.body || $input.item.json;\nconst leadId = inputData.lead_id || 'LEAD_PLACEHOLDER';\nconst canal = inputData.canal || 'LinkedIn';\n\nconst promptIA = `Você é um especialista em prospecção B2B focado em condomínios.\\nObjetivo: Sugerir um comentário autêntico ou DM (sem vender diretamente) que agregue valor ao síndico.\\nNunca use 'visita técnica', use sempre 'Avaliação Técnica'.\\nNunca use 'Engenheiro Diogo', use sempre 'Tecnólogo Responsável'.\\nAnalise o contexto: ${JSON.stringify(inputData.contexto || 'Sem contexto adicional')}`;\n\nreturn {\n  lead_id: leadId,\n  canal_sugerido: canal,\n  acao_sugerida: 'Comentar Post',\n  comentario_sugerido: 'Excelente ponto sobre manutenção predial! A automação e CFTV integrados trazem muito mais tranquilidade para a gestão.',\n  mensagem_sugerida: 'Olá! Acompanho sua gestão e notei a preocupação com eficiência. Gostaria de sugerir uma Avaliação Técnica rápida com nosso Tecnólogo Responsável, focada em otimizar a segurança e energia do condomínio.',\n  risco_spam: 'baixo',\n  precisa_aprovacao_humana: true\n};"
+      },
+      "id": "2",
+      "name": "Analisador de IA - Sugestao e Risco",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        450,
+        300
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Analisador de IA - Sugestao e Risco",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e3a89e92-332d-45f8-a1c1-bf3214b986cc",
+  "id": "engajamentoAssistido132DlNexus20260523",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}

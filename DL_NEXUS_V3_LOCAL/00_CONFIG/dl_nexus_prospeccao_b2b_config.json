@@ -1,0 +1,98 @@
+{
+  "esteira_prospeccao": {
+    "versao": "3.0",
+    "foco": "b2b_rio_de_janeiro",
+    "objetivo_comercial": "conversao_pequenos_medios_negocios",
+    "responsavel_tecnico": "Diogo Luiz de Oliveira"
+  },
+  "score_metricas": {
+    "perfil_base": {
+      "condominio_pequeno_medio": 20,
+      "escola_colegio_particular": 20,
+      "restaurante_lanchonete_hamburgueria": 20
+    },
+    "presenca_digital": {
+      "instagram_ou_facebook_ativo": 10,
+      "site_ruim_ou_desatualizado": 10,
+      "telefone_email_publicos": 10
+    },
+    "dor_qualificada": {
+      "seguranca_acesso_energia": 20
+    },
+    "regiao_prioritaria_rj": {
+      "Barra da Tijuca": 10,
+      "Recreio dos Bandeirantes": 10,
+      "Jacarepagua": 10,
+      "Freguesia": 10,
+      "Zona Sul": 10,
+      "Centro": 10
+    }
+  },
+  "produtos_mapeados": {
+    "condominio": [
+      "DL Guardião",
+      "DL Fortress",
+      "Gatekeeper",
+      "DL Acqua",
+      "DL Partner",
+      "DL Volt",
+      "Energia Solar",
+      "Automacao de portoes",
+      "Seguranca Eletronica"
+    ],
+    "escola": [
+      "Controle de Acesso",
+      "CFTV",
+      "Prevencao de Incendio",
+      "Eletrica",
+      "DL Partner"
+    ],
+    "restaurante_lanchonete": [
+      "Suporte Mult-Grill",
+      "Chapa",
+      "Fritadeira",
+      "Eletrica",
+      "Manutencao Preventiva"
+    ]
+  },
+  "regras_comunicacao": {
+    "spam": false,
+    "mensagem_massa_automatica": false,
+    "dm_fria_automatica": false,
+    "whatsapp_frio_automatico": false,
+    "promessa_preco_final": false,
+    "termos_proibidos": [
+      "visita técnica",
+      "engenheiro diogo",
+      "preço final",
+      "garantia vitalícia",
+      "canaleta plástica"
+    ],
+    "termos_obrigatorios": {
+      "visita": "Avaliação Técnica",
+      "cargo": "Tecnólogo responsável"
+    }
+  },
+  "workflows_agregados": [
+    "130_MANUS_PROSPECCAO_B2B_RJ",
+    "131_SCORING_LEADS_DL_NEXUS",
+    "132_ENGAJAMENTO_SOCIAL_ASSISTIDO_DL_NEXUS",
+    "133_APROVACAO_PROSPECCAO_TELEGRAM",
+    "134_POST_GOOGLE_BUSINESS_DL_NEXUS",
+    "135_RELATORIO_COMERCIAL_DIARIO_DL_NEXUS"
+  ],
+  "banco_de_dados": {
+    "supabase_tabela_alvo": "leads_prospeccao_dl",
+    "status_ciclo_vida": [
+      "novo",
+      "aprovado",
+      "reprovado",
+      "contato_preparado",
+      "contato_realizado",
+      "respondeu",
+      "proposta",
+      "ganho",
+      "perdido"
+    ]
+  }
+}

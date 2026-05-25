@@ -1,0 +1,140 @@
+{
+  "name": "134_POST_GOOGLE_BUSINESS_DL_NEXUS",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "dl-nexus-post-google",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook Recebe Pedido",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [0, 0],
+      "webhookId": "webhookPostGoogleBusiness134DlNexus20260523"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.body.aprovado }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "IF Aprovado",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [200, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "const baseText = 'A DL Soluções Condominiais é especialista em modernização para o seu condomínio!\\n\\nDescubra nossos principais produtos:\\n🛡️ DL Guardião: Segurança inteligente e controle de acesso.\\n💧 DL Acqua: Gestão de recursos hídricos e automação de bombas.\\n\\nAgende hoje mesmo uma Avaliação Técnica com nosso Responsável Técnico.\\n\\nSaiba mais: dlsolucoescondominiais.com\\nAvalie-nos no Google: share.google/NGEzAoHXg890EjyiR';\n\nreturn [{\n  json: {\n    postContent: baseText,\n    locationId: 'LOCATION_ID_AQUI'\n  }\n}];"
+      },
+      "name": "Gera Texto Produtos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [400, -100]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://mybusiness.googleapis.com/v4/accounts/ACCOUNT_ID_AQUI/locations/={{ $json.locationId }}/localPosts",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "languageCode",
+              "value": "pt-BR"
+            },
+            {
+              "name": "summary",
+              "value": "={{ $json.postContent }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Publicar no Google Business",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [600, -100],
+      "credentials": {
+        "googleApi": {
+          "id": "OAuth2 Google Business Profile",
+          "name": "OAuth2 Google Business Profile"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "=Postagem no Google Business realizada com sucesso!\n\nConteúdo:\n{{ $json.postContent }}",
+        "additionalFields": {}
+      },
+      "name": "Telegram Confirmacao",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [800, -100],
+      "credentials": {
+        "telegramApi": {
+          "id": "Conta do Telegram",
+          "name": "Conta do Telegram"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Recebe Pedido": {
+      "main": [
+        [
+          {
+            "node": "IF Aprovado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Aprovado": {
+      "main": [
+        [
+          {
+            "node": "Gera Texto Produtos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gera Texto Produtos": {
+      "main": [
+        [
+          {
+            "node": "Publicar no Google Business",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publicar no Google Business": {
+      "main": [
+        [
+          {
+            "node": "Telegram Confirmacao",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "postGoogleBusiness134DlNexus20260523"
+}

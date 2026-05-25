@@ -1,0 +1,50 @@
+{
+  "pastas_origem": [
+    "00_INBOX_SMARTPHONE",
+    "01. ÁUDIOS PARA PROCESSAR",
+    "03. FOTOS E VÍDEOS DE CAMPO",
+    "05. CENTRAL DE MÍDIAS E ARQUIVOS"
+  ],
+  "pastas_ignoradas": [
+    "02. CONTRATOS E ESCOPOS (A Revisar)",
+    "04. TRIAGEM E LIXEIRA"
+  ],
+  "subpastas_destino_05": [
+    "00_INVENTARIO_GERAL",
+    "01_ELETRICA_DL_VOLT",
+    "02_SOLAR_DL_ECOVOLT",
+    "03_SEGURANCA_DL_GUARDIAO",
+    "04_PORTARIA_FORTRESS",
+    "05_PORTOES_GATEKEEPER",
+    "06_AGUA_DL_ACQUA",
+    "07_PREVENCAO_INCENDIO_DL_ALERTA",
+    "08_MANUTENCAO_DL_PARTNER",
+    "09_MULTGRILL_CHAPAS_FRITADEIRAS",
+    "10_ANTES_E_DEPOIS",
+    "11_MIDIAS_PARA_CARROSSEL",
+    "12_MIDIAS_PARA_STORY",
+    "13_MIDIAS_DUVIDOSAS_REVISAR",
+    "14_NAO_USAR_PRIVACIDADE",
+    "15_PUBLICADO",
+    "16_LOGS_E_RELATORIOS"
+  ],
+  "regras_zelador": [
+    "Não apagar nada",
+    "Não sobrescrever arquivo original",
+    "Não mover arquivo sem registrar log",
+    "Não criar bagunça paralela",
+    "Usar a estrutura existente e apenas criar subpastas controladas dentro dela"
+  ],
+  "regras_privacidade": [
+    "rosto identificável",
+    "placa de veículo",
+    "endereço privado",
+    "documento",
+    "tela com dados de cliente",
+    "número de telefone",
+    "conversa",
+    "boleto",
+    "contrato",
+    "imagem sensível"
+  ]
+}

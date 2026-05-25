@@ -1,0 +1,112 @@
+{
+  "name": "133_APROVACAO_PROSPECCAO_TELEGRAM",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "aprovar-prospeccao",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "webhook-133-id",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "=*Aprovação de Prospecção*=\n\n*Lead:* {{$json.body.lead}}\n*Detalhes:* {{$json.body.detalhes}}\n\nPor favor, escolha uma ação:",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Aprovar",
+                    "callbackData": "aprovar_{{$json.body.id}}"
+                  },
+                  {
+                    "text": "Editar",
+                    "callbackData": "editar_{{$json.body.id}}"
+                  },
+                  {
+                    "text": "Reprovar",
+                    "callbackData": "reprovar_{{$json.body.id}}"
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Agendar Avaliação Técnica",
+                    "callbackData": "agendar_{{$json.body.id}}"
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Enviar para Diego",
+                    "callbackData": "diego_{{$json.body.id}}"
+                  },
+                  {
+                    "text": "Enviar para Aninha",
+                    "callbackData": "aninha_{{$json.body.id}}"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-133-id",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        450,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "Conta do Telegram",
+          "name": "Conta do Telegram"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "aprovacaoProspeccaoTelegram133DlNexus20260523",
+  "id": "aprovacaoProspeccaoTelegram133DlNexus20260523",
+  "tags": []
+}

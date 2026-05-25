@@ -1,0 +1,84 @@
+{
+  "name": "140_ZELADOR_MIDIAS_GOOGLE_DRIVE",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "folderId": "00_INBOX_SMARTPHONE_ID_AQUI"
+      },
+      "id": "2",
+      "name": "Listar Arquivos Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "/* Zelador Logic */\nreturn items;"
+      },
+      "id": "3",
+      "name": "Classificar Mídias",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "workflowId": "148_LOG_E_MEMORIA_SOCIAL"
+      },
+      "id": "4",
+      "name": "Registrar Log",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [850, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Listar Arquivos Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Listar Arquivos Drive": {
+      "main": [
+        [
+          {
+            "node": "Classificar Mídias",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classificar Mídias": {
+      "main": [
+        [
+          {
+            "node": "Registrar Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [{"name": "Zelador"}, {"name": "Drive"}]
+}

@@ -1,0 +1,73 @@
+{
+  "portfolio": [
+    {
+      "id": "dl_guardiao",
+      "nome": "DL Guardião",
+      "descricao": "Segurança eletrônica, CFTV, câmeras, monitoramento, segurança perimetral e proteção patrimonial.",
+      "tags": ["cftv", "cameras", "segurança", "monitoramento"]
+    },
+    {
+      "id": "fortress",
+      "nome": "Fortress",
+      "descricao": "Portaria autônoma e gestão de acesso.",
+      "tags": ["portaria_autonoma", "controle_de_acesso", "gestao_de_acesso"]
+    },
+    {
+      "id": "gatekeeper",
+      "nome": "Gatekeeper",
+      "descricao": "Automação de portões, abertura Bluetooth/Wi-Fi, permissões e histórico de acesso.",
+      "tags": ["automacao_portao", "abertura_bluetooth", "historico_acesso"]
+    },
+    {
+      "id": "dl_acqua",
+      "nome": "DL Acqua",
+      "descricao": "Monitoramento de cisternas, caixas d’água, bombas e automação hídrica.",
+      "tags": ["bombas_cisterna", "automacao_hidrica", "caixa_dagua"]
+    },
+    {
+      "id": "dl_volt",
+      "nome": "DL Volt",
+      "descricao": "Elétrica condominial, quadros, painéis, infraestrutura, automação elétrica e carregadores veiculares.",
+      "tags": ["eletrica_condominial", "quadros", "paineis", "infraestrutura_eletrica"]
+    },
+    {
+      "id": "dl_ecovolt",
+      "nome": "DL EcoVolt",
+      "descricao": "Energia solar on-grid, híbrida, off-grid, carport solar, backup e eficiência energética.",
+      "tags": ["solar_condominios", "solar_hibrido", "eficiencia_energetica"]
+    },
+    {
+      "id": "dl_partner",
+      "nome": "DL Partner",
+      "descricao": "Manutenção continuada e contratos recorrentes.",
+      "planos": ["Basic", "Master", "Premium"],
+      "tags": ["manutencao_continuada", "contrato_recorrente"]
+    },
+    {
+      "id": "dl_alerta",
+      "nome": "DL Alerta",
+      "descricao": "Sistemas de prevenção de incêndio, centrais, detectores, sirenes, iluminação de emergência, testes e manutenção.",
+      "tags": ["prevencao_de_incendio", "iluminacao_emergencia"]
+    },
+    {
+      "id": "dl_nexus",
+      "nome": "DL Nexus",
+      "descricao": "Plataforma interna de automação, IA, atendimento, prospecção, publicação e CRM.",
+      "tags": ["plataforma_interna", "ia", "crm"]
+    }
+  ],
+  "regras_nomenclatura": {
+    "guardiao": "Solução comercial, não usar como nome de agente interno.",
+    "agente_monitoramento": "Sentinela",
+    "agente_organizacao": "Zelador"
+  },
+  "agentes_internos": {
+    "Aninha": "Atendimento e triagem.",
+    "Diego": "Análise técnica e roteamento técnico.",
+    "Jules": "Arquitetura, GitHub, scripts e workflows.",
+    "Manus": "Prospecção, pesquisa e pautas.",
+    "Sentinela": "Monitoramento, erros, notícias verificadas e saúde do sistema.",
+    "Zelador": "Organização de Google Drive, Google Fotos e mídias.",
+    "SocialPilot DL": "Criação/publicação social."
+  }
+}

@@ -1,0 +1,44 @@
+# Relatório de Validação Final: Estabilização Social e Zelador
+
+**Data:** 25 de Maio de 2026
+**Responsável:** Jules (Executor Técnico Sênior DL Nexus V3)
+
+Este documento atesta a validação de segurança solicitada, garantindo que a esteira não executará processos indesejados.
+
+## Resultados da Validação
+
+- **commit hash:** 859f8ac
+- **arquivos alterados:**
+  - `DL_NEXUS_V3_LOCAL/05_RELATORIOS/RELATORIO_ESTABILIZACAO_SOCIAL_ZELADOR_TELEGRAM.md`
+  - `DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/000_email_receptor_TESTE.json`
+  - `DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/019_GERADOR_ORCAMENTO_RAPIDO.json`
+  - `DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO.json`
+  - `DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/081_PUBLICADOR_INSTAGRAM_META_API.json`
+  - `DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/082_PUBLICADOR_FACEBOOK_META_API.json`
+  - `DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE.json`
+  - `DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/084_PUBLICADOR_TIKTOK_ASSISTIDO.json`
+  - `DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/085_SOCIAL_DISPATCHER_DL_NEXUS.json`
+  - `DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/090_SENTINELA_N8N_DL_NEXUS_V3.json`
+  - `DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/140_ZELADOR_MIDIAS_GOOGLE_DRIVE.json`
+  - `DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/141_REVISOR_MIDIAS_DL_NEXUS.json`
+  - `DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/142_CLASSIFICADOR_TEMA_MIDIA.json`
+  - `DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/143_GERADOR_POST_EDUCATIVO_DL.json`
+  - `DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/144_REVISOR_IA_DUPLO.json`
+  - `DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/145_CRIADOR_CARROSSEL_SOCIAL.json`
+  - `DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/146_PUBLICADOR_MULTICANAL_DL.json`
+  - `DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/147_SENTINELA_NOTICIAS_VERIFICADAS.json`
+  - `DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/148_LOG_E_MEMORIA_SOCIAL.json`
+  - `DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/149_RELATORIO_SOCIAL_DIARIO.json`
+  - `DL_NEXUS_V3_LOCAL/30_DEPLOY_N8N/DEPLOY_ESTABILIZACAO_SOCIAL_ZELADOR.ps1`
+- **arquivos fora do escopo:** não
+- **segredos encontrados:** não
+- **JSON válido:** sim
+- **active=false:** sim
+- **DRY_RUN confirmado no 140:** sim
+- **ações destrutivas bloqueadas:** sim
+- **Telegram revisado:** sim
+- **020 seguro para teste manual:** sim
+- **140 seguro para teste manual:** sim
+- **seguro para importar no n8n real:** sim
+- **seguro para ativar produção:** não
+- **pendências:** Adicionar as chaves de API/Senhas manualmente nas variáveis ou nos Nodes do n8n após a importação.

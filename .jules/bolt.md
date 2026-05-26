@@ -1,0 +1,3 @@
+## 2025-02-12 - Loop Fusion in Data Summary Generations
+**Learning:** In Python, iterating over a large list multiple times (e.g., using consecutive `sum()` calls with list comprehensions or multiple `for` loops) to calculate different metrics can introduce significant redundant CPU iteration overhead. Combining these into a single pass (loop fusion) significantly reduces CPU overhead when processing large data collections like leads.
+**Action:** When identifying functions that aggregate multiple statistics over the same dataset, always combine these multiple O(N) passes into a single O(N) loop to reduce the iteration cost.

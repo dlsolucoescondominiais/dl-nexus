@@ -41,7 +41,9 @@
             }
           ]
         },
-        "options": {}
+        "options": {},
+        "resource": "chat",
+        "operation": "create"
       },
       "id": "gerar_textos_ia",
       "name": "Gerar Textos IA",

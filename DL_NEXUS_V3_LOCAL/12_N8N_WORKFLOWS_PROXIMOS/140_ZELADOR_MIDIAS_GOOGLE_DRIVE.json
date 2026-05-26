@@ -2,73 +2,164 @@
   "name": "140_ZELADOR_MIDIAS_GOOGLE_DRIVE",
   "nodes": [
     {
-      "parameters": {},
-      "id": "1",
-      "name": "Webhook Trigger",
-      "type": "n8n-nodes-base.webhook",
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "trigger",
+      "name": "Schedule Trigger (Hourly)",
+      "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1,
-      "position": [250, 300]
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "file://d:/AntiGravity/projeto_01/DL_NEXUS_V3_LOCAL/00_CONFIG/dl_nexus_google_drive_midia_config.json",
+        "options": {}
+      },
+      "id": "read_config",
+      "name": "Read Config (Mock local)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        200,
+        300
+      ],
+      "notesInFlow": true,
+      "notes": "Lê a configuração local"
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Fallback caso a leitura de arquivo falhe no servidor n8n cloud\nconst config = {\n  \"modo_execucao\": \"DRY_RUN\",\n  \"frequencia\": \"hourly\",\n  \"limite_por_execucao\": 50,\n  \"fontes_drive_ids\": [\n    \"1TR_gRh_JLODCyhf3SK4BWKunzA_h7Mo-\",\n    \"1-eoAjOVuGrjWAsQCslvUqH621Axt6zyq\",\n    \"1JTjnBxgErYaYqBEvY5XN7Akegj4lhSyy\",\n    \"1jl9cbwMWQCLhVTGYVL1E1EmV9_7rpQ9A\",\n    \"1gslPTBSSxYuUOvwQnVuhaOxhj88avrMO\",\n    \"19ccEKZikLNTmkXZxbux1huJfcAgI972m\",\n    \"18555srf9wDZWm7pHVwKsctROvwxTrXdG\",\n    \"1RwmPLgdb-bm5L0iv_dC546r7mlJpRUAB\",\n    \"1Dpljecl1Ha7PdEE6KHs9QI62biWpy0gl\",\n    \"1vE8OxBGipoQxTkPbrPS7HDzJI5YMqwwY\",\n    \"19mqLnrL4tvYtZX_3FGv6KdMG35s1nbJS\",\n    \"1HAap59IKZWmbLvtid7N4I0cz8w1nkYRm\",\n    \"1vfDw3tiJLq3ZjJckyV3k3l4ymqzaG27-\",\n    \"1ZWEH5J0g3wOZzvOBeXADlIy-caz01R4n\",\n    \"1FyQMdonurUurv5-kHog94V3Gjjy4bPnk\",\n    \"1XZInnjA67tjdAAlqlm4YzxOvaHng8o4m\",\n    \"1HDZ92bfzPBfKYhpCEMnGDBn-Huue-fj4\",\n    \"1VeWNHbPakao1xdQCKXaRXCzMK82HkDCm\",\n    \"1k42W4QsO02BJc8G2UeJLHwDU2Cnf4NT7\",\n    \"1duuFR1PjgreWmWCeBE8tWfbVqa4eMpp1\",\n    \"1m6N54JX48TZ3yrpejLrJsI8GzbQt7Hfi\",\n    \"1VmoiLB8gPTwUV9cKxgu4nFDPhOK2hJm9\",\n    \"1yCd_RZcTzUiQgi78yo1cDB1CVMO6eGby\",\n    \"1Go7gph7iK7OUMZvuKg556ClLy4K-odwM\",\n    \"1Ts396yVFPjFBcl_Q1w6qor9CfwbHtsAr\",\n    \"1mH0YjiR2A08aQY8vJMSnamiLbA9pFvME\",\n    \"15evs0qo00VjBTpUkVCtVLGrT_8Hz9hzI\",\n    \"13Jy_6QMMFc9waL_Uup0MD3qIurvtupyC\"\n  ]\n};\n\nreturn config.fontes_drive_ids.map(id => ({ json: { folderId: id, config: config } }));\n"
+      },
+      "id": "split_folders",
+      "name": "Preparar Lista de Pastas",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        300
+      ]
     },
     {
       "parameters": {
         "operation": "list",
-        "folderId": "00_INBOX_SMARTPHONE_ID_AQUI"
+        "useQuery": true,
+        "query": "='{{$json.folderId}}' in parents",
+        "options": {
+          "fields": [
+            "id",
+            "name",
+            "mimeType",
+            "parents",
+            "size",
+            "createdTime",
+            "modifiedTime",
+            "owners",
+            "webViewLink"
+          ]
+        }
       },
-      "id": "2",
-      "name": "Listar Arquivos Drive",
+      "id": "list_drive",
+      "name": "Listar Arquivos da Pasta",
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 2,
-      "position": [450, 300]
+      "position": [
+        600,
+        300
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "vDUp3ZKxazIKho51",
+          "name": "Google Drive account 2"
+        }
+      }
     },
     {
       "parameters": {
-        "jsCode": "/* Zelador Logic */\nreturn items;"
+        "jsCode": "\nconst arquivos = [];\n\nfor (const item of $input.all()) {\n  const f = item.json;\n  \n  const original_name = f.name || \"\";\n  const ext = original_name.includes('.') ? original_name.split('.').pop().toLowerCase() : \"\";\n  const mime = f.mimeType || \"\";\n  \n  let tipo_midia = \"arquivo desconhecido\";\n  if (mime.includes(\"image\")) tipo_midia = \"imagem\";\n  else if (mime.includes(\"video\")) tipo_midia = \"vídeo\";\n  else if (mime.includes(\"audio\")) tipo_midia = \"áudio\";\n  else if (mime.includes(\"pdf\")) tipo_midia = \"PDF\";\n  else if (mime.includes(\"document\") || mime.includes(\"text\")) tipo_midia = \"documento\";\n  \n  let risco = \"\";\n  let usa_nao = false;\n  // Simulação de detecção básica de privacidade por nome\n  const nomes_risco = [\"placa\", \"cnh\", \"rg\", \"cpf\", \"boleto\", \"contrato\", \"rosto\", \"cliente\", \"email\"];\n  if (nomes_risco.some(r => original_name.toLowerCase().includes(r))) {\n    risco = \"POSSIVEL_DADO_SENSIVEL\";\n    usa_nao = true;\n  }\n  \n  const tema = tipo_midia === \"imagem\" ? \"foto_campo\" : (tipo_midia === \"vídeo\" ? \"video_campo\" : \"duvidoso\");\n  const produto = \"DL_NEXUS\"; \n  \n  const out = {\n    \"file_id\": f.id,\n    \"link_drive\": f.webViewLink || \"\",\n    \"file_name_original\": original_name,\n    \"file_name_sugerido\": `2026-06-02_${produto}_${tema}_CAMPO_NOVO_${original_name}`,\n    \"mime_type\": mime,\n    \"extensao\": ext,\n    \"pasta_origem\": f.parents ? f.parents[0] : \"\",\n    \"pasta_destino_sugerida\": \"00_INVENTARIO_GERAL\",\n    \"data_criacao\": f.createdTime,\n    \"data_modificacao\": f.modifiedTime,\n    \"tamanho_bytes\": f.size || 0,\n    \"tema_detectado\": tema,\n    \"produto_dl_relacionado\": produto,\n    \"status_midia\": \"NOVO\",\n    \"uso_recomendado\": usa_nao ? \"NAO_USAR\" : \"REVISAR\",\n    \"risco_privacidade\": risco,\n    \"precisa_revisao_humana\": true,\n    \"descricao_tecnica_curta\": \"Arquivo coletado em varredura automática\",\n    \"descricao_para_social\": \"\",\n    \"cta_recomendado\": \"https://dlsolucoescondominiais.com\",\n    \"modo_execucao\": \"DRY_RUN\",\n    \"acao_real_executada\": false,\n    \"observacoes\": \"Processado no modo DRY_RUN, arquivo não movido nem alterado.\"\n  };\n  \n  arquivos.push({ json: out });\n}\n\nreturn arquivos;\n"
       },
-      "id": "3",
-      "name": "Classificar Mídias",
+      "id": "classificar",
+      "name": "Classificar Mídias (DRY RUN)",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [650, 300]
+      "position": [
+        800,
+        300
+      ]
     },
     {
-      "parameters": {
-        "workflowId": "148_LOG_E_MEMORIA_SOCIAL"
-      },
-      "id": "4",
-      "name": "Registrar Log",
-      "type": "n8n-nodes-base.executeWorkflow",
+      "parameters": {},
+      "id": "dry_run_log",
+      "name": "Log Output DRY RUN",
+      "type": "n8n-nodes-base.noOp",
       "typeVersion": 1,
-      "position": [850, 300]
+      "position": [
+        1000,
+        300
+      ]
     }
   ],
   "connections": {
-    "Webhook Trigger": {
+    "Schedule Trigger (Hourly)": {
       "main": [
         [
           {
-            "node": "Listar Arquivos Drive",
+            "node": "Read Config (Mock local)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Listar Arquivos Drive": {
+    "Read Config (Mock local)": {
       "main": [
         [
           {
-            "node": "Classificar Mídias",
+            "node": "Preparar Lista de Pastas",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Classificar Mídias": {
+    "Preparar Lista de Pastas": {
       "main": [
         [
           {
-            "node": "Registrar Log",
+            "node": "Listar Arquivos da Pasta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Listar Arquivos da Pasta": {
+      "main": [
+        [
+          {
+            "node": "Classificar Mídias (DRY RUN)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classificar Mídias (DRY RUN)": {
+      "main": [
+        [
+          {
+            "node": "Log Output DRY RUN",
             "type": "main",
             "index": 0
           }
@@ -80,5 +171,15 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "tags": [{"name": "Zelador"}, {"name": "Drive"}]
+  "tags": [
+    {
+      "name": "Zelador"
+    },
+    {
+      "name": "Drive"
+    },
+    {
+      "name": "DryRun"
+    }
+  ]
 }

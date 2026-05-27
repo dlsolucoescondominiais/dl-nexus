@@ -1,0 +1,59 @@
+{
+  "name": "174_CALCULAR_SLA_PARTNER",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "calcular-sla-partner",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "e98e4f16-735c-43f0-b962-d4b971a93322",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "9b12d5cd-0091-4cf1-9bdf-db33075c3db1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.item.json.body || $input.item.json;\n\nconst plano = data.plano ? data.plano.toLowerCase() : null;\n\nif (!plano) {\n  return { status: \"Sob Avaliação Técnica\", erro: \"Faltam dados críticos (plano).\" };\n}\n\nlet horasMensais = 0;\nlet deslocamentosInclusos = 0;\nlet precoRecomendado = 0;\nlet faixaComercial = \"\";\nlet slaAtendimento = \"\";\n\nswitch (plano) {\n  case \"basic\":\n    horasMensais = 10;\n    deslocamentosInclusos = 2;\n    precoRecomendado = 1500;\n    faixaComercial = \"R$ 1.200 - R$ 1.800\";\n    slaAtendimento = \"48h\";\n    break;\n  case \"master\":\n    horasMensais = 25;\n    deslocamentosInclusos = 4;\n    precoRecomendado = 3000;\n    faixaComercial = \"R$ 2.800 - R$ 3.500\";\n    slaAtendimento = \"24h\";\n    break;\n  case \"premium\":\n    horasMensais = 50;\n    deslocamentosInclusos = 8;\n    precoRecomendado = 5500;\n    faixaComercial = \"R$ 5.000 - R$ 6.500\";\n    slaAtendimento = \"12h\";\n    break;\n  default:\n    return { status: \"Sob Avaliação Técnica\", erro: \"Plano não reconhecido.\" };\n}\n\nconst urgenciaGastronomia = data.urgencia_gastronomia || false;\nif (urgenciaGastronomia) {\n    precoRecomendado *= 1.3;\n}\n\nreturn {\n  status: \"Processado\",\n  plano_selecionado: plano,\n  horas_mensais: horasMensais,\n  deslocamentos_inclusos: deslocamentosInclusos,\n  materiais_inclusos: false,\n  preco_recomendado: precoRecomendado,\n  faixa_comercial: faixaComercial,\n  imposto: \"imposto_estimado_percentual\",\n  sla_atendimento: slaAtendimento,\n  aviso: \"Dependente de validação contábil.\"\n};"
+      },
+      "id": "f516a2ef-9883-4a0b-93f8-dc1e16fdf942",
+      "name": "Calcular SLA Partner",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Calcular SLA Partner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ebc9735a-4933-4f9e-a8fa-bb61483ceb02",
+  "id": "calcularSlaPartner174DlNexus20260527",
+  "meta": {
+    "instanceId": "cb451ecb-3e58-45e0-b605-2b47f0e6dd35"
+  },
+  "tags": []
+}

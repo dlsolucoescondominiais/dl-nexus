@@ -1,0 +1,105 @@
+{
+  "name": "171_CALCULAR_DESLOCAMENTO_MAPS",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "calcular-deslocamento",
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json) }}",
+        "options": {}
+      },
+      "id": "root-calcularDeslocamento171DlNexus20260527",
+      "name": "Webhook Recebe Rota",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [0, 0],
+      "webhookId": "webhook-171-calcular-deslocamento"
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "fileSelector": "/data/dl_nexus_precificacao_config.json"
+      },
+      "id": "lerConfig171DlNexus20260527",
+      "name": "Ler Configuração DL Nexus",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [200, 0]
+    },
+    {
+      "parameters": {
+        "operation": "getDistance",
+        "origin": "={{ $('Webhook Recebe Rota').item.json.body.origem }}",
+        "destination": "={{ $('Webhook Recebe Rota').item.json.body.destino }}",
+        "mode": "driving"
+      },
+      "id": "maps171DlNexus20260527",
+      "name": "Google Maps Routes",
+      "type": "n8n-nodes-base.googleMaps",
+      "typeVersion": 1,
+      "position": [400, 0],
+      "credentials": {
+        "googleMapsApi": {
+          "id": "googleMaps",
+          "name": "Google Maps API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const webhookData = $('Webhook Recebe Rota').item.json.body || {};\nconst configData = $('Ler Configuração DL Nexus').item.json || {};\nconst mapsData = $input.all()[0].json || {};\n\nif (!webhookData.origem || !webhookData.destino) {\n    return { json: {\n        status: \"Sob Avaliação Técnica\",\n        mensagem: \"Origem ou destino não fornecidos. Aguardando Avaliação Técnica.\"\n    }};\n}\n\nconst precoCombustivel = configData.preco_combustivel || 7.80;\nconst consumoVeiculo = configData.km_por_litro || 16;\n\nlet distanciaMeters = 0;\nlet durationText = 'N/A';\n\nif (mapsData.distance && mapsData.distance.value) {\n    distanciaMeters = mapsData.distance.value;\n}\nif (mapsData.duration && mapsData.duration.text) {\n    durationText = mapsData.duration.text;\n}\n\nlet distanciaKm = distanciaMeters / 1000;\nif (distanciaKm === 0) {\n    return { json: {\n        status: \"Sob Avaliação Técnica\",\n        mensagem: \"Não foi possível calcular a rota via Maps. Aguardando Avaliação Técnica.\"\n    }};\n}\n\nlet zona = (webhookData.zona || '').toLowerCase();\nlet custoEstacionamento = 0;\n\nif (zona.includes('zona sul')) {\n    custoEstacionamento = 45;\n} else if (zona.includes('barra')) {\n    custoEstacionamento = 30;\n} else if (zona.includes('centro')) {\n    custoEstacionamento = 40;\n} else {\n    custoEstacionamento = 20;\n}\n\nlet fatorUrgencia = 1.0;\nlet escopo = (webhookData.escopo || '').toLowerCase();\nif (escopo.includes('chapa') || escopo.includes('fritadeira') || escopo.includes('gastronomia')) {\n    fatorUrgencia = 1.5;\n}\n\nlet custoDeslocamentoBruto = (distanciaKm / consumoVeiculo) * precoCombustivel;\nlet custoTotalInterno = (custoDeslocamentoBruto + custoEstacionamento) * fatorUrgencia;\n\nlet precoRecomendado = custoTotalInterno * 2.5;\n\nreturn { json: {\n    status: \"Sucesso\",\n    faixa_comercial: {\n        minimo: parseFloat((precoRecomendado * 0.9).toFixed(2)),\n        maximo: parseFloat((precoRecomendado * 1.1).toFixed(2))\n    },\n    preco_recomendado: parseFloat(precoRecomendado.toFixed(2)),\n    imposto_estimado_percentual: \"pendência de validação contábil\",\n    detalhes_operacionais: {\n        distancia_km: parseFloat(distanciaKm.toFixed(2)),\n        tempo_estimado: durationText,\n        fator_multiplicador_aplicado: fatorUrgencia,\n        sistema_gestao: \"Fortress\",\n        responsavel: \"Tecnólogo Responsável - Diogo\"\n    }\n}};\n"
+      },
+      "id": "code171DlNexus20260527",
+      "name": "Regras de Precificação Motor (170-179)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, 0]
+    }
+  ],
+  "connections": {
+    "Webhook Recebe Rota": {
+      "main": [
+        [
+          {
+            "node": "Ler Configuração DL Nexus",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler Configuração DL Nexus": {
+      "main": [
+        [
+          {
+            "node": "Google Maps Routes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Maps Routes": {
+      "main": [
+        [
+          {
+            "node": "Regras de Precificação Motor (170-179)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "calcularDeslocamento171DlNexus20260527",
+  "tags": [],
+  "active": false
+}

@@ -1,0 +1,55 @@
+{
+  "name": "173_CALCULAR_MATERIAIS_TERCEIROS",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "173-calcular-materiais",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-calcularMateriais173DlNexus20260527",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nfor (let i = 0; i < items.length; i++) {\n  const payload = items[i].json;\n  \n  if (!payload.materiais || !Array.isArray(payload.materiais) || payload.materiais.length === 0) {\n    items[i].json.materiais_a_parte = true;\n    items[i].json.mensagem_materiais = \"Materiais a serem faturados à parte mediante Avaliação Técnica ou repassados ao condomínio.\";\n    items[i].json.custo_materiais_total = 0;\n  } else {\n    items[i].json.materiais_a_parte = false;\n    let totalMaterial = 0;\n    for (let mat of payload.materiais) {\n       totalMaterial += (mat.quantidade || 0) * (mat.preco_unitario || 0);\n    }\n    items[i].json.custo_materiais_total = totalMaterial;\n  }\n}\nreturn items;"
+      },
+      "id": "code-calcularMateriais173DlNexus20260527",
+      "name": "Calcular Materiais ou Flag",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Calcular Materiais ou Flag",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "calcularMateriais173DlNexus20260527",
+  "id": "calcularMateriais173DlNexus20260527",
+  "tags": []
+}

@@ -1,0 +1,146 @@
+{
+  "name": "178_LOG_PRECIFICACAO",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "log-precificacao",
+        "options": {}
+      },
+      "id": "8b23c21a-4d7a-4428-bb7e-f4fc348f98aa",
+      "name": "Webhook In",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ],
+      "webhookId": "9b1c2b53-61e3-4d43-851c-eb1d46b8a8b1"
+    },
+    {
+      "parameters": {
+        "jsCode": "let data = $input.item.json.body || {};\n\n// Rule: Se faltar dados críticos, o motor deve retornar \"Sob Avaliação Técnica\"\nif (!data.preco_recomendado && !data.faixa_comercial) {\n  data.status_avaliacao = \"Sob Avaliação Técnica\";\n} else {\n  data.status_avaliacao = \"Precificado\";\n}\n\n// Rule: Não expor custo interno ao cliente. Mostrar apenas a faixa comercial e o preço recomendado.\nlet clientPayload = Object.assign({}, data);\ndelete clientPayload.custo_interno;\ndelete clientPayload.margem_lucro;\n\n// Rule: A gastronomia tem alta urgência.\nlet priority = (data.urgency_gastronomy) ? 'HIGH' : 'NORMAL';\n\n// Rule: Imposto sempre \"imposto_estimado_percentual\" com pendência de validação contábil.\nlet imposto = data.imposto_estimado_percentual || \"Pendente de validação contábil\";\n\nreturn {\n  proposta_id: data.proposta_id || 'UNKNOWN',\n  faixa_comercial: data.faixa_comercial || 'N/A',\n  preco_recomendado: data.preco_recomendado || 0,\n  imposto_estimado_percentual: imposto,\n  status_avaliacao: data.status_avaliacao,\n  priority: priority,\n  payload_completo: clientPayload\n};"
+      },
+      "id": "e45db6e1-95bc-42b7-814d-b6ebc453e9a7",
+      "name": "Validate & Format Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "tableId": "precificacao_logs",
+        "columns": "proposta_id, faixa_comercial, preco_recomendado, imposto_estimado_percentual, status_avaliacao, priority, payload_completo",
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "name": "proposta_id",
+              "value": "={{ $json.proposta_id }}"
+            },
+            {
+              "name": "faixa_comercial",
+              "value": "={{ $json.faixa_comercial }}"
+            },
+            {
+              "name": "preco_recomendado",
+              "value": "={{ $json.preco_recomendado }}"
+            },
+            {
+              "name": "imposto_estimado_percentual",
+              "value": "={{ $json.imposto_estimado_percentual }}"
+            },
+            {
+              "name": "status_avaliacao",
+              "value": "={{ $json.status_avaliacao }}"
+            },
+            {
+              "name": "priority",
+              "value": "={{ $json.priority }}"
+            },
+            {
+              "name": "payload_completo",
+              "value": "={{ JSON.stringify($json.payload_completo) }}"
+            }
+          ]
+        }
+      },
+      "id": "a933f2e1-4564-4e4b-944a-d621edb01534",
+      "name": "Supabase - Insert Log",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        500,
+        300
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "supabase-cred",
+          "name": "Supabase API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"success\",\n  \"message\": \"Log salvo\",\n  \"proposta_id\": \"{{ $json.proposta_id }}\",\n  \"status_avaliacao\": \"{{ $json.status_avaliacao }}\"\n}",
+        "options": {}
+      },
+      "id": "cf6dc1fc-d2e8-466d-ad09-2f2b9687e148",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        700,
+        300
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook In": {
+      "main": [
+        [
+          {
+            "node": "Validate & Format Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate & Format Payload": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Insert Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase - Insert Log": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "logPrecificacao178DlNexus20260527",
+  "id": "logPrecificacao178DlNexus20260527",
+  "tags": []
+}

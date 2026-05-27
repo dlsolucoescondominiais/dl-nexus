@@ -1,0 +1,93 @@
+{
+  "versao": "1.2_B2B_CONDOMINIOS_GASTRONOMIA",
+  "moeda": "BRL",
+  "custos_operacionais": {
+    "preco_combustivel_litro": 7.8,
+    "consumo_km_litro": 16,
+    "custo_hora_improdutiva_transito": 80,
+    "imposto_estimado_percentual": 0.08,
+    "imposto_confirmado": false,
+    "estacionamento_padrao": 20,
+    "estacionamento_por_regiao": {
+      "zona_sul": 45,
+      "barra_recreio_jacarepagua": 30,
+      "zona_oeste": 20,
+      "zona_norte": 25,
+      "centro": 35,
+      "baixada": 20
+    },
+    "pedagio_por_rota": {
+      "linha_amarela": 0,
+      "ponte": 0,
+      "outros": 0
+    }
+  },
+  "hora_tecnica": {
+    "basica_manutencao": 120,
+    "especializada_infra": 180,
+    "critica_automacao_eletrica": 220,
+    "projeto_relatorio_art": 300
+  },
+  "pisos": {
+    "servico_avulso": 350,
+    "condominio_escola": 450,
+    "gastronomia_padaria": 400,
+    "emergencial": 650,
+    "diagnostico": 300
+  },
+  "margens": {
+    "minima": 0.35,
+    "recomendada": 0.45,
+    "premium": 0.55
+  },
+  "fatores": {
+    "risco": {
+      "baixo": 1.0,
+      "medio": 1.15,
+      "alto": 1.3,
+      "critico": 1.5,
+      "gastronomia_chapas_fritadeiras": 1.2,
+      "gastronomia_sistema_exaustao_prevencao": 1.4
+    },
+    "urgencia": {
+      "normal": 1.0,
+      "prioritario": 1.25,
+      "urgente": 1.5,
+      "emergencial": 2.0,
+      "fora_horario": 2.0,
+      "domingo_feriado": 2.5
+    },
+    "complexidade": {
+      "simples": 1.0,
+      "media": 1.2,
+      "alta": 1.4,
+      "integracao": 1.6
+    }
+  },
+  "pagamento": {
+    "desconto_pix": 0.06,
+    "acrescimo_cartao": 0.09
+  },
+  "sla_partner": {
+    "basic": {
+      "horas_tecnicas_mes": 2,
+      "chamados_remotos_mes": 1,
+      "deslocamento_incluso": false,
+      "materiais_inclusos": false
+    },
+    "master": {
+      "horas_tecnicas_mes": 4,
+      "chamados_remotos_mes": 2,
+      "deslocamentos_inclusos_mes": 1,
+      "materiais_inclusos": false
+    },
+    "premium": {
+      "horas_tecnicas_mes": 8,
+      "chamados_remotos_mes": 4,
+      "deslocamentos_inclusos_mes": 2,
+      "materiais_inclusos": false,
+      "relatorio_mensal": true,
+      "prioridade_operacional": true
+    }
+  }
+}

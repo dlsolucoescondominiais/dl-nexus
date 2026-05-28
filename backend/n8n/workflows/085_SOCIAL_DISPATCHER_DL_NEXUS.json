@@ -1,0 +1,333 @@
+{
+  "name": "085 - Social Dispatcher (Multicanal)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-social-dispatcher",
+        "options": {}
+      },
+      "id": "e0b5c1a8-9d4f-4b3a-8c2e-1f5d6a7b8c9f",
+      "name": "Webhook (dl-social-dispatcher)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        200,
+        300
+      ],
+      "webhookId": "dl-social-dispatcher"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v19.0/me/feed",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "={{ $json.body.copy_aprovada }}"
+            },
+            {
+              "name": "link",
+              "value": "={{ $json.body.imagem_url }}"
+            },
+            {
+              "name": "access_token",
+              "value": "={{ $env.META_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6d5c4b3a-2f1e-0d9c-8b7a-6f5e4d3c2b1b",
+      "name": "Postar Facebook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        420,
+        100
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v19.0/{{$env.IG_ACCOUNT_ID}}/media",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "caption",
+              "value": "={{ $json.body.copy_aprovada }}"
+            },
+            {
+              "name": "image_url",
+              "value": "={{ $json.body.imagem_url }}"
+            },
+            {
+              "name": "access_token",
+              "value": "={{ $env.META_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ig-container-9999",
+      "name": "Criar Container Instagram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        420,
+        300
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'https://graph.facebook.com/v19.0/' + $env.IG_ACCOUNT_ID + '/media_publish' }}",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "creation_id",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "access_token",
+              "value": "={{ $env.META_ACCESS_TOKEN }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ig-publish-9999",
+      "name": "Publicar Instagram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        640,
+        300
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://mybusiness.googleapis.com/v4/accounts/{{$env.GMB_ACCOUNT_ID}}/locations/{{$env.GMB_LOCATION_ID}}/localPosts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.GOOGLE_OAUTH_TOKEN}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "languageCode",
+              "value": "pt-BR"
+            },
+            {
+              "name": "summary",
+              "value": "={{ $node[\"Webhook (dl-social-dispatcher)\"].json.body.copy_aprovada }}"
+            },
+            {
+              "name": "callToAction",
+              "value": "={{ { actionType: 'LEARN_MORE', url: 'https://dlsolucoescondominiais.com' } }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "gmb-publish-9999",
+      "name": "Postar Google Meu Negócio",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        420,
+        500
+      ],
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "id",
+              "value": "={{ $node[\"Webhook (dl-social-dispatcher)\"].json.body.post_id }}"
+            },
+            {
+              "name": "status",
+              "value": "publicado"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-update-fields-9012",
+      "name": "Mapear Update DB",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        860,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "conteudos_marketing",
+        "updateKey": "id",
+        "columns": "status",
+        "dataMode": "autoMapInputData",
+        "options": {}
+      },
+      "id": "e5d4c3b2-a1f0-9e8d-7c6b-5a4f3e2d1c0b",
+      "name": "Atualizar Status (Publicado)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        1080,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "supabase-db",
+          "name": "Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{$env.TELEGRAM_CHAT_ID}}",
+        "text": "={{ '✅ *AUTOPUBLICAÇÃO B2B REALIZADA* ✅\\n\\nUm novo conteúdo foi disparado com sucesso para as redes sociais (Facebook, Instagram, GMB).\\n\\nLink de referência: https://dlsolucoescondominiais.com' }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-success-1238",
+      "name": "Telegram: Sucesso Diario",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1300,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-bot",
+          "name": "Telegram Bot API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook (dl-social-dispatcher)": {
+      "main": [
+        [
+          {
+            "node": "Postar Facebook",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Criar Container Instagram",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Postar Google Meu Negócio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar Container Instagram": {
+      "main": [
+        [
+          {
+            "node": "Publicar Instagram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publicar Instagram": {
+      "main": [
+        [
+          {
+            "node": "Mapear Update DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postar Facebook": {
+      "main": [
+        [
+          {
+            "node": "Mapear Update DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postar Google Meu Negócio": {
+      "main": [
+        [
+          {
+            "node": "Mapear Update DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mapear Update DB": {
+      "main": [
+        [
+          {
+            "node": "Atualizar Status (Publicado)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Atualizar Status (Publicado)": {
+      "main": [
+        [
+          {
+            "node": "Telegram: Sucesso Diario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "Marketing"
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "name": "013 - Máquina de Atração (Gerador de Pautas)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-gerar-pauta-social",
+        "options": {}
+      },
+      "id": "e0b5c1a8-9d4f-4b3a-8c2e-1f5d6a7b8c9d",
+      "name": "Webhook (dl-gerar-pauta)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        200,
+        300
+      ],
+      "webhookId": "dl-gerar-pauta-social"
+    },
+    {
+      "parameters": {
+        "jsCode": "const topics = [\n  \"Controle de bombas\",\n  \"Controle de cisternas\",\n  \"Controle de boias\",\n  \"Automação de recalque\",\n  \"Alarme de nível\",\n  \"Falha de bomba\",\n  \"Rodízio de bombas\",\n  \"Painel de comando\",\n  \"Proteção elétrica de bomba\",\n  \"Relatório de funcionamento\",\n  \"Manutenção elétrica preventiva em condomínios\"\n];\n\nconst index = Math.floor(Math.random() * topics.length);\nconst selectedTopic = topics[index];\n\nreturn [\n  {\n    json: {\n      tema: selectedTopic\n    }\n  }\n];"
+      },
+      "id": "code-node-topics-1234",
+      "name": "Selecionar Tema Automático",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.OPENAI_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "gpt-4o-mini"
+            },
+            {
+              "name": "messages",
+              "value": "={{ [ { \"role\": \"system\", \"content\": \"Você é o Tecnólogo Responsável da DL Soluções Condominiais. Escreva um post B2B curto e direto focado em síndicos, sobre a importância de implementar \" + $json.tema + \" no condomínio utilizando o produto DL Volt ou DL Partner. Use linguagem profissional. Não utilize a expressão 'visita técnica', substitua por 'Avaliação Técnica'. Se for falar de sistema de acesso não use Condfy, use Fortress. Retorne APENAS o texto do post, com CTA apontando para https://dlsolucoescondominiais.com\" } ] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d",
+      "name": "Gerar Copy (OpenAI)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        640,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-validar-killcritic",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-DL-API-KEY",
+              "value": "={{$env.N8N_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "copy_gerada",
+              "value": "={{ $json.choices[0].message.content }}"
+            },
+            {
+              "name": "tema",
+              "value": "={{ $node[\"Selecionar Tema Automático\"].json[\"tema\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "send-to-validator-9999",
+      "name": "Enviar para 020 (Killcritic)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        860,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook (dl-gerar-pauta)": {
+      "main": [
+        [
+          {
+            "node": "Selecionar Tema Automático",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Selecionar Tema Automático": {
+      "main": [
+        [
+          {
+            "node": "Gerar Copy (OpenAI)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gerar Copy (OpenAI)": {
+      "main": [
+        [
+          {
+            "node": "Enviar para 020 (Killcritic)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "Marketing"
+    }
+  ]
+}

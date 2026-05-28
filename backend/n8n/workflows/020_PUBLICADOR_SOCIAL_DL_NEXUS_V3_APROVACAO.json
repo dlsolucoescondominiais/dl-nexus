@@ -1,0 +1,252 @@
+{
+  "name": "020 - Publicador Social (Validador KILLCRITIC)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-validar-killcritic",
+        "options": {}
+      },
+      "id": "e0b5c1a8-9d4f-4b3a-8c2e-1f5d6a7b8c9e",
+      "name": "Webhook (dl-validar-killcritic)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        200,
+        300
+      ],
+      "webhookId": "dl-validar-killcritic"
+    },
+    {
+      "parameters": {
+        "jsCode": "let content = $json.body.copy_gerada;\n\n// 1. Substituições obrigatórias\ncontent = content.replace(/visita t[é|e]cnica/gi, 'Avaliação Técnica');\ncontent = content.replace(/Condfy/gi, 'Fortress');\ncontent = content.replace(/engenheiro/gi, 'Tecnólogo Responsável');\n\n// 2. Validações de bloqueio\nlet isValid = true;\nlet errorMsg = '';\n\nif (!content.includes('https://dlsolucoescondominiais.com')) {\n  isValid = false;\n  errorMsg = 'Erro: Conteúdo sem CTA principal.';\n}\n\nif (content.toLowerCase().includes('visita técnica')) {\n  isValid = false;\n  errorMsg = 'Erro: A expressão proibida \"visita técnica\" ainda está presente.';\n}\n\nreturn [\n  {\n    json: {\n      isValid: isValid,\n      errorMsg: errorMsg,\n      copy_aprovada: content,\n      tema: $json.body.tema\n    }\n  }\n];"
+      },
+      "id": "code-killcritic-1235",
+      "name": "Validar Protocolo KILLCRITIC",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.isValid }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-node-valid-1236",
+      "name": "É Válido?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        640,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "tipo",
+              "value": "educativo"
+            },
+            {
+              "name": "problema",
+              "value": "automacao"
+            },
+            {
+              "name": "copy_gerada",
+              "value": "={{ $json.copy_aprovada }}"
+            },
+            {
+              "name": "status",
+              "value": "agendado"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-node-fields-5679",
+      "name": "Mapear Campos DB",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        860,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "conteudos_marketing",
+        "columns": "tipo, problema, copy_gerada, status",
+        "dataMode": "autoMapInputData",
+        "options": {}
+      },
+      "id": "f5e4d3c2-b1a0-9f8e-7d6c-5b4a3c2d1e1a",
+      "name": "Salvar Autopublicar DB",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        1080,
+        200
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "supabase-db",
+          "name": "Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-social-dispatcher",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-DL-API-KEY",
+              "value": "={{$env.N8N_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "post_id",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "name": "copy_aprovada",
+              "value": "={{ $node[\"Validar Protocolo KILLCRITIC\"].json.copy_aprovada }}"
+            },
+            {
+              "name": "imagem_url",
+              "value": "https://cdn.dlsolucoescondominiais.com.br/assets/imagem_padrao_marketing.jpg"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "dispatch-node-999a",
+      "name": "Chamar 085 (Dispatcher)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1300,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$env.TELEGRAM_CHAT_ID}}",
+        "text": "={{ '🚨 *FALHA KILLCRITIC* 🚨\\n\\nO post gerado sobre ' + $json.tema + ' falhou na validação técnica e foi bloqueado.\\n\\nMotivo: ' + $json.errorMsg }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-error-1237",
+      "name": "Telegram: Erro Crítico",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        860,
+        400
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-bot",
+          "name": "Telegram Bot API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook (dl-validar-killcritic)": {
+      "main": [
+        [
+          {
+            "node": "Validar Protocolo KILLCRITIC",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Protocolo KILLCRITIC": {
+      "main": [
+        [
+          {
+            "node": "É Válido?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "É Válido?": {
+      "main": [
+        [
+          {
+            "node": "Mapear Campos DB",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram: Erro Crítico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mapear Campos DB": {
+      "main": [
+        [
+          {
+            "node": "Salvar Autopublicar DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Salvar Autopublicar DB": {
+      "main": [
+        [
+          {
+            "node": "Chamar 085 (Dispatcher)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "Marketing"
+    }
+  ]
+}

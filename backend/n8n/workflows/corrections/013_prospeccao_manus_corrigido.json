@@ -66,6 +66,45 @@
     },
     {
       "parameters": {
+        "url": "=https://api.manus.ai/v2/task.detail?task_id={{ $json.task_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-manus-api-key",
+              "value": "sk-ipp_CVwftXakIuh3foL7fbC6ZwU4qXseOHAOkj8i4iveHkiEscO1sTPe5jnWAO8oYGKYm7m4QvH4r4AHJiWT9a2xrRhA"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "check-task-status",
+      "name": "Check Task Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        528,
+        288
+      ],
+      "retryOnFail": true,
+      "maxRetries": 30,
+      "waitBetweenRetries": 30000
+    },
+    {
+      "parameters": {
+        "jsCode": "if ($json.status !== 'stopped') {\n  throw new Error('Tarefa ainda em execução. Aguardando...');\n}\nreturn { json: { task_id: $json.id } };"
+      },
+      "id": "verify-completion",
+      "name": "Verify Completion",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        288
+      ]
+    },
+    {
+      "parameters": {
         "url": "=https://api.manus.ai/v2/task.listMessages?task_id={{ $json.task_id }}&order=desc&limit=10",
         "sendHeaders": true,
         "headerParameters": {
@@ -76,34 +115,27 @@
             }
           ]
         },
-        "options": {
-          "redirect": {
-            "redirect": {}
-          }
-        }
+        "options": {}
       },
-      "id": "wait-for-manus",
-      "name": "Wait for Manus Result",
+      "id": "get-final-messages",
+      "name": "Get Final Messages",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        528,
+        880,
         288
-      ],
-      "retryOnFail": true,
-      "maxRetries": 20,
-      "waitBetweenRetries": 30000
+      ]
     },
     {
       "parameters": {
-        "jsCode": "const events = $input.all()[0].json.data || [];\nconst resultEvent = events.find(e => e.type === 'structured_output_result');\n\nif (resultEvent && resultEvent.structured_output_result.success) {\n  return { json: resultEvent.structured_output_result.value };\n}\n\n// Se não encontrou o evento de sucesso, joga erro para o nó de retry tentar novamente\nthrow new Error('Resultado estruturado do Manus ainda não disponível ou falhou.');"
+        "jsCode": "const events = $input.all()[0].json.data || [];\nconst resultEvent = events.find(e => e.type === 'structured_output_result');\n\nif (resultEvent && resultEvent.structured_output_result.success) {\n  return { json: resultEvent.structured_output_result.value };\n}\n\nthrow new Error('Resultado estruturado do Manus não encontrado na conclusão.');"
       },
       "id": "ab2b8419-1669-4265-a3ab-7f88aba040dc",
       "name": "Limpar JSON do Manus",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        704,
+        1056,
         288
       ]
     },
@@ -118,7 +150,7 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        928,
+        1280,
         176
       ]
     },
@@ -135,7 +167,7 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.1,
       "position": [
-        928,
+        1280,
         384
       ],
       "webhookId": "51319472-ca2c-466b-85b7-b9027453f9d4",
@@ -174,14 +206,36 @@
       "main": [
         [
           {
-            "node": "Wait for Manus Result",
+            "node": "Check Task Status",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Wait for Manus Result": {
+    "Check Task Status": {
+      "main": [
+        [
+          {
+            "node": "Verify Completion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify Completion": {
+      "main": [
+        [
+          {
+            "node": "Get Final Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Final Messages": {
       "main": [
         [
           {

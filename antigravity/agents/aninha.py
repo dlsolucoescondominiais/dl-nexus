@@ -130,7 +130,7 @@ class AninhaAgent:
         """
         Substitui a lógica de Regras Antiga pela lógica de IA da V2.0
         """
-        mensagem = lead_data.get("mensagem_original", "")
+        mensagem = lead_data.get("mensagem", "")
         # Processa com IA
         resultado_ia = self.analisar_mensagem_ia(mensagem)
         

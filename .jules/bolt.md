@@ -1,0 +1,3 @@
+## 2026-05-30 - Offload synchronous blocking I/O to FastAPI threadpool
+**Learning:** In FastAPI, declaring route handlers with `async def` that perform synchronous, blocking I/O operations (like `requests.post()` or synchronous `openai` SDK calls) will run them on the main thread, blocking the event loop. This is a significant performance bottleneck.
+**Action:** Always declare route handlers as standard `def` instead of `async def` when they contain synchronous, blocking I/O operations. This allows FastAPI to automatically offload their execution to an external threadpool, preventing the main event loop from being blocked.

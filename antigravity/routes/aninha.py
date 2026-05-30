@@ -10,7 +10,9 @@ aninha = AninhaAgent()
 
 # Webhook Oficial do N8N - O orquestrador precisa saber se a Aninha gerou uma proposta
 WEBHOOK_RETORNO_N8N = os.getenv("N8N_WEBHOOK_URL", "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-automacao-sindicos")
-API_KEY_N8N = os.getenv("N8N_API_KEY", "TESTE-123")
+API_KEY_N8N = os.getenv("N8N_API_KEY")
+if not API_KEY_N8N:
+    raise ValueError("N8N_API_KEY environment variable is missing")
 
 class LeadRequest(BaseModel):
     nome_condominio: str

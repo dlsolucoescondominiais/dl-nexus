@@ -1,0 +1,570 @@
+{
+  "name": "013_MAQUINA_DE_ATRACAO",
+  "id": "wf_013_maquina_de_atracao",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days"
+            }
+          ]
+        }
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "id": "1"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Gere um rascunho de post sobre as dores de condomínios. \nRegras do KILLCRITIC:\n- Bloquear 'visita técnica', substituir por 'Avaliação Técnica'\n- Bloquear 'Condfy', usar 'Fortress'\n- Não chamar Diogo de engenheiro, usar 'Tecnólogo Responsável'\n- Exigir CTA principal: https://dlsolucoescondominiais.com\n- Exigir CTA secundário: https://wa.me/5521964742458\n- Não prometer preço final."
+            }
+          ]
+        }
+      },
+      "id": "2",
+      "name": "Gerar Conteúdo",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "conteudos_marketing",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "conteudo": "={{ $json.text }}",
+            "status": "gerado"
+          }
+        }
+      },
+      "id": "3",
+      "name": "Salvar Postgres",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.text }}",
+              "operation": "notContains",
+              "value2": "visita técnica"
+            },
+            {
+              "value1": "={{ $json.text }}",
+              "operation": "notContains",
+              "value2": "Condfy"
+            },
+            {
+              "value1": "={{ $json.text }}",
+              "operation": "notContains",
+              "value2": "engenheiro"
+            },
+            {
+              "value1": "={{ $json.text }}",
+              "operation": "contains",
+              "value2": "https://dlsolucoescondominiais.com"
+            },
+            {
+              "value1": "={{ $json.text }}",
+              "operation": "contains",
+              "value2": "https://wa.me/5521964742458"
+            }
+          ]
+        }
+      },
+      "id": "4",
+      "name": "Validar KILLCRITIC",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        850,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "conteudos_marketing",
+        "updateKey": "id",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Salvar Postgres').item.json.id }}",
+            "status": "bloqueado_killcritic"
+          }
+        }
+      },
+      "id": "5",
+      "name": "Bloquear KILLCRITIC",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        1050,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "conteudos_marketing",
+        "updateKey": "id",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Salvar Postgres').item.json.id }}",
+            "status": "aprovado_killcritic"
+          }
+        }
+      },
+      "id": "6",
+      "name": "Aprovar KILLCRITIC",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        1050,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/me/feed",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "={{ $('Gerar Conteúdo').item.json.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7",
+      "name": "Publicar Facebook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1250,
+        450
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE conteudos_marketing SET status = 'publicado', canal = COALESCE(canal, '') || 'facebook, ', post_id = COALESCE(post_id, '') || '{{ $json.id }}, ', published_at = NOW() WHERE id = {{ $('Salvar Postgres').item.json.id }};"
+      },
+      "id": "8",
+      "name": "Atualizar Status Publicado FB",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        1650,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE conteudos_marketing SET status = 'erro_publicacao', erro_publicacao = COALESCE(erro_publicacao, '') || 'FB: ' || '{{ $json.error.message }}' || ', ' WHERE id = {{ $('Salvar Postgres').item.json.id }};"
+      },
+      "id": "9",
+      "name": "Erro Publicacao FB",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        1650,
+        550
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.id }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "10",
+      "name": "Verificar Sucesso FB",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1450,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/ig_user_id/media",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "caption",
+              "value": "={{ $('Gerar Conteúdo').item.json.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "12",
+      "name": "Publicar Instagram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1850,
+        450
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.id }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "13",
+      "name": "Verificar Sucesso IG",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2050,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE conteudos_marketing SET status = 'publicado', canal = COALESCE(canal, '') || 'instagram, ', post_id = COALESCE(post_id, '') || '{{ $json.id }}, ', published_at = NOW() WHERE id = {{ $('Salvar Postgres').item.json.id }};"
+      },
+      "id": "14",
+      "name": "Atualizar Status IG",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        2250,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE conteudos_marketing SET status = 'erro_publicacao', erro_publicacao = COALESCE(erro_publicacao, '') || 'IG: ' || '{{ $json.error.message }}' || ', ' WHERE id = {{ $('Salvar Postgres').item.json.id }};"
+      },
+      "id": "15",
+      "name": "Erro Publicacao IG",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        2250,
+        550
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://mybusiness.googleapis.com/v4/accounts/account_id/locations/location_id/localPosts",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "summary",
+              "value": "={{ $('Gerar Conteúdo').item.json.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "17",
+      "name": "Publicar GMB",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2450,
+        450
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.name }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "18",
+      "name": "Verificar Sucesso GMB",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2650,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE conteudos_marketing SET status = 'publicado', canal = COALESCE(canal, '') || 'google_business, ', post_id = COALESCE(post_id, '') || '{{ $json.name }}, ', published_at = NOW() WHERE id = {{ $('Salvar Postgres').item.json.id }};"
+      },
+      "id": "19",
+      "name": "Atualizar Status GMB",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        2850,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE conteudos_marketing SET status = 'erro_publicacao', erro_publicacao = COALESCE(erro_publicacao, '') || 'GMB: ' || '{{ $json.error.message }}' WHERE id = {{ $('Salvar Postgres').item.json.id }};"
+      },
+      "id": "20",
+      "name": "Erro Publicacao GMB",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        2850,
+        550
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Gerar Conteúdo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gerar Conteúdo": {
+      "main": [
+        [
+          {
+            "node": "Salvar Postgres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Salvar Postgres": {
+      "main": [
+        [
+          {
+            "node": "Validar KILLCRITIC",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar KILLCRITIC": {
+      "main": [
+        [
+          {
+            "node": "Aprovar KILLCRITIC",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Bloquear KILLCRITIC",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aprovar KILLCRITIC": {
+      "main": [
+        [
+          {
+            "node": "Publicar Facebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publicar Facebook": {
+      "main": [
+        [
+          {
+            "node": "Verificar Sucesso FB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar Sucesso FB": {
+      "main": [
+        [
+          {
+            "node": "Atualizar Status Publicado FB",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Erro Publicacao FB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Atualizar Status Publicado FB": {
+      "main": [
+        [
+          {
+            "node": "Publicar Instagram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Erro Publicacao FB": {
+      "main": [
+        [
+          {
+            "node": "Publicar Instagram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publicar Instagram": {
+      "main": [
+        [
+          {
+            "node": "Verificar Sucesso IG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar Sucesso IG": {
+      "main": [
+        [
+          {
+            "node": "Atualizar Status IG",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Erro Publicacao IG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Atualizar Status IG": {
+      "main": [
+        [
+          {
+            "node": "Publicar GMB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Erro Publicacao IG": {
+      "main": [
+        [
+          {
+            "node": "Publicar GMB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publicar GMB": {
+      "main": [
+        [
+          {
+            "node": "Verificar Sucesso GMB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar Sucesso GMB": {
+      "main": [
+        [
+          {
+            "node": "Atualizar Status GMB",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Erro Publicacao GMB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

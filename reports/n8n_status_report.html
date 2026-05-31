@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>N8N Status Report</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 40px; line-height: 1.6; }
+table { margin-top: 20px; margin-bottom: 20px; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+th { background-color: #f2f2f2; }
+h1, h2 { color: #333; }
+code { background-color: #f9f2f4; padding: 2px 4px; border-radius: 4px; color: #c7254e; }
+</style>
+</head>
+<body>
+<h1>Relatório de Status dos Workflows N8N - DL Nexus V3</h1><br><br>Este relatório detalha o status de todos os workflows JSON e suas dependências no ecosistema DL Nexus.<br><br><h2>Resumo Executivo</h2><br><br><ul>
+<li><strong>Total de Arquivos Analisados:</strong> 35</li>
+<li><strong>Workflows Válidos:</strong> 33</li>
+<li><strong>Workflows Inválidos/Com Erro:</strong> 2</li>
+<li><strong>Workflows Ativos:</strong> 0</li>
+</ul><br><br><h2>Arquivos Inválidos</h2><br><br><ul>
+<li><code>DL_NEXUS_V3_LOCAL/01_WORKFLOWS_RECEBIDOS_JULES/004_skill_router_dl_nexus_v3.json</code>: Invalid JSON</li>
+<li><code>DL_NEXUS_V3_LOCAL/20_UPLOAD_N8N/004_skill_router_dl_nexus_v3.json</code>: Invalid JSON</li>
+</ul><br><br><h2>Detalhamento dos Workflows</h2><br><br><table border="1" cellpadding="5" style="border-collapse: collapse;">
+<tr><td>Arquivo</td><td>Nome do Workflow</td><td>Status Ativo</td><td>Qtd. Nodes</td><td>Dependências Principais</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/00_CONFIG/dl_nexus_canais_oficiais.json</code></td><td>N/A</td><td>❌ Não</td><td>0</td><td>Nenhuma detectada</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/01_WORKFLOWS_RECEBIDOS_JULES/003_roteador_diego_v3_killcritic.json</code></td><td>003_roteador_diego_v3_killcritic</td><td>❌ Não</td><td>3</td><td>Webhooks</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/003_roteador_diego_v3_killcritic.json</code></td><td>003_roteador_diego_v3_killcritic</td><td>❌ Não</td><td>3</td><td>Webhooks</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/004_skill_router_dl_nexus_v3.json</code></td><td>004_skill_router_dl_nexus_v3</td><td>❌ Não</td><td>3</td><td>Webhooks</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/081_PUBLICADOR_INSTAGRAM_META_API.json</code></td><td>081_PUBLICADOR_INSTAGRAM_META_API</td><td>❌ Não</td><td>15</td><td>Webhooks, Telegram</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/082_PUBLICADOR_FACEBOOK_META_API.json</code></td><td>082_PUBLICADOR_FACEBOOK_META_API</td><td>❌ Não</td><td>13</td><td>Webhooks, Telegram</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE.json</code></td><td>083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE</td><td>❌ Não</td><td>12</td><td>Webhooks, Telegram</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/084_PUBLICADOR_TIKTOK_ASSISTIDO.json</code></td><td>084_PUBLICADOR_TIKTOK_ASSISTIDO</td><td>❌ Não</td><td>12</td><td>Webhooks, Telegram</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/085_SOCIAL_DISPATCHER_DL_NEXUS.json</code></td><td>085_SOCIAL_DISPATCHER_DL_NEXUS</td><td>❌ Não</td><td>12</td><td>Webhooks, Telegram</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/11_N8N_AGENTES_V3/060_AGENT_MANUS_PROSPECCAO_ATIVA.json</code></td><td>060_AGENT_MANUS_PROSPECCAO_ATIVA</td><td>❌ Não</td><td>4</td><td>Webhooks</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/019_GERADOR_ORCAMENTO_RAPIDO.json</code></td><td>019_GERADOR_ORCAMENTO_RAPIDO</td><td>❌ Não</td><td>4</td><td>Nenhuma detectada</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO.json</code></td><td>020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO</td><td>❌ Não</td><td>16</td><td>AI/LLM, Telegram</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/081_PUBLICADOR_INSTAGRAM_META_API.json</code></td><td>081_PUBLICADOR_INSTAGRAM_META_API</td><td>❌ Não</td><td>15</td><td>Webhooks, Telegram</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/082_PUBLICADOR_FACEBOOK_META_API.json</code></td><td>082_PUBLICADOR_FACEBOOK_META_API</td><td>❌ Não</td><td>13</td><td>Webhooks, Telegram</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE.json</code></td><td>083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE</td><td>❌ Não</td><td>12</td><td>Webhooks, Telegram</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/084_PUBLICADOR_TIKTOK_ASSISTIDO.json</code></td><td>084_PUBLICADOR_TIKTOK_ASSISTIDO</td><td>❌ Não</td><td>12</td><td>Webhooks, Telegram</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/085_SOCIAL_DISPATCHER_DL_NEXUS.json</code></td><td>085_SOCIAL_DISPATCHER_DL_NEXUS</td><td>❌ Não</td><td>12</td><td>Webhooks, Telegram</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/20_UPLOAD_N8N/003_roteador_diego_v3_killcritic.json</code></td><td>003_roteador_diego_v3_killcritic</td><td>❌ Não</td><td>3</td><td>Webhooks</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/20_UPLOAD_N8N/003_roteador_diego_v3_killcritic_config.json</code></td><td>003_roteador_diego_v3_killcritic</td><td>❌ Não</td><td>3</td><td>Webhooks</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/20_UPLOAD_N8N/004_skill_router_dl_nexus_v3_config.json</code></td><td>004_skill_router_dl_nexus_v3</td><td>❌ Não</td><td>3</td><td>Webhooks</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/20_UPLOAD_N8N/020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO_config.json</code></td><td>020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO</td><td>❌ Não</td><td>16</td><td>AI/LLM, Telegram</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/20_UPLOAD_N8N/081_PUBLICADOR_INSTAGRAM_META_API_config.json</code></td><td>081_PUBLICADOR_INSTAGRAM_META_API</td><td>❌ Não</td><td>15</td><td>Webhooks, Telegram</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/20_UPLOAD_N8N/082_PUBLICADOR_FACEBOOK_META_API_config.json</code></td><td>082_PUBLICADOR_FACEBOOK_META_API</td><td>❌ Não</td><td>13</td><td>Webhooks, Telegram</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/20_UPLOAD_N8N/083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE_config.json</code></td><td>083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE</td><td>❌ Não</td><td>12</td><td>Webhooks, Telegram</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/20_UPLOAD_N8N/084_PUBLICADOR_TIKTOK_ASSISTIDO_config.json</code></td><td>084_PUBLICADOR_TIKTOK_ASSISTIDO</td><td>❌ Não</td><td>12</td><td>Webhooks, Telegram</td></tr>
+<tr><td><code>DL_NEXUS_V3_LOCAL/20_UPLOAD_N8N/085_SOCIAL_DISPATCHER_DL_NEXUS_config.json</code></td><td>N/A</td><td>❌ Não</td><td>0</td><td>Nenhuma detectada</td></tr>
+<tr><td><code>backend/n8n/workflows/001_webhook_receptor.json</code></td><td>001_webhook_receptor_enterprise</td><td>❌ Não</td><td>13</td><td>Supabase, AI/LLM, Webhooks</td></tr>
+<tr><td><code>backend/n8n/workflows/002_roteador_aninha.json</code></td><td>002_roteador_aninha_v2</td><td>❌ Não</td><td>17</td><td>Supabase, AI/LLM, Webhooks</td></tr>
+<tr><td><code>backend/n8n/workflows/003_roteador_diego.json</code></td><td>003_roteador_diego</td><td>❌ Não</td><td>3</td><td>Supabase, Webhooks</td></tr>
+<tr><td><code>backend/n8n/workflows/004_roteador_agentes_especializados.json</code></td><td>004_roteador_agentes_especializados</td><td>❌ Não</td><td>7</td><td>Supabase, AI/LLM, Webhooks</td></tr>
+<tr><td><code>backend/n8n/workflows/005_roteador_jules.json</code></td><td>005_roteador_jules</td><td>❌ Não</td><td>2</td><td>Webhooks</td></tr>
+<tr><td><code>backend/n8n/workflows/006_notificacoes.json</code></td><td>006_notificacoes</td><td>❌ Não</td><td>2</td><td>Webhooks</td></tr>
+<tr><td><code>backend/n8n/workflows/007_tarefas_background.json</code></td><td>007_tarefas_background</td><td>❌ Não</td><td>2</td><td>Supabase</td></tr>
+</table>
+
+</body>
+</html>

@@ -15,7 +15,8 @@ class PostApprovalRequest(BaseModel):
     imagem_url: str
 
 @router.post("/aprovar")
-async def aprovar_post(request: PostApprovalRequest):
+# ⚡ Bolt: Using def instead of async def to prevent synchronous I/O (requests.post) from blocking the main event loop
+def aprovar_post(request: PostApprovalRequest):
     """
     Endpoint chamado pelo Frontend (DL Commander) quando o Diogo
     clica em 'Aprovar e Postar' no rascunho gerado pela IA.

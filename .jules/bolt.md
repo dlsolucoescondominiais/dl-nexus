@@ -1,0 +1,3 @@
+## 2024-05-19 - Dashboard KPI Reduce Pass Optimization
+**Learning:** In the React frontend, iterating over an array multiple times using `filter().length` (O(3N) in this case) for separate KPI metrics is a common anti-pattern that can be micro-optimized by doing a single `reduce()` pass to tally multiple metrics simultaneously. Note: the `eslint` configuration is currently broken in this repository for the frontend so `npm run build` using Vite is the reliable method to verify typescript/build issues in the sandbox.
+**Action:** Always favor a single `reduce` pass when calculating multiple distinct metrics from the same base dataset, and when verifying frontend changes, rely on `npm run build` instead of `npm run lint`.

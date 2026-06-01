@@ -15,8 +15,12 @@ class PostApprovalRequest(BaseModel):
     imagem_url: str
 
 @router.post("/aprovar")
-async def aprovar_post(request: PostApprovalRequest):
+def aprovar_post(request: PostApprovalRequest):
     """
+    [Bolt Optimization]: Declared as synchronous `def` instead of `async def`
+    because this route executes blocking I/O (synchronous HTTP requests).
+    FastAPI will automatically offload execution to an external threadpool.
+
     Endpoint chamado pelo Frontend (DL Commander) quando o Diogo
     clica em 'Aprovar e Postar' no rascunho gerado pela IA.
     """

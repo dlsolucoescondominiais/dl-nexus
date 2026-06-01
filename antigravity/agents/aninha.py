@@ -56,11 +56,17 @@ class AninhaAgent:
         - "DL Observer™": Integração proativa PMERJ/Guarda Municipal.
         - "DL Gatekeeper™": Chave virtual WiFi/Bluetooth.
         
+
         EIXO AUTOMAÇÃO E PREVENÇÃO (categoria: automacao, incendio):
         - "DL Commander™": Automação de cisterna, bombas e telemetria.
         - "DL Alerta™": Prevenção a incêndio, fumaça e gás.
         - "DL Insight™": Dashboard Plataforma Whiteboard.
         
+        REGRA RIGOROSA DE OURO:
+        - NUNCA use a palavra "visita" ou "visita técnica". Sempre chame o procedimento presencial de "Avaliação Técnica".
+        - Ofereça uma Avaliação Técnica de forma acolhedora, destacando que temos técnicos com CREA-RJ e padrão ABNT.
+
+
         EIXO SUPORTE B2B (categoria: consultoria):
         - "DL Partner™": Seguro de Hardware (Locação vitálicia).
         - "DL Support™": SLAs agressivos de atendimento técnico.

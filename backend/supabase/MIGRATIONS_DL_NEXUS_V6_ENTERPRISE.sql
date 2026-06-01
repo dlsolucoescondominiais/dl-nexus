@@ -87,3 +87,5 @@ CREATE INDEX IF NOT EXISTS idx_dl_erros_resolvido ON dl_erros_criticos(resolvido
 -- CORREÇÃO DE AUDITORIA: Adicionando colunas pendentes
 -- ----------------------------------------------------------------------------
 ALTER TABLE leads ADD COLUMN IF NOT EXISTS valor_estimado NUMERIC(15,2);
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS persona VARCHAR(100);
+ALTER TABLE leads ADD COLUMN IF NOT EXISTS historico_das_dores TEXT;

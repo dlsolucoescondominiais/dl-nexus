@@ -52,7 +52,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"message\": {\n    \"content\": {{ JSON.stringify($json.prompt) }}\n  },\n  \"structured_output_schema\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"estrategia_texto\": { \"type\": \"string\" },\n      \"produto\": { \"type\": \"string\" },\n      \"publico_alvo\": { \"type\": \"string\" },\n      \"bairro\": { \"type\": \"string\" },\n      \"canal_destino\": { \"type\": \"string\" },\n      \"objetivo\": { \"type\": \"string\" }\n    },\n    \"required\": [\"estrategia_texto\", \"produto\", \"publico_alvo\", \"bairro\", \"canal_destino\", \"objetivo\"],\n    \"additionalProperties\": false\n  },\n  \"agent_profile\": \"manus-1.6-lite\"\n}",
+        "jsonBody": "={\n  \"message\": {\n    \"content\": {{ JSON.stringify($json.prompt) }}\n  },\n  \"structured_output_schema\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"estrategia_texto\": { \"type\": \"string\" },\n      \"produto\": { \"type\": \"string\" },\n      \"publico_alvo\": { \"type\": \"string\" },\n      \"bairro\": { \"type\": \"string\" },\n      \"canal_destino\": { \"type\": \"string\" },\n      \"objetivo\": { \"type\": \"string\" }\n    },\n    \"required\": [\"estrategia_texto\", \"produto\", \"publico_alvo\", \"bairro\", \"canal_destino\", \"objetivo\"],\n    \"additionalProperties\": false\n  },\n  \"agent_profile\": \"manus-1.6-lite\",\n  \"interactive_mode\": false\n}",
         "options": {}
       },
       "id": "e5813e78-fa8b-46f0-ae01-278dbd1e231b",
@@ -92,7 +92,7 @@
     },
     {
       "parameters": {
-        "jsCode": "if ($json.status !== 'stopped') {\n  throw new Error('Tarefa ainda em execução. Aguardando...');\n}\nreturn { json: { task_id: $json.id } };"
+        "jsCode": "const status = $json.task.status;\nif (status === 'stopped' || status === 'waiting') {\n  return { json: { task_id: $json.task.id, final_status: status } };\n}\nthrow new Error(`Tarefa em estado '${status}'. Aguardando conclusão...`);"
       },
       "id": "verify-completion",
       "name": "Verify Completion",
@@ -128,7 +128,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const events = $input.all()[0].json.data || [];\nconst resultEvent = events.find(e => e.type === 'structured_output_result');\n\nif (resultEvent && resultEvent.structured_output_result.success) {\n  return { json: resultEvent.structured_output_result.value };\n}\n\nthrow new Error('Resultado estruturado do Manus não encontrado na conclusão.');"
+        "jsCode": "const events = $input.all()[0].json.data || [];\nconst resultEvent = events.find(e => e.type === 'structured_output_result');\n\nif (resultEvent && resultEvent.structured_output_result.success) {\n  return { json: resultEvent.structured_output_result.value };\n}\n\n// Se não encontrou o JSON estruturado mas o Manus parou, tenta extrair da última mensagem como fallback\nconst lastAssistantMsg = events.find(e => e.type === 'assistant_message');\nif (lastAssistantMsg && lastAssistantMsg.assistant_message.content.includes('{')) {\n    try {\n        const content = lastAssistantMsg.assistant_message.content;\n        const jsonStr = content.substring(content.indexOf('{'), content.lastIndexOf('}') + 1);\n        return { json: JSON.parse(jsonStr) };\n    } catch (e) {}\n}\n\nthrow new Error('Resultado estruturado do Manus não encontrado. Verifique a tarefa no painel do Manus.');"
       },
       "id": "ab2b8419-1669-4265-a3ab-7f88aba040dc",
       "name": "Limpar JSON do Manus",

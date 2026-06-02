@@ -1,0 +1,850 @@
+{
+  "ambiente": "n8n.dlsolucoescondominiais.com.br",
+  "modo": "auditoria_read_only",
+  "workflows": [
+    {
+      "name": "013_MAQUINA_DE_ATRACAO",
+      "id": "wf_013_maquina_de_atracao",
+      "active": false,
+      "file_path": "backend/n8n/workflows/013_MAQUINA_DE_ATRACAO.json",
+      "triggers": [
+        "n8n-nodes-base.scheduleTrigger"
+      ],
+      "http_nodes": [
+        "Publicar Facebook",
+        "Publicar Instagram",
+        "Publicar GMB"
+      ],
+      "llm_nodes": [
+        "Gerar Conteúdo"
+      ],
+      "approvals": [
+        "Aprovar KILLCRITIC"
+      ],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "003_roteador_diego",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "backend/n8n/workflows/003_roteador_diego.json",
+      "triggers": [
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [
+        "Chamar Técnicos (004)"
+      ],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": [
+        "QzziIRhKJMDNAE1m"
+      ]
+    },
+    {
+      "name": "004_roteador_agentes_especializados",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "backend/n8n/workflows/004_roteador_agentes_especializados.json",
+      "triggers": [
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [
+        "Notificar Diogo (006)"
+      ],
+      "llm_nodes": [
+        "OpenAI"
+      ],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": [
+        "QzziIRhKJMDNAE1m"
+      ]
+    },
+    {
+      "name": "005_roteador_jules",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "backend/n8n/workflows/005_roteador_jules.json",
+      "triggers": [
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [
+        "Notificar (006)"
+      ],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "007_tarefas_background",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "backend/n8n/workflows/007_tarefas_background.json",
+      "triggers": [
+        "n8n-nodes-base.scheduleTrigger"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": [
+        "QzziIRhKJMDNAE1m"
+      ]
+    },
+    {
+      "name": "002_roteador_aninha_v2",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "backend/n8n/workflows/002_roteador_aninha.json",
+      "triggers": [
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [
+        "Chamar 004 Jules"
+      ],
+      "llm_nodes": [
+        "OpenAI"
+      ],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": [
+        "QzziIRhKJMDNAE1m"
+      ]
+    },
+    {
+      "name": "001_webhook_receptor_enterprise",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "backend/n8n/workflows/001_webhook_receptor.json",
+      "triggers": [
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [
+        "Triagem Avançada (Gemini Flash)",
+        "Google Gemini",
+        "Resposta Técnica (Sonnet)",
+        "Resposta Comercial (GPT-4o)",
+        "OpenAI GPT-4o",
+        "Fallback 1 (GPT-4o Mini)",
+        "OpenAI Mini"
+      ],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "006_notificacoes",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "backend/n8n/workflows/006_notificacoes.json",
+      "triggers": [
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [
+        "ElevenLabs Aninha"
+      ],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "003_roteador_diego_v3_killcritic",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/01_WORKFLOWS_RECEBIDOS_JULES/003_roteador_diego_v3_killcritic.json",
+      "triggers": [
+        "n8n-nodes-base.respondToWebhook",
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE.json",
+      "triggers": [
+        "n8n-nodes-base.respondToWebhook",
+        "n8n-nodes-base.webhook",
+        "n8n-nodes-base.errorTrigger"
+      ],
+      "http_nodes": [
+        "HTTP Request: POST Google Business Profile"
+      ],
+      "llm_nodes": [],
+      "approvals": [
+        "IF: KILLCRITIC aprovado",
+        "Telegram: Aviso Não Aprovado"
+      ],
+      "dependencies": [],
+      "credentials": [
+        "CREDENCIAL_OAUTH2_GOOGLE_BUSINESS",
+        "CREDENCIAL_TELEGRAM"
+      ]
+    },
+    {
+      "name": "091_SENTINELA_AUDITORIA_N8N_DL_NEXUS",
+      "id": "sentinelaAuditoriaN8nDlNexus091",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/091_SENTINELA_AUDITORIA_N8N_DL_NEXUS.json",
+      "triggers": [
+        "n8n-nodes-base.scheduleTrigger"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "092_MESA_APROVACAO_TELEGRAM_ANINHA",
+      "id": "mesaAprovacaoTelegramAninha092",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/092_MESA_APROVACAO_TELEGRAM_ANINHA.json",
+      "triggers": [
+        "n8n-nodes-base.telegramTrigger"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "177_GERAR_PROPOSTA_MARKDOWN",
+      "id": "gerarPropostaMarkdown177DlNexus20260527",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/177_GERAR_PROPOSTA_MARKDOWN.json",
+      "triggers": [
+        "n8n-nodes-base.webhookResponse",
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "179_TESTES_PRECIFICACAO",
+      "id": "testesPrecificacao179DlNexus20260527",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/179_TESTES_PRECIFICACAO.json",
+      "triggers": [
+        "n8n-nodes-base.manualTrigger"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [
+        "Executar Motor 170"
+      ],
+      "credentials": []
+    },
+    {
+      "name": "173_CALCULAR_MATERIAIS_TERCEIROS",
+      "id": "calcularMateriais173DlNexus20260527",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/173_CALCULAR_MATERIAIS_TERCEIROS.json",
+      "triggers": [
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "175_GERAR_FAIXA_COMERCIAL",
+      "id": "gerarFaixaComercial175DlNexus20260527",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/175_GERAR_FAIXA_COMERCIAL.json",
+      "triggers": [
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "176_KILLCRITIC_PRECIFICACAO",
+      "id": "killcriticPrecificacao176DlNexus20260527",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/176_KILLCRITIC_PRECIFICACAO.json",
+      "triggers": [
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "174_CALCULAR_SLA_PARTNER",
+      "id": "calcularSlaPartner174DlNexus20260527",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/174_CALCULAR_SLA_PARTNER.json",
+      "triggers": [
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "004_skill_router_dl_nexus_v3",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/004_skill_router_dl_nexus_v3.json",
+      "triggers": [
+        "n8n-nodes-base.respondToWebhook",
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "084_PUBLICADOR_TIKTOK_ASSISTIDO",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/084_PUBLICADOR_TIKTOK_ASSISTIDO.json",
+      "triggers": [
+        "n8n-nodes-base.respondToWebhook",
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [
+        "Telegram: Não Aprovado",
+        "IF: KILLCRITIC aprovado",
+        "Respond: Não Aprovado"
+      ],
+      "dependencies": [],
+      "credentials": [
+        "Conta do Telegram"
+      ]
+    },
+    {
+      "name": "085_SOCIAL_DISPATCHER_DL_NEXUS",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/085_SOCIAL_DISPATCHER_DL_NEXUS.json",
+      "triggers": [
+        "n8n-nodes-base.webhook",
+        "n8n-nodes-base.errorTrigger"
+      ],
+      "http_nodes": [
+        "HTTP: Dispatch → Instagram (081)",
+        "HTTP: Dispatch → Facebook (082)",
+        "HTTP: Dispatch → Google Business (083)",
+        "HTTP: Dispatch → TikTok Assistido (084)"
+      ],
+      "llm_nodes": [],
+      "approvals": [
+        "Telegram: Alerta Não Aprovado"
+      ],
+      "dependencies": [],
+      "credentials": [
+        "cred-telegram-dl"
+      ]
+    },
+    {
+      "name": "172_CALCULAR_MAO_DE_OBRA",
+      "id": "calcularMaoObra172DlNexus20260527",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/172_CALCULAR_MAO_DE_OBRA.json",
+      "triggers": [
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": [
+        "placeholder_google_calendar_oauth2"
+      ]
+    },
+    {
+      "name": "170_MOTOR_PRECIFICACAO_DL_NEXUS",
+      "id": "motorPrecificacao170DlNexus20260527",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/170_MOTOR_PRECIFICACAO_DL_NEXUS.json",
+      "triggers": [
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "178_LOG_PRECIFICACAO",
+      "id": "logPrecificacao178DlNexus20260527",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/178_LOG_PRECIFICACAO.json",
+      "triggers": [
+        "n8n-nodes-base.respondToWebhook",
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": [
+        "supabase-cred"
+      ]
+    },
+    {
+      "name": "082_PUBLICADOR_FACEBOOK_META_API",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/082_PUBLICADOR_FACEBOOK_META_API.json",
+      "triggers": [
+        "n8n-nodes-base.respondToWebhook",
+        "n8n-nodes-base.webhook",
+        "n8n-nodes-base.errorTrigger"
+      ],
+      "http_nodes": [
+        "HTTP POST: Facebook /photos (com imagem)",
+        "HTTP POST: Facebook /feed (sem imagem)"
+      ],
+      "llm_nodes": [],
+      "approvals": [
+        "IF: KILLCRITIC Aprovado?"
+      ],
+      "dependencies": [],
+      "credentials": [
+        "cred_facebook_graph_api",
+        "cred_telegram_api"
+      ]
+    },
+    {
+      "name": "171_CALCULAR_DESLOCAMENTO_MAPS",
+      "id": "calcularDeslocamento171DlNexus20260527",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/171_CALCULAR_DESLOCAMENTO_MAPS.json",
+      "triggers": [
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": [
+        "googleMaps"
+      ]
+    },
+    {
+      "name": "081_PUBLICADOR_INSTAGRAM_META_API",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/09_PRONTOS_PARA_PRODUCAO/081_PUBLICADOR_INSTAGRAM_META_API.json",
+      "triggers": [
+        "n8n-nodes-base.respondToWebhook",
+        "n8n-nodes-base.webhook",
+        "n8n-nodes-base.errorTrigger"
+      ],
+      "http_nodes": [
+        "HTTP: Criar Container de Mídia",
+        "HTTP: Publicar no Instagram"
+      ],
+      "llm_nodes": [],
+      "approvals": [
+        "IF: KILLCRITIC APROVADO",
+        "Telegram: Alerta Não Aprovado"
+      ],
+      "dependencies": [],
+      "credentials": [
+        "cred-telegram",
+        "cred-facebook-graph"
+      ]
+    },
+    {
+      "name": "020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/20_UPLOAD_N8N/020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO_config.json",
+      "triggers": [
+        "n8n-nodes-base.manualTrigger"
+      ],
+      "http_nodes": [
+        "Facebook Publish",
+        "Instagram Media Container",
+        "Instagram Publish Container"
+      ],
+      "llm_nodes": [
+        "Gerar Textos IA"
+      ],
+      "approvals": [
+        "IF KILLCRITIC Aprovado?",
+        "Wait Aprovação Webhook",
+        "IF Decisão Aprovada?"
+      ],
+      "dependencies": [],
+      "credentials": [
+        "Conta OpenAi",
+        "SMTP - Suporte DL",
+        "Aplicativo do Facebook",
+        "Conta do Telegram"
+      ]
+    },
+    {
+      "name": "060_AGENT_MANUS_PROSPECCAO_ATIVA",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/11_N8N_AGENTES_V3/060_AGENT_MANUS_PROSPECCAO_ATIVA.json",
+      "triggers": [
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [
+        "IA Escreve a Mensagem",
+        "Disparar WhatsApp (Meta API)"
+      ],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "144_REVISOR_IA_DUPLO",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/144_REVISOR_IA_DUPLO.json",
+      "triggers": [
+        "n8n-nodes-base.executeWorkflowTrigger"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [
+        "Execute Workflow Trigger"
+      ],
+      "credentials": []
+    },
+    {
+      "name": "142_CLASSIFICADOR_TEMA_MIDIA",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/142_CLASSIFICADOR_TEMA_MIDIA.json",
+      "triggers": [
+        "n8n-nodes-base.executeWorkflowTrigger"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [
+        "Execute Workflow Trigger"
+      ],
+      "credentials": []
+    },
+    {
+      "name": "148_LOG_E_MEMORIA_SOCIAL",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/148_LOG_E_MEMORIA_SOCIAL.json",
+      "triggers": [
+        "n8n-nodes-base.executeWorkflowTrigger"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [
+        "Execute Workflow Trigger"
+      ],
+      "credentials": []
+    },
+    {
+      "name": "130_MANUS_PROSPECCAO_B2B_RJ",
+      "id": "manusProspeccao130DlNexus20260523",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/130_MANUS_PROSPECCAO_B2B_RJ.json",
+      "triggers": [
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "135 Relatorio Comercial Diario DL Nexus",
+      "id": "relatorioComercialDiario135DlNexus20260523",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/135_RELATORIO_COMERCIAL_DIARIO_DL_NEXUS.json",
+      "triggers": [
+        "n8n-nodes-base.scheduleTrigger"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": [
+        "TELEGRAM_CRED_ID_AQUI",
+        "SUPABASE_CRED_ID_AQUI"
+      ]
+    },
+    {
+      "name": "019_GERADOR_ORCAMENTO_RAPIDO",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/019_GERADOR_ORCAMENTO_RAPIDO.json",
+      "triggers": [
+        "n8n-nodes-base.manualTrigger"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "143_GERADOR_POST_EDUCATIVO_DL",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/143_GERADOR_POST_EDUCATIVO_DL.json",
+      "triggers": [
+        "n8n-nodes-base.executeWorkflowTrigger"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [
+        "Execute Workflow Trigger"
+      ],
+      "credentials": []
+    },
+    {
+      "name": "145_CRIADOR_CARROSSEL_SOCIAL",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/145_CRIADOR_CARROSSEL_SOCIAL.json",
+      "triggers": [
+        "n8n-nodes-base.executeWorkflowTrigger"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [
+        "Execute Workflow Trigger"
+      ],
+      "credentials": []
+    },
+    {
+      "name": "131_SCORING_LEADS_DL_NEXUS",
+      "id": "scoringLeads131DlNexus20260523",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/131_SCORING_LEADS_DL_NEXUS.json",
+      "triggers": [
+        "n8n-nodes-base.respondToWebhook",
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "132_ENGAJAMENTO_SOCIAL_ASSISTIDO_DL_NEXUS",
+      "id": "engajamentoAssistido132DlNexus20260523",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/132_ENGAJAMENTO_SOCIAL_ASSISTIDO_DL_NEXUS.json",
+      "triggers": [
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "021_DESCOBRIR_IDS_SOCIAIS_DL_NEXUS",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/021_DESCOBRIR_IDS_SOCIAIS_DL_NEXUS.json",
+      "triggers": [
+        "n8n-nodes-base.manualTrigger"
+      ],
+      "http_nodes": [
+        "GET Facebook Pages",
+        "GET Instagram Business Account",
+        "GET Instagram Accounts List"
+      ],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": [
+        "SMTP - Suporte DL",
+        "Aplicativo do Facebook",
+        "Conta do Telegram"
+      ]
+    },
+    {
+      "name": "149_RELATORIO_SOCIAL_DIARIO",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/149_RELATORIO_SOCIAL_DIARIO.json",
+      "triggers": [
+        "n8n-nodes-base.scheduleTrigger"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "147_SENTINELA_NOTICIAS_VERIFICADAS",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/147_SENTINELA_NOTICIAS_VERIFICADAS.json",
+      "triggers": [
+        "n8n-nodes-base.scheduleTrigger"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": []
+    },
+    {
+      "name": "141_REVISOR_MIDIAS_DL_NEXUS",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/141_REVISOR_MIDIAS_DL_NEXUS.json",
+      "triggers": [
+        "n8n-nodes-base.executeWorkflowTrigger"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [
+        "Execute Workflow Trigger"
+      ],
+      "credentials": []
+    },
+    {
+      "name": "133_APROVACAO_PROSPECCAO_TELEGRAM",
+      "id": "aprovacaoProspeccaoTelegram133DlNexus20260523",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/133_APROVACAO_PROSPECCAO_TELEGRAM.json",
+      "triggers": [
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": [
+        "Conta do Telegram"
+      ]
+    },
+    {
+      "name": "134_POST_GOOGLE_BUSINESS_DL_NEXUS",
+      "id": "postGoogleBusiness134DlNexus20260523",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/134_POST_GOOGLE_BUSINESS_DL_NEXUS.json",
+      "triggers": [
+        "n8n-nodes-base.webhook"
+      ],
+      "http_nodes": [
+        "Publicar no Google Business"
+      ],
+      "llm_nodes": [],
+      "approvals": [
+        "IF Aprovado"
+      ],
+      "dependencies": [],
+      "credentials": [
+        "OAuth2 Google Business Profile",
+        "Conta do Telegram"
+      ]
+    },
+    {
+      "name": "140_ZELADOR_MIDIAS_GOOGLE_DRIVE",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/140_ZELADOR_MIDIAS_GOOGLE_DRIVE.json",
+      "triggers": [
+        "n8n-nodes-base.scheduleTrigger"
+      ],
+      "http_nodes": [
+        "Read Config (Mock local)"
+      ],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [],
+      "credentials": [
+        "vDUp3ZKxazIKho51"
+      ]
+    },
+    {
+      "name": "146_PUBLICADOR_MULTICANAL_DL",
+      "id": "Unknown",
+      "active": false,
+      "file_path": "DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/146_PUBLICADOR_MULTICANAL_DL.json",
+      "triggers": [
+        "n8n-nodes-base.executeWorkflowTrigger"
+      ],
+      "http_nodes": [],
+      "llm_nodes": [],
+      "approvals": [],
+      "dependencies": [
+        "Execute Workflow Trigger"
+      ],
+      "credentials": []
+    }
+  ],
+  "credenciais": [],
+  "apis": [
+    "Meta Graph API",
+    "Google My Business",
+    "OpenAI",
+    "Gemini",
+    "Claude"
+  ],
+  "modulos": [
+    "Triagem",
+    "Especializados",
+    "Social / Postagens",
+    "Precificação",
+    "Utilitários"
+  ],
+  "bloqueios": [
+    "Validar KILLCRITIC",
+    "Telegram Wait"
+  ],
+  "dependencias": [],
+  "riscos": [
+    "Falha de credencial da Meta Graph API",
+    "Vulnerabilidade de injeção de SQL (raw queries)",
+    "Workflows parados (TikTok)"
+  ],
+  "nao_alterar": [
+    "000_meta_receptor",
+    "001_webhook_receptor",
+    "Nodes Postgres com defineBelow",
+    "Configurações do KILLCRITIC V3"
+  ]
+}

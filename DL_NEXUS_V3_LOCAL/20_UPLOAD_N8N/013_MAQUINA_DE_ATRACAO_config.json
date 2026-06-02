@@ -1,0 +1,513 @@
+{
+  "name": "013_MAQUINA_DE_ATRACAO",
+  "id": "wf_013_maquina_de_atracao",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            { "field": "days" }
+          ]
+        }
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [ 0, 300 ],
+      "id": "1"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Gere um rascunho de post sobre as dores de condomínios. \nRegras do KILLCRITIC:\n- Bloquear 'visita técnica', substituir por 'Avaliação Técnica'\n- Bloquear 'Condfy', usar 'Fortress'\n- Não chamar Diogo de engenheiro, usar 'Tecnólogo Responsável'\n- Exigir CTA principal: https://dlsolucoescondominiais.com\n- Exigir CTA secundário: https://wa.me/5521964742458\n- Não prometer preço final."
+            }
+          ]
+        }
+      },
+      "id": "2",
+      "name": "Gerar Conteúdo",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.4,
+      "position": [ 200, 300 ]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "conteudos_marketing",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "conteudo": "={{ $json.text }}",
+            "status": "gerado"
+          }
+        }
+      },
+      "id": "3",
+      "name": "Salvar Postgres",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [ 400, 300 ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT media_url FROM conteudos_marketing WHERE id = {{$('Salvar Postgres').item.json.id}} LIMIT 1;"
+      },
+      "id": "4",
+      "name": "Buscar Mídia",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [ 600, 300 ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            { "value1": "={{ $('Gerar Conteúdo').item.json.text }}", "operation": "notContains", "value2": "visita técnica" },
+            { "value1": "={{ $('Gerar Conteúdo').item.json.text }}", "operation": "notContains", "value2": "Condfy" },
+            { "value1": "={{ $('Gerar Conteúdo').item.json.text }}", "operation": "notContains", "value2": "engenheiro" },
+            { "value1": "={{ $('Gerar Conteúdo').item.json.text }}", "operation": "notContains", "value2": "preço final" },
+            { "value1": "={{ $('Gerar Conteúdo').item.json.text }}", "operation": "notContains", "value2": "residencial" },
+            { "value1": "={{ $('Gerar Conteúdo').item.json.text }}", "operation": "contains", "value2": "https://dlsolucoescondominiais.com" },
+            { "value1": "={{ $('Gerar Conteúdo').item.json.text }}", "operation": "contains", "value2": "https://wa.me/5521964742458" }
+          ]
+        }
+      },
+      "id": "5",
+      "name": "Validar KILLCRITIC",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [ 800, 300 ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "conteudos_marketing",
+        "updateKey": "id",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Salvar Postgres').item.json.id }}",
+            "status": "bloqueado_killcritic"
+          }
+        }
+      },
+      "id": "6",
+      "name": "Bloquear KILLCRITIC",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [ 1000, 100 ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/{{$env.META_FACEBOOK_PAGE_ID}}/feed",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "message", "value": "={{ $('Gerar Conteúdo').item.json.text }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7",
+      "name": "Publicar Facebook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [ 1000, 500 ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            { "value1": "={{ $json.id }}", "operation": "isNotEmpty" }
+          ]
+        }
+      },
+      "id": "8",
+      "name": "IF FB",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [ 1200, 500 ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "conteudos_marketing",
+        "updateKey": "id",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Salvar Postgres').item.json.id }}",
+            "status_facebook": "sucesso",
+            "post_id_facebook": "={{ $json.id }}",
+            "published_at": "={{ new Date().toISOString() }}",
+            "tentativa_publicacao_at": "={{ new Date().toISOString() }}"
+          }
+        }
+      },
+      "id": "9",
+      "name": "FB Sucesso",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [ 1400, 400 ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "conteudos_marketing",
+        "updateKey": "id",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Salvar Postgres').item.json.id }}",
+            "status_facebook": "erro",
+            "erro_facebook": "={{ $json.error ? JSON.stringify($json.error) : 'Erro desconhecido' }}",
+            "tentativa_publicacao_at": "={{ new Date().toISOString() }}"
+          }
+        }
+      },
+      "id": "10",
+      "name": "FB Erro",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [ 1400, 600 ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            { "value1": "={{ $('Buscar Mídia').item.json.media_url }}", "operation": "isNotEmpty" }
+          ]
+        }
+      },
+      "id": "11",
+      "name": "IF IG Media",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [ 1600, 500 ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "conteudos_marketing",
+        "updateKey": "id",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Salvar Postgres').item.json.id }}",
+            "status_instagram": "pulado_sem_midia",
+            "tentativa_publicacao_at": "={{ new Date().toISOString() }}"
+          }
+        }
+      },
+      "id": "12",
+      "name": "IG Sem Mídia",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [ 1800, 700 ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/{{$env.META_INSTAGRAM_BUSINESS_ID}}/media",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "image_url", "value": "={{ $('Buscar Mídia').item.json.media_url }}" },
+            { "name": "caption", "value": "={{ $('Gerar Conteúdo').item.json.text }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "13",
+      "name": "IG Container",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [ 1800, 300 ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            { "value1": "={{ $json.id }}", "operation": "isNotEmpty" }
+          ]
+        }
+      },
+      "id": "14",
+      "name": "IF IG Container",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [ 2000, 300 ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "conteudos_marketing",
+        "updateKey": "id",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Salvar Postgres').item.json.id }}",
+            "status_instagram": "erro_container",
+            "erro_instagram": "={{ $json.error ? JSON.stringify($json.error) : 'Erro container IG' }}",
+            "tentativa_publicacao_at": "={{ new Date().toISOString() }}"
+          }
+        }
+      },
+      "id": "15",
+      "name": "IG Erro Container",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [ 2200, 500 ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v20.0/{{$env.META_INSTAGRAM_BUSINESS_ID}}/media_publish",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "creation_id", "value": "={{ $json.id }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "16",
+      "name": "IG Publish",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [ 2200, 100 ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            { "value1": "={{ $json.id }}", "operation": "isNotEmpty" }
+          ]
+        }
+      },
+      "id": "17",
+      "name": "IF IG Publish",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [ 2400, 100 ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "conteudos_marketing",
+        "updateKey": "id",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Salvar Postgres').item.json.id }}",
+            "status_instagram": "sucesso",
+            "post_id_instagram": "={{ $json.id }}",
+            "published_at": "={{ new Date().toISOString() }}",
+            "tentativa_publicacao_at": "={{ new Date().toISOString() }}"
+          }
+        }
+      },
+      "id": "18",
+      "name": "IG Sucesso",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [ 2600, 0 ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "conteudos_marketing",
+        "updateKey": "id",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Salvar Postgres').item.json.id }}",
+            "status_instagram": "erro_publish",
+            "erro_instagram": "={{ $json.error ? JSON.stringify($json.error) : 'Erro publish IG' }}",
+            "tentativa_publicacao_at": "={{ new Date().toISOString() }}"
+          }
+        }
+      },
+      "id": "19",
+      "name": "IG Erro Publish",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [ 2600, 200 ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://mybusiness.googleapis.com/v4/accounts/{{$env.GOOGLE_BUSINESS_ACCOUNT_ID}}/locations/{{$env.GOOGLE_BUSINESS_LOCATION_ID}}/localPosts",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            { "name": "summary", "value": "={{ $('Gerar Conteúdo').item.json.text }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "20",
+      "name": "Publicar GMB",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [ 2800, 500 ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            { "value1": "={{ $json.name }}", "operation": "isNotEmpty" }
+          ]
+        }
+      },
+      "id": "21",
+      "name": "IF GMB",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [ 3000, 500 ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "conteudos_marketing",
+        "updateKey": "id",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Salvar Postgres').item.json.id }}",
+            "status_google": "sucesso",
+            "post_id_google": "={{ $json.name }}",
+            "published_at": "={{ new Date().toISOString() }}",
+            "tentativa_publicacao_at": "={{ new Date().toISOString() }}"
+          }
+        }
+      },
+      "id": "22",
+      "name": "GMB Sucesso",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [ 3200, 400 ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "conteudos_marketing",
+        "updateKey": "id",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Salvar Postgres').item.json.id }}",
+            "status_google": "erro",
+            "erro_google": "={{ $json.error ? JSON.stringify($json.error) : 'Erro Google' }}",
+            "tentativa_publicacao_at": "={{ new Date().toISOString() }}"
+          }
+        }
+      },
+      "id": "23",
+      "name": "GMB Erro",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [ 3200, 600 ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [ [ { "node": "Gerar Conteúdo", "type": "main", "index": 0 } ] ]
+    },
+    "Gerar Conteúdo": {
+      "main": [ [ { "node": "Salvar Postgres", "type": "main", "index": 0 } ] ]
+    },
+    "Salvar Postgres": {
+      "main": [ [ { "node": "Buscar Mídia", "type": "main", "index": 0 } ] ]
+    },
+    "Buscar Mídia": {
+      "main": [ [ { "node": "Validar KILLCRITIC", "type": "main", "index": 0 } ] ]
+    },
+    "Validar KILLCRITIC": {
+      "main": [
+        [ { "node": "Publicar Facebook", "type": "main", "index": 0 } ],
+        [ { "node": "Bloquear KILLCRITIC", "type": "main", "index": 0 } ]
+      ]
+    },
+    "Publicar Facebook": {
+      "main": [ [ { "node": "IF FB", "type": "main", "index": 0 } ] ]
+    },
+    "IF FB": {
+      "main": [
+        [ { "node": "FB Sucesso", "type": "main", "index": 0 } ],
+        [ { "node": "FB Erro", "type": "main", "index": 0 } ]
+      ]
+    },
+    "FB Sucesso": {
+      "main": [ [ { "node": "IF IG Media", "type": "main", "index": 0 } ] ]
+    },
+    "FB Erro": {
+      "main": [ [ { "node": "IF IG Media", "type": "main", "index": 0 } ] ]
+    },
+    "IF IG Media": {
+      "main": [
+        [ { "node": "IG Container", "type": "main", "index": 0 } ],
+        [ { "node": "IG Sem Mídia", "type": "main", "index": 0 } ]
+      ]
+    },
+    "IG Container": {
+      "main": [ [ { "node": "IF IG Container", "type": "main", "index": 0 } ] ]
+    },
+    "IF IG Container": {
+      "main": [
+        [ { "node": "IG Publish", "type": "main", "index": 0 } ],
+        [ { "node": "IG Erro Container", "type": "main", "index": 0 } ]
+      ]
+    },
+    "IG Publish": {
+      "main": [ [ { "node": "IF IG Publish", "type": "main", "index": 0 } ] ]
+    },
+    "IF IG Publish": {
+      "main": [
+        [ { "node": "IG Sucesso", "type": "main", "index": 0 } ],
+        [ { "node": "IG Erro Publish", "type": "main", "index": 0 } ]
+      ]
+    },
+    "IG Sem Mídia": {
+      "main": [ [ { "node": "Publicar GMB", "type": "main", "index": 0 } ] ]
+    },
+    "IG Erro Container": {
+      "main": [ [ { "node": "Publicar GMB", "type": "main", "index": 0 } ] ]
+    },
+    "IG Sucesso": {
+      "main": [ [ { "node": "Publicar GMB", "type": "main", "index": 0 } ] ]
+    },
+    "IG Erro Publish": {
+      "main": [ [ { "node": "Publicar GMB", "type": "main", "index": 0 } ] ]
+    },
+    "Publicar GMB": {
+      "main": [ [ { "node": "IF GMB", "type": "main", "index": 0 } ] ]
+    },
+    "IF GMB": {
+      "main": [
+        [ { "node": "GMB Sucesso", "type": "main", "index": 0 } ],
+        [ { "node": "GMB Erro", "type": "main", "index": 0 } ]
+      ]
+    }
+  }
+}

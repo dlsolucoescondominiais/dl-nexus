@@ -1,0 +1,20 @@
+{
+"modo_publicacao": "AUTOMATICO",
+"requer_aprovacao_manual": false,
+"telegram_bloqueia_publicacao": false,
+"killcritic_obrigatorio": true,
+"telegram_apenas_erros_criticos": true,
+"cta_principal": "https://dlsolucoescondominiais.com",
+"cta_secundario_whatsapp": "https://wa.me/5521964742458",
+"canais": {
+"facebook": true,
+"instagram": true,
+"google_business": true,
+"tiktok": true
+},
+"fallback": {
+"se_tiktok_falhar_continuar_demais": true,
+"se_google_falhar_continuar_meta": true,
+"se_instagram_falhar_continuar_facebook": true
+}
+}

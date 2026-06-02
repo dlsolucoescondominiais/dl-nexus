@@ -1,0 +1,296 @@
+{
+  "name": "090_DL_GESTOR_REPARO_N8N_SOCIAL",
+  "id": "wf_090_dl_gestor_reparo",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "id": "1",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "2",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-nexus/social-repair/check",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "3",
+      "name": "Webhook Manual",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        250,
+        600
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "4",
+      "name": "Merge Triggers",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2.1,
+      "position": [
+        500,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.N8N_BASE_URL }}/api/v1/workflows",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-N8N-API-KEY",
+              "value": "={{ $env.N8N_API_KEY }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5",
+      "name": "Listar Workflows n8n API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        700,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const sociais = [\n  \"070_CRON_MANUS_DIARIO\",\n  \"020_PUBLICADOR_SOCIAL_DL_NEXUS_V3\",\n  \"020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO\",\n  \"013_MAQUINA_DE_ATRACAO\",\n  \"081_PUBLICADOR_INSTAGRAM_META_API\",\n  \"082_PUBLICADOR_FACEBOOK_META_API\",\n  \"083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE\",\n  \"084_PUBLICADOR_TIKTOK_ASSISTIDO\",\n  \"085_SOCIAL_DISPATCHER_DL_NEXUS\"\n];\nreturn $input.all()[0].json.data.filter(w => sociais.some(nome => w.name.includes(nome))).map(w => ({json: w}));"
+      },
+      "id": "6",
+      "name": "Filtrar Workflows Sociais",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        900,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $env.N8N_BASE_URL }}/api/v1/workflows/{{ $json.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-N8N-API-KEY",
+              "value": "={{ $env.N8N_API_KEY }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7",
+      "name": "Ler Workflow Completo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1100,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "let wf = $input.item.json;\nlet report = { wf_name: wf.name, correcoes: [], erros_criticos: [], seguro_corrigir: false, tokens_consumidos: 0, changed: false };\nlet wf_str = JSON.stringify(wf);\n\n// Erro 1: Dominio Manus\nif (wf_str.match(/api\\.manus\\.(gg|gq|ia|ai\\/v1)/)) {\n  wf_str = wf_str.replace(/api\\.manus\\.(gg|gq|ia|ai\\/v1)/g, 'api.manus.ai/v2');\n  report.correcoes.push(\"Domínio Manus restaurado para api.manus.ai/v2\");\n  report.changed = true;\n}\n\n// Erro 5: Nomes comerciais\nif (wf_str.includes(\"Gatekeeper\") && !wf_str.includes(\"DL GateKeeper\")) {\n  wf_str = wf_str.replace(/Gatekeeper/g, \"DL GateKeeper\");\n  report.correcoes.push(\"Gatekeeper corrigido para DL GateKeeper\");\n  report.changed = true;\n}\nif (wf_str.includes(\"Fortress\") && !wf_str.includes(\"DL Fortress\")) {\n  wf_str = wf_str.replace(/Fortress/g, \"DL Fortress\");\n  report.correcoes.push(\"Fortress corrigido para DL Fortress\");\n  report.changed = true;\n}\nif (wf_str.includes(\"DL Ignis\")) {\n  wf_str = wf_str.replace(/DL Ignis/g, \"DL Alerta\");\n  report.correcoes.push(\"DL Ignis corrigido para DL Alerta\");\n  report.changed = true;\n}\nif (wf_str.includes(\"Mult•Grill Express\")) {\n  wf_str = wf_str.replace(/Mult•Grill Express/g, \"DL Suporte Grill’s\");\n  report.correcoes.push(\"Marca corrigida para DL Suporte Grill’s\");\n  report.changed = true;\n}\n\nif (wf.name.includes(\"070\")) {\n   let hasKey = wf_str.includes(\"x-manus-api-key\");\n   \n   // Erro 2: Header Manus ausente ou Bearer\n   if (wf_str.includes(\"Authorization: Bearer\") && hasKey) {\n     wf_str = wf_str.replace(/Authorization: Bearer/g, \"x-manus-api-key\");\n     report.correcoes.push(\"Header Manus restaurado para x-manus-api-key\");\n     report.changed = true;\n   } else if (!hasKey) {\n     report.erros_criticos.push(\"Chave Manus ausente (x-manus-api-key não encontrada). Correção bloqueada para preservar credencial.\");\n   }\n   \n   if (!wf_str.includes(\"structured_output_schema\")) report.erros_criticos.push(\"structured_output_schema ausente\");\n   if (!wf_str.includes(\"agent_profile\")) report.erros_criticos.push(\"agent_profile ausente\");\n   if (!wf_str.includes(\"interactive_mode\")) report.erros_criticos.push(\"interactive_mode ausente\");\n   \n   // Erro 3: Polling\n   if (wf_str.includes(\"task.create\") && wf_str.includes(\"task.listMessages\") && !wf_str.includes(\"task.detail\")) {\n     // Structural change blocked due to complexity. Escalated to Critical.\n     report.erros_criticos.push(\"Ausência de polling real detectada (falta task.detail). Correção ignorada devido a complexidade estrutural. Requer intervenção manual.\");\n   }\n}\n\n// Erro 4: Telegram Bloqueio\nif (wf_str.includes(\"Aguardando Aprovação Telegram\") || wf_str.includes(\"Aprovação Manual Telegram\")) {\n  // Structural change blocked due to complexity. Escalated to Critical.\n  report.erros_criticos.push(\"Telegram configurado como bloqueio/aprovação em fluxo automático. Correção ignorada devido a complexidade estrutural. Requer intervenção manual.\");\n}\n\nif (report.correcoes.length > 0 && report.erros_criticos.length === 0) {\n  report.seguro_corrigir = true;\n}\n\nreturn { json: { report: report, workflow: JSON.parse(wf_str) } };"
+      },
+      "id": "8",
+      "name": "Auditoria Estática",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1300,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.report.seguro_corrigir }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "9",
+      "name": "IF Seguro Corrigir",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1500,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ $env.N8N_BASE_URL }}/api/v1/workflows/{{ $json.workflow.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-N8N-API-KEY",
+              "value": "={{ $env.N8N_API_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "nodes",
+              "value": "={{ JSON.stringify($json.workflow.nodes) }}"
+            },
+            {
+              "name": "connections",
+              "value": "={{ JSON.stringify($json.workflow.connections) }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "10",
+      "name": "Salvar Workflow Corrigido",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1700,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "TELEGRAM_CHAT_ID",
+        "text": "=🛠 DL Nexus — Gestor Social\n\nStatus: CORRIGIDO\nWorkflow analisado: {{ $('Auditoria Estática').item.json.report.wf_name }}\n\nCorreções aplicadas:\n{{ $('Auditoria Estática').item.json.report.correcoes.join('\\n') }}\n\nAção: Workflow pronto para próxima execução automática.\nTokens Manus consumidos: 0"
+      },
+      "id": "11",
+      "name": "Telegram Corrigido",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1900,
+        350
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegramApiId",
+          "name": "Telegram Bot API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.report.erros_criticos.length }}",
+              "operation": "larger"
+            }
+          ]
+        }
+      },
+      "id": "12",
+      "name": "IF Erro Crítico",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1700,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "TELEGRAM_CHAT_ID",
+        "text": "=🚨 DL Nexus — Erro Social Crítico\n\nWorkflow: {{ $('Auditoria Estática').item.json.report.wf_name }}\n\nProblema:\n{{ $('Auditoria Estática').item.json.report.erros_criticos.join('\\n') }}\n\nAção necessária: Intervenção manual requisitada para prevenir execução quebrada e queima de tokens Manus.\n\nTokens Manus consumidos: 0"
+      },
+      "id": "13",
+      "name": "Telegram Erro Crítico",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1900,
+        550
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegramApiId",
+          "name": "Telegram Bot API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [ [ { "node": "Merge Triggers", "type": "main", "index": 0 } ] ]
+    },
+    "Error Trigger": {
+      "main": [ [ { "node": "Merge Triggers", "type": "main", "index": 0 } ] ]
+    },
+    "Webhook Manual": {
+      "main": [ [ { "node": "Merge Triggers", "type": "main", "index": 0 } ] ]
+    },
+    "Merge Triggers": {
+      "main": [ [ { "node": "Listar Workflows n8n API", "type": "main", "index": 0 } ] ]
+    },
+    "Listar Workflows n8n API": {
+      "main": [ [ { "node": "Filtrar Workflows Sociais", "type": "main", "index": 0 } ] ]
+    },
+    "Filtrar Workflows Sociais": {
+      "main": [ [ { "node": "Ler Workflow Completo", "type": "main", "index": 0 } ] ]
+    },
+    "Ler Workflow Completo": {
+      "main": [ [ { "node": "Auditoria Estática", "type": "main", "index": 0 } ] ]
+    },
+    "Auditoria Estática": {
+      "main": [ [ { "node": "IF Seguro Corrigir", "type": "main", "index": 0 } ] ]
+    },
+    "IF Seguro Corrigir": {
+      "main": [
+        [ { "node": "Salvar Workflow Corrigido", "type": "main", "index": 0 } ],
+        [ { "node": "IF Erro Crítico", "type": "main", "index": 0 } ]
+      ]
+    },
+    "Salvar Workflow Corrigido": {
+      "main": [ [ { "node": "Telegram Corrigido", "type": "main", "index": 0 } ] ]
+    },
+    "IF Erro Crítico": {
+      "main": [
+        [ { "node": "Telegram Erro Crítico", "type": "main", "index": 0 } ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

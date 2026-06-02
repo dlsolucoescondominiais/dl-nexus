@@ -176,3 +176,5 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
+!backend/n8n/workflows/*.json
+!DL_NEXUS_V3_LOCAL/**/*.json

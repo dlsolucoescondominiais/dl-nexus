@@ -1,0 +1,3 @@
+## 2024-06-03 - O(N) loop fusion avoiding multiple generators
+**Learning:** Consolidating multiple iterative aggregation passes into a single loop pass (O(N) loop fusion) when computing multiple metrics on the same collection significantly reduces redundant loop traversal overhead. Avoid anti-patterns like using multiple `sum(1 for ...)` generators or separate loops over large datasets.
+**Action:** When calculating multiple summaries or metrics from a collection (e.g. counting statuses, grouping by categories), merge them into a single `for` loop over the collection to traverse the data exactly once.

@@ -15,7 +15,7 @@ class PostApprovalRequest(BaseModel):
     imagem_url: str
 
 @router.post("/aprovar")
-async def aprovar_post(request: PostApprovalRequest):
+def aprovar_post(request: PostApprovalRequest):
     """
     Endpoint chamado pelo Frontend (DL Commander) quando o Diogo
     clica em 'Aprovar e Postar' no rascunho gerado pela IA.

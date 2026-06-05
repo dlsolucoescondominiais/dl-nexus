@@ -1,0 +1,5 @@
+## 2024-06-25 - Loop Fusion in Python
+
+**Learning:** When generating multiple summary statistics over a large dataset (e.g., counting by status and grouping by various attributes like `tipo_servico` or `porte`), relying on individual `sum(1 for ...)` generator expressions or separate `for` loops results in multiple passes over the dataset (O(M * N) complexity, where M is the number of aggregations). This is an anti-pattern when processing larger lists of records.
+
+**Action:** Consolidate multiple iterative aggregation passes into a single loop pass (O(N) loop fusion) when computing multiple metrics on the same collection. This significantly reduces redundant loop traversal overhead. Replace sequential loops and inline `sum(...)` calls with one `for item in collection:` loop that computes all metrics (counts, grouping dictionaries) simultaneously.

@@ -1,0 +1,3 @@
+## 2026-06-08 - Prevent Event Loop Blocking in FastAPI Routes
+**Learning:** FastAPI route handlers that perform synchronous, blocking I/O operations (like requests.post or synchronous OpenAI calls) MUST be declared with 'def' instead of 'async def'. If declared with 'async def', they block the main event loop, severely degrading performance. Using 'def' allows FastAPI to automatically offload execution to an external threadpool.
+**Action:** Always check if a route handler performs synchronous network calls or heavy computations. If so, declare it as 'def' or refactor the blocking call to be asynchronous.

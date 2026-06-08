@@ -38,10 +38,14 @@ def disparar_webhook_n8n_background(resultado_triagem: dict):
         print(f"Falha ao notificar o webhook do n8n: {e}")
 
 @router.post("/triagem")
-async def triagem_lead(lead: LeadRequest, bg_tasks: BackgroundTasks):
+def triagem_lead(lead: LeadRequest, bg_tasks: BackgroundTasks):
     """
     Endpoint para triagem de leads da DL Soluções
     Se a análise for complexa, retorna imediato e deixa webhook pra avisar.
+
+    ⚡ Bolt Optimization: Using 'def' instead of 'async def' because the underlying
+    call aninha.fazer_triagem() invokes a synchronous OpenAI API request. Using 'def'
+    allows FastAPI to offload execution to a threadpool, preventing the event loop from blocking.
     """
     try:
         # 1. Gera ID para o fluxo

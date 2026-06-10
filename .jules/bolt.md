@@ -1,0 +1,3 @@
+## 2024-06-10 - O(N) Loop Fusion Optimization
+**Learning:** The codebase previously contained anti-patterns like computing multiple metrics (`novos`, `triados`, `servicos`, `portes`) over the same dataset via repeated list comprehensions, generators (`sum(1 for...)`), and separate loops. This required iterating over the same list multiple times (e.g., 4 times for `get_leads_summary` in `execution/stitch_integration.py`).
+**Action:** Consolidate multiple aggregation passes into a single loop pass (O(N) loop fusion). When multiple metrics must be extracted from the same dataset, iterate over the list exactly once and maintain multiple accumulators within the same loop. This avoids redundant loop traversal overhead.

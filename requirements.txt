@@ -1,0 +1,6 @@
+fastapi
+python-dotenv
+PyJWT
+requests
+python-multipart
+uvicorn

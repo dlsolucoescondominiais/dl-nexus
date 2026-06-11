@@ -1,0 +1,3 @@
+## 2025-01-20 - [Performance] FastAPI Architecture Standard Learning
+**Learning:** Route handlers performing synchronous, blocking I/O operations (like `requests.post()` or synchronous `openai` SDK calls) must be declared with standard `def` instead of `async def`. This allows FastAPI to automatically offload execution to an external threadpool, preventing the main event loop from being blocked.
+**Action:** When creating new route handlers, verify whether they use synchronous blocking libraries (`requests`, synchronous `openai`, heavy compute). If so, define the handler as `def` instead of `async def`.

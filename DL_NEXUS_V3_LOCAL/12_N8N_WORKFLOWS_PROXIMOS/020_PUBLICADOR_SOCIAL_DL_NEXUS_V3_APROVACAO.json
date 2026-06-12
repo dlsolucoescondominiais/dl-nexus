@@ -204,7 +204,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ $('Entrada do Post').item.json.image_url ? 'https://graph.facebook.com/v19.0/PAGE_ID_AQUI/photos' : 'https://graph.facebook.com/v19.0/PAGE_ID_AQUI/feed' }}",
+        "url": "={{ $('Entrada do Post').item.json.image_url ? 'https://graph.facebook.com/v19.0/100063696635033/photos' : 'https://graph.facebook.com/v19.0/100063696635033/feed' }}",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "facebookGraphApi",
         "sendBody": true,
@@ -240,7 +240,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://graph.facebook.com/v19.0/INSTAGRAM_BUSINESS_ACCOUNT_ID_AQUI/media",
+        "url": "https://graph.facebook.com/v19.0/3136866194/media",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "facebookGraphApi",
         "sendBody": true,
@@ -276,7 +276,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://graph.facebook.com/v19.0/INSTAGRAM_BUSINESS_ACCOUNT_ID_AQUI/media_publish",
+        "url": "https://graph.facebook.com/v19.0/3136866194/media_publish",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "facebookGraphApi",
         "sendBody": true,

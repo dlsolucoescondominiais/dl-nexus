@@ -1,0 +1,14 @@
+{
+  "name": "Geração de resumo",
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "7240af92-6bf3-4dd5-8918-0d5e8c273b12",
+  "tags": []
+}

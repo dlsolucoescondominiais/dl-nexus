@@ -1,0 +1,14 @@
+{
+  "name": "Agentes especialistas",
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "ae377ed8-f1da-41c2-ae19-a8429d196be8",
+  "tags": []
+}

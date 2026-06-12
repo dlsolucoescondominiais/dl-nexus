@@ -1,0 +1,14 @@
+{
+  "name": "Geração de resposta ao cliente",
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "5ce8a469-e3b5-4132-9859-5a32ac1a55e6",
+  "tags": []
+}

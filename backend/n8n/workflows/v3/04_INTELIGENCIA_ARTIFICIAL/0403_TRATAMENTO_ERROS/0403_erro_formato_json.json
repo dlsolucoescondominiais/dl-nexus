@@ -1,0 +1,14 @@
+{
+  "name": "Tratamento de resposta fora do formato JSON",
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "450a20d4-ac2c-4d46-915e-06321a37df6b",
+  "tags": []
+}

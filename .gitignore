@@ -10,6 +10,7 @@ execution/.env
 !package.json
 !package-lock.json
 !tsconfig.json
+!backend/n8n/workflows/v3/**/*.json
 
 # Tokens de autenticação
 token_*.json

@@ -1,0 +1,14 @@
+{
+  "name": "Geração de relatório",
+  "nodes": [],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "3a01be5e-2e68-4507-bd0d-3c8a9186d231",
+  "tags": []
+}

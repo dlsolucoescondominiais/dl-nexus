@@ -1,0 +1,3 @@
+## 2024-05-20 - Refactored get_leads_summary Multiple O(N) Loops to Single Pass
+**Learning:** `get_leads_summary` in `execution/stitch_integration.py` was previously doing four O(N) passes (two generator comprehensions for counting `novos` and `triados`, and two `for` loops for aggregating `servicos` and `portes`) leading to O(4N) complexity. Although these loops perform operations in memory without hitting the database per item, grouping them into a single loop yields immediate algorithmic improvement, turning O(4N) into an actual O(N).
+**Action:** When calculating several distinct metrics or groupings over the same iterable, always aggregate them in a single pass to minimize iteration overhead.

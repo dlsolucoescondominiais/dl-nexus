@@ -135,7 +135,7 @@
       "position": [1450, 100],
       "parameters": {
         "method": "POST",
-        "url": "https://graph.facebook.com/v19.0/PAGE_ID_AQUI/photos",
+        "url": "https://graph.facebook.com/v19.0/100063696635033/photos",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "facebookGraphApi",
         "sendBody": true,
@@ -186,7 +186,7 @@
       "position": [1450, 320],
       "parameters": {
         "method": "POST",
-        "url": "https://graph.facebook.com/v19.0/PAGE_ID_AQUI/feed",
+        "url": "https://graph.facebook.com/v19.0/100063696635033/feed",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "facebookGraphApi",
         "sendBody": true,

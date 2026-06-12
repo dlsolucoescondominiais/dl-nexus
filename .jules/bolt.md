@@ -1,0 +1,3 @@
+## 2024-05-24 - [FastAPI Blocking I/O in async routes]
+**Learning:** Route handlers performing synchronous, blocking I/O operations (like `requests.post()` or synchronous `openai` SDK calls) must be declared with standard `def` instead of `async def`. If declared as `async def`, they block the main event loop, severely degrading the performance of the entire FastAPI application under load.
+**Action:** Always check if an `async def` route contains blocking synchronous calls. If it does, and the calls cannot be easily made asynchronous (e.g., using `httpx` instead of `requests` or async `openai`), change the route to `def` so FastAPI automatically offloads its execution to an external threadpool.

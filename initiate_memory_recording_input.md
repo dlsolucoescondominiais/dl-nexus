@@ -1,4 +1,3 @@
-# Learnings from Agente Zelador Architecture
-- When building multi-step safety workflows in n8n (like `ZELADOR_DRIVE_EXECUTOR_SEGURO_V1`), throwing an Error in a Code node (`throw new Error(...)`) completely halts that branch. If the design requirement is to catch the failure and log it to a database (e.g. updating a Supabase row to `status: bloqueado`), the validation node should catch the failure gracefully and route it to an error-handling output or set a boolean flag instead of throwing an unhandled exception.
-- In Supabase SQL joins, always ensure that boolean flags (like `ativo = true`) are enforced directly in the SQL query when joining tables like `drive_zelador_allowed_folders` to prevent unapproved folders from passing the initial fetch.
-- When committing dynamically generated `.json` files in directories that are gitignored globally, `git add -f` must be used.
+# Learnings from n8n Workflow Deployment
+- When deploying workflows dynamically to n8n via its API (`POST /workflows`), setting the workflow payload key `settings` to `{"saveExecutionProgress": True, "saveManualExecutions": True}` is sometimes strictly required by the n8n API, otherwise it may reject the payload with `request/body must have required property 'settings'`.
+- Scripts containing hardcoded secrets used for API interactions must be deleted or scrubbed immediately after use before committing any git state to prevent repository leaks.

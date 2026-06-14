@@ -1,0 +1,159 @@
+{
+  "name": "ZELADOR_DRIVE_EXECUTOR_SEGURO_V1",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger_manual",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select i.*, a.folder_id as real_folder_id from drive_zelador_inventory i left join drive_zelador_allowed_folders a on i.categoria_sugerida = a.folder_key where i.status = 'aprovado_para_mover' and i.acao_aprovada = 'mover' and i.precisa_revisao_humana = false limit 50;"
+      },
+      "id": "supabase_fetch_approved",
+      "name": "Supabase Fetch Approved",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [200, 0],
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_CRED_ID",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "split_in_batches_executor",
+      "name": "Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 2,
+      "position": [400, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "const forbidden = ['delete', 'trash', 'remove', 'erase', 'destroy', 'rename', 'overwrite', 'permanently_delete'];\n\nreturn items.map(item => {\n  const action = String(item.json.acao_aprovada || '').toLowerCase();\n  const status = String(item.json.status || '').toLowerCase();\n  const dest_id = item.json.real_folder_id || item.json.pasta_destino_id;\n\n  if (forbidden.includes(action)) {\n    throw new Error(`Ação proibida bloqueada: ${action}`);\n  }\n  if (action !== 'mover') {\n    throw new Error(`Ação não autorizada para executor: ${action}`);\n  }\n  if (status !== 'aprovado_para_mover') {\n    throw new Error(`Status não autorizado para mover: ${status}`);\n  }\n  if (!dest_id) {\n    throw new Error('Sem pasta_destino_id real. Movimento bloqueado.');\n  }\n  if (item.json.precisa_revisao_humana === true) {\n    throw new Error('Arquivo marcado para revisão humana. Movimento bloqueado.');\n  }\n\n  item.json.safe_destination_id = dest_id;\n  return item;\n});"
+      },
+      "id": "code_bloqueio_seguranca",
+      "name": "Bloqueio de Segurança",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, 0]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": "={{ $json.file_id }}",
+        "updateFields": {
+          "addParents": "={{ [ $json.safe_destination_id ] }}",
+          "removeParents": "={{ [ $json.current_folder_id ] }}"
+        }
+      },
+      "id": "drive_move",
+      "name": "Google Drive Move",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "position": [800, 0],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "YOUR_CRED_ID",
+          "name": "Google Drive Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": "drive_zelador_inventory",
+        "columns": "status",
+        "matchColumns": "file_id"
+      },
+      "id": "supabase_update_moved",
+      "name": "Supabase Update Status",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1000, 0],
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_CRED_ID",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Supabase Fetch Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Fetch Approved": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split In Batches": {
+      "main": [
+        [
+          {
+            "node": "Bloqueio de Segurança",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bloqueio de Segurança": {
+      "main": [
+        [
+          {
+            "node": "Google Drive Move",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Move": {
+      "main": [
+        [
+          {
+            "node": "Supabase Update Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Update Status": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

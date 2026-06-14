@@ -1,4 +1,4 @@
-# Learnings from N8N Workflow Testing and Validation
-- When testing n8n `telegramTrigger` nodes locally, standard HTTP requests will fail with 404 (or bypass the trigger node logic) because the webhook expects standard Telegram-formatted payloads or operates on polling. To test the downstream logic fully, it's safer to temporarily inject an HTTP webhook (`n8n-nodes-base.webhook`) node connected to the entry normalization node, or run tests directly against the downstream webhook in `002`.
-- Supabase table existence can be cleanly verified using the REST API by passing the `apikey` and `Authorization: Bearer` headers with `limit=1` to check for `HTTP 200`.
-- Always verify that no temporary test Python scripts containing API keys (like `N8N_API_KEY`) are tracked or staged before committing.
+# Learnings from Agente Zelador Architecture
+- When building multi-step safety workflows in n8n (like `ZELADOR_DRIVE_EXECUTOR_SEGURO_V1`), throwing an Error in a Code node (`throw new Error(...)`) completely halts that branch. If the design requirement is to catch the failure and log it to a database (e.g. updating a Supabase row to `status: bloqueado`), the validation node should catch the failure gracefully and route it to an error-handling output or set a boolean flag instead of throwing an unhandled exception.
+- In Supabase SQL joins, always ensure that boolean flags (like `ativo = true`) are enforced directly in the SQL query when joining tables like `drive_zelador_allowed_folders` to prevent unapproved folders from passing the initial fetch.
+- When committing dynamically generated `.json` files in directories that are gitignored globally, `git add -f` must be used.

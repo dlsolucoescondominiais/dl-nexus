@@ -15,8 +15,12 @@ class PostApprovalRequest(BaseModel):
     imagem_url: str
 
 @router.post("/aprovar")
-async def aprovar_post(request: PostApprovalRequest):
+def aprovar_post(request: PostApprovalRequest):
     """
+    ⚡ Bolt: Usando `def` em vez de `async def` porque a função executa `requests.post()`
+    (I/O bloqueante). O FastAPI envia funções `def` para uma threadpool externa,
+    evitando que a event loop principal trave durante a chamada de rede.
+
     Endpoint chamado pelo Frontend (DL Commander) quando o Diogo
     clica em 'Aprovar e Postar' no rascunho gerado pela IA.
     """

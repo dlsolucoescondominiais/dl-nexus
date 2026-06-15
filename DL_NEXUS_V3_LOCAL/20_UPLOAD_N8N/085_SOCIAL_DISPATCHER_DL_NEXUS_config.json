@@ -106,11 +106,17 @@
   "payload_exemplo": {
     "tema": "energia_solar",
     "texto": "Economize até 95% na conta de energia do seu condomínio com energia solar. A DL Soluções Condominiais transforma seu prédio em potência verde. Solicite sua avaliação gratuita!",
-    "canal_destino": ["instagram", "facebook", "google_business", "tiktok"],
+    "canal_destino": [
+      "instagram",
+      "facebook",
+      "google_business",
+      "tiktok"
+    ],
     "imagem_url": "https://storage.dlsolucoescondominiais.com.br/posts/post_energia_solar_001.jpg",
     "hashtags": "#EnergiasSolar #Condominio #DLSolucoes #EconomiaDeEnergia #RioDeJaneiro",
     "approved": true,
     "aprovado_por": "020_KILLCRITIC",
     "timestamp_aprovacao": "2026-05-22T23:00:00.000Z"
-  }
+  },
+  "active": false
 }

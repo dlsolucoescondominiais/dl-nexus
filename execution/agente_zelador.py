@@ -213,9 +213,11 @@ def orquestrar_limpeza_corporativa():
             extensao = os.path.splitext(nome_original)[1]
             novo_nome = f"DL_{classificacao}_{local_ia}_{dia_str}{mes_str}{ano_str}{extensao}"
             
-            service_drive.files().update(
-                fileId=arq['id'], addParents=pasta_mes, removeParents='root',
-                body={'name': novo_nome}, fields='id, name').execute()
+            # [MODO AUDITORIA - BLOQUEADO POR DRY_RUN]
+            # service_drive.files().update(
+            #     fileId=arq['id'], addParents=pasta_mes, removeParents='root',
+            #     body={'name': novo_nome}, fields='id, name').execute()
+            print(f"   [DRY-RUN/AUDITORIA] Simulação: arquivo seria movido e renomeado para: {novo_nome}")
             print(f"   [OK] Movido e Renomeado para: {novo_nome} (Dentro de {classificacao}/{ano_str}/{mes_str})")
             
             # Rate limit protection (Gemini Free Tier: 15 RPM)

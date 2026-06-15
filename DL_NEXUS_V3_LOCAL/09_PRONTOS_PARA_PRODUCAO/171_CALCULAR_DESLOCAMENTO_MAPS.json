@@ -13,7 +13,10 @@
       "name": "Webhook Recebe Rota",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [0, 0],
+      "position": [
+        0,
+        0
+      ],
       "webhookId": "webhook-171-calcular-deslocamento"
     },
     {
@@ -25,7 +28,10 @@
       "name": "Ler Configuração DL Nexus",
       "type": "n8n-nodes-base.readWriteFile",
       "typeVersion": 1,
-      "position": [200, 0]
+      "position": [
+        200,
+        0
+      ]
     },
     {
       "parameters": {
@@ -38,7 +44,10 @@
       "name": "Google Maps Routes",
       "type": "n8n-nodes-base.googleMaps",
       "typeVersion": 1,
-      "position": [400, 0],
+      "position": [
+        400,
+        0
+      ],
       "credentials": {
         "googleMapsApi": {
           "id": "googleMaps",
@@ -54,7 +63,10 @@
       "name": "Regras de Precificação Motor (170-179)",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [600, 0]
+      "position": [
+        600,
+        0
+      ]
     }
   ],
   "connections": {

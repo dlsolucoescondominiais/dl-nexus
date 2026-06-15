@@ -16,7 +16,15 @@
       "parameters": {
         "mode": "raw",
         "jsonOutput": "{\n  \"tema\": \"Manuten\u00e7\u00e3o Preventiva de Bombas\",\n  \"produto\": \"DL Acqua\",\n  \"publico_alvo\": \"S\u00edndicos e Administradoras\",\n  \"bairro\": \"Tijuca\",\n  \"canal_destino\": \"Facebook, Instagram, Telegram\",\n  \"objetivo\": \"Gerar engajamento e agendar Avalia\u00e7\u00e3o T\u00e9cnica\",\n  \"image_url\": \"https://dlsolucoescondominiais.com.br/wp-content/uploads/2023/10/dl-acqua.jpg\"\n}",
-        "options": {}
+        "options": {},
+        "values": {
+          "boolean": [
+            {
+              "name": "DRY_RUN",
+              "value": true
+            }
+          ]
+        }
       },
       "id": "set_entrada",
       "name": "Entrada do Post",
@@ -70,7 +78,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const jsonStr = JSON.stringify($json).toLowerCase();\nconst proibidos = [\n  'visita t\u00e9cnica', 'visita tecnica', 'canaleta pl\u00e1stica', 'canaleta plastica',\n  'garantia vital\u00edcia', 'garantia vitalicia', 'hidr\u00e1ulica pura', 'hidraulica pura',\n  'engenheiro diogo', 'pre\u00e7o final', 'preco final', 'pre\u00e7o fechado autom\u00e1tico', 'preco fechado automatico'\n];\nconst obrigatorios = ['avalia\u00e7\u00e3o t\u00e9cnica', 'avaliacao tecnica'];\n\nconst violacoes = proibidos.filter(t => jsonStr.includes(t));\nconst possuiObrigatorio = obrigatorios.some(t => jsonStr.includes(t));\n\nlet status_killcritic = 'APROVADO';\nif (violacoes.length > 0) status_killcritic = 'REPROVADO_POR_TERMOS_PROIBIDOS';\nif (!possuiObrigatorio) status_killcritic = 'REPROVADO_POR_FALTA_DE_CTA_AVALIACAO_TECNICA';\n\nreturn {\n  json: {\n    ...$json,\n    status_killcritic,\n    violacoes\n  }\n};"
+        "jsCode": "const jsonStr = JSON.stringify($json).toLowerCase();\nconst proibidos = [\n  'condfy', 'dl ignis', 'engenheiro', 'sla como termo principal', 'b2b em texto p\u00fablico', 'n8n', 'webhook', 'payload', 'garantia eterna', '100% garantido', 'sem risco', '\u00faltima chance', 'urgente demais', 'not\u00edcia sem fonte', 'sensacionalismo com trag\u00e9dia', \n  'visita t\u00e9cnica', 'visita tecnica', 'canaleta pl\u00e1stica', 'canaleta plastica', 'garantia vital\u00edcia', 'garantia vitalicia', 'hidr\u00e1ulica pura', 'hidraulica pura', 'engenheiro diogo', 'pre\u00e7o final', 'preco final', 'pre\u00e7o fechado autom\u00e1tico', 'preco fechado automatico'\n];\nconst obrigatorios = ['avalia\u00e7\u00e3o t\u00e9cnica', 'avaliacao tecnica'];\n\nconst violacoes = proibidos.filter(t => jsonStr.includes(t));\nconst possuiObrigatorio = obrigatorios.some(t => jsonStr.includes(t));\n\nlet status_killcritic = 'APROVADO';\nif (violacoes.length > 0) status_killcritic = 'REPROVADO_POR_TERMOS_PROIBIDOS';\nif (!possuiObrigatorio) status_killcritic = 'REPROVADO_POR_FALTA_DE_CTA_AVALIACAO_TECNICA';\n\nreturn {\n  json: {\n    ...$json,\n    status_killcritic,\n    violacoes\n  }\n};"
       },
       "id": "code_killcritic",
       "name": "KILLCRITIC Social",

@@ -163,5 +163,6 @@
       "observacoes": "Demanda imediata de Gatekeeper + DL Guardião em um pacote de SLA.",
       "status": "novo"
     }
-  ]
+  ],
+  "active": false
 }

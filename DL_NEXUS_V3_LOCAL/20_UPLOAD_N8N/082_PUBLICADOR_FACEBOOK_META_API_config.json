@@ -6,11 +6,21 @@
     "templateCredsSetupCompleted": false
   },
   "tags": [
-    { "name": "DL_NEXUS_V3" },
-    { "name": "FACEBOOK" },
-    { "name": "META_API" },
-    { "name": "MARKETING" },
-    { "name": "KILLCRITIC" }
+    {
+      "name": "DL_NEXUS_V3"
+    },
+    {
+      "name": "FACEBOOK"
+    },
+    {
+      "name": "META_API"
+    },
+    {
+      "name": "MARKETING"
+    },
+    {
+      "name": "KILLCRITIC"
+    }
   ],
   "nodes": [
     {
@@ -18,7 +28,10 @@
       "name": "Webhook Trigger - Publicar Facebook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [200, 400],
+      "position": [
+        200,
+        400
+      ],
       "webhookId": "publicar-facebook-dl-nexus",
       "parameters": {
         "httpMethod": "POST",
@@ -34,7 +47,10 @@
       "name": "IF: approved=true?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [450, 400],
+      "position": [
+        450,
+        400
+      ],
       "parameters": {
         "conditions": {
           "options": {
@@ -63,7 +79,10 @@
       "name": "Code KILLCRITIC - Verificação de Termos",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [700, 300],
+      "position": [
+        700,
+        300
+      ],
       "parameters": {
         "mode": "runOnceForAllItems",
         "jsCode": "// ============================================================\n// KILLCRITIC - DL Nexus V3\n// Verificação de termos proibidos e validação de conteúdo\n// ============================================================\n\nconst TERMOS_PROIBIDOS = [\n  // Proibições legais / regulatórias\n  'garantimos retorno',\n  'lucro garantido',\n  'sem risco',\n  'investimento seguro',\n  'proibido',\n  'ilegal',\n  // Proibições de conteúdo\n  'whatsapp',\n  'zap',\n  'clique aqui e ganhe',\n  'grátis por tempo limitado',\n  // Sensacionalismo\n  'urgente!!!',\n  'imperdível!!!',\n  'milagre',\n  // Dados sensíveis\n  'cpf',\n  'senha',\n  'token',\n  'api_key',\n  'secret'\n];\n\nconst TERMOS_OBRIGATORIOS_CONTEXTO = [\n  'avaliação técnica',\n  'avaliacao tecnica',\n  'diagnóstico',\n  'diagnóstico gratuito',\n  'visita técnica',\n  'visita tecnica',\n  'dl soluções',\n  'dl solucoes',\n  'condomínio',\n  'condominio'\n];\n\nconst items = $input.all();\nconst resultados = [];\n\nfor (const item of items) {\n  const body = item.json.body || {};\n  const message = (body.message || '').toLowerCase();\n  const imageUrl = body.image_url || '';\n  const approved = body.approved;\n\n  // Validações básicas\n  if (!message || message.trim().length === 0) {\n    resultados.push({\n      json: {\n        ...item.json,\n        killcritic_status: 'BLOQUEADO',\n        killcritic_motivo: 'Mensagem vazia. Campo message é obrigatório.',\n        killcritic_aprovado: false\n      }\n    });\n    continue;\n  }\n\n  if (message.length < 10) {\n    resultados.push({\n      json: {\n        ...item.json,\n        killcritic_status: 'BLOQUEADO',\n        killcritic_motivo: 'Mensagem muito curta (mínimo 10 caracteres).',\n        killcritic_aprovado: false\n      }\n    });\n    continue;\n  }\n\n  if (message.length > 63206) {\n    resultados.push({\n      json: {\n        ...item.json,\n        killcritic_status: 'BLOQUEADO',\n        killcritic_motivo: 'Mensagem excede o limite do Facebook (63.206 caracteres).',\n        killcritic_aprovado: false\n      }\n    });\n    continue;\n  }\n\n  // Verificação de termos proibidos\n  const termosEncontrados = TERMOS_PROIBIDOS.filter(termo =>\n    message.includes(termo.toLowerCase())\n  );\n\n  if (termosEncontrados.length > 0) {\n    resultados.push({\n      json: {\n        ...item.json,\n        killcritic_status: 'BLOQUEADO',\n        killcritic_motivo: `Termos proibidos detectados: ${termosEncontrados.join(', ')}`,\n        killcritic_aprovado: false,\n        killcritic_termos_detectados: termosEncontrados\n      }\n    });\n    continue;\n  }\n\n  // Verificação de contexto obrigatório (pelo menos 1 termo de contexto)\n  const temContexto = TERMOS_OBRIGATORIOS_CONTEXTO.some(termo =>\n    message.includes(termo.toLowerCase())\n  );\n\n  if (!temContexto) {\n    resultados.push({\n      json: {\n        ...item.json,\n        killcritic_status: 'BLOQUEADO',\n        killcritic_motivo: 'Post não menciona contexto DL / condomínio / avaliação técnica. Revisar alinhamento com identidade da marca.',\n        killcritic_aprovado: false\n      }\n    });\n    continue;\n  }\n\n  // Validação de URL de imagem (se fornecida)\n  if (imageUrl) {\n    const urlValida = /^https?:\\/\\/.+\\.(jpg|jpeg|png|gif|webp)(\\?.*)?$/i.test(imageUrl);\n    if (!urlValida) {\n      resultados.push({\n        json: {\n          ...item.json,\n          killcritic_status: 'BLOQUEADO',\n          killcritic_motivo: 'image_url fornecida não é uma URL de imagem válida (deve terminar em .jpg, .jpeg, .png, .gif ou .webp).',\n          killcritic_aprovado: false\n        }\n      });\n      continue;\n    }\n  }\n\n  // APROVADO\n  resultados.push({\n    json: {\n      ...item.json,\n      killcritic_status: 'APROVADO',\n      killcritic_motivo: 'Conteúdo validado com sucesso pelo KILLCRITIC.',\n      killcritic_aprovado: true,\n      killcritic_timestamp: new Date().toISOString()\n    }\n  });\n}\n\nreturn resultados;"
@@ -74,7 +93,10 @@
       "name": "IF: KILLCRITIC Aprovado?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [950, 300],
+      "position": [
+        950,
+        300
+      ],
       "parameters": {
         "conditions": {
           "options": {
@@ -103,7 +125,10 @@
       "name": "IF: image_url existe?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [1200, 200],
+      "position": [
+        1200,
+        200
+      ],
       "parameters": {
         "conditions": {
           "options": {
@@ -132,7 +157,10 @@
       "name": "HTTP POST: Facebook /photos (com imagem)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1450, 100],
+      "position": [
+        1450,
+        100
+      ],
       "parameters": {
         "method": "POST",
         "url": "https://graph.facebook.com/v19.0/PAGE_ID_AQUI/photos",
@@ -183,7 +211,10 @@
       "name": "HTTP POST: Facebook /feed (sem imagem)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1450, 320],
+      "position": [
+        1450,
+        320
+      ],
       "parameters": {
         "method": "POST",
         "url": "https://graph.facebook.com/v19.0/PAGE_ID_AQUI/feed",
@@ -226,7 +257,10 @@
       "name": "Telegram: Confirmação de Publicação",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [1700, 200],
+      "position": [
+        1700,
+        200
+      ],
       "parameters": {
         "chatId": "CHAT_ID_AQUI",
         "text": "={{ '✅ *FACEBOOK PUBLICADO COM SUCESSO*\\n\\n' + '📄 *Post ID:* ' + ($json.id || 'N/A') + '\\n' + '📝 *Mensagem:* ' + ($json.body?.message?.substring(0, 100) || 'N/A') + '...\\n' + '🕐 *Horário:* ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n' + '🤖 *Workflow:* 082_PUBLICADOR_FACEBOOK_META_API\\n' + '🛡️ *KILLCRITIC:* ' + ($json.killcritic_status || 'N/A') }}",
@@ -247,7 +281,10 @@
       "name": "Telegram: Alerta de Bloqueio KILLCRITIC",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [1200, 500],
+      "position": [
+        1200,
+        500
+      ],
       "parameters": {
         "chatId": "CHAT_ID_AQUI",
         "text": "={{ '🚫 *PUBLICAÇÃO BLOQUEADA - KILLCRITIC*\\n\\n' + '❌ *Status:* ' + ($json.killcritic_status || 'NÃO APROVADO') + '\\n' + '📌 *Motivo:* ' + ($json.killcritic_motivo || 'approved=false ou validação reprovada') + '\\n' + '🕐 *Horário:* ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n' + '🤖 *Workflow:* 082_PUBLICADOR_FACEBOOK_META_API\\n' + '⚠️ *Ação necessária:* Revisar o payload e reenviar com approved=true e conteúdo validado.' }}",
@@ -268,7 +305,10 @@
       "name": "Webhook Response: Sucesso",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [1950, 200],
+      "position": [
+        1950,
+        200
+      ],
       "parameters": {
         "respondWith": "json",
         "responseBody": "={{ JSON.stringify({ status: 'success', workflow: '082_PUBLICADOR_FACEBOOK_META_API', facebook_post_id: $json.id || null, killcritic_status: $json.killcritic_status, timestamp: new Date().toISOString() }) }}",
@@ -282,7 +322,10 @@
       "name": "Webhook Response: Bloqueado",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [1450, 500],
+      "position": [
+        1450,
+        500
+      ],
       "parameters": {
         "respondWith": "json",
         "responseBody": "={{ JSON.stringify({ status: 'blocked', workflow: '082_PUBLICADOR_FACEBOOK_META_API', killcritic_status: $json.killcritic_status || 'NOT_APPROVED', motivo: $json.killcritic_motivo || 'approved=false', timestamp: new Date().toISOString() }) }}",
@@ -296,7 +339,10 @@
       "name": "Error Trigger",
       "type": "n8n-nodes-base.errorTrigger",
       "typeVersion": 1,
-      "position": [200, 650],
+      "position": [
+        200,
+        650
+      ],
       "parameters": {}
     },
     {
@@ -304,7 +350,10 @@
       "name": "Telegram: Alerta de Erro Crítico",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [450, 650],
+      "position": [
+        450,
+        650
+      ],
       "parameters": {
         "chatId": "CHAT_ID_AQUI",
         "text": "={{ '🔴 *ERRO CRÍTICO - 082_PUBLICADOR_FACEBOOK_META_API*\\n\\n' + '💥 *Erro:* ' + ($json.error?.message || 'Erro desconhecido') + '\\n' + '📍 *Nó:* ' + ($json.execution?.lastNodeExecuted || 'N/A') + '\\n' + '🔗 *Execution ID:* ' + ($json.execution?.id || 'N/A') + '\\n' + '🕐 *Horário:* ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n' + '⚠️ *Verificar:* Credenciais Meta API / payload enviado.' }}",

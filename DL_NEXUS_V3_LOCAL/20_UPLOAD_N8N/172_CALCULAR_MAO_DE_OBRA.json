@@ -11,7 +11,10 @@
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1.1,
-      "position": [0, 0],
+      "position": [
+        0,
+        0
+      ],
       "webhookId": "calcularMaoObra172DlNexus20260527"
     },
     {
@@ -26,7 +29,10 @@
       "name": "Google Calendar",
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1,
-      "position": [220, 0],
+      "position": [
+        220,
+        0
+      ],
       "credentials": {
         "googleCalendarOAuth2Api": {
           "id": "placeholder_google_calendar_oauth2",
@@ -42,7 +48,10 @@
       "name": "Calcular Mão de Obra",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [440, 0]
+      "position": [
+        440,
+        0
+      ]
     }
   ],
   "connections": {

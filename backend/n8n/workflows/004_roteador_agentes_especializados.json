@@ -11,7 +11,10 @@
       "name": "Entrada Jules",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [100, 350]
+      "position": [
+        100,
+        350
+      ]
     },
     {
       "parameters": {
@@ -25,18 +28,26 @@
       "name": "AI Agent Jules",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.6,
-      "position": [380, 350]
+      "position": [
+        380,
+        350
+      ]
     },
     {
       "parameters": {
         "model": "gpt-4o",
-        "options": { "temperature": 0.2 }
+        "options": {
+          "temperature": 0.2
+        }
       },
       "id": "llm-jules",
       "name": "OpenAI",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1,
-      "position": [380, 560]
+      "position": [
+        380,
+        560
+      ]
     },
     {
       "parameters": {
@@ -46,7 +57,10 @@
       "name": "Memória Jules",
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.2,
-      "position": [540, 560]
+      "position": [
+        540,
+        560
+      ]
     },
     {
       "parameters": {
@@ -64,7 +78,10 @@
       "name": "Coleta Finalizada?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [720, 350]
+      "position": [
+        720,
+        350
+      ]
     },
     {
       "parameters": {
@@ -95,9 +112,14 @@
       "name": "Atualiza Supabase - Status Final",
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
-      "position": [980, 240],
+      "position": [
+        980,
+        240
+      ],
       "credentials": {
-        "supabaseApi": { "id": "QzziIRhKJMDNAE1m" }
+        "supabaseApi": {
+          "id": "QzziIRhKJMDNAE1m"
+        }
       }
     },
     {
@@ -135,43 +157,83 @@
       "name": "Notificar Diogo (006)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [1240, 240]
+      "position": [
+        1240,
+        240
+      ]
     }
   ],
   "connections": {
     "Entrada Jules": {
       "main": [
-        [{ "node": "AI Agent Jules", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "AI Agent Jules",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "OpenAI": {
       "ai_languageModel": [
-        [{ "node": "AI Agent Jules", "type": "ai_languageModel", "index": 0 }]
+        [
+          {
+            "node": "AI Agent Jules",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
       ]
     },
     "Memória Jules": {
       "ai_memory": [
-        [{ "node": "AI Agent Jules", "type": "ai_memory", "index": 0 }]
+        [
+          {
+            "node": "AI Agent Jules",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
       ]
     },
     "AI Agent Jules": {
       "main": [
-        [{ "node": "Coleta Finalizada?", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Coleta Finalizada?",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Coleta Finalizada?": {
       "main": [
-        [{ "node": "Atualiza Supabase - Status Final", "type": "main", "index": 0 }],
+        [
+          {
+            "node": "Atualiza Supabase - Status Final",
+            "type": "main",
+            "index": 0
+          }
+        ],
         []
       ]
     },
     "Atualiza Supabase - Status Final": {
       "main": [
-        [{ "node": "Notificar Diogo (006)", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Notificar Diogo (006)",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
   "settings": {
     "executionOrder": "v1"
-  }
+  },
+  "active": false
 }

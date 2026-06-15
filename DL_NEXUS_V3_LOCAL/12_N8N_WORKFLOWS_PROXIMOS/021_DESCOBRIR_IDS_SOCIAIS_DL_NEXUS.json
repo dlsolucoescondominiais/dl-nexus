@@ -7,7 +7,10 @@
       "name": "Manual Trigger",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [0, 0]
+      "position": [
+        0,
+        0
+      ]
     },
     {
       "parameters": {
@@ -30,7 +33,10 @@
       "name": "GET Facebook Pages",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [200, 0],
+      "position": [
+        200,
+        0
+      ],
       "credentials": {
         "facebookGraphApi": {
           "id": "Aplicativo do Facebook",
@@ -46,7 +52,10 @@
       "name": "Extrair Page IDs",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [400, 0]
+      "position": [
+        400,
+        0
+      ]
     },
     {
       "parameters": {
@@ -60,7 +69,10 @@
       "name": "GET Instagram Business Account",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [600, -100],
+      "position": [
+        600,
+        -100
+      ],
       "credentials": {
         "facebookGraphApi": {
           "id": "Aplicativo do Facebook",
@@ -80,7 +92,10 @@
       "name": "GET Instagram Accounts List",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [600, 100],
+      "position": [
+        600,
+        100
+      ],
       "credentials": {
         "facebookGraphApi": {
           "id": "Aplicativo do Facebook",
@@ -96,7 +111,10 @@
       "name": "Montar Relatorio de IDs",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [800, 0]
+      "position": [
+        800,
+        0
+      ]
     },
     {
       "parameters": {
@@ -110,7 +128,10 @@
       "name": "Email com IDs Descobertos",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2,
-      "position": [1000, -100],
+      "position": [
+        1000,
+        -100
+      ],
       "credentials": {
         "smtp": {
           "id": "SMTP - Suporte DL",
@@ -128,7 +149,10 @@
       "name": "Telegram Resumo IDs",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.1,
-      "position": [1000, 100],
+      "position": [
+        1000,
+        100
+      ],
       "credentials": {
         "telegramApi": {
           "id": "Conta do Telegram",
@@ -220,8 +244,14 @@
     "executionOrder": "v1"
   },
   "tags": [
-    { "name": "DL_NEXUS_V3" },
-    { "name": "UTILITARIO" },
-    { "name": "CONFIGURACAO" }
+    {
+      "name": "DL_NEXUS_V3"
+    },
+    {
+      "name": "UTILITARIO"
+    },
+    {
+      "name": "CONFIGURACAO"
+    }
   ]
 }

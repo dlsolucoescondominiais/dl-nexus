@@ -1,0 +1,108 @@
+{
+  "name": "AGENTE_ZELADOR_GOOGLE_DRIVE_AUDITORIA",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 2 * * *"
+            }
+          ]
+        }
+      },
+      "id": "trigger_auditoria",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "folderId": "GOOGLE_DRIVE_ROOT_FOLDER_ID",
+        "limit": 500,
+        "options": {
+          "fields": [
+            "id", "name", "mimeType", "size", "createdTime", "modifiedTime", "parents", "webViewLink", "owners", "shared", "trashed", "md5Checksum"
+          ]
+        }
+      },
+      "id": "list_files_auditoria",
+      "name": "Google Drive List",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "position": [200, 0],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "YOUR_CRED_ID",
+          "name": "Google Drive Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const files = items.map(i => i.json).filter(f => !f.trashed && !f.shared);\nconst report = [];\n\n// Basic duplicate detection\nconst hashCount = {};\nconst nameSizeCount = {};\n\nfor (const f of files) {\n  const nameNorm = String(f.name || '').toLowerCase().trim();\n  const size = f.size || 0;\n  const keyNameSize = `${nameNorm}_${size}`;\n  const keyHash = f.md5Checksum;\n\n  if (keyHash) {\n    hashCount[keyHash] = (hashCount[keyHash] || 0) + 1;\n  }\n  nameSizeCount[keyNameSize] = (nameSizeCount[keyNameSize] || 0) + 1;\n}\n\nfor (const f of files) {\n  const nameNorm = String(f.name || '').toLowerCase().trim();\n  const size = f.size || 0;\n  const keyNameSize = `${nameNorm}_${size}`;\n  const keyHash = f.md5Checksum;\n\n  let dupScore = 'baixo';\n  if (keyHash && hashCount[keyHash] > 1) {\n    dupScore = 'idêntico provável';\n  } else if (nameSizeCount[keyNameSize] > 1) {\n    dupScore = 'alto';\n  }\n\n  let acao = 'nenhuma ação executada';\n  let sugestao_nome = f.name;\n  \n  if (nameNorm.includes('whatsapp') && nameNorm.includes('image')) {\n    sugestao_nome = `WPP_IMG_${f.createdTime.split('T')[0]}.jpg`;\n    acao = 'sugestão de renomeação';\n  }\n\n  report.push({\n    file_id: f.id,\n    caminho: f.parents ? f.parents.join(',') : 'root',\n    tamanho: size,\n    data: f.createdTime,\n    hash: keyHash || 'N/A',\n    possivel_duplicado: dupScore !== 'baixo',\n    nivel_confianca_duplicidade: dupScore,\n    sugestao_de_nome: sugestao_nome,\n    acao_recomendada: acao\n  });\n}\n\nreturn [{ json: { arquivos_analisados: files.length, relatorio_detalhado: report } }];"
+      },
+      "id": "google_drive_zelador_auditoria",
+      "name": "google_drive_zelador_auditoria.js",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [400, 0]
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "=[AUDITORIA DRIVE ZELADOR]\nArquivos analisados: {{ $json.arquivos_analisados }}\nDuplicados encontrados: {{ $json.relatorio_detalhado.filter(r => r.possivel_duplicado).length }}\nAções sugeridas: {{ $json.relatorio_detalhado.filter(r => r.acao_recomendada !== 'nenhuma ação executada').length }}\n\nNENHUMA ação destrutiva (delete, mover, renomear) foi executada. Sistema operando em modo DRY_RUN estrito.",
+        "additionalFields": {}
+      },
+      "id": "telegram_report",
+      "name": "Telegram Send",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [600, 0],
+      "credentials": {
+        "telegramApi": {
+          "id": "YOUR_CRED_ID",
+          "name": "Telegram Bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Drive List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive List": {
+      "main": [
+        [
+          {
+            "node": "google_drive_zelador_auditoria.js",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "google_drive_zelador_auditoria.js": {
+      "main": [
+        [
+          {
+            "node": "Telegram Send",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

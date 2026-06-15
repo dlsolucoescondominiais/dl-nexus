@@ -1,0 +1,4 @@
+# Learnings from N8N Workflow Security Audits and Execution
+- When building Google Drive integration scripts via n8n Code nodes, tracking possible duplicates securely involves computing hashes (`md5Checksum`), checking byte `size`, normalizing strings to lowercase/trim, and iterating counts over an array of results *before* issuing any movement command.
+- Implementing an organizational "kill switch" for content generation or destructive tasks requires a centralized blocklist in JavaScript. Throwing a runtime Error (`throw new Error(...)`) within the Code node reliably aborts the workflow execution before API nodes (like Google Drive or Telegram) are reached.
+- Always run a script to dynamically fetch, parse, and filter `active: true/false` statuses of n8n workflows rather than guessing from local files when applying environment-wide updates.

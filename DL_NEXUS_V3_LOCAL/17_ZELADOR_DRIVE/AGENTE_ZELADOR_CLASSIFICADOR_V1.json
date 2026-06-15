@@ -1,0 +1,191 @@
+{
+  "name": "AGENTE_ZELADOR_CLASSIFICADOR_V1",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 * * * *"
+            }
+          ]
+        }
+      },
+      "id": "trigger_classificador",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "select * from drive_zelador_inventory where status in ('revisao_humana', 'classificacao_pendente') limit 20;"
+      },
+      "id": "supabase_fetch",
+      "name": "Supabase Fetch Pending",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [200, 0],
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_CRED_ID",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "split_in_batches_classificador",
+      "name": "Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 2,
+      "position": [400, 0]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "id": "openai_model",
+      "name": "OpenAI Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [600, 200],
+      "credentials": {
+        "openAiApi": {
+          "id": "YOUR_CRED_ID",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ JSON.stringify($json) }}",
+        "options": {
+          "systemMessage": "Você é o agente_zelador da DL Soluções Condominiais.\n\nSua função é analisar metadados de arquivos já inventariados no Google Drive e sugerir organização segura.\n\nVocê não acessa, exclui, edita, renomeia, sobrescreve ou move arquivos diretamente.\nVocê apenas classifica e sugere destino dentro das pastas permitidas.\n\nContexto da DL:\n1. DL Soluções Condominiais atende condomínios, administradoras, síndicos, colégios e escolas.\n2. A frente Food Service / Mult•Grill Express atende restaurantes, lanchonetes, hamburguerias, bares e cozinhas comerciais com foco em chapas e fritadeiras.\n3. A DL também organiza documentos financeiros, contratos, propostas, fotos, vídeos, áudios e materiais de memória operacional.\n\nCategorias permitidas:\n- INBOX_SMARTPHONE\n- AUDIOS\n- CONTRATOS_DOCUMENTOS\n- FOTOS_VIDEOS\n- TRIAGEM_HUMANA\n- CENTRAL_MEMORIA\n- FOOD_SERVICE_MULTGRILL\n- CONDOMINIOS_COLEGIOS\n- FINANCEIRO\n- FORNECEDORES\n\nRegras:\n- Se houver dúvida, escolha TRIAGEM_HUMANA.\n- Se parecer documento financeiro, escolha FINANCEIRO.\n- Se envolver chapa, fritadeira, restaurante, lanchonete, hamburgueria ou Mult•Grill, escolha FOOD_SERVICE_MULTGRILL.\n- Se envolver condomínio, síndico, administradora, colégio ou escola, escolha CONDOMINIOS_COLEGIOS.\n- Se for mídia sem contexto, escolha FOTOS_VIDEOS.\n- Se for áudio, escolha AUDIOS.\n- Se for contrato, proposta, termo ou orçamento, escolha CONTRATOS_DOCUMENTOS.\n- Nunca sugerir delete, trash, remove, apagar ou renomear.\n\nResponda somente em JSON válido, seguindo estritamente este formato:\n{\n  \"file_id\": \"o_id_do_arquivo\",\n  \"categoria_sugerida\": \"uma_das_categorias_permitidas\",\n  \"pasta_destino_sugerida\": \"nome_da_pasta_ou_key\",\n  \"confianca\": 0.0 a 1.0,\n  \"risco\": \"baixo|medio|alto\",\n  \"precisa_revisao_humana\": true ou false,\n  \"motivo_classificacao\": \"sua justificativa\",\n  \"acao_sugerida\": \"mover|revisar|ignorar\",\n  \"regra_nova_sugerida\": {\n    \"necessaria\": false,\n    \"rule_name\": \"\",\n    \"condition_text\": \"\",\n    \"target_category\": \"\",\n    \"target_folder_key\": \"\"\n  }\n}"
+        }
+      },
+      "id": "agent_zelador",
+      "name": "Agente IA Zelador",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [600, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "try {\n  const rawText = $json.output || $json.text || $json.message || '';\n  const cleanJson = rawText.replace(/```json/g, '').replace(/```/g, '').trim();\n  const parsed = JSON.parse(cleanJson);\n  parsed.status = 'classificado';\n  return [{ json: parsed }];\n} catch (e) {\n  return [{ json: { file_id: $('Split In Batches').item.json.file_id, status: 'erro', erro: e.message } }];\n}"
+      },
+      "id": "parse_ia",
+      "name": "Parse JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [800, 0]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "table": "drive_zelador_inventory",
+        "columns": "categoria_sugerida, pasta_destino_sugerida, confianca, risco, precisa_revisao_humana, motivo_classificacao, acao_sugerida, status",
+        "matchColumns": "file_id"
+      },
+      "id": "supabase_update_classificacao",
+      "name": "Supabase Update",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1000, 0],
+      "credentials": {
+        "supabaseApi": {
+          "id": "YOUR_CRED_ID",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Supabase Fetch Pending",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Fetch Pending": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split In Batches": {
+      "main": [
+        [
+          {
+            "node": "Agente IA Zelador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agente IA Zelador",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente IA Zelador": {
+      "main": [
+        [
+          {
+            "node": "Parse JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse JSON": {
+      "main": [
+        [
+          {
+            "node": "Supabase Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Update": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

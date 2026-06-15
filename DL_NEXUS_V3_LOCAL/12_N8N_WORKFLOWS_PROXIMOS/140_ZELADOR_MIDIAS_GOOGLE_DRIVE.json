@@ -36,7 +36,7 @@
         300
       ],
       "notesInFlow": true,
-      "notes": "Lê a configuração local"
+      "notes": "L\u00ea a configura\u00e7\u00e3o local"
     },
     {
       "parameters": {
@@ -87,10 +87,10 @@
     },
     {
       "parameters": {
-        "jsCode": "\nconst arquivos = [];\n\nfor (const item of $input.all()) {\n  const f = item.json;\n  \n  const original_name = f.name || \"\";\n  const ext = original_name.includes('.') ? original_name.split('.').pop().toLowerCase() : \"\";\n  const mime = f.mimeType || \"\";\n  \n  let tipo_midia = \"arquivo desconhecido\";\n  if (mime.includes(\"image\")) tipo_midia = \"imagem\";\n  else if (mime.includes(\"video\")) tipo_midia = \"vídeo\";\n  else if (mime.includes(\"audio\")) tipo_midia = \"áudio\";\n  else if (mime.includes(\"pdf\")) tipo_midia = \"PDF\";\n  else if (mime.includes(\"document\") || mime.includes(\"text\")) tipo_midia = \"documento\";\n  \n  let risco = \"\";\n  let usa_nao = false;\n  // Simulação de detecção básica de privacidade por nome\n  const nomes_risco = [\"placa\", \"cnh\", \"rg\", \"cpf\", \"boleto\", \"contrato\", \"rosto\", \"cliente\", \"email\"];\n  if (nomes_risco.some(r => original_name.toLowerCase().includes(r))) {\n    risco = \"POSSIVEL_DADO_SENSIVEL\";\n    usa_nao = true;\n  }\n  \n  const tema = tipo_midia === \"imagem\" ? \"foto_campo\" : (tipo_midia === \"vídeo\" ? \"video_campo\" : \"duvidoso\");\n  const produto = \"DL_NEXUS\"; \n  \n  const out = {\n    \"file_id\": f.id,\n    \"link_drive\": f.webViewLink || \"\",\n    \"file_name_original\": original_name,\n    \"file_name_sugerido\": `2026-06-02_${produto}_${tema}_CAMPO_NOVO_${original_name}`,\n    \"mime_type\": mime,\n    \"extensao\": ext,\n    \"pasta_origem\": f.parents ? f.parents[0] : \"\",\n    \"pasta_destino_sugerida\": \"00_INVENTARIO_GERAL\",\n    \"data_criacao\": f.createdTime,\n    \"data_modificacao\": f.modifiedTime,\n    \"tamanho_bytes\": f.size || 0,\n    \"tema_detectado\": tema,\n    \"produto_dl_relacionado\": produto,\n    \"status_midia\": \"NOVO\",\n    \"uso_recomendado\": usa_nao ? \"NAO_USAR\" : \"REVISAR\",\n    \"risco_privacidade\": risco,\n    \"precisa_revisao_humana\": true,\n    \"descricao_tecnica_curta\": \"Arquivo coletado em varredura automática\",\n    \"descricao_para_social\": \"\",\n    \"cta_recomendado\": \"https://dlsolucoescondominiais.com\",\n    \"modo_execucao\": \"DRY_RUN\",\n    \"acao_real_executada\": false,\n    \"observacoes\": \"Processado no modo DRY_RUN, arquivo não movido nem alterado.\"\n  };\n  \n  arquivos.push({ json: out });\n}\n\nreturn arquivos;\n"
+        "jsCode": "// Auditoria Segura do Google Drive Zelador - NENHUMA DELE\u00c7\u00c3O PERMITIDA\n// Este script apenas lista arquivos e sugere renomea\u00e7\u00e3o/organiza\u00e7\u00e3o (DRY RUN)\n// PROIBIDO: files.delete, files.emptyTrash, files.update (name/parents), permissions.create/update/delete\n\nconst arquivos = [];\nconst arquivos_analisados = [];\nconst ignorados = [];\nlet duplicados_detectados = 0;\n\nfor (const item of $input.all()) {\n  const f = item.json;\n  \n  if (f.trashed) {\n    ignorados.push({ id: f.id, name: f.name, motivo: \"Na lixeira\" });\n    continue;\n  }\n  \n  const original_name = f.name || \"\";\n  const ext = original_name.includes('.') ? original_name.split('.').pop().toLowerCase() : \"\";\n  const mime = f.mimeType || \"\";\n  \n  let tipo_midia = \"arquivo desconhecido\";\n  if (mime.includes(\"image\")) tipo_midia = \"imagem\";\n  else if (mime.includes(\"video\")) tipo_midia = \"v\u00eddeo\";\n  else if (mime.includes(\"audio\")) tipo_midia = \"\u00e1udio\";\n  else if (mime.includes(\"pdf\")) tipo_midia = \"PDF\";\n  else if (mime.includes(\"document\") || mime.includes(\"text\")) tipo_midia = \"documento\";\n  \n  let risco = \"\";\n  let usa_nao = false;\n  // Detec\u00e7\u00e3o de dados sens\u00edveis\n  const nomes_risco = [\"placa\", \"cnh\", \"rg\", \"cpf\", \"boleto\", \"contrato\", \"rosto\", \"cliente\", \"email\"];\n  if (nomes_risco.some(r => original_name.toLowerCase().includes(r))) {\n    risco = \"POSSIVEL_DADO_SENSIVEL\";\n    usa_nao = true;\n  }\n  \n  const tema = tipo_midia === \"imagem\" ? \"foto_campo\" : (tipo_midia === \"v\u00eddeo\" ? \"video_campo\" : \"duvidoso\");\n  const produto = \"DL_NEXUS\"; \n  \n  // LOGICA PARA DUPLICADOS\n  let provavel_duplicado = false;\n  let score_duplicidade = \"baixo\"; // baixo, m\u00e9dio, alto, id\u00eantico_prov\u00e1vel\n  \n  const checksum = f.md5Checksum || \"unknown_hash\";\n  const tamanho = f.size || 0;\n  \n  // Verifica arquivos processados nesta execu\u00e7\u00e3o (simula\u00e7\u00e3o simples)\n  const copia_existente = arquivos_analisados.find(a => a.hash === checksum && a.tamanho === tamanho && checksum !== \"unknown_hash\");\n  if (copia_existente) {\n      provavel_duplicado = true;\n      score_duplicidade = \"id\u00eantico_prov\u00e1vel\";\n      duplicados_detectados++;\n  } else {\n      const nome_similar = arquivos_analisados.find(a => \n          a.nome_original === original_name && a.tamanho === tamanho\n      );\n      if (nome_similar) {\n          provavel_duplicado = true;\n          score_duplicidade = \"alto\";\n          duplicados_detectados++;\n      }\n  }\n  \n  arquivos_analisados.push({\n      id: f.id,\n      hash: checksum,\n      tamanho: tamanho,\n      nome_original: original_name\n  });\n\n  const out = {\n    \"file_id\": f.id,\n    \"link_drive\": f.webViewLink || \"\",\n    \"file_name_original\": original_name,\n    \"file_name_sugerido\": `2026-06-02_${produto}_${tema}_CAMPO_NOVO_${original_name}`,\n    \"mime_type\": mime,\n    \"extensao\": ext,\n    \"pasta_origem\": f.parents ? f.parents[0] : \"\",\n    \"pasta_destino_sugerida\": \"00_INVENTARIO_GERAL\",\n    \"data_criacao\": f.createdTime,\n    \"data_modificacao\": f.modifiedTime,\n    \"tamanho_bytes\": tamanho,\n    \"tema_detectado\": tema,\n    \"produto_dl_relacionado\": produto,\n    \"status_midia\": \"NOVO\",\n    \"uso_recomendado\": usa_nao ? \"NAO_USAR\" : \"REVISAR\",\n    \"risco_privacidade\": risco,\n    \"precisa_revisao_humana\": true,\n    \"descricao_tecnica_curta\": \"Arquivo coletado em varredura autom\u00e1tica\",\n    \"descricao_para_social\": \"\",\n    \"cta_recomendado\": \"https://dlsolucoescondominiais.com\",\n    \"modo_execucao\": \"DRY_RUN\",\n    \"acao_real_executada\": false,\n    \"provavel_duplicado\": provavel_duplicado,\n    \"score_duplicidade\": score_duplicidade,\n    \"observacoes\": \"Processado no modo DRY_RUN, arquivo n\u00e3o movido nem alterado.\"\n  };\n  \n  arquivos.push({ json: out });\n}\n\n// Resumo / Relat\u00f3rio\nif (arquivos.length > 0) {\n    arquivos[0].json[\"__auditoria_resumo\"] = {\n        arquivos_analisados: arquivos_analisados.length,\n        arquivos_ignorados: ignorados.length,\n        possiveis_duplicados: duplicados_detectados,\n        erros_encontrados: 0\n    };\n}\n\nreturn arquivos;\n"
       },
       "id": "classificar",
-      "name": "Classificar Mídias (DRY RUN)",
+      "name": "Classificar M\u00eddias (DRY RUN)",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
@@ -148,14 +148,14 @@
       "main": [
         [
           {
-            "node": "Classificar Mídias (DRY RUN)",
+            "node": "Classificar M\u00eddias (DRY RUN)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Classificar Mídias (DRY RUN)": {
+    "Classificar M\u00eddias (DRY RUN)": {
       "main": [
         [
           {
@@ -167,7 +167,7 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },

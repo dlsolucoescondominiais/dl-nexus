@@ -15,8 +15,16 @@
     {
       "parameters": {
         "mode": "raw",
-        "jsonOutput": "{\n  \"tema\": \"Manutenção Preventiva de Bombas\",\n  \"produto\": \"DL Acqua\",\n  \"publico_alvo\": \"Síndicos e Administradoras\",\n  \"bairro\": \"Tijuca\",\n  \"canal_destino\": \"Facebook, Instagram, Telegram\",\n  \"objetivo\": \"Gerar engajamento e agendar Avaliação Técnica\",\n  \"image_url\": \"https://dlsolucoescondominiais.com.br/wp-content/uploads/2023/10/dl-acqua.jpg\"\n}",
-        "options": {}
+        "jsonOutput": "{\n  \"tema\": \"Manuten\u00e7\u00e3o Preventiva de Bombas\",\n  \"produto\": \"DL Acqua\",\n  \"publico_alvo\": \"S\u00edndicos e Administradoras\",\n  \"bairro\": \"Tijuca\",\n  \"canal_destino\": \"Facebook, Instagram, Telegram\",\n  \"objetivo\": \"Gerar engajamento e agendar Avalia\u00e7\u00e3o T\u00e9cnica\",\n  \"image_url\": \"https://dlsolucoescondominiais.com.br/wp-content/uploads/2023/10/dl-acqua.jpg\"\n}",
+        "options": {},
+        "values": {
+          "boolean": [
+            {
+              "name": "DRY_RUN",
+              "value": true
+            }
+          ]
+        }
       },
       "id": "set_entrada",
       "name": "Entrada do Post",
@@ -33,11 +41,11 @@
         "messages": {
           "messageValues": [
             {
-              "content": "Você é o copywriter da DL Soluções Condominiais. Escreva posts B2B profissionais. O CTA DEVE ser sempre 'Avaliação Técnica'."
+              "content": "Voc\u00ea \u00e9 o copywriter da DL Solu\u00e7\u00f5es Condominiais. Escreva posts B2B profissionais. O CTA DEVE ser sempre 'Avalia\u00e7\u00e3o T\u00e9cnica'."
             },
             {
               "role": "user",
-              "content": "={{ 'Tema: ' + $json.tema + '\\nProduto: ' + $json.produto + '\\nPúblico: ' + $json.publico_alvo + '\\nBairro/Região: ' + $json.bairro + '\\nCanal: ' + $json.canal_destino + '\\nObjetivo: ' + $json.objetivo + '\\n\\nCanais Oficiais DL Soluções (use sempre no CTA):\\n- Site: https://dlsolucoescondominiais.com\\n- Instagram: https://www.instagram.com/dl.solucoescondominiais/\\n- Facebook: https://www.facebook.com/dlsolucoescondominiais\\n- YouTube: https://www.youtube.com/@DLSolucoesCondominiais\\n- Google Perfil: https://share.google/NGEzAoHXg890EjyiR\\n- Spotify: https://open.spotify.com/episode/2yIqmHsnKLhFF76XKR1j2u?si=aMBi9LKJRZO1tlgxACWhDg&nd=1&dlsi=3b72e847f2044e18\\n- WhatsApp CTA (link passivo, não disparar): https://wa.me/5521964742458?text=Quero+saber+sobre+Recupera%C3%A7%C3%A3o+de+Dados\\n\\nRegras obrigatórias:\\n- O CTA DEVE sempre ser \"Avaliação Técnica\".\\n- Diogo deve ser chamado de \"Tecnólogo Responsável\", nunca de engenheiro.\\n- Incluir o link do WhatsApp como botão de contato no final de cada post.\\n- NÃO prometer preço final, garantia vitalícia ou visita técnica.\\n\\nForneça uma resposta em JSON estrito com as chaves: legenda_facebook, legenda_instagram, texto_telegram, hashtags, cta' }}"
+              "content": "={{ 'Tema: ' + $json.tema + '\\nProduto: ' + $json.produto + '\\nP\u00fablico: ' + $json.publico_alvo + '\\nBairro/Regi\u00e3o: ' + $json.bairro + '\\nCanal: ' + $json.canal_destino + '\\nObjetivo: ' + $json.objetivo + '\\n\\nCanais Oficiais DL Solu\u00e7\u00f5es (use sempre no CTA):\\n- Site: https://dlsolucoescondominiais.com\\n- Instagram: https://www.instagram.com/dl.solucoescondominiais/\\n- Facebook: https://www.facebook.com/dlsolucoescondominiais\\n- YouTube: https://www.youtube.com/@DLSolucoesCondominiais\\n- Google Perfil: https://share.google/NGEzAoHXg890EjyiR\\n- Spotify: https://open.spotify.com/episode/2yIqmHsnKLhFF76XKR1j2u?si=aMBi9LKJRZO1tlgxACWhDg&nd=1&dlsi=3b72e847f2044e18\\n- WhatsApp CTA (link passivo, n\u00e3o disparar): https://wa.me/5521964742458?text=Quero+saber+sobre+Recupera%C3%A7%C3%A3o+de+Dados\\n\\nRegras obrigat\u00f3rias:\\n- O CTA DEVE sempre ser \"Avalia\u00e7\u00e3o T\u00e9cnica\".\\n- Diogo deve ser chamado de \"Tecn\u00f3logo Respons\u00e1vel\", nunca de engenheiro.\\n- Incluir o link do WhatsApp como bot\u00e3o de contato no final de cada post.\\n- N\u00c3O prometer pre\u00e7o final, garantia vital\u00edcia ou visita t\u00e9cnica.\\n\\nForne\u00e7a uma resposta em JSON estrito com as chaves: legenda_facebook, legenda_instagram, texto_telegram, hashtags, cta' }}"
             }
           ]
         },
@@ -60,7 +68,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const entrada = $('Entrada do Post').item.json || {};\nlet conteudo = $json.message ? $json.message.content : (typeof $json === 'string' ? $json : JSON.stringify($json));\n\nlet parsed = {};\nlet status_parse = 'SUCESSO';\nlet observacao = 'JSON parseado com sucesso.';\n\ntry {\n  const jsonMatch = conteudo.match(/```(?:json)?\\n([\\s\\S]*?)\\n```/) || conteudo.match(/{[\\s\\S]*}/);\n  if (jsonMatch && jsonMatch[1]) {\n    parsed = JSON.parse(jsonMatch[1]);\n  } else if (jsonMatch && jsonMatch[0]) {\n    parsed = JSON.parse(jsonMatch[0]);\n  } else {\n    parsed = JSON.parse(conteudo);\n  }\n} catch (e) {\n  status_parse = 'FALHOU_USANDO_FALLBACK';\n  observacao = 'IA não retornou JSON válido; fallback aplicado';\n  parsed = {\n    legenda_facebook: conteudo,\n    legenda_instagram: conteudo,\n    texto_telegram: conteudo,\n    hashtags: []\n  };\n}\n\nreturn {\n  json: {\n    post_id: Date.now().toString(),\n    tema: entrada.tema || 'N/A',\n    produto: entrada.produto || 'N/A',\n    legenda_facebook: parsed.legenda_facebook || parsed.facebook_legenda || parsed.facebook || conteudo,\n    legenda_instagram: parsed.legenda_instagram || parsed.instagram_legenda || parsed.instagram || conteudo,\n    texto_telegram: parsed.texto_telegram || parsed.telegram_texto || parsed.telegram || conteudo,\n    hashtags: parsed.hashtags || [],\n    image_url: entrada.image_url || '',\n    observacoes: [observacao],\n    status_parse_ia: status_parse\n  }\n};"
+        "jsCode": "const entrada = $('Entrada do Post').item.json || {};\nlet conteudo = $json.message ? $json.message.content : (typeof $json === 'string' ? $json : JSON.stringify($json));\n\nlet parsed = {};\nlet status_parse = 'SUCESSO';\nlet observacao = 'JSON parseado com sucesso.';\n\ntry {\n  const jsonMatch = conteudo.match(/```(?:json)?\\n([\\s\\S]*?)\\n```/) || conteudo.match(/{[\\s\\S]*}/);\n  if (jsonMatch && jsonMatch[1]) {\n    parsed = JSON.parse(jsonMatch[1]);\n  } else if (jsonMatch && jsonMatch[0]) {\n    parsed = JSON.parse(jsonMatch[0]);\n  } else {\n    parsed = JSON.parse(conteudo);\n  }\n} catch (e) {\n  status_parse = 'FALHOU_USANDO_FALLBACK';\n  observacao = 'IA n\u00e3o retornou JSON v\u00e1lido; fallback aplicado';\n  parsed = {\n    legenda_facebook: conteudo,\n    legenda_instagram: conteudo,\n    texto_telegram: conteudo,\n    hashtags: []\n  };\n}\n\nreturn {\n  json: {\n    post_id: Date.now().toString(),\n    tema: entrada.tema || 'N/A',\n    produto: entrada.produto || 'N/A',\n    legenda_facebook: parsed.legenda_facebook || parsed.facebook_legenda || parsed.facebook || conteudo,\n    legenda_instagram: parsed.legenda_instagram || parsed.instagram_legenda || parsed.instagram || conteudo,\n    texto_telegram: parsed.texto_telegram || parsed.telegram_texto || parsed.telegram || conteudo,\n    hashtags: parsed.hashtags || [],\n    image_url: entrada.image_url || '',\n    observacoes: [observacao],\n    status_parse_ia: status_parse\n  }\n};"
       },
       "id": "normalizar_saida_ia",
       "name": "NORMALIZAR_SAIDA_IA_SOCIAL",
@@ -73,7 +81,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const jsonStr = JSON.stringify($json).toLowerCase();\nconst proibidos = [\n  'visita técnica', 'visita tecnica', 'canaleta plástica', 'canaleta plastica',\n  'garantia vitalícia', 'garantia vitalicia', 'hidráulica pura', 'hidraulica pura',\n  'engenheiro diogo', 'preço final', 'preco final', 'preço fechado automático', 'preco fechado automatico'\n];\nconst obrigatorios = ['avaliação técnica', 'avaliacao tecnica'];\n\nconst violacoes = proibidos.filter(t => jsonStr.includes(t));\nconst possuiObrigatorio = obrigatorios.some(t => jsonStr.includes(t));\n\nlet status_killcritic = 'APROVADO';\nif (violacoes.length > 0) status_killcritic = 'REPROVADO_POR_TERMOS_PROIBIDOS';\nif (!possuiObrigatorio) status_killcritic = 'REPROVADO_POR_FALTA_DE_CTA_AVALIACAO_TECNICA';\n\nreturn {\n  json: {\n    ...$json,\n    status_killcritic,\n    violacoes\n  }\n};"
+        "jsCode": "const jsonStr = JSON.stringify($json).toLowerCase();\nconst proibidos = [\n  'condfy', 'dl ignis', 'engenheiro', 'sla como termo principal', 'b2b em texto p\u00fablico', 'n8n', 'webhook', 'payload', 'garantia eterna', '100% garantido', 'sem risco', '\u00faltima chance', 'urgente demais', 'not\u00edcia sem fonte', 'sensacionalismo com trag\u00e9dia', \n  'visita t\u00e9cnica', 'visita tecnica', 'canaleta pl\u00e1stica', 'canaleta plastica', 'garantia vital\u00edcia', 'garantia vitalicia', 'hidr\u00e1ulica pura', 'hidraulica pura', 'engenheiro diogo', 'pre\u00e7o final', 'preco final', 'pre\u00e7o fechado autom\u00e1tico', 'preco fechado automatico'\n];\nconst obrigatorios = ['avalia\u00e7\u00e3o t\u00e9cnica', 'avaliacao tecnica'];\n\nconst violacoes = proibidos.filter(t => jsonStr.includes(t));\nconst possuiObrigatorio = obrigatorios.some(t => jsonStr.includes(t));\n\nlet status_killcritic = 'APROVADO';\nif (violacoes.length > 0) status_killcritic = 'REPROVADO_POR_TERMOS_PROIBIDOS';\nif (!possuiObrigatorio) status_killcritic = 'REPROVADO_POR_FALTA_DE_CTA_AVALIACAO_TECNICA';\n\nreturn {\n  json: {\n    ...$json,\n    status_killcritic,\n    violacoes\n  }\n};"
       },
       "id": "code_killcritic",
       "name": "KILLCRITIC Social",
@@ -108,7 +116,7 @@
     {
       "parameters": {
         "chatId": "CHAT_ID_AQUI",
-        "text": "={{ 'BLOQUEIO KILLCRITIC no post sobre ' + $('Entrada do Post').item.json.tema + '. Motivo: ' + $json.status_killcritic + '\\nViolações: ' + $json.violacoes.join(', ') }}",
+        "text": "={{ 'BLOQUEIO KILLCRITIC no post sobre ' + $('Entrada do Post').item.json.tema + '. Motivo: ' + $json.status_killcritic + '\\nViola\u00e7\u00f5es: ' + $json.violacoes.join(', ') }}",
         "additionalFields": {}
       },
       "id": "telegram_reprovado",
@@ -129,11 +137,11 @@
     {
       "parameters": {
         "chatId": "CHAT_ID_AQUI",
-        "text": "={{ 'NOVO POST PARA APROVAÇÃO (DL Nexus V3)\\n\\nTema: ' + $('Entrada do Post').item.json.tema + '\\nProduto: ' + $('Entrada do Post').item.json.produto + '\\n\\nLegenda FB:\\n' + $json.legenda_facebook + '\\n\\nLegenda IG:\\n' + $json.legenda_instagram + '\\n\\nTexto Telegram:\\n' + $json.texto_telegram + '\\n\\nStatus KILLCRITIC: ' + $json.status_killcritic + '\\n\\n⚠️ Aprovação manual obrigatória antes de publicar.\\nAcesse o endpoint para aprovar: /webhook/aprovar-post-dl-nexus-v3' }}",
+        "text": "={{ 'NOVO POST PARA APROVA\u00c7\u00c3O (DL Nexus V3)\\n\\nTema: ' + $('Entrada do Post').item.json.tema + '\\nProduto: ' + $('Entrada do Post').item.json.produto + '\\n\\nLegenda FB:\\n' + $json.legenda_facebook + '\\n\\nLegenda IG:\\n' + $json.legenda_instagram + '\\n\\nTexto Telegram:\\n' + $json.texto_telegram + '\\n\\nStatus KILLCRITIC: ' + $json.status_killcritic + '\\n\\n\u26a0\ufe0f Aprova\u00e7\u00e3o manual obrigat\u00f3ria antes de publicar.\\nAcesse o endpoint para aprovar: /webhook/aprovar-post-dl-nexus-v3' }}",
         "additionalFields": {}
       },
       "id": "telegram_previa",
-      "name": "Telegram Enviar Prévia",
+      "name": "Telegram Enviar Pr\u00e9via",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.1,
       "position": [
@@ -154,7 +162,7 @@
         "options": {}
       },
       "id": "wait_aprovacao",
-      "name": "Wait Aprovação Webhook",
+      "name": "Wait Aprova\u00e7\u00e3o Webhook",
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1,
       "position": [
@@ -175,7 +183,7 @@
         }
       },
       "id": "if_aprovado",
-      "name": "IF Decisão Aprovada?",
+      "name": "IF Decis\u00e3o Aprovada?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
@@ -186,7 +194,7 @@
     {
       "parameters": {
         "chatId": "CHAT_ID_AQUI",
-        "text": "O post foi REPROVADO manualmente e não será publicado.",
+        "text": "O post foi REPROVADO manualmente e n\u00e3o ser\u00e1 publicado.",
         "additionalFields": {}
       },
       "id": "telegram_reprovado_manual",
@@ -333,12 +341,12 @@
       "parameters": {
         "fromEmail": "suporte@dlsolucoescondominiais.com.br",
         "toEmail": "suporte@dlsolucoescondominiais.com.br",
-        "subject": "Relatório de Postagem Social DL Nexus",
-        "html": "={{ 'Publicação executada com sucesso.<br>Status Aprovação: ' + $('Wait Aprovação Webhook').item.json.body.decisao }}",
+        "subject": "Relat\u00f3rio de Postagem Social DL Nexus",
+        "html": "={{ 'Publica\u00e7\u00e3o executada com sucesso.<br>Status Aprova\u00e7\u00e3o: ' + $('Wait Aprova\u00e7\u00e3o Webhook').item.json.body.decisao }}",
         "options": {}
       },
       "id": "smtp_report",
-      "name": "SMTP Relatório Final",
+      "name": "SMTP Relat\u00f3rio Final",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2,
       "position": [
@@ -413,7 +421,7 @@
       "main": [
         [
           {
-            "node": "Telegram Enviar Prévia",
+            "node": "Telegram Enviar Pr\u00e9via",
             "type": "main",
             "index": 0
           }
@@ -427,29 +435,29 @@
         ]
       ]
     },
-    "Telegram Enviar Prévia": {
+    "Telegram Enviar Pr\u00e9via": {
       "main": [
         [
           {
-            "node": "Wait Aprovação Webhook",
+            "node": "Wait Aprova\u00e7\u00e3o Webhook",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Wait Aprovação Webhook": {
+    "Wait Aprova\u00e7\u00e3o Webhook": {
       "main": [
         [
           {
-            "node": "IF Decisão Aprovada?",
+            "node": "IF Decis\u00e3o Aprovada?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "IF Decisão Aprovada?": {
+    "IF Decis\u00e3o Aprovada?": {
       "main": [
         [
           {
@@ -504,7 +512,7 @@
       "main": [
         [
           {
-            "node": "SMTP Relatório Final",
+            "node": "SMTP Relat\u00f3rio Final",
             "type": "main",
             "index": 0
           }

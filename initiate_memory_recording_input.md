@@ -1,3 +1,4 @@
-# Learnings from n8n Workflow Deployment
-- When deploying workflows dynamically to n8n via its API (`POST /workflows`), setting the workflow payload key `settings` to `{"saveExecutionProgress": True, "saveManualExecutions": True}` is sometimes strictly required by the n8n API, otherwise it may reject the payload with `request/body must have required property 'settings'`.
-- Scripts containing hardcoded secrets used for API interactions must be deleted or scrubbed immediately after use before committing any git state to prevent repository leaks.
+# Learnings from N8N Workflow Security Audits and Execution
+- When building Google Drive integration scripts via n8n Code nodes, tracking possible duplicates securely involves computing hashes (`md5Checksum`), checking byte `size`, normalizing strings to lowercase/trim, and iterating counts over an array of results *before* issuing any movement command.
+- Implementing an organizational "kill switch" for content generation or destructive tasks requires a centralized blocklist in JavaScript. Throwing a runtime Error (`throw new Error(...)`) within the Code node reliably aborts the workflow execution before API nodes (like Google Drive or Telegram) are reached.
+- Always run a script to dynamically fetch, parse, and filter `active: true/false` statuses of n8n workflows rather than guessing from local files when applying environment-wide updates.

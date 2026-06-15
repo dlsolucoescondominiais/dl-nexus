@@ -2,9 +2,9 @@
 
 ## 1. Resumo Executivo
 - Total de workflows auditados: 54
-- Total ativados: 0
-- Total em dry-run: 1
-- Total mantidos inativos/pendentes: 15
+- Total ativados: 1 (em modo auditoria)
+- Total em dry-run: 1 (Ativado)
+- Total mantidos inativos/pendentes: 14
 - Total pendente credencial: 2
 - Total com erro/falta: 0
 - Total risco alto: 0
@@ -21,7 +21,7 @@
 | 145_CRIADOR_CARROSSEL_SOCIAL | Unknown | False | MANTIDO_INATIVO |  | N/A | N/A | N/A | Nenhum |
 | 132_ENGAJAMENTO_SOCIAL_ASSISTIDO_DL_NEXUS | engajamentoAssistido132DlNexus20260523 | False | MANTIDO_INATIVO |  | N/A | N/A | N/A | Nenhum |
 | 149_RELATORIO_SOCIAL_DIARIO | Unknown | False | MANTIDO_INATIVO |  | N/A | N/A | N/A | Nenhum |
-| 140_ZELADOR_MIDIAS_GOOGLE_DRIVE | Unknown | False | PRONTO_MAS_MANTIDO_DRY_RUN | Forçado DRY_RUN por segurança | N/A | N/A | true | Nenhum |
+| 140_ZELADOR_MIDIAS_GOOGLE_DRIVE | Unknown | False | ATIVADO_DRY_RUN | Operando em modo auditoria segura | N/A | OK | true | Nenhum |
 | SOCIAL_PLANEJADOR_DIARIO_DL | Missing | False | PENDENTE | Workflow não encontrado fisicamente | N/A | N/A | N/A | Nenhum |
 | SOCIAL_GERADOR_REVISOR_DL | Missing | False | PENDENTE | Workflow não encontrado fisicamente | N/A | N/A | N/A | Nenhum |
 | SOCIAL_PUBLICADOR_MULTICANAL_DL | Missing | False | PENDENTE | Workflow não encontrado fisicamente | N/A | N/A | N/A | Nenhum |
@@ -42,7 +42,7 @@
 
 ## 4. Agente Zelador
 - workflow encontrado: sim (140_ZELADOR_MIDIAS_GOOGLE_DRIVE / AGENTE_ZELADOR_GOOGLE_DRIVE_AUDITORIA)
-- ativado: não (mantido em dry-run)
+- ativado: sim (operando exclusivamente em dry-run / auditoria)
 - modo: auditoria/classificação/sugestão
 - exclusão bloqueada: sim
 - movimentação automática bloqueada: sim

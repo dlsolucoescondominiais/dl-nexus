@@ -56,10 +56,17 @@ export default function Dashboard() {
     setLeads(leadsData || []);
 
     // Calcula KPIs do Funil
-    const total = leadsData?.length || 0;
-    const negociando = leadsData?.filter(l => l.pipeline_stage === 'negociacao').length || 0;
-    const ganhos = leadsData?.filter(l => l.pipeline_stage === 'fechado_ganho').length || 0;
-    const recorrentes = leadsData?.filter(l => l.pipeline_stage === 'contrato_recorrente').length || 0;
+    // ⚡ Bolt Optimization: Single-pass reduce replaces multiple O(N) filter operations
+    const { total, negociando, ganhos, recorrentes } = (leadsData || []).reduce(
+      (acc, lead) => {
+        acc.total += 1;
+        if (lead.pipeline_stage === 'negociacao') acc.negociando += 1;
+        else if (lead.pipeline_stage === 'fechado_ganho') acc.ganhos += 1;
+        else if (lead.pipeline_stage === 'contrato_recorrente') acc.recorrentes += 1;
+        return acc;
+      },
+      { total: 0, negociando: 0, ganhos: 0, recorrentes: 0 }
+    );
 
     setKpis({
       total_leads: total,

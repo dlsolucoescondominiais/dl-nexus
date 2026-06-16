@@ -1,0 +1,94 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "headerAuth",
+        "httpMethod": "POST",
+        "path": "receber-lead",
+        "options": {}
+      },
+      "id": "e2a1b9c3-4d5e-6f7g-8h9i-0j1k2l3m4n5o",
+      "name": "Webhook Site",
+      "type": "n8n-nodes-base.webhook",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "SUA_CREDENTIAL_ID_AQUI",
+          "name": "Header Auth"
+        }
+      },
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "ad60c885-fbba-4c22-9214-b81fc23d6a9a"
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "tableId": "leads",
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "nome_contato",
+              "value": "={{ $json.body.nome }}"
+            },
+            {
+              "column": "nome_condominio",
+              "value": "={{ $json.body.nome_condominio }}"
+            },
+            {
+              "column": "telefone",
+              "value": "={{ $json.body.telefone }}"
+            },
+            {
+              "column": "email",
+              "value": "={{ $json.body.email }}"
+            },
+            {
+              "column": "tipo_imovel",
+              "value": "={{ $json.body.tipo_imovel }}"
+            },
+            {
+              "column": "num_unidades",
+              "value": "={{ $json.body.num_unidades }}"
+            },
+            {
+              "column": "mensagem",
+              "value": "={{ $json.body.mensagem }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "b1c2d3e4-f5a6-7b8c-9d0e-1f2g3h4i5j6k",
+      "name": "Supabase Insert",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUA_CREDENTIAL_ID_AQUI",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Site": {
+      "main": [
+        [
+          {
+            "node": "Supabase Insert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

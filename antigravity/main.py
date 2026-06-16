@@ -3,8 +3,15 @@ import jwt
 from fastapi import FastAPI, Depends, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+from antigravity.middleware.auditor import ComplianceAuditorMiddleware
 from antigravity.routes import aninha
 from antigravity.routes import marketing
+from antigravity.routes import mobile
+from antigravity.routes import infra
+from antigravity.routes import video
+from antigravity.routes import rag
+from antigravity.routes import pricing
+from antigravity.routes import scoring
 
 # Carrega variáveis de ambiente
 load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env'))
@@ -65,8 +72,15 @@ async def verify_supabase_jwt(request: Request):
         raise HTTPException(status_code=403, detail="Token JWT inválido ou adulterado.")
 
 # Anexando as rotas da Aninha protegidas
+app.add_middleware(ComplianceAuditorMiddleware)
 app.include_router(aninha.router, dependencies=[Depends(verify_supabase_jwt)])
 app.include_router(marketing.router, dependencies=[Depends(verify_supabase_jwt)])
+app.include_router(mobile.router, dependencies=[Depends(verify_supabase_jwt)])
+app.include_router(infra.router, dependencies=[Depends(verify_supabase_jwt)])
+app.include_router(video.router, dependencies=[Depends(verify_supabase_jwt)])
+app.include_router(rag.router, dependencies=[Depends(verify_supabase_jwt)])
+app.include_router(pricing.router, dependencies=[Depends(verify_supabase_jwt)])
+app.include_router(scoring.router, dependencies=[Depends(verify_supabase_jwt)])
 
 @app.get("/health")
 def health_check():

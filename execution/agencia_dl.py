@@ -16,6 +16,8 @@ import logging
 import datetime
 import pathlib
 import time
+import threading
+import concurrent.futures
 from textwrap import dedent
 
 from PIL import Image, ImageDraw, ImageFont
@@ -50,6 +52,9 @@ load_dotenv(_EXECUTION_DIR / ".env")
 
 TMP_DIR = _PROJECT_ROOT / "tmp"
 TMP_DIR.mkdir(exist_ok=True)
+
+_publish_lock = threading.Lock()
+_last_publish_time = 0.0
 
 logging.basicConfig(
     level=logging.INFO,
@@ -660,19 +665,30 @@ def executar_postagem(tema: str, slot: dict) -> dict:
             logger.warning("Falha ao criar video, publicando como imagem.")
 
     # 4. Disparo Omnichannel
-    image_url = _upload_imagem_para_url(imagem_local)
-    
-    if is_video:
-        # Quando é Reels (Video)
-        pub_ig = publicar_no_instagram(
-            media_local, copy_final, tipo="reels", is_video=True)
-        # Atenção: Facebook Video Graph API usa 'source' com path local binário.
-        pub_fb = publicar_no_facebook(media_local, copy_final, is_video=True)
-    else:
-        # Quando é Imagem Estática / Story
-        pub_ig = publicar_no_instagram(
-            image_url, copy_final, tipo=tipo, is_video=False) if image_url else False
-        pub_fb = publicar_no_facebook(imagem_local, copy_final, is_video=False)
+    global _last_publish_time
+    with _publish_lock:
+        agora = time.time()
+        decorrido = agora - _last_publish_time
+        if _last_publish_time > 0 and decorrido < 30:
+            espera = 30 - decorrido
+            logger.info("Aguardando %.1fs para respeitar o rate-limit da API...", espera)
+            time.sleep(espera)
+
+        image_url = _upload_imagem_para_url(imagem_local)
+
+        if is_video:
+            # Quando é Reels (Video)
+            pub_ig = publicar_no_instagram(
+                media_local, copy_final, tipo="reels", is_video=True)
+            # Atenção: Facebook Video Graph API usa 'source' com path local binário.
+            pub_fb = publicar_no_facebook(media_local, copy_final, is_video=True)
+        else:
+            # Quando é Imagem Estática / Story
+            pub_ig = publicar_no_instagram(
+                image_url, copy_final, tipo=tipo, is_video=False) if image_url else False
+            pub_fb = publicar_no_facebook(imagem_local, copy_final, is_video=False)
+
+        _last_publish_time = time.time()
 
     if pub_ig and pub_fb:
         slot["status"] = "IG + FB"
@@ -692,12 +708,15 @@ def main():
     postagens = [dict(s) for s in CRONOGRAMA]
 
     if len(sys.argv) > 1 and sys.argv[1] == "--executar":
-        for i, slot in enumerate(postagens):
-            postagens[i] = executar_postagem(tema, slot)
-            if i < len(postagens) - 1:
-                logger.info(
-                    "Aguardando 30s antes do proximo slot (anti-rate-limit)...")
-                time.sleep(30)
+        if postagens:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=len(postagens)) as executor:
+                # Dispara todas as tasks simultaneamente (elas serao limitadas pelo lock no momento de publicar)
+                futures = [executor.submit(executar_postagem, tema, slot) for slot in postagens]
+
+                # Aguarda e coleta os resultados na ordem original para preservar a estrutura
+                for i, future in enumerate(futures):
+                    # Ocorrendo excecao aqui (ex: timeout grave), ela subira como no original (fail-fast)
+                    postagens[i] = future.result()
     elif len(sys.argv) > 2 and sys.argv[1] == "--slot":
         slot_num = int(sys.argv[2])
         postagens[slot_num -

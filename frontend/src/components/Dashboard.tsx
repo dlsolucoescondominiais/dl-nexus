@@ -57,15 +57,22 @@ export default function Dashboard() {
 
     // Calcula KPIs do Funil
     const total = leadsData?.length || 0;
-    const negociando = leadsData?.filter(l => l.pipeline_stage === 'negociacao').length || 0;
-    const ganhos = leadsData?.filter(l => l.pipeline_stage === 'fechado_ganho').length || 0;
-    const recorrentes = leadsData?.filter(l => l.pipeline_stage === 'contrato_recorrente').length || 0;
+
+    // Otimização de Performance (Bolt ⚡):
+    // Combina múltiplas iterações filter().length em um único passe reduce().
+    // Isso reduz o tempo de iteração de O(3N) para O(N) e é melhor para arrays grandes.
+    const kpiData = leadsData?.reduce((acc, lead) => {
+      if (lead.pipeline_stage === 'negociacao') acc.negociando++;
+      else if (lead.pipeline_stage === 'fechado_ganho') acc.ganhos++;
+      else if (lead.pipeline_stage === 'contrato_recorrente') acc.recorrentes++;
+      return acc;
+    }, { negociando: 0, ganhos: 0, recorrentes: 0 }) || { negociando: 0, ganhos: 0, recorrentes: 0 };
 
     setKpis({
       total_leads: total,
-      em_negociacao: negociando,
-      fechado_ganho: ganhos,
-      contratos_ativos: recorrentes
+      em_negociacao: kpiData.negociando,
+      fechado_ganho: kpiData.ganhos,
+      contratos_ativos: kpiData.recorrentes
     });
 
     setLoading(false);

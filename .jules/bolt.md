@@ -1,0 +1,3 @@
+## 2024-05-24 - FastAPI Synchronous I/O Anti-Pattern
+**Learning:** In FastAPI, declaring a route with `async def` while performing synchronous I/O operations (like `requests.post` or calling a synchronous OpenAI client SDK) inside the route completely halts the single-threaded event loop. This is a critical performance anti-pattern.
+**Action:** When a route handler performs synchronous network I/O, always declare it with `def` rather than `async def`. FastAPI will automatically execute `def` endpoints in an external thread pool, preventing them from blocking the main event loop and allowing the application to handle other concurrent requests efficiently.

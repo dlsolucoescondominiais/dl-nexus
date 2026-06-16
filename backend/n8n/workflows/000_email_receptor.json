@@ -1,0 +1,77 @@
+{
+  "name": "000_email_receptor_v3",
+  "nodes": [
+    {
+      "parameters": {
+        "postReceiveAction": "nothing",
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "customEmailConfig": "[\"UNSEEN\"]"
+        }
+      },
+      "id": "imap-trigger",
+      "name": "Email Read (IMAP)",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ],
+      "credentials": {
+        "imap": {
+          "id": "SUA_CRED_AQUI",
+          "name": "vendas@dlsolucoescondominiais.com.br"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/router-aninha",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "from",
+              "value": "={{ $json.from.address }}"
+            },
+            {
+              "name": "subject",
+              "value": "={{ $json.subject }}"
+            },
+            {
+              "name": "text",
+              "value": "={{ $json.text }}"
+            },
+            {
+              "name": "source",
+              "value": "email"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-forward",
+      "name": "Forward to Aninha",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        500,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Email Read (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Forward to Aninha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

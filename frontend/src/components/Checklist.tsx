@@ -12,11 +12,20 @@ export default function ChecklistMobile({ leadId = 'a1b2c3d4-e5f6-7890-1234-5678
   const [mensagem, setMensagem] = useState('');
 
   const [checklist, setChecklist] = useState({
-    quadroEletrico: false,
-    cabeamentoEstruturado: false,
-    bombaDagua: false,
-    cameraIntelbras: false,
-    painelSolar: false,
+    quadroDistribuicao: false,
+    painelComando: false,
+    bomba: false,
+    piscina: false,
+    sauna: false,
+    iluminacao: false,
+    automacaoEletrica: false,
+    diagnosticoCurto: false,
+    diagnosticoQuedaDisjuntor: false,
+    medicaoCarga: false,
+    infraestruturaEletrica: false,
+    art: false,
+    manutencaoPreventiva: false,
+    manutencaoCorretiva: false,
     observacoes: '',
     viabilidade: 'media',
     score: 50
@@ -90,23 +99,73 @@ export default function ChecklistMobile({ leadId = 'a1b2c3d4-e5f6-7890-1234-5678
 
             <div className="space-y-4">
               <label className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-100 rounded">
-                <input type="checkbox" name="quadroEletrico" className="h-5 w-5 text-blue-600 rounded" checked={checklist.quadroEletrico} onChange={handleChange} />
-                <span className="text-gray-700 font-medium">Quadro Elétrico (Fiação exposta / Norma)</span>
+                <input type="checkbox" name="quadroDistribuicao" className="h-5 w-5 text-blue-600 rounded" checked={checklist.quadroDistribuicao} onChange={handleChange} />
+                <span className="text-gray-700 font-medium">Quadro de distribuição</span>
               </label>
 
               <label className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-100 rounded">
-                <input type="checkbox" name="cabeamentoEstruturado" className="h-5 w-5 text-blue-600 rounded" checked={checklist.cabeamentoEstruturado} onChange={handleChange} />
-                <span className="text-gray-700 font-medium">Cabeamento Estruturado (Racks e Switch)</span>
+                <input type="checkbox" name="painelComando" className="h-5 w-5 text-blue-600 rounded" checked={checklist.painelComando} onChange={handleChange} />
+                <span className="text-gray-700 font-medium">Painel de comando</span>
               </label>
 
               <label className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-100 rounded">
-                <input type="checkbox" name="cameraIntelbras" className="h-5 w-5 text-blue-600 rounded" checked={checklist.cameraIntelbras} onChange={handleChange} />
-                <span className="text-gray-700 font-medium">Segurança CFTV (Infra Inteligente)</span>
+                <input type="checkbox" name="bomba" className="h-5 w-5 text-blue-600 rounded" checked={checklist.bomba} onChange={handleChange} />
+                <span className="text-gray-700 font-medium">Bomba</span>
               </label>
 
               <label className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-100 rounded">
-                <input type="checkbox" name="painelSolar" className="h-5 w-5 text-blue-600 rounded" checked={checklist.painelSolar} onChange={handleChange} />
-                <span className="text-gray-700 font-medium">Viabilidade Energia Solar Híbrida</span>
+                <input type="checkbox" name="piscina" className="h-5 w-5 text-blue-600 rounded" checked={checklist.piscina} onChange={handleChange} />
+                <span className="text-gray-700 font-medium">Piscina</span>
+              </label>
+
+              <label className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-100 rounded">
+                <input type="checkbox" name="sauna" className="h-5 w-5 text-blue-600 rounded" checked={checklist.sauna} onChange={handleChange} />
+                <span className="text-gray-700 font-medium">Sauna</span>
+              </label>
+
+              <label className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-100 rounded">
+                <input type="checkbox" name="iluminacao" className="h-5 w-5 text-blue-600 rounded" checked={checklist.iluminacao} onChange={handleChange} />
+                <span className="text-gray-700 font-medium">Iluminação</span>
+              </label>
+
+              <label className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-100 rounded">
+                <input type="checkbox" name="automacaoEletrica" className="h-5 w-5 text-blue-600 rounded" checked={checklist.automacaoEletrica} onChange={handleChange} />
+                <span className="text-gray-700 font-medium">Automação elétrica</span>
+              </label>
+
+              <label className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-100 rounded">
+                <input type="checkbox" name="diagnosticoCurto" className="h-5 w-5 text-blue-600 rounded" checked={checklist.diagnosticoCurto} onChange={handleChange} />
+                <span className="text-gray-700 font-medium">Diagnóstico de curto</span>
+              </label>
+
+              <label className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-100 rounded">
+                <input type="checkbox" name="diagnosticoQuedaDisjuntor" className="h-5 w-5 text-blue-600 rounded" checked={checklist.diagnosticoQuedaDisjuntor} onChange={handleChange} />
+                <span className="text-gray-700 font-medium">Diagnóstico de queda de disjuntor</span>
+              </label>
+
+              <label className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-100 rounded">
+                <input type="checkbox" name="medicaoCarga" className="h-5 w-5 text-blue-600 rounded" checked={checklist.medicaoCarga} onChange={handleChange} />
+                <span className="text-gray-700 font-medium">Medição de carga</span>
+              </label>
+
+              <label className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-100 rounded">
+                <input type="checkbox" name="infraestruturaEletrica" className="h-5 w-5 text-blue-600 rounded" checked={checklist.infraestruturaEletrica} onChange={handleChange} />
+                <span className="text-gray-700 font-medium">Infraestrutura elétrica</span>
+              </label>
+
+              <label className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-100 rounded">
+                <input type="checkbox" name="art" className="h-5 w-5 text-blue-600 rounded" checked={checklist.art} onChange={handleChange} />
+                <span className="text-gray-700 font-medium">ART</span>
+              </label>
+
+              <label className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-100 rounded">
+                <input type="checkbox" name="manutencaoPreventiva" className="h-5 w-5 text-blue-600 rounded" checked={checklist.manutencaoPreventiva} onChange={handleChange} />
+                <span className="text-gray-700 font-medium">Manutenção preventiva</span>
+              </label>
+
+              <label className="flex items-center space-x-3 cursor-pointer p-2 hover:bg-gray-100 rounded">
+                <input type="checkbox" name="manutencaoCorretiva" className="h-5 w-5 text-blue-600 rounded" checked={checklist.manutencaoCorretiva} onChange={handleChange} />
+                <span className="text-gray-700 font-medium">Manutenção corretiva</span>
               </label>
             </div>
           </div>

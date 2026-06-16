@@ -30,12 +30,21 @@ def main():
     query_mes = f"'{ano_folders[0]['id']}' in parents and trashed=false"
     mes_folders = service.files().list(q=query_mes, fields="files(id, name)").execute().get('files', [])
     
-    for mf in mes_folders:
-        query_files = f"'{mf['id']}' in parents and trashed=false"
-        arquivos = service.files().list(q=query_files, fields="files(id, name)").execute().get('files', [])
+    if mes_folders:
+        # Optimization: Fetch all files across all month folders in a single API call
+        # avoiding an N+1 query problem where we'd list files for each month individually.
+        parent_queries = [f"'{mf['id']}' in parents" for mf in mes_folders]
+        query_files = f"({' or '.join(parent_queries)}) and trashed=false"
+
+        # Include 'parents' in fields to know which folder the file came from
+        arquivos = service.files().list(q=query_files, fields="files(id, name, parents)").execute().get('files', [])
+
+        mf_ids = {mf['id'] for mf in mes_folders}
         for a in arquivos:
             print(f"Voltando para root: {a['name']}")
-            service.files().update(fileId=a['id'], addParents='root', removeParents=mf['id']).execute()
+            parents_to_remove = [p for p in a.get('parents', []) if p in mf_ids]
+            if parents_to_remove:
+                service.files().update(fileId=a['id'], addParents='root', removeParents=','.join(parents_to_remove)).execute()
 
 if __name__ == '__main__':
     main()

@@ -19,7 +19,7 @@ class LeadRequest(BaseModel):
     mensagem_original: str
     tipo_imovel: str = None
     num_unidades: int = None
-    origem: str  # whatsapp, email, site
+    origem: str  # whatsapp, telegram, email, site, instagram, facebook, google_meu_negocio, manual, formulario, google_ads, indicacao
     prioridade_inferida: str = "baixa"
 
 def disparar_webhook_n8n_background(resultado_triagem: dict):

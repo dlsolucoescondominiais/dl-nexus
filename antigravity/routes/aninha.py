@@ -61,7 +61,7 @@ async def triagem_lead(lead: LeadRequest, bg_tasks: BackgroundTasks):
         }
         
         # 3. Executar o motor da Aninha
-        resultado = aninha.fazer_triagem(lead_data)
+        resultado = await aninha.fazer_triagem(lead_data)
 
         # 4. Envia o callback ao Orquestrador (n8n/Supabase) para o Dashboard atualizar realtime
         # Passa o 'status' alterado (ex: 'triado' ou 'bloqueado')

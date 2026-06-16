@@ -37,7 +37,6 @@ SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 N8N_API_KEY = os.getenv("N8N_API_KEY")
 N8N_HOST = os.getenv("N8N_HOST")
 
-
 class StitchClient:
     """Cliente Python para a API do Google Stitch (MCP)"""
 
@@ -67,10 +66,9 @@ class StitchClient:
             resp.raise_for_status()
             return resp.json()
         except requests.exceptions.RequestException as e:
-            print(f"❌ Erro ao chamar Stitch ({tool_name}): {e}")
-            if hasattr(e, 'response') and e.response is not None:
-                print(f"   Response: {e.response.text[:500]}")
-            return {"error": str(e)}
+            print(f"❌ Erro de rede ao chamar Stitch ({tool_name}). Verifique a conexão.")
+            # Response oculta para não vazar informações sensíveis
+            return {"error": "Request exception occurred"}
 
     def list_tools(self) -> list:
         """Lista todas as ferramentas disponíveis no Stitch"""
@@ -86,13 +84,29 @@ class StitchClient:
             data = resp.json()
             return data.get("result", {}).get("tools", [])
         except Exception as e:
-            print(f"❌ Erro ao listar ferramentas: {e}")
+            print(f"❌ Falha ao listar ferramentas do Stitch.")
             return []
 
     def list_projects(self) -> list:
         """Lista todos os projetos no Stitch"""
         result = self.call_tool("list_projects")
         return result.get("result", {}).get("content", [])
+
+    def find_project_by_title(self, title: str) -> str:
+        """Encontra o ID do projeto a partir do título textual"""
+        projects = self.list_projects()
+        for p in projects:
+            # Assumindo que a resposta do content pode ser string ou dicionário
+            if isinstance(p, dict) and p.get("title") == title:
+                return p.get("id")
+            elif isinstance(p, str) and title in p:
+                # Caso a API retorne strings simples ex: 'id: 123 | title: DL Nexus'
+                # extrair ID por heurística básica ou retornar match parcial
+                try:
+                    return p.split("|")[0].replace("id:", "").strip()
+                except:
+                    pass
+        return None
 
     def create_project(self, title: str) -> dict:
         """Cria um novo projeto"""
@@ -117,9 +131,9 @@ class StitchClient:
     def edit_screen(self, project_id: str, screen_id: str, prompt: str) -> dict:
         """Edita uma tela existente"""
         return self.call_tool("edit_screen", {
-            "project_id": project_id,
-            "screen_id": screen_id,
-            "text_prompt": prompt
+            "projectId": project_id,
+            "screenId": screen_id,
+            "prompt": prompt
         })
 
 
@@ -141,7 +155,7 @@ class SupabaseClient:
         url = f"{self.url}/rest/v1/leads?order=created_at.desc&limit={limit}"
         if status:
             url += f"&status=eq.{status}"
-        resp = self.session.get(url)
+        resp = self.session.get(url, timeout=30)
         resp.raise_for_status()
         return resp.json()
 
@@ -149,18 +163,25 @@ class SupabaseClient:
         """Retorna resumo dos leads para o dashboard"""
         all_leads = self.get_leads(limit=1000)
         total = len(all_leads)
-        novos = sum(1 for l in all_leads if l.get("status") == "novo")
-        triados = sum(1 for l in all_leads if l.get("status") == "triado")
 
-        # Agrupar por tipo de serviço
+        novos = 0
+        triados = 0
         servicos = {}
+        portes = {}
+
         for lead in all_leads:
+            # Contagem de status
+            status = lead.get("status")
+            if status == "novo":
+                novos += 1
+            elif status == "triado":
+                triados += 1
+
+            # Agrupar por tipo de serviço
             tipo = lead.get("tipo_servico") or "Não classificado"
             servicos[tipo] = servicos.get(tipo, 0) + 1
 
-        # Agrupar por porte
-        portes = {}
-        for lead in all_leads:
+            # Agrupar por porte
             porte = lead.get("porte") or "Não definido"
             portes[porte] = portes.get(porte, 0) + 1
 
@@ -184,20 +205,25 @@ class N8nClient:
             "X-N8N-API-KEY": api_key,
             "Content-Type": "application/json"
         })
-        # SSL self-signed
-        self.session.verify = False
+        # SSL Verification condicionado
+        self.session.verify = os.getenv("N8N_VERIFY_SSL", "true").lower() == "true"
 
     def list_workflows(self) -> list:
         """Lista todos os workflows"""
-        resp = self.session.get(f"{self.host}/workflows")
+        resp = self.session.get(f"{self.host}/workflows", timeout=30)
         resp.raise_for_status()
         return resp.json().get("data", [])
 
     def activate_workflow(self, workflow_id: str) -> dict:
         """Ativa um workflow"""
+        if os.getenv("ALLOW_N8N_WORKFLOW_ACTIVATION", "false").lower() != "true":
+            print("⚠️ Ativação de workflow bloqueada por segurança.")
+            return {"error": "Activation blocked by ALLOW_N8N_WORKFLOW_ACTIVATION rule"}
+
         resp = self.session.patch(
             f"{self.host}/workflows/{workflow_id}",
-            json={"active": True}
+            json={"active": True},
+            timeout=30
         )
         resp.raise_for_status()
         return resp.json()
@@ -206,7 +232,8 @@ class N8nClient:
         """Executa um workflow manualmente"""
         resp = self.session.post(
             f"{self.host}/workflows/{workflow_id}/run",
-            json={"data": data or {}}
+            json={"data": data or {}},
+            timeout=30
         )
         resp.raise_for_status()
         return resp.json()
@@ -318,8 +345,17 @@ def sync_dashboard(stitch_client: StitchClient, supabase_client: SupabaseClient)
 
     # Aqui aplicamos o resultado — isso pode ser usado para
     # gerar uma nova versão do dashboard ou atualizar a existente
+
+    # 1. Localizar ID real do projeto
+    target_title = "DL Nexus Admin Dashboard"
+    real_project_id = stitch_client.find_project_by_title(target_title)
+
+    if not real_project_id:
+        print(f"⚠️  Projeto '{target_title}' não encontrado. Sincronização cancelada.")
+        return {"error": "Project not found"}
+
     result = stitch_client.generate_screen(
-        project_id="DL Nexus Admin Dashboard",
+        project_id=real_project_id,
         prompt=prompt,
         device_type="DESKTOP"
     )
@@ -327,7 +363,7 @@ def sync_dashboard(stitch_client: StitchClient, supabase_client: SupabaseClient)
     if "error" not in result:
         print("✅ Dashboard atualizado com sucesso no Stitch!")
     else:
-        print(f"⚠️  Resultado: {json.dumps(result, indent=2, ensure_ascii=False)[:500]}")
+        print(f"⚠️  Resultado da operação indicou um problema ou falha.")
 
     return result
 
@@ -353,13 +389,30 @@ def full_status():
     print("   Site/WhatsApp → n8n webhook → Supabase → Stitch Dashboard")
 
 
+# Validação de Segurança
+def validate_environment():
+    missing = []
+    if not STITCH_API_KEY:
+        missing.append("STITCH_API_KEY_1/2")
+    if not SUPABASE_URL:
+        missing.append("SUPABASE_URL")
+    if not SUPABASE_KEY:
+        missing.append("SUPABASE_SERVICE_ROLE_KEY")
+    if not N8N_API_KEY:
+        missing.append("N8N_API_KEY")
+    if not N8N_HOST:
+        missing.append("N8N_HOST")
+
+    if missing:
+        print("❌ Erro de Configuração: Variáveis de ambiente obrigatórias ausentes.")
+        print("Verifique seu arquivo .env ou configuração de deployment.")
+        sys.exit(1)
+
 # ========================
 # MAIN
 # ========================
 if __name__ == "__main__":
-    if not STITCH_API_KEY:
-        print("❌ STITCH_API_KEY não encontrada no .env!")
-        sys.exit(1)
+    validate_environment()
 
     if len(sys.argv) > 1:
         cmd = sys.argv[1]

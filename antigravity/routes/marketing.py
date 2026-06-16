@@ -1,5 +1,5 @@
 import os
-import requests
+import httpx
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
@@ -28,7 +28,8 @@ async def aprovar_post(request: PostApprovalRequest):
         payload = request.model_dump()
 
         # Dispara o gatilho para o n8n fazer o push final para o Facebook/Instagram API
-        resp = requests.post(WEBHOOK_APROVACAO_N8N, json=payload, headers=headers, timeout=15)
+        async with httpx.AsyncClient() as client:
+            resp = await client.post(WEBHOOK_APROVACAO_N8N, json=payload, headers=headers, timeout=15.0)
 
         if resp.status_code not in (200, 201):
             raise Exception(f"Orquestrador n8n retornou erro: {resp.text}")

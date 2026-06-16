@@ -1,0 +1,3 @@
+## 2023-10-27 - Frontend React Performance: Single-Pass Array Aggregation
+**Learning:** In React components like `Dashboard.tsx`, performing multiple `array.filter(condition).length` operations to calculate different KPIs causes O(3N) or O(kN) iteration cycles, which can be a bottleneck on the main thread when handling large data sets (like the Enterprise leads pipeline).
+**Action:** Always refactor sequential `.filter().length` aggregations into a single `.reduce()` pass (O(N)) to calculate all metrics simultaneously. This improves performance without adding dependencies and aligns perfectly with the goal of reducing unnecessary main-thread work.

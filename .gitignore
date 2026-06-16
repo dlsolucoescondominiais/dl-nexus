@@ -7,6 +7,8 @@
 .env
 execution/.env
 *.json
+!DL_NEXUS_V3_LOCAL/**/*.json
+!backend/n8n/workflows/**/*.json
 !package.json
 !package-lock.json
 !tsconfig.json

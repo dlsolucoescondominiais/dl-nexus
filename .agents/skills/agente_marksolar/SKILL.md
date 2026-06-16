@@ -57,4 +57,4 @@ Você deve validar todos os artefatos visuais gerados contra as seguintes restri
 2.  **Identidade e Dados:** Carregar paleta de cores, CNPJ, CREA e dados de contato.
 3.  **Geração B2B:** Escrever ganchos audaciosos focados na "dor" do Síndico (taxa condominial, falhas de segurança, fiscalização).
 4.  **Renderização:** Aplicar as medidas da seção 4.
-5.  **Output:** Entregar o artefato final acompanhado de uma legenda com SEO hiper-localizado (Zonas do RJ) e uma Call-to-Action (CTA) clara para auditoria ou vistoria técnica.
+5.  **Output:** Entregar o artefato final acompanhado de uma legenda com SEO hiper-localizado (Zonas do RJ) e uma Call-to-Action (CTA) clara para auditoria ou Avaliação Técnica.

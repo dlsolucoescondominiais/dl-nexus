@@ -47,12 +47,12 @@ class AgenteCartografo:
                     if dist_km <= 25.0:
                         status_viabilidade = "VERDE"
                         taxa_deslocamento = 0.0
-                        aviso = f"Proximidade excelente ({dist_km}km). Viagem em {tempo_viagem}. Visita Técnica Gratuita autorizada."
+                        aviso = f"Proximidade excelente ({dist_km}km). Viagem em {tempo_viagem}. Avaliação Técnica Gratuita autorizada."
                         
                     elif dist_km <= 60.0:
                         status_viabilidade = "AMARELO"
                         taxa_deslocamento = 180.0 # Sugestão de Custo Operacional (Pedágio + Gasolina)
-                        aviso = f"Distância média ({dist_km}km). Viagem de {tempo_viagem}. Sugerir Taxa de Visita (R$180)."
+                        aviso = f"Distância média ({dist_km}km). Viagem de {tempo_viagem}. Sugerir Taxa de Avaliação Técnica (R$180)."
                         
                     else:
                         status_viabilidade = "VERMELHO (FORA_DE_RAIO)"

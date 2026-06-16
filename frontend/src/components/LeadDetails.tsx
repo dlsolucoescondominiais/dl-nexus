@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
+import { logger } from '../lib/logger';
 
 interface Mensagem {
   id: string;
@@ -37,12 +38,12 @@ const LeadDetails = () => {
             .eq('telefone', leadData.telefone)
             .order('created_at', { ascending: true });
 
-          if (msgError) console.error("Erro ao buscar mensagens:", msgError);
+          if (msgError) logger.error("Erro ao buscar mensagens:", msgError);
           setMensagens(msgData || []);
         }
 
       } catch (error) {
-        console.error('Erro ao procurar os detalhes do lead:', error);
+        logger.error('Erro ao procurar os detalhes do lead:', error);
       } finally {
         setLoading(false);
       }

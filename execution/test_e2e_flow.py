@@ -11,13 +11,17 @@ da IA e salvamento no Supabase ANTES da produção oficial.
 import requests
 import json
 import time
+import os
 
 # ============================================================================
 # CONFIGURAÇÕES DE TESTE (Alvo: n8n hospedado na HostGator)
 # ============================================================================
 N8N_WEBHOOK_URL = "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-receptor"
-# Substituir em produção pela chave real
-API_KEY_TESTE = "TESTE-123-CHAVE-CADASTRADA-NO-N8N"
+# Obtendo a chave real do ambiente para evitar secrets hardcoded
+API_KEY_TESTE = os.getenv("N8N_API_KEY")
+
+if not API_KEY_TESTE:
+    raise RuntimeError("A variável de ambiente N8N_API_KEY não está definida. Operação abortada por segurança.")
 
 print("==========================================================")
 print("🚀 INICIANDO TESTE END-TO-END (DL NEXUS / WHATSAPP)")

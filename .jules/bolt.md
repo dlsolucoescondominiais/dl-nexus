@@ -1,0 +1,4 @@
+
+## 2026-05-20 - FastAPI Synchronous I/O Blocking Event Loop Anti-Pattern
+**Learning:** Found a critical performance bottleneck where synchronous network operations (e.g., `requests.post` and the synchronous OpenAI Python SDK `client.chat.completions.create`) were being executed inside `async def` FastAPI route handlers (`aprovar_post` and `triagem_lead`). In FastAPI, an `async def` route runs directly on the main event loop. If it executes a blocking, synchronous I/O call, it halts the entire single-threaded event loop, blocking all other concurrent requests from being processed until the network call finishes.
+**Action:** When adding dependencies like `httpx` is restricted and synchronous I/O is unavoidable, always define the route using `def` instead of `async def`. This instructs FastAPI to run the function in an external thread pool, keeping the main event loop free for other requests. Removed `async` from `aprovar_post` and `triagem_lead`.

@@ -1,0 +1,256 @@
+{
+  "name": "095_ANINHA_TELEGRAM_V3_KILLCRITIC",
+  "id": "aninhaTelegramV3Killcritic095",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ]
+      },
+      "id": "telegram-trigger",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [250, 400],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram_bot_credentials"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "Você é a Aninha, agente comercial, atendimento inicial e triagem técnica da DL Soluções Condominiais.\n\nSiga estritamente as regras abaixo (BASE_COMERCIAL):\n- NUNCA chamar Diogo de engenheiro. Use 'Tecnólogo responsável' ou 'equipe técnica'.\n- NUNCA usar 'visita técnica'. Use SEMPRE 'Avaliação Técnica'.\n- NUNCA cite Condfy. Use DL Fortress.\n- NUNCA cite Metabo. Use DL Acqua.\n- NUNCA cite Mobgate. Use Gatekeeper.\n- Nunca prometa preço fechado sem escopo.\n- Sempre blinde o orçamento: 'O valor considera exclusivamente o escopo informado. Qualquer item não identificado será tratado mediante reavaliação.'\n- Máximo 3 perguntas por vez para coletar: Nome, Bairro, Tipo (condomínio, escola, residencial), Serviço, Urgência.\n- Preços mínimos (a partir de): \n  * CFTV/Acesso: R$ 350. \n  * DL Fortress/Partner: R$ 450/mês. \n  * DL Acqua/Volt/Incêndio/Solar: Avaliação R$ 350, Serviço R$ 450.\n  * Mult-Grill: R$ 350.\n- Regra Residencial: Não somos focados, analisar viabilidade.\n- Regras de Região (bairro):\n  * Leme/Botafogo/Copacabana/Ipanema/Centro: Alto custo operacional (deslocamento/estacionamento). Serviço mínimo R$ 500, Avaliação R$ 400-600.\n  * Barra/Recreio: Custo médio, mínimo R$ 350-500.\n  * Categorias próximas: Baixo custo, R$ 250-350.\n\nRESPONDA APENAS NO FORMATO JSON ESTRITO ABAIXO (sem markdown):\n{\n  \"resposta_cliente\": \"sua resposta formatada com as regras comerciais e blindagem\",\n  \"status_lead\": \"novo/qualificado/encaminhado_diogo\",\n  \"urgencia\": \"baixa/media/alta/critica\",\n  \"servico\": \"descrição do serviço\",\n  \"bairro\": \"bairro se informado\",\n  \"tipo_cliente\": \"condominio/escola/residencial/empresa\",\n  \"valor_inicial_informado\": \"R$ ...\",\n  \"dados_faltantes\": \"dados pendentes\",\n  \"resumo_conversa\": \"resumo breve\",\n  \"proxima_acao\": \"próxima ação com o lead\",\n  \"escalar_diogo\": true/false (true se condomínio, escola, urgência, contrato, pedir ART ou aceitar Avaliação Técnica)\n}"
+        }
+      },
+      "id": "agent-aninha",
+      "name": "Aninha Langchain",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [450, 400],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "id": "openai-model",
+      "name": "OpenAI Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [450, 600],
+      "credentials": {
+        "openAiApi": {
+          "id": "openai_credentials"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "memory",
+      "name": "Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.2,
+      "position": [550, 600]
+    },
+    {
+      "parameters": {
+        "jsCode": "try {\n  const aiOutput = JSON.parse(items[0].json.output);\n  return [{ json: aiOutput }];\n} catch (e) {\n  return [{ json: { \n    resposta_cliente: \"Desculpe, ocorreu um erro ao processar sua mensagem. Poderia repetir?\",\n    status_lead: \"erro\",\n    escalar_diogo: false\n  }}];\n}"
+      },
+      "id": "parse-json",
+      "name": "Parse AI JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [650, 400]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.resposta_cliente }}",
+        "additionalFields": {}
+      },
+      "id": "telegram-send",
+      "name": "Responder Cliente",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [850, 400],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram_bot_credentials"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "tableId": "leads",
+        "matchColumns": [
+          "telefone"
+        ],
+        "columns": [
+          "canal",
+          "nome",
+          "telefone",
+          "tipo_cliente",
+          "bairro",
+          "servico",
+          "urgencia",
+          "status",
+          "valor_inicial_informado",
+          "dados_faltantes",
+          "resumo_conversa",
+          "proxima_acao"
+        ],
+        "values": [
+          {
+            "canal": "telegram",
+            "nome": "={{ $('Telegram Trigger').item.json.message.from.first_name }}",
+            "telefone": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+            "tipo_cliente": "={{ $json.tipo_cliente }}",
+            "bairro": "={{ $json.bairro }}",
+            "servico": "={{ $json.servico }}",
+            "urgencia": "={{ $json.urgencia }}",
+            "status": "={{ $json.status_lead }}",
+            "valor_inicial_informado": "={{ $json.valor_inicial_informado }}",
+            "dados_faltantes": "={{ $json.dados_faltantes }}",
+            "resumo_conversa": "={{ $json.resumo_conversa }}",
+            "proxima_acao": "={{ $json.proxima_acao }}"
+          }
+        ]
+      },
+      "id": "supabase-upsert",
+      "name": "Registrar Lead",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [850, 200],
+      "credentials": {
+        "supabaseApi": {
+          "id": "supabase_credentials"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.escalar_diogo }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-escalar",
+      "name": "Escalar para Diogo?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1050, 400]
+    },
+    {
+      "parameters": {
+        "chatId": "ID_DO_DIOGO",
+        "text": "=Novo lead qualificado pela Aninha.\n\nCliente: {{ $('Telegram Trigger').item.json.message.from.first_name }}\nCanal: Telegram\nBairro: {{ $json.bairro }}\nTipo de cliente: {{ $json.tipo_cliente }}\nServiço: {{ $json.servico }}\nUrgência: {{ $json.urgencia }}\nValor inicial informado: {{ $json.valor_inicial_informado }}\nDados faltantes: {{ $json.dados_faltantes }}\nResumo: {{ $json.resumo_conversa }}\nPróxima ação recomendada: {{ $json.proxima_acao }}",
+        "additionalFields": {}
+      },
+      "id": "telegram-diogo",
+      "name": "Avisar Diogo",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [1250, 300],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram_bot_credentials"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Aninha Langchain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aninha Langchain": {
+      "main": [
+        [
+          {
+            "node": "Parse AI JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Aninha Langchain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Aninha Langchain",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse AI JSON": {
+      "main": [
+        [
+          {
+            "node": "Responder Cliente",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Registrar Lead",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Escalar para Diogo?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Escalar para Diogo?": {
+      "main": [
+        [
+          {
+            "node": "Avisar Diogo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

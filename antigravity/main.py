@@ -56,7 +56,7 @@ async def verify_supabase_jwt(request: Request):
             token,
             SUPABASE_JWT_SECRET,
             algorithms=["HS256"],
-            options={"verify_aud": False}
+            audience="authenticated"
         )
         return payload
     except jwt.ExpiredSignatureError:

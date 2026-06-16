@@ -1,6 +1,7 @@
 import re
 import json
 import os
+import requests
 import openai
 from enum import Enum
 from typing import Dict, List, Optional, Any
@@ -87,8 +88,53 @@ class AninhaAgent:
         if num_unidades <= 300: return Porte.GRANDE
         return Porte.COMPLEXO
 
-    def analisar_mensagem_ia(self, mensagem_cliente: str) -> Dict[str, Any]:
-        """A IA lê a mensagem e gera o Json rigoroso"""
+    def buscar_historico(self, telefone: str) -> List[Dict[str, str]]:
+        """
+        Busca o histórico de mensagens do cliente no banco de dados (Supabase)
+        para prover memória persistente.
+        """
+        if not telefone:
+            return []
+
+        supabase_url = os.getenv("SUPABASE_URL")
+        supabase_key = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+
+        if not supabase_url or not supabase_key:
+            print("Aviso: Variáveis do Supabase ausentes. Memória persistente desativada.")
+            return []
+
+        try:
+            url = f"{supabase_url.rstrip('/')}/rest/v1/mensagens_whatsapp?telefone=eq.{telefone}&order=created_at.desc&limit=10"
+            headers = {
+                "apikey": supabase_key,
+                "Authorization": f"Bearer {supabase_key}",
+                "Content-Type": "application/json"
+            }
+            resp = requests.get(url, headers=headers, timeout=5)
+            resp.raise_for_status()
+
+            mensagens = resp.json()
+
+            historico = []
+            # Como a ordem foi desc, revertemos para cronológica
+            for msg in reversed(mensagens):
+                texto = msg.get("mensagem", "")
+                if not texto:
+                    continue
+
+                direcao = msg.get("direcao", "entrada")
+                # entrada = o lead enviou (user), saida = a Aninha enviou (assistant)
+                role = "user" if direcao == "entrada" else "assistant"
+
+                historico.append({"role": role, "content": texto})
+
+            return historico
+        except Exception as e:
+            print(f"Erro ao buscar histórico para {telefone}: {e}")
+            return []
+
+    def analisar_mensagem_ia(self, mensagem_cliente: str, telefone: str = None) -> Dict[str, Any]:
+        """A IA lê a mensagem e gera o Json rigoroso, agora com contexto histórico"""
         if not self.client:
             return {
                 "urgencia": "alta", 
@@ -97,13 +143,23 @@ class AninhaAgent:
             }
 
         try:
+            # Recuperar o histórico de mensagens para injetar na IA
+            historico = self.buscar_historico(telefone) if telefone else []
+
+            messages = [
+                {"role": "system", "content": self.system_prompt}
+            ]
+
+            # Adiciona o histórico antes da nova mensagem
+            messages.extend(historico)
+
+            # Adiciona a mensagem atual
+            messages.append({"role": "user", "content": f"Mensagem do lead B2B: {mensagem_cliente}"})
+
             response = self.client.chat.completions.create(
                 model="gpt-4o",
                 response_format={ "type": "json_object" },
-                messages=[
-                    {"role": "system", "content": self.system_prompt},
-                    {"role": "user", "content": f"Mensagem do lead B2B: {mensagem_cliente}"}
-                ],
+                messages=messages,
                 temperature=0.2
             )
             
@@ -131,8 +187,10 @@ class AninhaAgent:
         Substitui a lógica de Regras Antiga pela lógica de IA da V2.0
         """
         mensagem = lead_data.get("mensagem_original", "")
-        # Processa com IA
-        resultado_ia = self.analisar_mensagem_ia(mensagem)
+        telefone = lead_data.get("telefone", "")
+
+        # Processa com IA passando o telefone para contexto de histórico
+        resultado_ia = self.analisar_mensagem_ia(mensagem, telefone=telefone)
         
         porte = self.calcular_porte(lead_data.get("num_unidades"))
         
@@ -147,7 +205,7 @@ class AninhaAgent:
             "porte": porte.value,
             "proxima_acao_obrigatoria": "Agendar Avaliação Técnica",
             "nome_condominio": lead_data.get("nome_condominio"),
-            "telefone": lead_data.get("telefone"),
+            "telefone": telefone,
             "email": lead_data.get("email"),
             "origem": lead_data.get("origem")
         }

@@ -17,6 +17,18 @@ export default function Marketing() {
   const [conteudos, setConteudos] = useState<Conteudo[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchConteudos = async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('conteudos_marketing')
+      .select('*')
+      .order('criado_em', { ascending: false });
+
+    if (error) console.error('Erro ao buscar conteúdos:', error);
+    setConteudos(data || []);
+    setLoading(false);
+  };
+
   useEffect(() => {
     fetchConteudos();
 
@@ -31,18 +43,6 @@ export default function Marketing() {
       supabase.removeChannel(subscription);
     };
   }, []);
-
-  const fetchConteudos = async () => {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from('conteudos_marketing')
-      .select('*')
-      .order('criado_em', { ascending: false });
-
-    if (error) console.error('Erro ao buscar conteúdos:', error);
-    setConteudos(data || []);
-    setLoading(false);
-  };
 
   const handleAprovar = async (id: string, copy_gerada: string) => {
     if (!confirm('Aprovar e disparar post para a Meta (Facebook/Instagram)?')) return;

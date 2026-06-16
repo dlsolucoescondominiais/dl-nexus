@@ -1,0 +1,3 @@
+## 2023-10-27 - [Optimize React Dashboard KPI calculation]
+**Learning:** In the React frontend components (like `Dashboard.tsx`), there's a pattern of using multiple chained array methods (like `.filter(condition).length`) over the same array to calculate metrics simultaneously. This causes O(k*N) traversals, where k is the number of metrics.
+**Action:** Replace multiple `.filter().length` array passes with a single `.reduce()` pass returning an accumulator object. This drops the complexity to O(N) while maintaining readability. Additionally, noted that ESLint v9 in the `frontend` sub-project lacks a config, so `npm run build` is a better proxy for type/build safety checks than `npm run lint` for quick verification.

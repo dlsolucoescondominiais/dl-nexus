@@ -1,3 +1,4 @@
+import { logger } from '../lib/logger';
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { apiClient } from '../lib/apiClient';
@@ -39,7 +40,7 @@ export default function Marketing() {
       .select('*')
       .order('criado_em', { ascending: false });
 
-    if (error) console.error('Erro ao buscar conteúdos:', error);
+    if (error) logger.error('Erro ao buscar conteúdos:', error);
     setConteudos(data || []);
     setLoading(false);
   };

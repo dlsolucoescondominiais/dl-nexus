@@ -1,3 +1,4 @@
+import { logger } from '../lib/logger';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
@@ -51,7 +52,7 @@ export default function Dashboard() {
       .select('id, nome, telefone, empresa_condominio, tipo_cliente, servico_desejado, pipeline_stage, score_comercial, ultima_interacao')
       .order('ultima_interacao', { ascending: false });
 
-    if (leadsError) console.error('Erro ao buscar leads:', leadsError);
+    if (leadsError) logger.error('Erro ao buscar leads:', leadsError);
 
     setLeads(leadsData || []);
 

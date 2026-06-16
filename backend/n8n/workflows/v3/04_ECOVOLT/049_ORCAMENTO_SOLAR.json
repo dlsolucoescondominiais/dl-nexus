@@ -1,0 +1,32 @@
+{
+  "name": "EcoVolt - Or\u00e7amento solar",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    }
+  ],
+  "connections": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "id": "049_orcamento_solar",
+  "tags": [
+    {
+      "createdAt": "2024-05-08T00:00:00.000Z",
+      "updatedAt": "2024-05-08T00:00:00.000Z",
+      "id": "tag_ecovolt",
+      "name": "EcoVolt"
+    }
+  ]
+}

@@ -18,6 +18,15 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 INBOX_FOLDER_ID = os.getenv("INBOX_FOLDER_ID") 
 ARCHIVE_FOLDER_ID = os.getenv("ARCHIVE_FOLDER_ID")
 
+
+_openai_client = None
+
+def get_openai_client():
+    global _openai_client
+    if _openai_client is None:
+        _openai_client = OpenAI(api_key=OPENAI_API_KEY)
+    return _openai_client
+
 def autenticar_drive():
     """Valida o crachá do Agente para mexer nos ficheiros."""
     creds = None
@@ -36,7 +45,7 @@ def autenticar_drive():
 
 def classificar_arquivo_com_ia(nome_arquivo, tipo_arquivo):
     """O Cérebro do Agente: Lê o nome do ficheiro e escolhe a gaveta certa."""
-    client = OpenAI(api_key=OPENAI_API_KEY)
+    client = get_openai_client()
     prompt = f"""
     Você é o Arquivista-Chefe da DL Soluções Condominiais.
     A sua função é ler o nome de um arquivo recém-chegado e decidir em qual pasta ele deve ser guardado.

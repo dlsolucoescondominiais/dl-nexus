@@ -47,7 +47,6 @@
     }
     /* hero override for real DL photo */
     .hero-bg { background-image: url('assets/hero_dl_parceiro.jpg') !important; }
-
     /* Portfolio aerial highlight */
     .portfolio-destaque {
       position: relative; overflow: hidden; border-radius: 20px;
@@ -71,7 +70,6 @@
       color: var(--amber); font-size: 0.75rem; font-weight: 700;
       text-transform: uppercase; letter-spacing: 0.1em; border-radius: 20px;
     }
-
     /* Condo photo on para-quem */
     .personas-header-img {
       width: 100%; height: 220px; object-fit: cover; object-position: center 40%;
@@ -128,7 +126,6 @@
   </script>
 </head>
 <body>
-
 <!-- ══════════════════════════════════ NAVBAR ══════════════════════════════════ -->
 <nav class="navbar" id="navbar">
   <a href="#" class="nav-logo">
@@ -149,7 +146,6 @@
     <span></span><span></span><span></span>
   </button>
 </nav>
-
 <!-- Mobile Nav -->
 <div class="mobile-nav" id="mobileNav">
   <button class="mobile-nav-close" onclick="closeMobileNav()">✕</button>
@@ -160,7 +156,6 @@
   <a href="#contato" onclick="closeMobileNav()">Contato</a>
   <a href="#contato" class="btn-primary" onclick="closeMobileNav()">Solicitar Avaliação</a>
 </div>
-
 <!-- ══════════════════════════════════ HERO ══════════════════════════════════ -->
 <section class="hero">
   <div class="hero-bg"></div>
@@ -205,7 +200,6 @@
     </div>
   </div>
 </section>
-
 <!-- ══════════════════════════════════ PARA QUEM ══════════════════════════════════ -->
 <section class="para-quem" id="para-quem">
   <div class="container">
@@ -236,7 +230,6 @@
     </div>
   </div>
 </section>
-
 <!-- ══════════════════════════════════ DIFERENCIAIS ══════════════════════════════════ -->
 <section class="diferenciais">
   <div class="container">
@@ -266,7 +259,6 @@
         <div class="dif-label">Reg. 2022106230 · Tec. Diogo Luiz de Oliveira</div>
       </div>
     </div>
-
     <!-- Credencial visual: handshake DL + CREA -->
     <div class="credencial-banner reveal" style="margin-top:2.5rem; position:relative; border-radius:16px; overflow:hidden; border:1px solid var(--border);">
       <img src="assets/crea_handshake.jpg" alt="DL Soluções Condominiais credenciada CREA-RJ - Parceria com síndicos" loading="lazy"
@@ -285,10 +277,8 @@
         </div>
       </div>
     </div>
-
   </div>
 </section>
-
 <!-- ══════════════════════════════════ SERVIÇOS ══════════════════════════════════ -->
 <section class="servicos" id="servicos">
   <div class="container">
@@ -298,7 +288,6 @@
       <p class="section-sub">Todas as verticais de engenharia que um condomínio moderno precisa, operadas por uma única empresa de confiança.</p>
     </div>
     <div class="servicos-grid">
-
       <div class="servico-card reveal" onclick="openModal('eletrica')">
         <div style="position:relative;">
           <img src="assets/service_eletrica_real.jpg" alt="Técnico DL Soluções trabalhando em quadro elétrico predial" class="servico-img" loading="lazy" style="object-position:center center;">
@@ -311,7 +300,6 @@
           <div class="servico-arrow">Solicitar Retrofit Elétrico →</div>
         </div>
       </div>
-
       <div class="servico-card reveal" onclick="openModal('solar')">
         <img src="assets/service_solar_inversor.jpg" alt="Monitoramento de Inversor Solar DL EcoVolt - Rio de Janeiro" class="servico-img" loading="lazy">
         <div class="servico-body">
@@ -321,7 +309,6 @@
           <div class="servico-arrow">Saiba mais →</div>
         </div>
       </div>
-
       <div class="servico-card reveal" onclick="openModal('cftv')">
         <img src="assets/service_cftv_monitor.jpg" alt="Central de monitoramento CFTV Intelbras com múltiplas câmeras em condomínio" class="servico-img" loading="lazy">
         <div class="servico-body">
@@ -331,7 +318,6 @@
           <div class="servico-arrow">Ver sistema CFTV →</div>
         </div>
       </div>
-
       <div class="servico-card reveal" onclick="openModal('acesso')">
         <div style="position:relative;">
           <img src="assets/service_mobgate.jpg" alt="App MobGate DL - Abertura de portão e porta pedestre pelo celular" class="servico-img" loading="lazy" style="object-position:center top;">
@@ -344,7 +330,6 @@
           <div class="servico-arrow">Conhecer DL Gatekeeper →</div>
         </div>
       </div>
-
       <div class="servico-card reveal" onclick="openModal('incendio')">
         <img src="assets/service_incendio_real.jpg" alt="Prevenção e Combate a Incêndio DL Alerta" class="servico-img" loading="lazy">
         <div class="servico-body">
@@ -354,7 +339,6 @@
           <div class="servico-arrow">Saiba mais →</div>
         </div>
       </div>
-
       <div class="servico-card reveal" onclick="openModal('ev')">
         <img src="assets/service_ev_rj.jpg" alt="DL VoltCharge™ - Carregador de Veículo Elétrico com Pão de Açúcar ao fundo, Rio de Janeiro" class="servico-img" loading="lazy">
         <div class="servico-body">
@@ -364,9 +348,7 @@
           <div class="servico-arrow">Saiba mais →</div>
         </div>
       </div>
-
     </div>
-
     <!-- Destaque Portfolio Aéreo -->
     <div class="portfolio-destaque reveal">
       <img src="assets/portfolio_solar_aereo.jpg" alt="Vista aérea de instalação solar em condomínio no Rio de Janeiro - DL EcoVolt Solar" loading="lazy">
@@ -376,10 +358,8 @@
         <p>Instalação de sistema solar carport sobre estacionamento condominial. Redução drástica na conta de energia das áreas comuns. Vista do Cristo Redentor e Pedra da Gávea ao fundo.</p>
       </div>
     </div>
-
   </div>
 </section>
-
 <!-- ══════════════════════════════════ PARCEIROS & CERTIFICAÇÕES ═════════ -->
 <section style="padding:3rem 5%; background:rgba(255,255,255,0.015); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
   <div class="container">
@@ -388,53 +368,42 @@
       <p style="color:var(--text-muted); font-size:0.95rem;">Tecnologia de ponta. Parceiros certificados. Engenharia responsável.</p>
     </div>
     <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:3rem;">
-
       <!-- CREA-RJ -->
       <div style="text-align:center; opacity:0.85; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.85'">
         <div style="font-weight:900; font-size:0.95rem; color:var(--amber); letter-spacing:0.05em;">CREA-RJ</div>
         <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.2rem;">Reg. 2022106230</div>
         <div style="font-size:0.7rem; color:var(--text-subtle);">Diogo Luiz de Oliveira</div>
       </div>
-
       <div style="width:1px; height:40px; background:var(--border);"></div>
-
       <!-- ABESE -->
       <div style="text-align:center; opacity:0.7; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
         <img src="assets/logo_abese.png" alt="ABESE - Associação Brasileira de Empresas de Sistemas Eletrônicos de Segurança"
           style="height:40px; width:auto; filter:brightness(0) invert(1);" loading="lazy">
         <div style="font-size:0.7rem; color:var(--text-subtle); margin-top:0.4rem;">Membro Associado</div>
       </div>
-
       <div style="width:1px; height:40px; background:var(--border);"></div>
-
       <!-- Intelbras -->
       <div style="text-align:center; opacity:0.7; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
         <img src="assets/logo_intelbras.png" alt="Intelbras - Parceiro oficial de câmeras CFTV"
           style="height:36px; width:auto; filter:brightness(0) invert(1);" loading="lazy">
         <div style="font-size:0.7rem; color:var(--text-subtle); margin-top:0.4rem;">Parceiro CFTV</div>
       </div>
-
       <div style="width:1px; height:40px; background:var(--border);"></div>
-
       <!-- Condfy -->
       <div style="text-align:center; opacity:0.7; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
         <img src="assets/logo_condfy.png" alt="Condfy - App de gestão condominial integrado"
           style="height:32px; width:auto; filter:brightness(0) invert(1);" loading="lazy">
         <div style="font-size:0.7rem; color:var(--text-subtle); margin-top:0.4rem;">Integração App</div>
       </div>
-
       <div style="width:1px; height:40px; background:var(--border);"></div>
-
       <!-- MobGate / Super Portaria -->
       <div style="text-align:center; opacity:0.7; transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">
         <div style="font-weight:800; font-size:1rem; color:var(--electric);">MobGate</div>
         <div style="font-size:0.7rem; color:var(--text-subtle); margin-top:0.2rem;">Instituto de Controle de Acesso</div>
       </div>
-
     </div>
   </div>
 </section>
-
 <!-- ══════════════════════════════════ VÍDEOS DOS SERVIÇOS ════════════════ -->
 <style>
   .videos-section { padding: var(--section-py) 5%; }
@@ -478,7 +447,6 @@
   .video-soon-tag { display: inline-block; margin-top: 0.75rem; padding: 0.25rem 0.65rem; background: var(--amber-dark); color: var(--amber); font-size: 0.7rem; font-weight: 600; border-radius: 20px; border: 1px solid rgba(245,166,35,0.2); }
   @media (max-width: 768px) { .videos-grid { grid-template-columns: 1fr; } }
 </style>
-
 <section class="videos-section" id="videos">
   <div class="container">
     <div class="section-header center reveal">
@@ -487,7 +455,6 @@
       <p class="section-sub">Explicações claras e diretas para você entender exatamente o que faremos no seu patrimônio — antes de qualquer orçamento.</p>
     </div>
     <div class="videos-grid">
-
       <!-- VIDEO 1: Elétrica -->
       <div class="video-card reveal">
         <div class="video-wrap">
@@ -504,7 +471,6 @@
           <span class="video-soon-tag">🎬 Em breve no YouTube</span>
         </div>
       </div>
-
       <!-- VIDEO 2: Solar -->
       <div class="video-card reveal">
         <div class="video-wrap">
@@ -520,7 +486,6 @@
           <span class="video-soon-tag">🎬 Em breve no YouTube</span>
         </div>
       </div>
-
       <!-- VIDEO 3: CFTV -->
       <div class="video-card reveal">
         <div class="video-wrap">
@@ -536,7 +501,6 @@
           <span class="video-soon-tag">🎬 Em breve no YouTube</span>
         </div>
       </div>
-
       <!-- VIDEO 4: Controle de Acesso -->
       <div class="video-card reveal">
         <div class="video-wrap">
@@ -552,7 +516,6 @@
           <span class="video-soon-tag">🎬 Em breve no YouTube</span>
         </div>
       </div>
-
       <!-- VIDEO 5: Incêndio -->
       <div class="video-card reveal">
         <div class="video-wrap">
@@ -568,7 +531,6 @@
           <span class="video-soon-tag">🎬 Em breve no YouTube</span>
         </div>
       </div>
-
       <!-- VIDEO 6: EV Charging -->
       <div class="video-card reveal">
         <div class="video-wrap">
@@ -584,11 +546,9 @@
           <span class="video-soon-tag">🎬 Em breve no YouTube</span>
         </div>
       </div>
-
     </div>
   </div>
 </section>
-
 <!-- ══════════════════════════════════ NEXUS ══════════════════════════════════ -->
 <section class="nexus-section" id="nexus">
   <div class="container">
@@ -623,7 +583,6 @@
           ◈ Acionar o DL Nexus →
         </button>
       </div>
-
       <div class="nexus-visual reveal">
         <div class="nexus-monitor-top">
           <span class="nexus-brand">◈ DL Nexus</span>
@@ -672,10 +631,8 @@
     </div>
   </div>
 </section>
-
 <!-- ══════════════════════════════════ AVALIAÇÕES + MAPA ══════════════════════════════════ -->
 <section class="social-proof" id="avaliacoes">
-  <!-- hero-bg bug removed: was overriding the hero background -->
   <div class="container">
     <div class="section-header center reveal">
       <div class="section-tag">Prova Social</div>
@@ -731,7 +688,6 @@
           </a>
         </div>
       </div>
-
       <div class="reveal">
         <div class="map-wrapper">
           <iframe
@@ -755,7 +711,6 @@
     </div>
   </div>
 </section>
-
 <!-- ══════════════════════════════════ FORMULÁRIO / CTA ══════════════════════════════════ -->
 <section class="cta-section" id="contato">
   <div class="container">
@@ -765,7 +720,6 @@
         <h2 class="section-title">Pronto para Resolver de Vez?</h2>
         <p style="color:var(--text-muted);margin-top:0.5rem">Preencha abaixo. Nossa equipe analisará o seu cenário e o Diretor Técnico<br><strong>Diogo Luiz</strong> entrará em contato em até 8 horas.</p>
       </div>
-
       <form class="lead-form" id="leadForm" onsubmit="submitLead(event)">
         <div class="form-row">
           <div class="form-group">
@@ -818,7 +772,6 @@
     </div>
   </div>
 </section>
-
 <!-- ══════════════════════════════════ FOOTER ══════════════════════════════════ -->
 <footer>
   <div class="container">
@@ -877,7 +830,6 @@
     </div>
   </div>
 </footer>
-
 <!-- ══════════════════════════════════ WHATSAPP FLOAT ══════════════════════════════════ -->
 <div class="wpp-float" id="wppFloat">
   <div class="wpp-tooltip" id="wppTooltip">Fale com nossa equipe! 👋</div>
@@ -887,7 +839,6 @@
     </svg>
   </button>
 </div>
-
 <!-- WhatsApp Modal -->
 <div class="wpp-modal-overlay" id="wppModal">
   <div class="wpp-modal">
@@ -915,7 +866,6 @@
     </div>
   </div>
 </div>
-
 <!-- ══════════════════════════════════ SERVICE DETAIL MODAL ═══════════════ -->
 <style>
   .smodal-overlay {
@@ -970,7 +920,6 @@
     color:#060810;
   }
   .smodal-cta-btn:hover { filter:brightness(1.1); }
-
   /* Info modal (genérico) */
   .info-modal-overlay {
     display:none; position:fixed; inset:0; z-index:8700;
@@ -993,7 +942,6 @@
   }
   .info-modal-close:hover { border-color:var(--amber); color:var(--amber); }
 </style>
-
 <div class="smodal-overlay" id="serviceModal">
   <div class="smodal">
     <div class="smodal-top">
@@ -1008,7 +956,6 @@
     </div>
   </div>
 </div>
-
 <div class="info-modal-overlay" id="infoModal">
   <div class="info-modal">
     <h3 id="infoModalTitle"></h3>
@@ -1016,22 +963,18 @@
     <button class="info-modal-close" onclick="closeInfoModal()">Entendi</button>
   </div>
 </div>
-
 <!-- ══════════════════════════════════ SCRIPTS ══════════════════════════════════ -->
 <script>
 const N8N_WEBHOOK = 'https://n8n.dlsolucoescondominiais.com.br/webhook/dl-pre-receptor';
-
 /* ─── Navbar scroll effect ─── */
 window.addEventListener('scroll', () => {
   document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
 });
-
 /* ─── Tooltip WPP auto-hide ─── */
 setTimeout(() => {
   const t = document.getElementById('wppTooltip');
   if (t) t.style.display = 'none';
 }, 5000);
-
 /* ─── Mobile nav ─── */
 document.getElementById('hamburgerBtn').onclick = () => {
   document.getElementById('mobileNav').classList.add('open');
@@ -1041,7 +984,6 @@ function closeMobileNav() {
   document.getElementById('mobileNav').classList.remove('open');
   document.body.style.overflow = '';
 }
-
 /* ─── WPP Modal ─── */
 function openWppModal() {
   document.getElementById('wppModal').classList.add('open');
@@ -1054,16 +996,13 @@ function closeWppModal() {
 document.getElementById('wppModal').addEventListener('click', e => {
   if (e.target === document.getElementById('wppModal')) closeWppModal();
 });
-
 async function submitWpp() {
   const nome = document.getElementById('wppNome').value.trim();
   const tel  = document.getElementById('wppTel').value.trim();
   const msg  = document.getElementById('wppMsg').value.trim();
   if (!nome || !tel) { alert('Por favor, preencha nome e WhatsApp.'); return; }
-
   const btn = document.querySelector('.btn-wpp-send');
   btn.textContent = 'Enviando...'; btn.disabled = true;
-
   try {
     await fetch(N8N_WEBHOOK, {
       method: 'POST',
@@ -1077,17 +1016,14 @@ async function submitWpp() {
       })
     });
   } catch (_) {}
-
   const status = document.getElementById('wpp-status');
   status.textContent = '✅ Recebemos! Nossa equipe entra em contato em breve.';
   status.style.display = 'block';
   btn.style.display = 'none';
-
   /* Opcional: abre WhatsApp em paralelo */
   const waMsg = encodeURIComponent(`Olá! Meu nome é ${nome}. ${msg}`);
   // setTimeout(() => window.open(`https://wa.me/5521964742458?text=${waMsg}`, '_blank'), 1500);
 }
-
 /* ─── Formulário principal ─── */
 async function submitLead(e) {
   e.preventDefault();
@@ -1096,7 +1032,6 @@ async function submitLead(e) {
   btn.disabled = true;
   btn.textContent = '⏳ Enviando para a equipe...';
   status.style.display = 'none';
-
   const payload = {
     origem:       'site_dl_v3_formulario',
     nome_contato: document.getElementById('nome').value,
@@ -1105,7 +1040,6 @@ async function submitLead(e) {
     servico:      document.getElementById('servico').value,
     mensagem:     document.getElementById('mensagem').value
   };
-
   try {
     const res = await fetch(N8N_WEBHOOK, {
       method: 'POST',
@@ -1123,12 +1057,10 @@ async function submitLead(e) {
     status.className = 'error';
     status.innerHTML = '⚠️ Falha no envio. Por favor, ligue: <a href="tel:+5521964742458" style="color:inherit;font-weight:700">(21) 96474-2458</a>';
   }
-
   status.style.display = 'block';
   btn.disabled = false;
   btn.textContent = '⚡ Acionar Avaliação Técnica Gratuita';
 }
-
 /* ─── Reveal on scroll ─── */
 const reveals = document.querySelectorAll('.reveal');
 const observer = new IntersectionObserver((entries) => {
@@ -1140,7 +1072,6 @@ const observer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.1 });
 reveals.forEach(el => observer.observe(el));
-
 /* ─── Serviço modal customizado ─── */
 const servicoInfo = {
   eletrica: { title: 'DL Volt™ — Elétrica Predial', icon: '⚡', desc: 'Retrofit elétrico completo, quadros QDC, SPDA (para-raios), eletrodutos de aço galvanizado. Execução 100% normatizada NR-10 e ABNT NBR 5410. Laudo técnico ART incluso para assembleia.', tags: ['NR-10', 'ABNT NBR 5410', 'ART Inclusa'] },
@@ -1150,7 +1081,6 @@ const servicoInfo = {
   incendio: { title: 'DL Alerta™ — Prevenção de Incêndio', icon: '🔥', desc: 'Detecção e alarme eletrônico, sprinklers, sinalização de emergência e planos de evacuação. Adequação completa para AVCB/CBMERJ. Vistorias periódicas inclusas.', tags: ['AVCB', 'CBMERJ', 'Sprinklers'] },
   ev: { title: 'DL VoltCharge™ — Carregadores EV', icon: '🔋', desc: 'Instalação de wallboxes e eletropostos para veículos elétricos em garagens condominiais. Compatível com todos os modelos. Projeto elétrico e ART inclusos.', tags: ['Wallbox', 'Todos os EVs', 'ART Inclusa'] }
 };
-
 function openModal(key) {
   const info = servicoInfo[key];
   if (!info) return;
@@ -1168,7 +1098,6 @@ function openModal(key) {
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-
 function closeServiceModal() {
   document.getElementById('serviceModal').classList.remove('open');
   document.body.style.overflow = '';
@@ -1176,7 +1105,6 @@ function closeServiceModal() {
 document.getElementById('serviceModal').addEventListener('click', e => {
   if (e.target === document.getElementById('serviceModal')) closeServiceModal();
 });
-
 // ── YouTube lazy loader ─────────────────────────────────────────
 function loadYT(placeholder, videoId) {
   if (!videoId || videoId.startsWith('YOUTUBE_ID_')) {
@@ -1192,7 +1120,6 @@ function loadYT(placeholder, videoId) {
   wrap.innerHTML = '';
   wrap.appendChild(iframe);
 }
-
 /* ─── Info modal genérico ─── */
 function openInfoModal(title, msg) {
   document.getElementById('infoModalTitle').textContent = title;
@@ -1208,7 +1135,5 @@ document.getElementById('infoModal').addEventListener('click', e => {
   if (e.target === document.getElementById('infoModal')) closeInfoModal();
 });
 </script>
-
 </body>
 </html>
-

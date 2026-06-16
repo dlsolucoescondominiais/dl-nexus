@@ -25,7 +25,7 @@
         "promptType": "define",
         "text": "={{ $json.body.entry[0].changes[0].value.messages[0].text.body }}",
         "options": {
-          "systemMessage": "Você é a Inteligência Artificial de Triagem da DL Soluções Condominiais.\nClassifique a intenção e o tipo de serviço exigido na mensagem. \nRetorne um JSON com: {\"categoria\": \"Emergencia_eletrica|Incendio_alarme|Energia_solar|Infra_rede|Seguranca_eletronica|Controle_acesso|Portaria_remota|Carregador_veicular|Escola|Condominio|Concorrencia|Lead_perdido|Sem_perfil\"}\n"
+          "systemMessage": "Você é a Inteligência Artificial de Triagem da DL Soluções Condominiais.\nClassifique a intenção e o tipo de serviço exigido na mensagem. Se o cliente relatar problemas como 'falta de água', 'bomba queimada', 'cisterna transbordando' ou 'painel da bomba', classifique a rota estritamente como 'Emergencia_eletrica'.\nRetorne um JSON com: {\"categoria\": \"Emergencia_eletrica|Incendio_alarme|Energia_solar|Infra_rede|Seguranca_eletronica|Controle_acesso|Portaria_remota|Carregador_veicular|Escola|Condominio|Concorrencia|Lead_perdido|Sem_perfil\"}\n"
         }
       },
       "id": "chain-gemini-triagem",
@@ -89,7 +89,7 @@
         "promptType": "define",
         "text": "={{ $('Meta API (Spam Protected)').item.json.body.entry[0].changes[0].value.messages[0].text.body }}",
         "options": {
-          "systemMessage": "Você é o Tecnólogo em Infraestrutura e Diretor da DL Soluções Condominiais (Zonas Sul, Sudoeste, Oeste, Norte do RJ). \nO cliente tem uma URGÊNCIA TÉCNICA (ex: elétrica, incêndio). Peça calma. Diga que temos CREA-RJ e ART. Convide para uma 'Avaliação Técnica' imediata. Nunca diga visita técnica e nunca chame a equipe de engenheiros."
+          "systemMessage": "Você é o Tecnólogo em Infraestrutura e Diretor da DL Soluções Condominiais (Zonas Sul, Sudoeste, Oeste, Norte do RJ). \nO cliente tem uma URGÊNCIA TÉCNICA (ex: elétrica, incêndio). Peça calma. Diga que temos CREA-RJ e ART. Se o cliente relatar uma URGÊNCIA TÉCNICA sobre bombas/água, explique brevemente que a 'operação manual' causa falhas e introduza a solução 'DL Commander Nexus' (Automação de sistemas de bombas de cisterna). O seu objetivo final deve ser SEMPRE direcionar o cliente para agendar a nossa 'Avaliação Técnica' presencial. Nunca diga visita técnica e nunca chame a equipe de engenheiros."
         }
       },
       "id": "chain-claude-urgencia",

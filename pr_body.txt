@@ -1,0 +1,11 @@
+🎯 **What:** The testing gap addressed
+Added a dedicated test file `execution/test_aninha_agent.py` to cover the `analisar_mensagem_ia` method in `AninhaAgent`, which was completely lacking unit tests and required mocking external `openai` API calls.
+
+📊 **Coverage:** What scenarios are now tested
+- Valid responses mapping to appropriate urgencia and categoria
+- Missing client fallback mechanism
+- Invalid fallback mechanism (e.g. unknown values being assigned valid defaults)
+- API exception handling mapping to an error payload.
+
+✨ **Result:** The improvement in test coverage
+We now have full unit test coverage over the AI routing parsing block of the Aninha Agent, eliminating the risk of undetected API parsing regressions and validating exact payload shapes without executing live LLM inferences.

@@ -1,4 +1,5 @@
 import os
+import time
 import sys
 import io
 import datetime
@@ -172,6 +173,15 @@ def orquestrar_limpeza_corporativa():
     query = f"'root' in parents and mimeType != 'application/vnd.google-apps.folder' and trashed=false"
     arquivos_drive = service_drive.files().list(q=query, fields="files(id, name, mimeType, createdTime)").execute().get('files', [])
 
+    def callback_batch(request_id, response, exception):
+        if exception:
+            print(f"   [!] Erro no batch (ID {request_id}): {exception}")
+        else:
+            print(f"   [BATCH OK] Arquivo movido e renomeado: {response.get('name')}")
+
+    batch = service_drive.new_batch_http_request(callback=callback_batch)
+    operacoes_batch = 0
+
     if not arquivos_drive:
         print("   [OK] Gaveta de entrada impecavel. Nenhum lixo solto.")
     else:
@@ -213,15 +223,29 @@ def orquestrar_limpeza_corporativa():
             extensao = os.path.splitext(nome_original)[1]
             novo_nome = f"DL_{classificacao}_{local_ia}_{dia_str}{mes_str}{ano_str}{extensao}"
             
-            service_drive.files().update(
+            # Adiciona ao Batch em vez de executar imediatamente (O(1) request em vez de O(N))
+            req_update = service_drive.files().update(
                 fileId=arq['id'], addParents=pasta_mes, removeParents='root',
-                body={'name': novo_nome}, fields='id, name').execute()
-            print(f"   [OK] Movido e Renomeado para: {novo_nome} (Dentro de {classificacao}/{ano_str}/{mes_str})")
+                body={'name': novo_nome}, fields='id, name')
+            batch.add(req_update)
+            operacoes_batch += 1
+            print(f"   [BATCH PREPARADO] {novo_nome} -> {classificacao}/{ano_str}/{mes_str}")
+
+            # Google Drive API limita batchs a 100 requisições
+            if operacoes_batch >= 100:
+                print(f"   [*] Executando Lote de {operacoes_batch} atualizacoes no Drive...")
+                batch.execute()
+                batch = service_drive.new_batch_http_request(callback=callback_batch)
+                operacoes_batch = 0
             
             # Rate limit protection (Gemini Free Tier: 15 RPM)
             print("   [zZz] Aguardando 8 segundos para evitar limite de requisições da IA...")
-            import time
             time.sleep(8)
+
+
+        if operacoes_batch > 0:
+            print(f"\n[*] Executando Lote final de {operacoes_batch} atualizacoes no Drive...")
+            batch.execute()
 
     # ==========================================================
     # CONCLUSÃO

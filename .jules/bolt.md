@@ -1,0 +1,3 @@
+## 2024-06-20 - [FastAPI Backend Performance: Sync vs Async Path]
+**Learning:** In FastAPI, declaring a route handler as `async def` while executing synchronous, blocking I/O operations (like `requests.post()` or blocking SDK calls to OpenAI) causes the main event loop to block. This leads to a massive performance bottleneck where a single request blocks the entire application from serving other requests concurrently.
+**Action:** Always use standard `def` for route handlers that contain synchronous I/O operations. FastAPI will automatically execute `def` endpoints in a separate threadpool (via Starlette), preventing the main event loop from being blocked and vastly improving application throughput and responsiveness.

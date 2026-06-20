@@ -1,6 +1,4 @@
-import os
 import requests
-import json
 N8N_HOST = "https://n8n.dlsolucoescondominiais.com.br/api/v1"
 N8N_API_KEY = "N8N_API_KEY_HERE"
 

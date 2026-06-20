@@ -20,6 +20,7 @@ import os
 import sys
 import json
 import time
+import concurrent.futures
 import requests
 from pathlib import Path
 from dotenv import load_dotenv
@@ -542,7 +543,7 @@ def deploy_screen(client: StitchMCP, screen_key: str):
 
 
 def deploy_all(client: StitchMCP):
-    """Deploy de todas as telas em sequência"""
+    """Deploy de todas as telas concorrentemente"""
     print("=" * 60)
     print("🚀 DL NEXUS — Deploy Completo no Google Stitch")
     print(f"📁 Projeto: {PROJECT_ID}")
@@ -550,19 +551,27 @@ def deploy_all(client: StitchMCP):
     print("=" * 60)
 
     results = {}
-    for i, (key, screen_def) in enumerate(SCREEN_PROMPTS.items(), 1):
-        print(f"\n{'─' * 40}")
-        print(f"[{i}/{len(SCREEN_PROMPTS)}] {screen_def['name']}")
-        print(f"{'─' * 40}")
 
-        result = deploy_screen(client, key)
-        results[key] = result
+    # ⚡ Bolt: Implementação de ThreadPoolExecutor para processamento paralelo de deploys
+    # O processamento concorrente remove o gargalo de bloqueio síncrono da API,
+    # reduzindo o tempo total pela capacidade de I/O não-bloqueante via workers.
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+        future_to_key = {}
+        for i, (key, screen_def) in enumerate(SCREEN_PROMPTS.items(), 1):
+            print(f"\n{'─' * 40}")
+            print(f"[{i}/{len(SCREEN_PROMPTS)}] {screen_def['name']}")
+            print(f"{'─' * 40}")
+            future = executor.submit(deploy_screen, client, key)
+            future_to_key[future] = key
 
-        # Rate limiting — esperar entre chamadas
-        if i < len(SCREEN_PROMPTS):
-            wait_time = 10
-            print(f"   ⏳ Aguardando {wait_time}s antes da próxima tela...")
-            time.sleep(wait_time)
+        for future in concurrent.futures.as_completed(future_to_key):
+            key = future_to_key[future]
+            try:
+                result = future.result()
+                results[key] = result
+            except Exception as exc:
+                print(f"❌ Erro ao processar tela '{key}': {exc}")
+                results[key] = {"error": str(exc)}
 
     print("\n" + "=" * 60)
     print("📊 RESUMO DO DEPLOY")

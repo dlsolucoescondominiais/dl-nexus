@@ -1,0 +1,3 @@
+ALTER TABLE dl_social_conversas ADD COLUMN IF NOT EXISTS dry_run BOOLEAN DEFAULT false;
+ALTER TABLE dl_social_mensagens ADD COLUMN IF NOT EXISTS dry_run BOOLEAN DEFAULT false;
+ALTER TABLE dl_social_leads ADD COLUMN IF NOT EXISTS dry_run BOOLEAN DEFAULT false;

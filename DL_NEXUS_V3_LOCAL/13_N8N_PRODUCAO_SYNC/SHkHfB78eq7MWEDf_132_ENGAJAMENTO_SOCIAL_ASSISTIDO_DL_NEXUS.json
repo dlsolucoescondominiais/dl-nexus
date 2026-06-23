@@ -1,0 +1,85 @@
+{
+  "updatedAt": "2026-05-30T05:33:50.745Z",
+  "createdAt": "2026-05-25T21:55:32.821Z",
+  "id": "SHkHfB78eq7MWEDf",
+  "name": "132_ENGAJAMENTO_SOCIAL_ASSISTIDO_DL_NEXUS",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-nexus-engajamento-assistido-132",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const inputData = $input.item.json.body || $input.item.json;\nconst leadId = inputData.lead_id || 'LEAD_PLACEHOLDER';\nconst canal = inputData.canal || 'LinkedIn';\n\nconst promptIA = `Você é um especialista em prospecção B2B focado em condomínios.\\nObjetivo: Sugerir um comentário autêntico ou DM (sem vender diretamente) que agregue valor ao síndico.\\nNunca use 'visita técnica', use sempre 'Avaliação Técnica'.\\nNunca use 'Engenheiro Diogo', use sempre 'Tecnólogo Responsável'.\\nAnalise o contexto: ${JSON.stringify(inputData.contexto || 'Sem contexto adicional')}`;\n\nreturn {\n  lead_id: leadId,\n  canal_sugerido: canal,\n  acao_sugerida: 'Comentar Post',\n  comentario_sugerido: 'Excelente ponto sobre manutenção predial! A automação e CFTV integrados trazem muito mais tranquilidade para a gestão.',\n  mensagem_sugerida: 'Olá! Acompanho sua gestão e notei a preocupação com eficiência. Gostaria de sugerir uma Avaliação Técnica rápida com nosso Tecnólogo Responsável, focada em otimizar a segurança e energia do condomínio.',\n  risco_spam: 'baixo',\n  precisa_aprovacao_humana: true\n};"
+      },
+      "id": "2",
+      "name": "Analisador de IA - Sugestao e Risco",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        450,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Analisador de IA - Sugestao e Risco",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "d8a8676c-b3ee-4200-97e1-42564bf82e9c",
+  "activeVersionId": null,
+  "versionCounter": 123,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-25T21:55:32.821Z",
+      "createdAt": "2026-05-25T21:55:32.821Z",
+      "role": "workflow:owner",
+      "workflowId": "SHkHfB78eq7MWEDf",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

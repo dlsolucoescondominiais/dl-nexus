@@ -1,0 +1,1278 @@
+<!doctype html>
+<html lang="pt">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <meta name="robots" content="index, follow">
+  <meta name="copyright" content="Koden Digital">
+
+  <link rel="shortcut icon" type="image/png" href="https://venanciometal.com.br/"/>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;700;900&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="https://venanciometal.com.br/web/assets/css/main.css">
+  <link rel="stylesheet" href="https://venanciometal.com.br/web/assets/css/custom.css">
+  <link rel="stylesheet" href="https://venanciometal.com.br/web/assets/css/swiper.css">
+  <link rel="preload" href="https://venanciometal.com.br/web/assets/css/fontawesome.css" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://venanciometal.com.br/web/assets/css/fontawesome.css">
+  </noscript>
+
+  <title>404 - Venâncio Metal</title>
+
+  
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-006BEHD1L1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-006BEHD1L1');
+</script></head>
+
+<body>
+
+<header>
+    <div class="top-header bg-secondary pv-2">
+        <div class="container">
+            <div class="ai-c jc-sb flex">
+                <div class="hide-mobile languages ai-c flex gap-1">
+                    <a href="https://venanciometal.com.br/pt">
+                        <button
+                            type="button"
+                            class="active"
+                        >
+                            <img
+                                src="https://venanciometal.com.br/medias/1781360936863100.webp"
+                                alt="Português"
+                            />
+                            PT
+                        </button>
+                    </a>
+
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                </div>
+
+                <div class="slider">
+                    <div class="slide-track">
+                                                    <p class="slide">
+                                Seja Bem-vindo! Viva a experiência Venâncio em todos os sentidos!
+                            </p>
+                                                    <p class="slide">
+                                Seja Bem-vindo! Viva a experiência Venâncio em todos os sentidos!
+                            </p>
+                                                    <p class="slide">
+                                Seja Bem-vindo! Viva a experiência Venâncio em todos os sentidos!
+                            </p>
+                                                    <p class="slide">
+                                Seja Bem-vindo! Viva a experiência Venâncio em todos os sentidos!
+                            </p>
+                                                    <p class="slide">
+                                Seja Bem-vindo! Viva a experiência Venâncio em todos os sentidos!
+                            </p>
+                                                    <p class="slide">
+                                Seja Bem-vindo! Viva a experiência Venâncio em todos os sentidos!
+                            </p>
+                                                    <p class="slide">
+                                Seja Bem-vindo! Viva a experiência Venâncio em todos os sentidos!
+                            </p>
+                                                    <p class="slide">
+                                Seja Bem-vindo! Viva a experiência Venâncio em todos os sentidos!
+                            </p>
+                                            </div>
+                </div>
+
+                <ul class="menu-top-header ai-c hide-mobile flex gap-1">
+                    <li>
+                        <a href="https://venanciometal.com.br/pt">Pagina Inicial</a>
+                    </li>
+                    <li>
+                        <a
+                            href="https://venanciometal.com.br/pt/downloads">Downloads</a>
+                    </li>
+                    
+                    <li>
+                        <a
+                            href="https://venanciometalsupport.zendesk.com/hc/pt-br"
+                            target="_blank"
+                            rel="nofollow noopener noreferrer"
+                        >
+                            Central de Pós-Vendas
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-middle">
+        <div class="container">
+            <div class="ai-c gap-10-lg header-content flex">
+                <button
+                    class="hide-desktop btn-menu-mobile toggle-menu-mobile"
+                    type="button"
+                >
+                    <i class="fa-solid fa-bars fa-2x"></i>
+                </button>
+
+                <div>
+                    <a href="https://venanciometal.com.br/pt">
+                        <img
+                            src="https://venanciometal.com.br/settings/1785113355577647.webp"
+                            alt="Venâncio Metal"
+                        />
+                    </a>
+                </div>
+
+                <ul class="menu ai-c hide-mobile jc-sb font-size-8 flex flex-1 gap-2">
+                    <li class="has-submenu pv-4">
+                        <a href="javascript:void(0);"> Institucional <i class="fa-solid fa-plus"></i></a>
+                        <div class="submenu-bottom">
+                            <div class="pv-5 container">
+                                <ul class="submenu-content-bottom columns md-gap jc-sb">
+                                    <li class="col-md-3 col-sm-12">
+                                        <ul class="subsubmenu-bottom">
+                                            <li>
+                                                <a
+                                                    href="https://venanciometal.com.br/pt/institucional/quem-somos">
+                                                    Quem Somos
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a
+                                                    href="https://venanciometal.com.br/pt/institucional/novidades">
+                                                    Novidades
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a
+                                                    href="https://venanciometal.com.br/pt/institucional/showroom">
+                                                    Showroom
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a
+                                                    href="https://venanciometal.com.br/pt/institucional/politica-de-gestao">
+                                                    Política de gestão
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a
+                                                    href="https://venanciometal.com.br/pt/contato">
+                                                    Contato
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                                                            <li class="col-md-3 col-sm-12">
+                                            <ul class="subsubmenu-bottom img">
+                                                <li>
+                                                    <a
+                                                        target="_blank"
+                                                        href="javascript:void(0);"
+                                                    >
+                                                        <img
+                                                            src="https://venanciometal.com.br/banners/1839180882995137.webp"
+                                                            alt=""
+                                                        />
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                                                    </ul>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="has-submenu pv-4">
+                        <a href="https://venanciometal.com.br/pt/produtos">
+                            Produtos
+                            <i class="fa-solid fa-plus"></i>
+                        </a>
+                        <div class="submenu-bottom">
+                            <div class="pv-5 container">
+                                <ul class="submenu-content-bottom columns md-gap">
+                                                                                                                        <li class="col-md-3 col-sm-12">
+                                                                                    <h4>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=lancamentos">Lançamentos</a>
+                                        </h4>
+                                                                                    <ul
+                                                class="subsubmenu-bottom fd-c fw-w flex"
+                                                style="max-height: 320px; overflow: hidden;"
+                                            >
+                                                                                                                                                            <li
+                                                            class="mr-2"
+                                                            style="margin-bottom: 2px"
+                                                        >
+                                                                                                            <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=chapas-deguste-new">
+                                                        Chapas Deguste New
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="margin-bottom: 2px"
+                                                        >
+                                                                                                            <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=chef-bases">
+                                                        Chef Bases
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="margin-bottom: 2px"
+                                                        >
+                                                                                                            <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=fogoes-nova-era">
+                                                        Fogões Nova Era
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="margin-bottom: 2px"
+                                                        >
+                                                                                                            <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=mini-camara">
+                                                        Mini Câmara
+                                                    </a>
+                    </li>
+                                    </ul>
+                                </li>
+                                                                                                    <li class="col-md-3 col-sm-12">
+                                                                                <h4>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=linha-domestica">Linha Doméstica</a>
+                                        </h4>
+                                                                                    <ul
+                                                class="subsubmenu-bottom fd-c fw-w flex"
+                                                style="max-height: 320px; overflow: hidden;"
+                                            >
+                                                                                                                                                            <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=aquecedores">
+                                                        Aquecedores
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=fogoes-a-lenha">
+                                                        Fogões a Lenha
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=rechaud-de-ferro-fundido">
+                                                        Rechaud de Ferro Fundido
+                                                    </a>
+                    </li>
+                                    </ul>
+                                </li>
+                                                                                                    <li class="col-md-6 col-sm-12">
+                                                                                    <h4>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=linha-industrial">Linha Industrial</a>
+                                        </h4>
+                                                                                    <ul
+                                                class="subsubmenu-bottom fd-c fw-w flex"
+                                                style="max-height: 320px; overflow: hidden;"
+                                            >
+                                                                                                                                                            <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=armarios-de-crescimento">
+                                                        Armários de Crescimento
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=balcoes-de-servico">
+                                                        Balcões de Serviço
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=bancadas-de-apoio">
+                                                        Bancadas de Apoio
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=bases-e-apoios-genesis-e-restaurant">
+                                                        Bases e Apoios  - Genesis e Restaurant
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=bebedouros">
+                                                        Bebedouros
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=chapas-aco-inox-e-cavaletes">
+                                                        Chapas Aço Inox e Cavaletes
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=chapas-deguste">
+                                                        Chapas Deguste
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=charbroilers-e-cavaletes">
+                                                        Charbroilers e Cavaletes
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=dosadores">
+                                                        Dosadores
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=estufasbuffets-de-alimentos">
+                                                        Estufas/Buffets de Alimentos
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=expositores-verticais">
+                                                        Expositores Verticais
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=fogoes-aco-carbono">
+                                                        Fogões Aço Carbono
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=fogoes-aco-inox">
+                                                        Fogões Aço Inox
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=fogoes-com-forno-e-de-mesa">
+                                                        Fogões com Forno e de Mesa
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=fornos-assadores">
+                                                        Fornos Assadores
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=fornos-combinados-e-cavaletes">
+                                                        Fornos Combinados e Cavaletes
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=fornos-convectores-e-cavaletes">
+                                                        Fornos Convectores e Cavaletes
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=fornos-de-lastro">
+                                                        Fornos de Lastro
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=fornos-industriais">
+                                                        Fornos Industriais
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=fornos-turbo">
+                                                        Fornos Turbo
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=fritadores-e-conservador-de-fritura">
+                                                        Fritadores e Conservador de Fritura
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=linha-new-prime">
+                                                        Linha New Prime
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=maquinas-de-padaria">
+                                                        Máquinas de Padaria
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=maquinas-de-suco-e-refresco">
+                                                        Máquinas de Suco e Refresco
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=pass-through">
+                                                        Pass Through
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=prensas-e-sanduicheiras">
+                                                        Prensas e Sanduicheiras
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=refrigeradores-conservadores-verticais">
+                                                        Refrigeradores / Conservadores Verticais
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=salamandras-e-derretedores-de-queijo">
+                                                        Salamandras e Derretedores de Queijo
+                                                    </a>
+                    </li>
+                                                                                                                                <li
+                                                            class="mr-2"
+                                                            style="max-width: 50%; margin-bottom: 2px"
+                                                        >
+                                                                                                        <a
+                                                        href="https://venanciometal.com.br/pt/produtos?categoria=vitrines">
+                                                        Vitrines
+                                                    </a>
+                    </li>
+                                    </ul>
+                                </li>
+                                </ul>
+            </div>
+        </div>
+        </li>
+        <li class="pv-4">
+            <a href="https://venanciometal.com.br/pt/onde-comprar">
+                Onde Comprar
+            </a>
+        </li>
+        <li class="pv-4">
+            <a href="https://venanciometal.com.br/pt/consultores-comerciais">
+                Consultores
+            </a>
+        </li>
+        <li class="pv-4">
+            <a href="https://venanciometal.com.br/pt/pos-vendas">
+                Assistências Autorizadas
+                
+            </a>
+            
+        </li>
+
+        <li class="has-submenu pv-4">
+            <a href="https://venanciometal.com.br/pt/contato">
+                Contato
+                <i class="fa-solid fa-plus"></i>
+            </a>
+            <div class="submenu-bottom">
+                <div class="pv-5 container">
+                    <ul class="submenu-content-bottom columns md-gap">
+                        <li class="col-md-3 col-sm-12">
+                            <ul class="subsubmenu-bottom">
+                                <li>
+                                    <a
+                                        href="https://venanciometal.com.br/pt/contato?categoria=contato">
+                                        Fale Conosco
+                                    </a>
+                                </li>
+                                
+                                <li>
+                                    <a
+                                        href="https://venanciometal.com.br/pt/contato?categoria=seja-fornecedor">
+                                        Seja Fornecedor
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="https://venanciometal.com.br/pt/contato?categoria=trabalhe-na-venancio">
+                                        Trabalhe na Venâncio
+                                    </a>
+                                </li>
+                                
+                                <li>
+                                    <a
+                                        href="https://venanciometal.com.br/pt/contato?categoria=catalogo-virtual">
+                                        Catálogo Virtual
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </li>
+
+        </ul>
+
+        <div class="hide-desktop languages">
+            <button
+                type="button"
+                class="active"
+            >
+                <img
+                    src="https://venanciometal.com.br/medias/1781360936863100.webp"
+                    alt="Português"
+                />
+                PT
+            </button>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    <div class="mobile-navigation hide-desktop">
+        <a
+            href=""
+            class="logo-mobile"
+        >
+            <img
+                src="https://venanciometal.com.br/settings/1785113355577647.webp"
+                alt=""
+            />
+        </a>
+        <div class="languages ai-c jc-c flex gap-1 pb-5">
+            <button
+                type="button"
+                class="active"
+            >
+                <img
+                    src="https://venanciometal.com.br/medias/1781360936863100.webp"
+                    alt="Português"
+                />
+                PT
+            </button>
+            <button type="button">
+                <img
+                    src="https://venanciometal.com.br/medias/1781360936891043.webp"
+                    alt="Espanhol"
+                />
+                ES
+            </button>
+            <button type="button">
+                <img
+                    src="https://venanciometal.com.br/medias/1781360936894520.webp"
+                    alt="Inglês"
+                />
+                IN
+            </button>
+        </div>
+        <button
+            type="button"
+            class="close-menu-mobile"
+        >
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <ul class="menu-mobile">
+            <li class="has-submenu">
+                <a href="">
+                    Institucional
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+                <ul class="submenu">
+                    <li>
+                        <a
+                            href="#"
+                            class="back-menu-mobile"
+                        >
+                            <i class="fas fa-chevron-left"></i>
+                            Voltar
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="https://venanciometal.com.br/pt/institucional/quem-somos">
+                            Quem Somos
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="https://venanciometal.com.br/pt/institucional/historia">
+                            História
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://venanciometal.com.br/pt/institucional/novidades">
+                            Novidades
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="https://venanciometal.com.br/pt/institucional/showroom">
+                            Showroom
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="https://venanciometal.com.br/pt/institucional/politica-de-gestao">
+                            Política de gestão
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://venanciometal.com.br/pt/contato">
+                            Contato
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="https://venanciometal.com.br/pt/produtos">
+                    Produtos
+                </a>
+            </li>
+            <li>
+                <a href="https://venanciometal.com.br/pt/onde-comprar">
+                    Onde Comprar
+                </a>
+            </li>
+            <li>
+                <a
+                    href="https://venanciometal.com.br/pt/consultores-comerciais">
+                    Representantes
+                </a>
+            </li>
+            <li>
+                <a href="https://venanciometal.com.br/pt/pos-vendas">
+                    Assistências Autorizadas
+                </a>
+            </li>
+            <li>
+                <a href="https://venanciometal.com.br/pt/contato">
+                    Contato
+                </a>
+            </li>
+        </ul>
+
+        <div class="menu-mobile-contact">
+            <div>
+                <h4>Central de Atendimento</h4>
+                <a href="tel:5137934300">
+                    <span>+55</span>
+                    (51) 3793.4300
+                </a>
+            </div>
+            <div>
+                <h4>Pós-Vendas</h4>
+                <a href="tel:5137934343">
+                    <span> +55 </span>
+                    (51) 3793.4343
+                </a>
+
+                <div>
+                    <a href="mailto:atendimento@venanciometal.com.br">
+                        atendimento@venanciometal.com.br
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <ul class="menu-mobile-lp">
+            <li>
+                <a href="https://venanciometal.com.br/pt">Página Inicial</a>
+            </li>
+            <li>
+                <a
+                    href="https://venanciometal.com.br/pt/downloads">Downloads</a>
+            </li>
+            
+            <li>
+                <a
+                    href="https://venanciometalsupport.zendesk.com/hc/pt-br"
+                    target="_blank"
+                    rel="nofollow noopener noreferrer"
+                >
+                    Área do técnico
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="overlay-mobile-navigation"></div>
+</header>
+
+<main>
+    <section class="container pv-8">
+    <h1>404 pt</h1>
+  </section>
+</main>
+
+
+<footer>
+    <div class="container">
+        <ul class="grid-footer">
+            <li class="description-footer">
+                <a href="https://venanciometal.com.br/pt">
+                    <img src="https://venanciometal.com.br/settings/1785113579258221.webp" alt="Venâncio Metal" />
+                </a>
+                <ul class="social-media-footer flex ai-c gap-2 mv-3">
+                                            <li>
+                            <a href="https://www.facebook.com/venanciometal">
+                                <i class="fa-brands fa-facebook-f fa-lg"></i>
+                            </a>
+                        </li>
+                                                                <li>
+                            <a href="https://www.instagram.com/venanciometal">
+                                <i class="fa-brands fa-instagram fa-lg"></i>
+                            </a>
+                        </li>
+                                                                <li>
+                            <a href="https://www.youtube.com/channel/UCd_P4YG0MJsgVW6c8NrsaRA">
+                                <i class="fa-brands fa-youtube fa-lg"></i>
+                            </a>
+                        </li>
+                                                                                                        <li>
+                            <a href="https://www.linkedin.com/company/ven%C3%A2ncio-metal/">
+                                <i class="fa-brands fa-linkedin-in fa-lg"></i>
+                            </a>
+                        </li>
+                                                        </ul>
+
+                <div class="location-footer">
+                    <p>CNPJ: 93.899.359/0001-23</p>
+                    <p>Rua Wilma Helena Kunz, 2469 - Venâncio Aires - RS - CEP: 95800-000</p>
+                </div>
+            </li>
+            <li class="menu-footer menu-item-dropdown">
+                <h4 class="title-dropdown title-dropdown-active">Institucional</h4>
+                <ul class="submenu-footer menu-dropdown">
+                    <li>
+                        <a
+                            href="https://venanciometal.com.br/pt/institucional/quem-somos">
+                            Quem Somos
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://venanciometal.com.br/pt/institucional/novidades">
+                            Novidades
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="https://venanciometal.com.br/pt/institucional/showroom">
+                            Showroom
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="https://venanciometal.com.br/pt/institucional/politica-de-gestao">
+                            Política de Gestão
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="https://venanciometal.com.br/pt/politica-de-privacidade">
+                            Política de Privacidade
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://venanciometal.com.br/pt/contato">
+                            Contato
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="menu-footer menu-item-dropdown">
+                <h4 class="title-dropdown">Produtos</h4>
+                <div class="menu-dropdown">
+                                            <ul class="submenu-footer">
+                            <li>
+                                <h6>Linha Doméstica</h6>
+                                <ul class="subsubmenu-footer">
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=aquecedores">
+                                                Aquecedores
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=fogoes-a-lenha">
+                                                Fogões a Lenha
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=rechaud-de-ferro-fundido">
+                                                Rechaud de Ferro Fundido
+                                            </a>
+                                        </li>
+                                                                    </ul>
+                            </li>
+                        </ul>
+                                            <ul class="submenu-footer">
+                            <li>
+                                <h6>Linha Industrial</h6>
+                                <ul class="subsubmenu-footer">
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=armarios-de-crescimento">
+                                                Armários de Crescimento
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=bancadas-de-apoio">
+                                                Bancadas de Apoio
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=chapas-aco-inox-e-cavaletes">
+                                                Chapas Aço Inox e Cavaletes
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=charbroilers-e-cavaletes">
+                                                Charbroilers e Cavaletes
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=estufasbuffets-de-alimentos">
+                                                Estufas/Buffets de Alimentos
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=fogoes-aco-carbono">
+                                                Fogões Aço Carbono
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=fogoes-aco-inox">
+                                                Fogões Aço Inox
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=fogoes-com-forno-e-de-mesa">
+                                                Fogões com Forno e de Mesa
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=fornos-assadores">
+                                                Fornos Assadores
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=fornos-combinados-e-cavaletes">
+                                                Fornos Combinados e Cavaletes
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=fornos-convectores-e-cavaletes">
+                                                Fornos Convectores e Cavaletes
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=fornos-de-lastro">
+                                                Fornos de Lastro
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=fornos-industriais">
+                                                Fornos Industriais
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=fornos-turbo">
+                                                Fornos Turbo
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=fritadores-e-conservador-de-fritura">
+                                                Fritadores e Conservador de Fritura
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=maquinas-de-padaria">
+                                                Máquinas de Padaria
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=prensas-e-sanduicheiras">
+                                                Prensas e Sanduicheiras
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=refrigeradores-conservadores-verticais">
+                                                Refrigeradores / Conservadores Verticais
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=expositores-verticais">
+                                                Expositores Verticais
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=balcoes-de-servico">
+                                                Balcões de Serviço
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=vitrines">
+                                                Vitrines
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=pass-through">
+                                                Pass Through
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=chapas-deguste">
+                                                Chapas Deguste
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=bebedouros">
+                                                Bebedouros
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=dosadores">
+                                                Dosadores
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=maquinas-de-suco-e-refresco">
+                                                Máquinas de Suco e Refresco
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=linha-new-prime">
+                                                Linha New Prime
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=salamandras-e-derretedores-de-queijo">
+                                                Salamandras e Derretedores de Queijo
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=bases-e-apoios-genesis-e-restaurant">
+                                                Bases e Apoios  - Genesis e Restaurant
+                                            </a>
+                                        </li>
+                                                                    </ul>
+                            </li>
+                        </ul>
+                                            <ul class="submenu-footer">
+                            <li>
+                                <h6>Lançamentos</h6>
+                                <ul class="subsubmenu-footer">
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=chef-bases">
+                                                Chef Bases
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=fogoes-nova-era">
+                                                Fogões Nova Era
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=chapas-deguste-new">
+                                                Chapas Deguste New
+                                            </a>
+                                        </li>
+                                                                            <li>
+                                            <a
+                                                href="https://venanciometal.com.br/pt/produtos?categoria=mini-camara">
+                                                Mini Câmara
+                                            </a>
+                                        </li>
+                                                                    </ul>
+                            </li>
+                        </ul>
+                                    </div>
+            </li>
+
+            <li class="menu-footer menu-item-dropdown">
+                <h4 class="title-dropdown">
+                    <div class="hide-mobile">
+                        <i class="fa-solid fa-plus fa-2xs"></i>
+                    </div>
+                    Venâncio
+                </h4>
+                <ul class="submenu-footer menu-dropdown">
+                    <li>
+                        <a
+                            href="https://venanciometal.com.br/pt/contato?categoria=trabalhe-na-venancio">
+                            Trabalhe Conosco
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://venanciometal.com.br/pt/institucional/novidades">
+                            Novidades
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://venanciometal.com.br/pt/downloads">
+                            Downloads
+                        </a>
+                    </li>
+                    <li>
+                        <a
+                            href="https://venanciometal.com.br/pt/contato?categoria=seja-fornecedor">
+                            Seja Fornecedor
+                        </a>
+                    </li>
+                    <!--<li>-->
+                    <!--    <a-->
+                    <!--        href="https://venanciometal.com.br/pt/contato?categoria=perguntas-frequentes">-->
+                    <!--        Perguntas Frequentes-->
+                    <!--    </a>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                    <!--    <a-->
+                    <!--        href="https://venanciometal.com.br/pt/termo-de-garantia">-->
+                    <!--        Termo de Garantia-->
+                    <!--    </a>-->
+                    <!--</li>-->
+                </ul>
+            </li>
+
+            <li class="menu-footer menu-item-dropdown">
+                <h4 class="title-dropdown">Fale Conosco</h4>
+                <ul class="contact-menu-footer menu-dropdown">
+                    <li>
+                        <p>Central de Atendimento</p>
+                        <a href="tel:5137934300">
+                            <span>+55</span>
+                            (51) 3793.4300
+                        </a>
+                    </li>
+                    <li>
+                        <p>Pós-Vendas</p>
+                        <a href="tel:5137934343">
+                            <span> +55 </span>
+                            (51) 3793.4343
+                        </a>
+                        <a href="mailto:atendimento@venanciometal.com.br">
+                            atendimento@venanciometal.com.br
+                        </a>
+                    </li>
+                    <li>
+                        <p>Horário de atendimento</p>
+                        <a href="javascript:void(0);">
+                            07:30 - 11:30 / 13:00 - 17:30
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="container">
+        <div class="msg-footer text-align-center">
+            <p>
+                As imagens contidas neste site são meramente ilustrativas. Equipamentos para uso industrial. <br />
+                Reservamo-nos o direito de alterar qualquer equipamento, sem aviso prévio.
+            </p>
+        </div>
+    </div>
+    <div class="footer-copy">
+        <div class="container">
+            <div class="flex ai-c jc-sb gap-2">
+                <p>2024 - Metalúrgica Venâncio Ltda. Todos os Direitos Reservados</p>
+                <div class="text-align-right logo-binden">
+                    <a href="https://binden.digital" class="logo-binden" target="_blank"
+                        rel="nofollow noopener noreferrer">
+                        <img src="https://venanciometal.com.br/medias/1781372185145079.webp" alt="Binden" />
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<div class="consent">
+    <div class="container">
+        <div class="sm-pd flex ai-c jc-sb ph-3 pv-3 gap-8 consent-content">
+            <div>
+                <p class="title-cookie">Política de Cookies</p>
+                <p class="description-cookie">
+                    Em atendimento a LGPD - Lei Geral de Proteção de Dados Pessoais,
+                    lei 13.709/2018, informamos que utilizamos cookies que armazenam
+                    informações sobre a forma como você usa esse site. Para saber mais
+                    a respeito, consulte a nossa página de
+                    <a href="" class="btn-privacy"> Política de Privacidade. </a>
+                </p>
+            </div>
+            <a href="https://venanciometal.com.br/pt/politica-de-privacidade"
+                class="link-privacy"> Política de Privacidade. </a>
+
+            <button type="button" class="consent-button btn btn-primary text-nowrap">
+                Ok, estou de acordo.
+            </button>
+        </div>
+    </div>
+</div>
+<script src="https://venanciometal.com.br/web/assets/js/main.js"></script>
+<script src="https://venanciometal.com.br/web/assets/js/swiper.js"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,218 @@
+{
+  "updatedAt": "2026-06-11T02:47:49.416Z",
+  "createdAt": "2026-05-30T05:42:16.426Z",
+  "id": "rP1oaUomnwc10ihy",
+  "name": "070_CRON_MARKETING_INSTITUCIONAL_DL_OPENAI",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "35 0 * * *"
+            }
+          ]
+        }
+      },
+      "id": "44896de6-2ca0-4104-8ab3-16c82a5aa597",
+      "name": "Schedule Trigger1",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        160,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = new Date().toLocaleDateString('pt-BR');\n\nreturn {\n  json: {\n    prompt: `Você é um estrategista de marketing institucional da DL Soluções Condominiais.\n\nHoje é dia ${d}.\n\nCrie uma estratégia diária de postagem para condomínios, administradoras, escolas, empresas e operações comerciais no Rio de Janeiro.\n\nUse uma ou mais soluções da DL:\n- DL Guardião: CFTV, segurança eletrônica e proteção patrimonial.\n- DL Fortress: controle de acesso, portaria autônoma e gestão de acesso.\n- DL Acqua: automação e monitoramento de bombas, cisternas e caixas d’água.\n- DL Gatekeeper: automação de portões, portas e acessos.\n- DL Volt: elétrica predial, infraestrutura técnica, quadros, painéis e automação.\n- DL VoltCharge: infraestrutura para carregadores veiculares.\n- DL EcoVolt: energia solar, backup e eficiência energética.\n- DL Alerta: prevenção de incêndio.\n- DL Partner: manutenção recorrente e tempo de resposta para chamados.\n- DL Express: suporte técnico para equipamentos Mult•Grill, chapas, grills e fritadeiras profissionais.\n\nRegras obrigatórias:\n- Use \"Avaliação Técnica\".\n- Não use \"visita técnica\".\n- Não cite Condfy.\n- Não use DL Ignis.\n- Não chame Diogo de engenheiro.\n- Use \"Tecnólogo Responsável\" somente se necessário.\n- Não use \"SLA\" como termo principal; use \"tempo de resposta para chamados\".\n- Não use termos internos como n8n, webhook, payload, automação interna, dashboard ou tracking no texto público.\n- Não trate Mult•Grill como produto próprio da DL; use DL Express como linha de suporte técnico.\n- Não trate DL Nexus como produto comercial público.\n\nRetorne apenas JSON válido, sem markdown, exatamente neste formato:\n{\n  \"estrategia_texto\": \"...\",\n  \"produto\": \"...\",\n  \"publico_alvo\": \"...\",\n  \"bairro\": \"...\",\n  \"canal_destino\": \"Instagram, Facebook e Google Perfil\",\n  \"objetivo\": \"Solicitar Avaliação Técnica\"\n}`\n  }\n};"
+      },
+      "id": "94ce8f27-1674-4333-ad8b-fedb91c994eb",
+      "name": "Prepare Prompt1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.OPENAI_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ {\n  model: 'gpt-4o',\n  response_format: {\n    type: 'json_object'\n  },\n  messages: [\n    {\n      role: 'system',\n      content: 'Você é um Diretor de Marketing Institucional da DL Soluções Condominiais. Responda apenas em JSON válido, sem markdown. Gere estratégia institucional para condomínios, administradoras, escolas, empresas e operações comerciais. Use Avaliação Técnica, proteção patrimonial e tempo de resposta para chamados. Não use visita técnica, Condfy, DL Ignis, engenheiro, SLA como termo principal, landing page, B2B visível, n8n, webhook ou payload em texto público.'\n    },\n    {\n      role: 'user',\n      content: $json.prompt || 'Gere uma estratégia institucional para postagem da DL Soluções Condominiais.'\n    }\n  ]\n} }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "e6ee0b78-221c-47ed-84b4-354a8d870d5e",
+      "name": "OpenAI - Marketing Institucional DL1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        688,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const content = $json.choices?.[0]?.message?.content;\n\nif (!content) {\n  throw new Error('OpenAI não retornou choices[0].message.content. Verifique a resposta do nó anterior.');\n}\n\nlet parsed;\n\ntry {\n  parsed = typeof content === 'string' ? JSON.parse(content) : content;\n} catch (error) {\n  throw new Error('Resposta da OpenAI não é JSON válido: ' + content);\n}\n\nconst required = [\n  'estrategia_texto',\n  'produto',\n  'publico_alvo',\n  'bairro',\n  'canal_destino',\n  'objetivo'\n];\n\nconst missing = required.filter((field) => !parsed[field]);\n\nif (missing.length > 0) {\n  throw new Error('JSON da OpenAI incompleto. Campos ausentes: ' + missing.join(', '));\n}\n\nreturn {\n  json: {\n    estrategia_texto: parsed.estrategia_texto,\n    produto: parsed.produto,\n    publico_alvo: parsed.publico_alvo,\n    bairro: parsed.bairro,\n    canal_destino: parsed.canal_destino,\n    objetivo: parsed.objetivo,\n    origem_ia: 'openai',\n    status_processamento: 'ok',\n    criado_em: new Date().toISOString()\n  }\n};"
+      },
+      "id": "50e6bf69-8882-4276-aedb-fe709b018c7c",
+      "name": "Limpar JSON da OpenAI1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        976,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "-1002012015091",
+        "text": "={{ '🎯 DIRETRIZ DE MARKETING DL\\n\\nPúblico: ' + $json.publico_alvo + '\\nProduto: ' + $json.produto + '\\nRegião: ' + $json.bairro + '\\nCanal: ' + $json.canal_destino + '\\nObjetivo: ' + $json.objetivo + '\\n\\nEstratégia:\\n' + $json.estrategia_texto }}",
+        "additionalFields": {}
+      },
+      "id": "fda09160-2cc3-4433-a8d3-18c0225bddc3",
+      "name": "Telegram Entrega1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1248,
+        -112
+      ],
+      "webhookId": "9e740772-3c2c-47ba-b7b1-56d5ee5424e1",
+      "credentials": {
+        "telegramApi": {
+          "id": "j1fpzPAZUa1A0i6r",
+          "name": "Telegram account 2"
+        }
+      },
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "workflowId": "020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO",
+        "options": {}
+      },
+      "id": "d01ebacc-1b0b-47a3-8185-9789d1d9d9c1",
+      "name": "Chamar MarkSolar (020)1",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1248,
+        128
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Prepare Prompt1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Prompt1": {
+      "main": [
+        [
+          {
+            "node": "OpenAI - Marketing Institucional DL1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI - Marketing Institucional DL1": {
+      "main": [
+        [
+          {
+            "node": "Limpar JSON da OpenAI1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limpar JSON da OpenAI1": {
+      "main": [
+        [
+          {
+            "node": "Telegram Entrega1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Chamar MarkSolar (020)1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "0bd6ffca-a2c6-449c-b0b9-f07836dbe7c8",
+  "activeVersionId": null,
+  "versionCounter": 129,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-30T05:42:16.426Z",
+      "createdAt": "2026-05-30T05:42:16.426Z",
+      "role": "workflow:owner",
+      "workflowId": "rP1oaUomnwc10ihy",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

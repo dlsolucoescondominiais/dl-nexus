@@ -1,0 +1,109 @@
+{
+  "name": "053_ANINHA_SOCIAL_HANDOFF_TELEGRAM",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env['TELEGRAM_DIOGO_CHAT_ID'] }}",
+        "text": "=🔔 [HANDOFF SDR SOCIAL]\n\nCanal: {{ $json.canal_origem }}\nLead ID: {{ $json.sender_id }}\n\nMotivo: {{ $json.motivo_humano }}\n\nHistórico:\n{{ $json.historico }}"
+      },
+      "id": "t1",
+      "name": "ENVIAR_TELEGRAM_HANDOFF",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        200,
+        0
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "4sGUaygxQklSMa3Z",
+          "name": "Aninha Telegram Bot (DL Nexus)"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_social_conversas?id=eq.{{ $json.conversa_id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env['SUPABASE_ANON_KEY'] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "precisa_humano",
+              "value": true
+            },
+            {
+              "name": "etapa_funil",
+              "value": "handoff"
+            }
+          ]
+        }
+      },
+      "id": "t2",
+      "name": "ATUALIZAR_CONVERSA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        400,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "supabase_anon_key",
+          "name": "Supabase Anon Key"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "ENVIAR_TELEGRAM_HANDOFF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ENVIAR_TELEGRAM_HANDOFF": {
+      "main": [
+        [
+          {
+            "node": "ATUALIZAR_CONVERSA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "active": false
+}

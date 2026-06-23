@@ -1,0 +1,116 @@
+{
+  "name": "183_MOTOR_IA1_TECNICA",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.deepseek.com/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.DEEPSEEK_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Você é o Analista Técnico IA da DL Soluções Condominiais. Receba o JSON de escopo e retorne um JSON técnico estrito com: diagnostico_tecnico (resumo do problema e solução), riscos (array), dados_faltantes (array), validacoes (array). Regras: não invente dados. Se elétrico e sem potência, não conclua corrente. Se circuito geral incompatível, aponte risco de desarme.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"{{JSON.stringify($json.payload_json || $json)}}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "deepseek_analista",
+      "name": "DeepSeek: Analista Técnico",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [200, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.deepseek.com/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.DEEPSEEK_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Você é o Agente Conferente (QA) Técnico da DL. Analise a saída do Analista Técnico e os dados de entrada. Se a análise do colega estiver perigosa, excessivamente otimista ou ignorando regras da engenharia, reescreva-a e retorne o JSON final corrigido. Caso contrário, mantenha igual. Retorne JSON: { \\\"diagnostico_tecnico\\\": \\\"...\\\", \\\"riscos\\\": [], \\\"dados_faltantes\\\": [], \\\"validacoes\\\": [] }.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"DADOS ORIGINAIS: {{JSON.stringify($('Execute Workflow Trigger').item.json)}} \\n\\nANÁLISE INICIAL: {{JSON.stringify($json.choices[0].message.content)}}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "deepseek_qa",
+      "name": "DeepSeek: Conferente (QA)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [400, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "let raw = $json.choices[0].message.content;\nlet parsed = {};\ntry {\n  parsed = JSON.parse(raw);\n} catch(e) {\n  parsed = { erro: \"Falha ao parsear JSON do DeepSeek\" };\n}\n\n// Montar o payload fundindo a entrada com o resultado da IA 1\nconst input = $('Execute Workflow Trigger').item.json.payload_json || $('Execute Workflow Trigger').item.json;\ninput.diagnostico = parsed;\n\nreturn { json: input };"
+      },
+      "id": "merge_ia1",
+      "name": "Merge IA 1 Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, 0]
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "DeepSeek: Analista Técnico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek: Analista Técnico": {
+      "main": [
+        [
+          {
+            "node": "DeepSeek: Conferente (QA)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek: Conferente (QA)": {
+      "main": [
+        [
+          {
+            "node": "Merge IA 1 Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

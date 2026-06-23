@@ -1,0 +1,72 @@
+{
+  "name": "022_MONITOR_FALHAS_POSTAGEM",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "-1002012015091",
+        "text": "={{ '🚨 ERRO DE POSTAGEM SOCIAL! 🚨\\nWorkflow: ' + $json.workflow.name + '\\nNode que falhou: ' + $json.execution.error.node + '\\nErro: ' + $json.execution.error.message }}",
+        "additionalFields": {}
+      },
+      "id": "2",
+      "name": "Alerta Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "fileSelector": "/data/logs_falhas_postagem.txt",
+        "content": "={{ new Date().toISOString() + ' | Erro em: ' + $json.workflow.name + ' | Node: ' + $json.execution.error.node + ' | MSG: ' + $json.execution.error.message + '\\n' }}"
+      },
+      "id": "3",
+      "name": "Log Local para GDrive",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Alerta Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alerta Telegram": {
+      "main": [
+        [
+          {
+            "node": "Log Local para GDrive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

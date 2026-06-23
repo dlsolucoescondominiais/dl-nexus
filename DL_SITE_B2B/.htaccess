@@ -1,0 +1,17 @@
+RewriteEngine On
+
+# Forçar HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Redirecionar todos os domínios secundários e suas versões www para dlsolucoescondominiais.com.br
+RewriteCond %{HTTP_HOST} ^dlsolucoescondominiais\.com$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.dlsolucoescondominiais\.com$ [OR]
+RewriteCond %{HTTP_HOST} ^www\.dlsolucoescondominiais\.com\.br$
+RewriteRule ^(.*)$ https://dlsolucoescondominiais.com.br/$1 [R=301,L]
+
+# Configurações de segurança adicionais
+Header set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+Header set X-Content-Type-Options "nosniff"
+Header set X-Frame-Options "SAMEORIGIN"
+Header set X-XSS-Protection "1; mode=block"

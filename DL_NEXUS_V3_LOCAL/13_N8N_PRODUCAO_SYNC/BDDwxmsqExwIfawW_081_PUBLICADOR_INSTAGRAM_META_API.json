@@ -1,0 +1,571 @@
+{
+  "updatedAt": "2026-05-30T05:33:41.648Z",
+  "createdAt": "2026-05-30T05:33:41.648Z",
+  "id": "BDDwxmsqExwIfawW",
+  "name": "081_PUBLICADOR_INSTAGRAM_META_API",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "publicar-instagram-dl-nexus",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "node-001-webhook",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ],
+      "webhookId": "081-publicador-instagram-dl-nexus"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-approved",
+              "leftValue": "={{ $json.body.approved }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "node-002-if-approved",
+      "name": "IF: approved=true",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        420,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-image-url",
+              "leftValue": "={{ $json.body.image_url }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "isNotEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "node-003-if-image-url",
+      "name": "IF: image_url existe",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        640,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// KILLCRITIC - Verificação de Termos Proibidos e Conformidade\n// DL Nexus V3 - Publicador Instagram Meta API\n// ============================================================\n\nconst body = $input.first().json.body || {};\n\nconst caption = (body.caption || '').toLowerCase();\nconst legendaOriginal = body.caption || '';\n\n// Termos explicitamente proibidos\nconst termosProibidos = [\n  'visita técnica',\n  'visita tecnica',\n  'canaleta plástica',\n  'canaleta plastica',\n  'garantia vitalícia',\n  'garantia vitalicia',\n  'engenheiro diogo',\n  'preço final',\n  'preco final'\n];\n\n// Exige presença do termo estratégico\nconst termoObrigatorio = 'avaliação técnica';\nconst termoObrigatorioAlt = 'avaliacao tecnica';\n\nconst termosEncontrados = termosProibidos.filter(termo => caption.includes(termo));\n\nconst temTermoObrigatorio =\n  caption.includes(termoObrigatorio) || caption.includes(termoObrigatorioAlt);\n\nlet statusKillcritic = 'APROVADO';\nconst motivos = [];\n\nif (termosEncontrados.length > 0) {\n  statusKillcritic = 'REPROVADO';\n  motivos.push(`Termos proibidos encontrados: [${termosEncontrados.join(', ')}]`);\n}\n\nif (!temTermoObrigatorio) {\n  statusKillcritic = 'REPROVADO';\n  motivos.push(`Termo obrigatório ausente: '${termoObrigatorio}'`);\n}\n\n// Validações adicionais de segurança\nif (!body.image_url || body.image_url.trim() === '') {\n  statusKillcritic = 'REPROVADO';\n  motivos.push('image_url ausente ou vazia');\n}\n\nif (!body.approved || String(body.approved).toLowerCase() !== 'true') {\n  statusKillcritic = 'REPROVADO';\n  motivos.push('Campo approved não está setado como true');\n}\n\nconst resultado = {\n  status_killcritic: statusKillcritic,\n  motivos_reprovacao: motivos,\n  termos_proibidos_encontrados: termosEncontrados,\n  termo_obrigatorio_presente: temTermoObrigatorio,\n  caption_auditado: legendaOriginal,\n  image_url: body.image_url || '',\n  caption: body.caption || '',\n  aprovado_pelo_usuario: body.approved,\n  timestamp_killcritic: new Date().toISOString(),\n  workflow: '081_PUBLICADOR_INSTAGRAM_META_API',\n  versao_killcritic: '1.0.0'\n};\n\nreturn [{ json: resultado }];"
+      },
+      "id": "node-004-killcritic",
+      "name": "Code KILLCRITIC",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        860,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cond-killcritic-aprovado",
+              "leftValue": "={{ $json.status_killcritic }}",
+              "rightValue": "APROVADO",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "node-005-if-killcritic",
+      "name": "IF: KILLCRITIC APROVADO",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v19.0/17841403185822108/media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_url",
+              "value": "={{ $json.image_url }}"
+            },
+            {
+              "name": "caption",
+              "value": "={{ $json.caption }}"
+            },
+            {
+              "name": "media_type",
+              "value": "IMAGE"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": false
+            }
+          }
+        }
+      },
+      "id": "node-006-create-media-container",
+      "name": "HTTP: Criar Container de Mídia",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1300,
+        100
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "cred-facebook-graph",
+          "name": "Aplicativo do Facebook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v19.0/17841403185822108/media_publish",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "creation_id",
+              "value": "={{ $json.id }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": false
+            }
+          }
+        }
+      },
+      "id": "node-007-publish-media",
+      "name": "HTTP: Publicar no Instagram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1520,
+        100
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "cred-facebook-graph",
+          "name": "Aplicativo do Facebook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "={{ '✅ *DL Nexus V3 | Instagram Publicado com Sucesso!*\\n\\n📸 *Post ID:* ' + $json.id + '\\n🕒 *Horário:* ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n\\n🔗 *Caption (início):* ' + ($node[\"Code KILLCRITIC\"].json.caption || '').substring(0, 100) + '...' + '\\n\\n🏢 _DL Soluções Condominiais | Workflow 081_' }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "node-008-telegram-confirmacao",
+      "name": "Telegram: Confirmação de Publicação",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1740,
+        100
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "cred-telegram",
+          "name": "Conta do Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "={{ '🚫 *DL Nexus V3 | Post BLOQUEADO pelo KILLCRITIC*\\n\\n⚠️ *Motivos de Reprovação:*\\n' + ($json.motivos_reprovacao || []).map(m => '• ' + m).join('\\n') + '\\n\\n🔍 *Termos Proibidos:* ' + (($json.termos_proibidos_encontrados || []).length > 0 ? ($json.termos_proibidos_encontrados || []).join(', ') : 'Nenhum') + '\\n✅ *Termo Obrigatório:* ' + ($json.termo_obrigatorio_presente ? 'PRESENTE' : 'AUSENTE') + '\\n\\n🕒 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n🏢 _DL Soluções Condominiais | Workflow 081_' }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "node-009-telegram-bloqueio-killcritic",
+      "name": "Telegram: Alerta KILLCRITIC Bloqueado",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1300,
+        340
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "cred-telegram",
+          "name": "Conta do Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "={{ '🚫 *DL Nexus V3 | Post NÃO APROVADO*\\n\\n❌ O campo *approved* não está definido como *true*.\\nNenhuma publicação foi realizada.\\n\\n🕒 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n🏢 _DL Soluções Condominiais | Workflow 081_' }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "node-010-telegram-nao-aprovado",
+      "name": "Telegram: Alerta Não Aprovado",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        640,
+        460
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "cred-telegram",
+          "name": "Conta do Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "={{ '⚠️ *DL Nexus V3 | image_url ausente*\\n\\nO payload recebido não contém uma URL de imagem válida.\\nPublicação cancelada.\\n\\n🕒 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n🏢 _DL Soluções Condominiais | Workflow 081_' }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "node-011-telegram-sem-imagem",
+      "name": "Telegram: Alerta Sem Imagem",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        860,
+        400
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "cred-telegram",
+          "name": "Conta do Telegram"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, post_id: $json.id, message: 'Post publicado com sucesso no Instagram', workflow: '081_PUBLICADOR_INSTAGRAM_META_API', timestamp: new Date().toISOString() }) }}",
+        "options": {}
+      },
+      "id": "node-012-response-success",
+      "name": "Response: Sucesso",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1960,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: false, status_killcritic: $json.status_killcritic || 'REPROVADO', motivos: $json.motivos_reprovacao || ['Aprovação negada ou imagem ausente'], workflow: '081_PUBLICADOR_INSTAGRAM_META_API', timestamp: new Date().toISOString() }) }}",
+        "options": {
+          "responseCode": 422
+        }
+      },
+      "id": "node-013-response-error",
+      "name": "Response: Bloqueado",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1520,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "errorMessage": "Erro no workflow 081_PUBLICADOR_INSTAGRAM_META_API. Verifique os logs no n8n."
+      },
+      "id": "node-014-error-trigger",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        200,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "={{ '🔴 *DL Nexus V3 | ERRO CRÍTICO - Workflow 081*\\n\\n💥 *Erro:* ' + ($json.error?.message || 'Erro desconhecido') + '\\n📍 *Nó:* ' + ($json.execution?.lastNodeExecuted || 'N/A') + '\\n🆔 *Execução:* ' + ($json.execution?.id || 'N/A') + '\\n\\n🕒 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n🏢 _DL Soluções Condominiais | Workflow 081_' }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "node-015-telegram-erro-critico",
+      "name": "Telegram: Erro Crítico",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        420,
+        560
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "cred-telegram",
+          "name": "Conta do Telegram"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "IF: approved=true",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: approved=true": {
+      "main": [
+        [
+          {
+            "node": "IF: image_url existe",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram: Alerta Não Aprovado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: image_url existe": {
+      "main": [
+        [
+          {
+            "node": "Code KILLCRITIC",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram: Alerta Sem Imagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code KILLCRITIC": {
+      "main": [
+        [
+          {
+            "node": "IF: KILLCRITIC APROVADO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: KILLCRITIC APROVADO": {
+      "main": [
+        [
+          {
+            "node": "HTTP: Criar Container de Mídia",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram: Alerta KILLCRITIC Bloqueado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Criar Container de Mídia": {
+      "main": [
+        [
+          {
+            "node": "HTTP: Publicar no Instagram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Publicar no Instagram": {
+      "main": [
+        [
+          {
+            "node": "Telegram: Confirmação de Publicação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram: Confirmação de Publicação": {
+      "main": [
+        [
+          {
+            "node": "Response: Sucesso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram: Alerta KILLCRITIC Bloqueado": {
+      "main": [
+        [
+          {
+            "node": "Response: Bloqueado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram: Alerta Não Aprovado": {
+      "main": [
+        [
+          {
+            "node": "Response: Bloqueado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram: Alerta Sem Imagem": {
+      "main": [
+        [
+          {
+            "node": "Response: Bloqueado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Telegram: Erro Crítico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "3f106197-4b3d-4241-85c4-1b89bf356ad3",
+  "activeVersionId": null,
+  "versionCounter": 5,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-30T05:33:41.648Z",
+      "createdAt": "2026-05-30T05:33:41.648Z",
+      "role": "workflow:owner",
+      "workflowId": "BDDwxmsqExwIfawW",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

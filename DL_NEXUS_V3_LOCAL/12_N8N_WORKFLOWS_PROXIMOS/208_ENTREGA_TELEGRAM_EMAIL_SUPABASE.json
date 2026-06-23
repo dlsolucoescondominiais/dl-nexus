@@ -1,0 +1,51 @@
+{
+  "name": "208_ENTREGA_TELEGRAM_EMAIL_SUPABASE",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "entrega-orcamento"
+      },
+      "id": "trigger",
+      "name": "Webhook Entrega",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "-1002012015091",
+        "text": "={{ \"🟢 *ORÇAMENTO APROVADO PELO KILLCRITIC*\\n\\nID: \" + $json.orcamento_id + \"\\nScore: \" + $json.score_confianca }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram",
+      "name": "Telegram Notificacao",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        200,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Entrega": {
+      "main": [
+        [
+          {
+            "node": "Telegram Notificacao",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

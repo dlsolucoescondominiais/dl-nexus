@@ -1,0 +1,135 @@
+{
+  "name": "151_ANALISTA_METRICAS_WINDSOR",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * 1"
+            }
+          ]
+        }
+      },
+      "id": "a1b2c3d4-e5f6-4a1b-8c2d-3e4f5a6b7c8d",
+      "name": "Schedule (Segunda 8am)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://connectors.windsor.ai/all?date_preset=last_30d&fields=source,campaign,clicks,impressions,spend",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpQueryAuth",
+        "options": {}
+      },
+      "id": "b2c3d4e5-f6a1-4b2c-8d3e-4f5a6b7c8d9e",
+      "name": "Coletar Dados Windsor.ai",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        200,
+        300
+      ],
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "rUE7MZ3sPVddvhq9",
+          "name": "Windsor.ai API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://integrate.api.nvidia.com/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"meta/llama3-70b-instruct\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Atue como um Analista de Dados Sênior da DL Soluções Condominiais. Analise os dados brutos e gere um relatório objetivo.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Auditoria de Retenção e Formato Campeão: Analise os dados dos últimos 30 dias. Identifique possíveis gargalos e qual formato de conteúdo atrai mais diretores de escolas e síndicos. Dados: {{$json.data}}\"\n    }\n  ],\n  \"max_tokens\": 1024\n}",
+        "options": {}
+      },
+      "id": "c3d4e5f6-a1b2-4c3d-8e4f-5a6b7c8d9ea0",
+      "name": "Analista NVIDIA (Llama 3)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        400,
+        300
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "b8qFMhgK5QjmFxmp",
+          "name": "NVIDIA NIM API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{$env.TELEGRAM_DIOGO_CHAT_ID}}",
+        "text": "=📊 *Relatório Semanal de Inteligência Comercial (DL Nexus)*\n\n{{$('Analista NVIDIA (Llama 3)').item.json.choices[0].message.content}}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "d4e5f6a1-b2c3-4d4e-8f5a-6b7c8d9ea0b1",
+      "name": "Telegram: Enviar Relatório",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        600,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "4sGUaygxQklSMa3Z",
+          "name": "Aninha Telegram Bot (DL Nexus)"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule (Segunda 8am)": {
+      "main": [
+        [
+          {
+            "node": "Coletar Dados Windsor.ai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Coletar Dados Windsor.ai": {
+      "main": [
+        [
+          {
+            "node": "Analista NVIDIA (Llama 3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analista NVIDIA (Llama 3)": {
+      "main": [
+        [
+          {
+            "node": "Telegram: Enviar Relatório",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

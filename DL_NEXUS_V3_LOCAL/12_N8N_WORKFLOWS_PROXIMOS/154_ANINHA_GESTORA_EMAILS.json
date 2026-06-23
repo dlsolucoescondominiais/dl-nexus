@@ -1,0 +1,111 @@
+{
+  "name": "154_ANINHA_GESTORA_EMAILS",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {
+          "q": "is:unread"
+        }
+      },
+      "id": "gmail_trigger",
+      "name": "Novo E-mail (Gmail)",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "placeholder_gmail",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://integrate.api.nvidia.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"meta/llama3-70b-instruct\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Atue como Aninha, Assistente Executiva da DL Soluções Condominiais. Leia o e-mail recebido e escreva uma sugestão de resposta profissional e vendedora. Foco em soluções B2B (energia solar, CFTV, elétrica, prevenção de incêndios). Nunca fale de hidráulica.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Assunto: {{$json.subject}}\\n\\nMensagem:\\n{{$json.textPlain}}\"\n    }\n  ],\n  \"max_tokens\": 1024\n}",
+        "options": {}
+      },
+      "id": "nvidia_email",
+      "name": "Escrever Resposta (NVIDIA)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "operation": "create",
+        "subject": "=Re: {{$node[\"Novo E-mail (Gmail)\"].json.subject}}",
+        "message": "={{$('Escrever Resposta (NVIDIA)').item.json.choices[0].message.content}}",
+        "toEmail": "={{$node[\"Novo E-mail (Gmail)\"].json.from}}"
+      },
+      "id": "gmail_draft",
+      "name": "Salvar Rascunho",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        400,
+        300
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "placeholder_gmail",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Novo E-mail (Gmail)": {
+      "main": [
+        [
+          {
+            "node": "Escrever Resposta (NVIDIA)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Escrever Resposta (NVIDIA)": {
+      "main": [
+        [
+          {
+            "node": "Salvar Rascunho",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {}
+}

@@ -1,0 +1,465 @@
+{
+  "name": "SOCIAL_PUBLICADOR_MULTICANAL_DL",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cron",
+              "expression": "0 12 * * *"
+            }
+          ]
+        }
+      },
+      "id": "trigger_diario_12h",
+      "name": "Trigger Diario (12h)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM dl_social_publicacoes WHERE status_revisao = 'pronto_para_publicar' LIMIT 1;"
+      },
+      "id": "buscar_prontos",
+      "name": "Buscar Post Pronto Supabase",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        280,
+        300
+      ],
+      "credentials": {
+        "database": {
+          "id": "supabase_postgres_cred_id",
+          "name": "Supabase Connection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v25.0/{{$env.INSTAGRAM_BUSINESS_ACCOUNT_ID || '17841403185822108'}}/media",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $env.META_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"caption\": \"{{$json.legenda_instagram}}\",\n  \"image_url\": \"{{$json.image_url}}\"\n}"
+      },
+      "id": "instagram_container",
+      "name": "Instagram Container (Meta API)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        500,
+        50
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "amount": 10,
+        "unit": "seconds"
+      },
+      "id": "wait_instagram",
+      "name": "Aguardar Processamento Container",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        680,
+        50
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v25.0/{{$env.INSTAGRAM_BUSINESS_ACCOUNT_ID || '17841403185822108'}}/media_publish",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $env.META_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"creation_id\": \"{{$json.id || $node['Instagram Container (Meta API)'].json.id}}\"\n}"
+      },
+      "id": "instagram_publish",
+      "name": "Instagram Publish (Meta API)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        860,
+        50
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.image_url ? 'https://graph.facebook.com/v25.0/' + ($env.FACEBOOK_PAGE_ID || '100166804716824') + '/photos' : 'https://graph.facebook.com/v25.0/' + ($env.FACEBOOK_PAGE_ID || '100166804716824') + '/feed' }}",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $env.META_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": \"{{$json.legenda_facebook}}\"\n  {{ $json.image_url ? ',\"url\": \"' + $json.image_url + '\"' : '' }}\n}"
+      },
+      "id": "facebook_publish",
+      "name": "Facebook Page Feed (Meta API)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        500,
+        180
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Google Business localPosts (pendente até OAuth2 estar configurado)\nreturn [{ json: { status: \"pendente_credencial\", mensagem: \"Credencial do Google Business Profile pendente de configuração OAuth2.\" } }];"
+      },
+      "id": "gmb_publish",
+      "name": "Google Business localPosts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        310
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// TikTok postagem automática (pendente/assistida)\n// Requer vídeo vertical e credenciais TikTok aprovadas\nreturn [{ json: { status: \"pendente_credencial\", mensagem: \"Pendente até haver vídeo vertical e credencial aprovada.\" } }];"
+      },
+      "id": "tiktok_publish",
+      "name": "TikTok Publishing Node",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// LinkedIn postagem na página/organização (pendente)\n// LinkedIn requer texto institucional corporativo e credencial configurada\nreturn [{ json: { status: \"pendente_credencial\", mensagem: \"LinkedIn pendente até credencial de página/organização estar configurada.\" } }];"
+      },
+      "id": "linkedin_publish",
+      "name": "LinkedIn Publishing Node",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        570
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const instagramResult = $node[\"Instagram Publish (Meta API)\"] ? $node[\"Instagram Publish (Meta API)\"].json : null;\nconst facebookResult = $node[\"Facebook Page Feed (Meta API)\"] ? $node[\"Facebook Page Feed (Meta API)\"].json : null;\nconst gmbResult = $node[\"Google Business localPosts\"].json;\nconst tiktokResult = $node[\"TikTok Publishing Node\"].json;\nconst linkedinResult = $node[\"LinkedIn Publishing Node\"].json;\n\nconst row = $node[\"Buscar Post Pronto Supabase\"].json;\n\n// Determinar status de cada canal\nconst statusInstagram = instagramResult && !instagramResult.error ? 'publicado' : 'falha';\nconst statusFacebook = facebookResult && !facebookResult.error ? 'publicado' : 'falha';\nconst statusGmb = 'pendente_credencial';\nconst statusTiktok = 'pendente_credencial';\nconst statusLinkedin = 'pendente_credencial';\n\nconst urlInstagram = instagramResult && instagramResult.id ? `https://instagram.com/p/${instagramResult.id}` : '';\nconst urlFacebook = facebookResult && facebookResult.id ? `https://facebook.com/${facebookResult.id}` : '';\n\nconst errosObj = {};\nif (instagramResult && instagramResult.error) errosObj.instagram = instagramResult.error;\nif (facebookResult && facebookResult.error) errosObj.facebook = facebookResult.error;\n\nconst tentativasObj = row.tentativas || {};\ntentativasObj.instagram = (tentativasObj.instagram || 0) + 1;\ntentativasObj.facebook = (tentativasObj.facebook || 0) + 1;\n\nconst publicadoEmObj = row.publicado_em || {};\nconst nowIso = new Date().toISOString();\nif (statusInstagram === 'publicado') publicadoEmObj.instagram = nowIso;\nif (statusFacebook === 'publicado') publicadoEmObj.facebook = nowIso;\n\n// Calcular status global\nlet activeSuccess = 0;\nlet activeFail = 0;\n\nif (statusInstagram === 'publicado') activeSuccess++;\nelse activeFail++;\n\nif (statusFacebook === 'publicado') activeSuccess++;\nelse activeFail++;\n\nlet globalStatus = 'falhou_total';\nif (activeSuccess === 2) {\n  globalStatus = 'publicado_total';\n} else if (activeSuccess > 0) {\n  globalStatus = 'publicado_parcial';\n} else if (activeFail === 0) {\n  globalStatus = 'pendente_credencial';\n} else {\n  globalStatus = 'falhou_total';\n}\n\nreturn [{\n  json: {\n    id: row.id,\n    status_instagram: statusInstagram,\n    status_facebook: statusFacebook,\n    status_google_business: statusGmb,\n    status_tiktok: statusTiktok,\n    status_linkedin: statusLinkedin,\n    url_instagram: urlInstagram,\n    url_facebook: urlFacebook,\n    url_google_business: '',\n    url_tiktok: '',\n    url_linkedin: '',\n    erros: errosObj,\n    tentativas: tentativasObj,\n    publicado_em: publicadoEmObj,\n    status_global: globalStatus\n  }\n}];"
+      },
+      "id": "consolidate_publishing",
+      "name": "Consolidar Resultados",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=UPDATE dl_social_publicacoes SET status_instagram = '{{ $json.status_instagram }}', status_facebook = '{{ $json.status_facebook }}', status_google_business = '{{ $json.status_google_business }}', status_tiktok = '{{ $json.status_tiktok }}', status_linkedin = '{{ $json.status_linkedin }}', url_instagram = '{{ $json.url_instagram }}', url_facebook = '{{ $json.url_facebook }}', url_google_business = '{{ $json.url_google_business }}', url_tiktok = '{{ $json.url_tiktok }}', url_linkedin = '{{ $json.url_linkedin }}', erros = '{{ JSON.stringify($json.erros) }}'::jsonb, tentativas = '{{ JSON.stringify($json.tentativas) }}'::jsonb, publicado_em = '{{ JSON.stringify($json.publicado_em) }}'::jsonb, status_global = '{{ $json.status_global }}' WHERE id = '{{ $json.id }}';"
+      },
+      "id": "update_database_social",
+      "name": "Atualizar Log Supabase",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        1280,
+        300
+      ],
+      "credentials": {
+        "database": {
+          "id": "supabase_postgres_cred_id",
+          "name": "Supabase Connection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "=📢 *Log de Publicação Multicanal (DL)*\n\n*ID:* `{{ $json.id }}`\n*Status Global:* `{{ $json.status_global }}`\n*Tentativas:* `{{ JSON.stringify($json.tentativas) }}`\n*Status dos Canais:*\n- Instagram: `{{ $json.status_instagram }}`\n- Facebook: `{{ $json.status_facebook }}`\n- Google Business: `{{ $json.status_google_business }}`\n- TikTok: `{{ $json.status_tiktok }}`\n- LinkedIn: `{{ $json.status_linkedin }}`\n\n*Erros:* `{{ JSON.stringify($json.erros) }}`"
+      },
+      "id": "telegram_log_publish",
+      "name": "Telegram Log",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1460,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram_cred_id",
+          "name": "Telegram Bot Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const dryRun = (process.env.DRY_RUN === 'true' || process.env.DRY_RUN === true);\nreturn [{ json: { dry_run: dryRun, ...$input.item.json } }];"
+      },
+      "id": "verificar_modo_dry_run",
+      "name": "Verificar Modo Dry Run",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        280,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.dry_run }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "se_dry_run",
+      "name": "Se Dry Run?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        450,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const row = $input.item.json;\nconst nowIso = new Date().toISOString();\nreturn [{\n  json: {\n    id: row.id,\n    status_instagram: \"dry_run_ok\",\n    status_facebook: \"dry_run_ok\",\n    status_google_business: \"pendente_credencial\",\n    status_tiktok: \"pendente_credencial\",\n    status_linkedin: \"pendente_credencial\",\n    url_instagram: \"https://instagram.com/dry_run\",\n    url_facebook: \"https://facebook.com/dry_run\",\n    url_google_business: \"\",\n    url_tiktok: \"\",\n    url_linkedin: \"\",\n    erros: {},\n    tentativas: { instagram: 1, facebook: 1 },\n    publicado_em: { instagram: nowIso, facebook: nowIso },\n    status_global: \"publicado_parcial_simulado\"\n  }\n}];"
+      },
+      "id": "simular_publicacao_dry_run",
+      "name": "Simular Publicacao Dry Run",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        650,
+        650
+      ]
+    }
+  ],
+  "connections": {
+    "Trigger Diario (12h)": {
+      "main": [
+        [
+          {
+            "node": "Buscar Post Pronto Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Post Pronto Supabase": {
+      "main": [
+        [
+          {
+            "node": "Verificar Modo Dry Run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar Modo Dry Run": {
+      "main": [
+        [
+          {
+            "node": "Se Dry Run?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Se Dry Run?": {
+      "main": [
+        [
+          {
+            "node": "Simular Publicacao Dry Run",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Instagram Container (Meta API)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Facebook Page Feed (Meta API)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Google Business localPosts",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "TikTok Publishing Node",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "LinkedIn Publishing Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simular Publicacao Dry Run": {
+      "main": [
+        [
+          {
+            "node": "Atualizar Log Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Instagram Container (Meta API)": {
+      "main": [
+        [
+          {
+            "node": "Aguardar Processamento Container",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aguardar Processamento Container": {
+      "main": [
+        [
+          {
+            "node": "Instagram Publish (Meta API)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Instagram Publish (Meta API)": {
+      "main": [
+        [
+          {
+            "node": "Consolidar Resultados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facebook Page Feed (Meta API)": {
+      "main": [
+        [
+          {
+            "node": "Consolidar Resultados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Business localPosts": {
+      "main": [
+        [
+          {
+            "node": "Consolidar Resultados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TikTok Publishing Node": {
+      "main": [
+        [
+          {
+            "node": "Consolidar Resultados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LinkedIn Publishing Node": {
+      "main": [
+        [
+          {
+            "node": "Consolidar Resultados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidar Resultados": {
+      "main": [
+        [
+          {
+            "node": "Atualizar Log Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Atualizar Log Supabase": {
+      "main": [
+        [
+          {
+            "node": "Telegram Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

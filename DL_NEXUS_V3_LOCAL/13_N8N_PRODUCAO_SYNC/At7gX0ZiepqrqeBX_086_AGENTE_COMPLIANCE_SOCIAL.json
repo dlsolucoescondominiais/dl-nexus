@@ -1,0 +1,163 @@
+{
+  "updatedAt": "2026-05-28T03:20:54.090Z",
+  "createdAt": "2026-05-28T03:20:54.090Z",
+  "id": "At7gX0ZiepqrqeBX",
+  "name": "086_AGENTE_COMPLIANCE_SOCIAL",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger_exec_workflow",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Extrair texto do payload recebido do 020\nconst inputData = $input.all()[0].json;\nconst textoOriginal = inputData.post_texto || inputData.texto || \"Nenhum texto recebido\";\n\n// Regras pesadas de Compliance:\nconst shadowban_words = [\"compre\", \"venda\", \"preço\", \"orçamento\", \"clique no link\", \"arraste para cima\", \"promoção\", \"desconto\", \"urgente\", \"oferta\"];\n\nlet textoLimpo = textoOriginal;\nlet hasSpam = false;\n\nshadowban_words.forEach(word => {\n  const regex = new RegExp(word, \"gi\");\n  if (regex.test(textoLimpo)) {\n    hasSpam = true;\n    textoLimpo = textoLimpo.replace(regex, \"[termo orgânico ajustado]\"); \n    // OBS: Num cenário avencado, poderiamos chamar a IA aqui para reescrever de forma fluida.\n  }\n});\n\nlet target_channels = inputData.target_channels || [\"facebook\", \"instagram\", \"tiktok\"];\nconst formatoMidia = inputData.formato || \"imagem\";\n\n// O TikTok bloqueia imagens estaticas\nif (formatoMidia !== \"video\" && target_channels.includes(\"tiktok\")) {\n  target_channels = target_channels.filter(c => c !== \"tiktok\");\n}\n\nreturn {\n  json: {\n    texto_original: textoOriginal,\n    texto_compliance: textoLimpo,\n    shadowban_risk_detected: hasSpam,\n    formato_recebido: formatoMidia,\n    canais_aprovados: target_channels\n  }\n};\n"
+      },
+      "id": "compliance_engine",
+      "name": "Motor de Regras Compliance",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "operation": "create",
+        "model": "gpt-4-turbo-preview",
+        "messages": {
+          "messageValues": [
+            {
+              "role": "system",
+              "content": "Você é o Agente Anti-Shadowban da DL Nexus. Analise a legenda fornecida. Se houver linguagem muito agressiva comercialmente que algoritmos do TikTok punam, reescreva-a mantendo o sentido, mas orgânica. Se já estiver orgânica, retorne exatamente como está. Retorne apenas a legenda final, sem aspas adicionais."
+            },
+            {
+              "role": "user",
+              "content": "={{ $json.texto_compliance }}"
+            }
+          ]
+        }
+      },
+      "id": "ia_rewrite",
+      "name": "IA Anti-Shadowban",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        0
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "qkc9MhPz7FAiygil",
+          "name": "OpenAi account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "texto_final",
+              "value": "={{ $json.message.content }}"
+            }
+          ],
+          "boolean": [
+            {
+              "name": "tiktok_autorizado",
+              "value": "={{ $('Motor de Regras Compliance').item.json.canais_aprovados.includes('tiktok') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set_output",
+      "name": "Gerar Pacote Seguro",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        600,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Motor de Regras Compliance",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Motor de Regras Compliance": {
+      "main": [
+        [
+          {
+            "node": "IA Anti-Shadowban",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA Anti-Shadowban": {
+      "main": [
+        [
+          {
+            "node": "Gerar Pacote Seguro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "ca74e246-43ef-434f-9b23-ca7b0e31e843",
+  "activeVersionId": null,
+  "versionCounter": 5,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-28T03:20:54.090Z",
+      "createdAt": "2026-05-28T03:20:54.090Z",
+      "role": "workflow:owner",
+      "workflowId": "At7gX0ZiepqrqeBX",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

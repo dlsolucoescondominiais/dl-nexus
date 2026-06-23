@@ -1,0 +1,152 @@
+{
+  "updatedAt": "2026-06-15T20:26:42.634Z",
+  "createdAt": "2026-06-15T20:26:42.634Z",
+  "id": "227letYzTsrBsNYN",
+  "name": "054_ANINHA_SOCIAL_RELATORIO_DIARIO",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger",
+      "name": "Cron",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env['TELEGRAM_DIOGO_CHAT_ID'] }}",
+        "text": "📊 Relatório SDR Social Diário (Placeholder Fase 2)\n\nO motor 050 processou interações nas últimas 24h."
+      },
+      "id": "r1",
+      "name": "ENVIAR_RELATORIO",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        200,
+        0
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "4sGUaygxQklSMa3Z",
+          "name": "Aninha Telegram Bot (DL Nexus)"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Cron": {
+      "main": [
+        [
+          {
+            "node": "ENVIAR_RELATORIO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "0d778b13-4d26-499c-8ea1-0a3699cffe7a",
+  "activeVersionId": "0d778b13-4d26-499c-8ea1-0a3699cffe7a",
+  "versionCounter": 4,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-06-15T20:26:42.634Z",
+      "createdAt": "2026-06-15T20:26:42.634Z",
+      "role": "workflow:owner",
+      "workflowId": "227letYzTsrBsNYN",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-06-15T20:26:42.637Z",
+    "createdAt": "2026-06-15T20:26:42.637Z",
+    "versionId": "0d778b13-4d26-499c-8ea1-0a3699cffe7a",
+    "workflowId": "227letYzTsrBsNYN",
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "trigger",
+        "name": "Cron",
+        "type": "n8n-nodes-base.cron",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $env['TELEGRAM_DIOGO_CHAT_ID'] }}",
+          "text": "📊 Relatório SDR Social Diário (Placeholder Fase 2)\n\nO motor 050 processou interações nas últimas 24h."
+        },
+        "id": "r1",
+        "name": "ENVIAR_RELATORIO",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1,
+        "position": [
+          200,
+          0
+        ],
+        "credentials": {
+          "telegramApi": {
+            "id": "4sGUaygxQklSMa3Z",
+            "name": "Aninha Telegram Bot (DL Nexus)"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Cron": {
+        "main": [
+          [
+            {
+              "node": "ENVIAR_RELATORIO",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-06-15T20:28:13.693Z",
+        "id": 2469,
+        "workflowId": "227letYzTsrBsNYN",
+        "versionId": "0d778b13-4d26-499c-8ea1-0a3699cffe7a",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

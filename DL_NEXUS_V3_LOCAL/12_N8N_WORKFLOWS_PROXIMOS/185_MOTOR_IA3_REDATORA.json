@@ -1,0 +1,116 @@
+{
+  "name": "185_MOTOR_IA3_REDATORA",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.deepseek.com/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.DEEPSEEK_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Você é a IA Redatora da DL Soluções Condominiais. Usando o caso 'Sra. Carla' como referência estrutural, gere 2 textos em Markdown: 1) Proposta Cliente (defensável, limpa, sem nomes de fornecedores/hardware), e 2) Proposta Interna (com detalhes de hardware e custos para a equipe técnica). Adicione a identidade visual da DL (ex: ![Logo DL](/assets/logo-dl-solucoes.png)). Retorne um JSON ESTRITO com: { \\\"proposta_cliente\\\": \\\"...\\\", \\\"proposta_interna\\\": \\\"...\\\", \\\"resumo_whatsapp\\\": \\\"...\\\" }.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"DADOS TOTAIS:\\n\" + JSON.stringify($json)\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "deepseek_redatora",
+      "name": "DeepSeek: IA Redatora",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [200, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.deepseek.com/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.DEEPSEEK_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Você é o Agente Conferente de Sigilo da DL. Analise a 'proposta_cliente'. Se houver QUALQUER menção a nomes de fornecedores (Intelbras, Garen, HDL, etc) ou referências de hardware específicas que o cliente possa usar para 'fazer sozinho', REMOVA-AS ou substitua por 'Equipamento DL Homologado'. Retorne o JSON final corrigido: { \\\"proposta_cliente\\\": \\\"...\\\", \\\"proposta_interna\\\": \\\"...\\\", \\\"resumo_whatsapp\\\": \\\"...\\\" }.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"JSON DA REDATORA:\\n\" + $json.choices[0].message.content\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "deepseek_qa_sigilo",
+      "name": "DeepSeek: Conferente Sigilo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [400, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "let raw = $json.choices[0].message.content;\nlet parsed = {};\ntry {\n  parsed = JSON.parse(raw);\n} catch(e) {\n  parsed = { erro: \"Falha ao parsear JSON Redatora do DeepSeek\" };\n}\n\nconst input = $('Execute Workflow Trigger').item.json;\ninput.documentos_finais = parsed;\n\nreturn { json: input };"
+      },
+      "id": "merge_ia3",
+      "name": "Merge IA 3 Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, 0]
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "DeepSeek: IA Redatora",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek: IA Redatora": {
+      "main": [
+        [
+          {
+            "node": "DeepSeek: Conferente Sigilo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek: Conferente Sigilo": {
+      "main": [
+        [
+          {
+            "node": "Merge IA 3 Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

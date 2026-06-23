@@ -1,0 +1,497 @@
+{
+  "updatedAt": "2026-05-30T05:33:54.507Z",
+  "createdAt": "2026-05-25T09:46:56.380Z",
+  "id": "muEC9ypwtVRj7Qzi",
+  "name": "147_SENTINELA_NOTICIAS_VERIFICADAS",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Buscar notícias verificadas sobre incidentes de infraestrutura\nreturn items;"
+      },
+      "id": "2",
+      "name": "Buscar Notícias",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        450,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Buscar Notícias",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": null,
+  "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+  "activeVersionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+  "versionCounter": 61,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-25T09:46:56.380Z",
+      "createdAt": "2026-05-25T09:46:56.380Z",
+      "role": "workflow:owner",
+      "workflowId": "muEC9ypwtVRj7Qzi",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-25T09:56:08.154Z",
+    "createdAt": "2026-05-25T09:46:56.383Z",
+    "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+    "workflowId": "muEC9ypwtVRj7Qzi",
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "1",
+        "name": "Schedule Trigger",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1,
+        "position": [
+          250,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Buscar notícias verificadas sobre incidentes de infraestrutura\nreturn items;"
+        },
+        "id": "2",
+        "name": "Buscar Notícias",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          450,
+          300
+        ]
+      }
+    ],
+    "connections": {
+      "Schedule Trigger": {
+        "main": [
+          [
+            {
+              "node": "Buscar Notícias",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": "Version a2055415",
+    "description": "",
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-05-25T09:56:08.152Z",
+        "id": 180,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T09:56:14.415Z",
+        "id": 181,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T09:56:14.424Z",
+        "id": 182,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T21:54:28.191Z",
+        "id": 230,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T21:54:28.202Z",
+        "id": 231,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T21:54:28.338Z",
+        "id": 232,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T21:54:28.347Z",
+        "id": 233,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T21:55:36.633Z",
+        "id": 297,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T21:55:36.645Z",
+        "id": 298,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T21:55:36.486Z",
+        "id": 295,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T21:55:36.494Z",
+        "id": 296,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:04.532Z",
+        "id": 424,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:04.542Z",
+        "id": 425,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:04.676Z",
+        "id": 426,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:04.686Z",
+        "id": 427,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:55.530Z",
+        "id": 632,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:55.540Z",
+        "id": 633,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:55.667Z",
+        "id": 634,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:55.676Z",
+        "id": 635,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:30.960Z",
+        "id": 1469,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:30.981Z",
+        "id": 1470,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:32.923Z",
+        "id": 843,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:32.932Z",
+        "id": 844,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:32.799Z",
+        "id": 841,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:32.807Z",
+        "id": 842,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:30.813Z",
+        "id": 1467,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:30.829Z",
+        "id": 1468,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:05:01.685Z",
+        "id": 1049,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:05:01.697Z",
+        "id": 1050,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:05:01.829Z",
+        "id": 1051,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:05:01.839Z",
+        "id": 1052,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:34.149Z",
+        "id": 1259,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:34.162Z",
+        "id": 1260,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:34.295Z",
+        "id": 1261,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:34.310Z",
+        "id": 1262,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:54.522Z",
+        "id": 2035,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:54.531Z",
+        "id": 2036,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:24.050Z",
+        "id": 1675,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:24.061Z",
+        "id": 1676,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:24.463Z",
+        "id": 1677,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:24.471Z",
+        "id": 1678,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:54.658Z",
+        "id": 2037,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:54.667Z",
+        "id": 2038,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:20.112Z",
+        "id": 2405,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:20.121Z",
+        "id": 2406,
+        "workflowId": "muEC9ypwtVRj7Qzi",
+        "versionId": "a2055415-2928-4087-92c2-c66a590e65d3",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

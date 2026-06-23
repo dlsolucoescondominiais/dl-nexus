@@ -1,0 +1,128 @@
+{
+  "updatedAt": "2026-05-31T16:30:30.210Z",
+  "createdAt": "2026-05-27T23:36:56.540Z",
+  "id": "GT7bVZ9CFV0L2Mac",
+  "name": "179_TESTES_PRECIFICACAO",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "node-trigger-179",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        256,
+        304
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "execute_workflow_trigger",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        208,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      \"nome_condominio\": \"Condomínio Multgrill\",\n      \"servico\": \"Manutenção\",\n      \"categoria\": \"Gastronomia\",\n      \"urgencia\": \"Alta\",\n      \"local\": \"Zona Sul\",\n      \"equipamento\": \"Chapas e Fritadeiras\",\n      \"descricao\": \"Falha no sistema de aquecimento da chapa principal.\"\n    }\n  },\n  {\n    json: {\n      \"nome_condominio\": \"Condomínio Chapa Alta\",\n      \"servico\": \"Reparo Equipamento\",\n      \"categoria\": \"Gastronomia\",\n      \"urgencia\": \"Emergência\",\n      \"local\": \"Centro\",\n      \"equipamento\": \"Chapa\",\n      \"descricao\": \"Chapa não liga, operação de cozinha parada.\"\n    }\n  },\n  {\n    json: {\n      \"nome_condominio\": \"Condomínio Fortress\",\n      \"servico\": \"Instalação Controle de Acesso\",\n      \"categoria\": \"Controle de Acesso\",\n      \"unidades\": 300,\n      \"local\": \"Barra da Tijuca\",\n      \"sistema\": \"Fortress\",\n      \"descricao\": \"Troca do sistema atual pelo Fortress para 300 unidades.\"\n    }\n  },\n  {\n    json: {\n      \"nome_condominio\": \"Condomínio SLA CFTV\",\n      \"servico\": \"SLA Manutenção CFTV\",\n      \"categoria\": \"CFTV\",\n      \"porte\": \"Pequeno\",\n      \"cameras\": 8,\n      \"local\": \"Tijuca\",\n      \"descricao\": \"Contrato de manutenção mensal para 8 câmeras intelbras.\"\n    }\n  },\n  {\n    json: {\n      \"nome_condominio\": \"Condomínio Elétrica Madrugada\",\n      \"servico\": \"Reparo Quadro Elétrico\",\n      \"categoria\": \"Elétrica\",\n      \"urgencia\": \"Emergência\",\n      \"horario\": \"Madrugada\",\n      \"local\": \"Copacabana\",\n      \"descricao\": \"Falta de fase no quadro de bombas de água. Risco de desabastecimento.\"\n    }\n  },\n  {\n    json: {\n      \"nome_condominio\": \"Condomínio Dados Incompletos\",\n      \"servico\": \"Manutenção\",\n      \"categoria\": \"\",\n      \"urgencia\": \"\",\n      \"local\": \"\",\n      \"descricao\": \"Reparo\"\n    }\n  }\n];"
+      },
+      "id": "node-mock-payloads",
+      "name": "Gerar Mock Payloads",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "motorPrecificacao170DlNexus20260527",
+        "options": {}
+      },
+      "id": "node-exec-motor",
+      "name": "Executar Motor 170",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        656,
+        304
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Gerar Mock Payloads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Gerar Mock Payloads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gerar Mock Payloads": {
+      "main": [
+        [
+          {
+            "node": "Executar Motor 170",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "a5917b4e-40a5-44cf-8b15-b689af1f2387",
+  "activeVersionId": null,
+  "versionCounter": 9,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-27T23:36:56.540Z",
+      "createdAt": "2026-05-27T23:36:56.540Z",
+      "role": "workflow:owner",
+      "workflowId": "GT7bVZ9CFV0L2Mac",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

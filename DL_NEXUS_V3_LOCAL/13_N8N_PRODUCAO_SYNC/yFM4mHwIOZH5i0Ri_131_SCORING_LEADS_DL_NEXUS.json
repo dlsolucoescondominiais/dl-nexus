@@ -1,0 +1,239 @@
+{
+  "updatedAt": "2026-05-30T05:33:50.318Z",
+  "createdAt": "2026-05-25T21:54:24.155Z",
+  "id": "yFM4mHwIOZH5i0Ri",
+  "name": "131_SCORING_LEADS_DL_NEXUS",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "WEBHOOK_PATH_AQUI",
+        "options": {}
+      },
+      "name": "Webhook Recebe Lead",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "webhook_scoring_lead_131",
+      "id": "eab4c648-6f6f-49c4-a8d1-ed180e0eb50f"
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $input.item.json || {};\nlet score = 0;\nlet products = [];\nlet tipo = (lead.tipo_lead || '').toLowerCase();\nlet dor = (lead.dor_principal || '').toLowerCase();\nlet regiao = (lead.regiao || lead.bairro || lead.cidade || '').toLowerCase();\n\n// 1. Tipo e Produtos\nif (tipo.includes('condomínio') || tipo.includes('condominio')) {\n    score += 20;\n    products.push('DL Guardião', 'Fortress', 'Gatekeeper', 'DL Acqua', 'DL Partner', 'DL Volt');\n} else if (tipo.includes('escola') || tipo.includes('colegio') || tipo.includes('colégio')) {\n    score += 20;\n    products.push('CFTV', 'Prevenção de Incêndio', 'Controle de Acesso');\n} else if (tipo.includes('restaurante') || tipo.includes('lanchonete')) {\n    score += 20;\n    products.push('Mult Grill', 'Infraestrutura Elétrica');\n}\n\n// 2. Presença Digital\nif (lead.tem_redes_sociais || lead.instagram || lead.facebook) score += 10;\nif (lead.site_ruim === true || lead.site_desatualizado === true) score += 10;\n\n// 3. Dores\nif (dor.includes('segurança') || dor.includes('energia') || dor.includes('cftv') || dor.includes('roubo') || dor.includes('incêndio') || dor.includes('conta alta')) score += 20;\n\n// 4. Contato\nif (lead.telefone_publico || lead.telefone) score += 10;\n\n// 5. Região\nconst regioes_prioritarias = ['barra', 'recreio', 'jacarepagua', 'jacarepaguá', 'sul', 'centro', 'copacabana', 'ipanema', 'leblon', 'botafogo', 'flamengo'];\nif (regioes_prioritarias.some(r => regiao.includes(r))) {\n    score += 10;\n}\n\n// Preparar payload de retorno\nreturn {\n    json: {\n        ...lead,\n        score_oportunidade: score,\n        produto_recomendado: products\n    }\n};"
+      },
+      "name": "Calcular Score DL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ],
+      "id": "7d8833bc-b725-4dba-9bc6-95d8fe31dd22"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "name": "Retorna Score",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ],
+      "id": "fc9b6994-7cf2-4fa2-a8ff-245d70f32ebc"
+    }
+  ],
+  "connections": {
+    "Webhook Recebe Lead": {
+      "main": [
+        [
+          {
+            "node": "Calcular Score DL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calcular Score DL": {
+      "main": [
+        [
+          {
+            "node": "Retorna Score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "8a232216-a712-446f-b802-617523e1dac2",
+  "activeVersionId": "8a232216-a712-446f-b802-617523e1dac2",
+  "versionCounter": 128,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-25T21:54:24.155Z",
+      "createdAt": "2026-05-25T21:54:24.155Z",
+      "role": "workflow:owner",
+      "workflowId": "yFM4mHwIOZH5i0Ri",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-30T05:33:50.320Z",
+    "createdAt": "2026-05-30T05:33:50.320Z",
+    "versionId": "8a232216-a712-446f-b802-617523e1dac2",
+    "workflowId": "yFM4mHwIOZH5i0Ri",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "WEBHOOK_PATH_AQUI",
+          "options": {}
+        },
+        "name": "Webhook Recebe Lead",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 1,
+        "position": [
+          250,
+          300
+        ],
+        "webhookId": "webhook_scoring_lead_131",
+        "id": "eab4c648-6f6f-49c4-a8d1-ed180e0eb50f"
+      },
+      {
+        "parameters": {
+          "jsCode": "const lead = $input.item.json || {};\nlet score = 0;\nlet products = [];\nlet tipo = (lead.tipo_lead || '').toLowerCase();\nlet dor = (lead.dor_principal || '').toLowerCase();\nlet regiao = (lead.regiao || lead.bairro || lead.cidade || '').toLowerCase();\n\n// 1. Tipo e Produtos\nif (tipo.includes('condomínio') || tipo.includes('condominio')) {\n    score += 20;\n    products.push('DL Guardião', 'Fortress', 'Gatekeeper', 'DL Acqua', 'DL Partner', 'DL Volt');\n} else if (tipo.includes('escola') || tipo.includes('colegio') || tipo.includes('colégio')) {\n    score += 20;\n    products.push('CFTV', 'Prevenção de Incêndio', 'Controle de Acesso');\n} else if (tipo.includes('restaurante') || tipo.includes('lanchonete')) {\n    score += 20;\n    products.push('Mult Grill', 'Infraestrutura Elétrica');\n}\n\n// 2. Presença Digital\nif (lead.tem_redes_sociais || lead.instagram || lead.facebook) score += 10;\nif (lead.site_ruim === true || lead.site_desatualizado === true) score += 10;\n\n// 3. Dores\nif (dor.includes('segurança') || dor.includes('energia') || dor.includes('cftv') || dor.includes('roubo') || dor.includes('incêndio') || dor.includes('conta alta')) score += 20;\n\n// 4. Contato\nif (lead.telefone_publico || lead.telefone) score += 10;\n\n// 5. Região\nconst regioes_prioritarias = ['barra', 'recreio', 'jacarepagua', 'jacarepaguá', 'sul', 'centro', 'copacabana', 'ipanema', 'leblon', 'botafogo', 'flamengo'];\nif (regioes_prioritarias.some(r => regiao.includes(r))) {\n    score += 10;\n}\n\n// Preparar payload de retorno\nreturn {\n    json: {\n        ...lead,\n        score_oportunidade: score,\n        produto_recomendado: products\n    }\n};"
+        },
+        "name": "Calcular Score DL",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 1,
+        "position": [
+          450,
+          300
+        ],
+        "id": "7d8833bc-b725-4dba-9bc6-95d8fe31dd22"
+      },
+      {
+        "parameters": {
+          "respondWith": "allIncomingItems",
+          "options": {}
+        },
+        "name": "Retorna Score",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1,
+        "position": [
+          650,
+          300
+        ],
+        "id": "fc9b6994-7cf2-4fa2-a8ff-245d70f32ebc"
+      }
+    ],
+    "connections": {
+      "Webhook Recebe Lead": {
+        "main": [
+          [
+            {
+              "node": "Calcular Score DL",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Calcular Score DL": {
+        "main": [
+          [
+            {
+              "node": "Retorna Score",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-05-30T05:33:50.591Z",
+        "id": 1989,
+        "workflowId": "yFM4mHwIOZH5i0Ri",
+        "versionId": "8a232216-a712-446f-b802-617523e1dac2",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:50.600Z",
+        "id": 1990,
+        "workflowId": "yFM4mHwIOZH5i0Ri",
+        "versionId": "8a232216-a712-446f-b802-617523e1dac2",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:50.442Z",
+        "id": 1987,
+        "workflowId": "yFM4mHwIOZH5i0Ri",
+        "versionId": "8a232216-a712-446f-b802-617523e1dac2",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:50.453Z",
+        "id": 1988,
+        "workflowId": "yFM4mHwIOZH5i0Ri",
+        "versionId": "8a232216-a712-446f-b802-617523e1dac2",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:25.750Z",
+        "id": 2440,
+        "workflowId": "yFM4mHwIOZH5i0Ri",
+        "versionId": "8a232216-a712-446f-b802-617523e1dac2",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:25.760Z",
+        "id": 2441,
+        "workflowId": "yFM4mHwIOZH5i0Ri",
+        "versionId": "8a232216-a712-446f-b802-617523e1dac2",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

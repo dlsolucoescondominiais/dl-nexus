@@ -1,0 +1,803 @@
+{
+  "updatedAt": "2026-06-15T19:23:20.302Z",
+  "createdAt": "2026-06-15T19:23:20.302Z",
+  "id": "u9xXNNLTlb1qkZeO",
+  "name": "050_AGENTE_SDR_SOCIAL_DL",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "meta-social-sdr-dl",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "e1",
+      "name": "Webhook_GET_Verify",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "meta-social-sdr-dl-verify"
+    },
+    {
+      "parameters": {
+        "jsCode": "const query = $input.item.json.query || {};\nconst mode = query['hub.mode'];\nconst token = query['hub.verify_token'];\nconst challenge = query['hub.challenge'];\nconst VERIFY_TOKEN = 'dl_sdr_social_2026_verify';\nif (mode === 'subscribe' && token === VERIFY_TOKEN) {\n  return [{ json: { challenge: String(challenge), valid: true } }];\n}\nreturn [{ json: { challenge: '', valid: false, error: 'Token invalido' } }];"
+      },
+      "id": "e2",
+      "name": "VERIFICAR_TOKEN",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.challenge }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "e3",
+      "name": "Responder_Challenge",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "meta-social-sdr-dl",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "p1",
+      "name": "Webhook_POST_Events",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        200
+      ],
+      "webhookId": "meta-social-sdr-dl-events"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.item.json.body || $input.item.json;\nconst entries = body.entry || [];\nconst results = [];\nfor (const entry of entries) {\n  const messaging = entry.messaging || [];\n  const objectType = body.object;\n  for (const event of messaging) {\n    const isInstagram = objectType === 'instagram';\n    const canal_origem = isInstagram ? 'instagram_direct' : 'facebook_messenger';\n    const sender_id = String(event.sender?.id || '');\n    const recipient_id = String(event.recipient?.id || '');\n    const message = event.message || {};\n    const is_echo = message.is_echo === true;\n    if (is_echo) continue;\n    if (sender_id === '100063696635033' || sender_id === '3136866194') continue;\n    const message_id = message.mid || '';\n    const texto_mensagem = message.text || '';\n    const timestamp = event.timestamp || Date.now();\n    const attachments = message.attachments || [];\n    const has_attachment = attachments.length > 0;\n    const attachment_type = has_attachment ? attachments[0].type : '';\n    const attachment_url = has_attachment ? (attachments[0].payload?.url || '') : '';\n    if (!texto_mensagem && !has_attachment) continue;\n    results.push({ json: {\n      canal_origem, platform: isInstagram ? 'instagram' : 'facebook',\n      sender_id, recipient_id,\n      page_id: isInstagram ? '' : String(entry.id),\n      instagram_business_account_id: isInstagram ? String(entry.id) : '',\n      message_id, texto_mensagem, timestamp,\n      nome_contato: '', username: '',\n      raw_event: event, is_echo: false,\n      has_attachment, attachment_type, attachment_url,\n      dry_run: true\n    }});\n  }\n}\nif (results.length === 0) {\n  return [{ json: { tipo: 'meta_evento_nao_mapeado', raw: body, ignorar: true } }];\n}\nreturn results;"
+      },
+      "id": "p2",
+      "name": "NORMALIZAR_EVENTO_META",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.ignorar }}",
+              "operation": "notEqual",
+              "value2": "true"
+            }
+          ]
+        }
+      },
+      "id": "p3",
+      "name": "IF_EVENTO_VALIDO",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        400,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_social_mensagens?canal_origem=eq.{{ $json.canal_origem }}&message_id=eq.{{ $json.message_id }}&limit=1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env[\"SUPABASE_ANON_KEY\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "p4",
+      "name": "VERIFICAR_DUPLICATA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        600,
+        200
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "supabase_anon_key",
+          "name": "Supabase Anon Key"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.length === 0 || !$json.id }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "p5",
+      "name": "IF_NAO_DUPLICADA",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        800,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_social_conversas?canal_origem=eq.{{ $node[\"NORMALIZAR_EVENTO_META\"].json.canal_origem }}&sender_id=eq.{{ $node[\"NORMALIZAR_EVENTO_META\"].json.sender_id }}&limit=1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env[\"SUPABASE_ANON_KEY\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "p6",
+      "name": "BUSCAR_CONVERSA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1000,
+        200
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "supabase_anon_key",
+          "name": "Supabase Anon Key"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const evento = $node['NORMALIZAR_EVENTO_META'].json;\nconst buscaResult = $input.item.json;\nlet conversa = null;\nlet isNova = true;\nlet historico_resumido = 'Primeira mensagem da conversa.';\nlet dados_coletados = {};\nlet etapa_funil = 'recepcao';\nif (Array.isArray(buscaResult) && buscaResult.length > 0) {\n  conversa = buscaResult[0];\n  isNova = false;\n  etapa_funil = conversa.etapa_funil || 'recepcao';\n  dados_coletados = {\n    nome_condominio: conversa.nome_condominio_empresa || null,\n    bairro: conversa.bairro || null,\n    cidade: conversa.cidade || null,\n    tipo_cliente: conversa.tipo_cliente || null,\n    servico: conversa.servico_interesse || null,\n    telefone: conversa.telefone || null,\n    email: conversa.email || null,\n    urgencia: conversa.urgencia || null\n  };\n} else if (buscaResult && buscaResult.id) {\n  conversa = buscaResult;\n  isNova = false;\n  etapa_funil = conversa.etapa_funil || 'recepcao';\n  dados_coletados = {\n    nome_condominio: conversa.nome_condominio_empresa || null,\n    bairro: conversa.bairro || null,\n    cidade: conversa.cidade || null,\n    tipo_cliente: conversa.tipo_cliente || null,\n    servico: conversa.servico_interesse || null\n  };\n}\nreturn [{ json: {\n  ...evento,\n  conversa_id: conversa ? conversa.id : null,\n  conversa_existente: !isNova,\n  etapa_funil,\n  dados_coletados,\n  historico_resumido,\n  ultimo_resumo: conversa ? conversa.ultimo_resumo : null\n}}];"
+      },
+      "id": "p7",
+      "name": "PROCESSAR_CONVERSA",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.conversa_existente === false }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "p8",
+      "name": "IF_CONVERSA_NOVA",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1400,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_social_conversas",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env[\"SUPABASE_ANON_KEY\"] }}"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "canal_origem",
+              "value": "={{ $json.canal_origem }}"
+            },
+            {
+              "name": "sender_id",
+              "value": "={{ $json.sender_id }}"
+            },
+            {
+              "name": "page_id",
+              "value": "={{ $json.page_id }}"
+            },
+            {
+              "name": "instagram_business_account_id",
+              "value": "={{ $json.instagram_business_account_id }}"
+            },
+            {
+              "name": "status_conversa",
+              "value": "ativa"
+            },
+            {
+              "name": "etapa_funil",
+              "value": "recepcao"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "p9",
+      "name": "CRIAR_CONVERSA_SUPABASE",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1600,
+        100
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "supabase_anon_key",
+          "name": "Supabase Anon Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const evento = $node['PROCESSAR_CONVERSA'].json;\nconst novaConversa = $input.item.json;\nconst conversaId = Array.isArray(novaConversa) ? novaConversa[0]?.id : novaConversa?.id;\nreturn [{ json: { ...evento, conversa_id: conversaId || null, conversa_existente: true } }];"
+      },
+      "id": "p10",
+      "name": "ATRIBUIR_CONVERSA_ID",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1800,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_social_mensagens?conversa_id=eq.{{ $json.conversa_id }}&order=created_at.desc&limit=10",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env[\"SUPABASE_ANON_KEY\"] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "p11",
+      "name": "CARREGAR_HISTORICO",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2000,
+        200
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "supabase_anon_key",
+          "name": "Supabase Anon Key"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const item = $input.item.json;\nconst evento = $node['PROCESSAR_CONVERSA'].json || item;\nconst historicoBruto = item;\nlet historico = 'Primeira mensagem.';\nif (Array.isArray(historicoBruto) && historicoBruto.length > 0) {\n  historico = historicoBruto.map(m => (m.direction === 'inbound' ? 'Lead: ' : 'Aninha: ') + (m.texto || '(sem texto)')).reverse().join('\\n');\n} else if (evento.ultimo_resumo) {\n  historico = evento.ultimo_resumo;\n}\nconst dados = JSON.stringify(evento.dados_coletados || {});\nconst etapa = evento.etapa_funil || 'recepcao';\nconst canal = evento.canal_origem || 'desconhecido';\nconst mensagem = evento.texto_mensagem || '';\nconst prompt = `Você é Aninha, assistente de atendimento e qualificação da DL Soluções Condominiais.\\nVocê atende leads vindos do Instagram Direct e Facebook Messenger.\\nSeu objetivo é entender a necessidade, qualificar o perfil, gerar confiança e encaminhar para Avaliação Técnica quando o lead for compatível.\\n\\nPúblico atendido: condomínios, administradoras, escolas/colégios, empresas, restaurantes, lanchonetes, operações comerciais.\\nA DL NÃO atende serviço residencial comum.\\n\\nRegras de linguagem:\\n- SEMPRE use Avaliação Técnica. NUNCA use visita técnica.\\n- NUNCA use Condfy. NUNCA use DL Ignis.\\n- NUNCA chame Diogo de engenheiro. Use Tecnólogo Responsável somente se necessário.\\n- NUNCA prometa preço final sem Avaliação Técnica.\\n- NUNCA invente certificações.\\n- NUNCA use termos internos: n8n, webhook, payload, API, CRM, automação interna, B2B.\\n\\nHistorico:\\n${historico}\\n\\nMensagem atual do lead:\\n${mensagem}\\n\\nDados já coletados: ${dados}\\n\\nResponda como Aninha.`;\nreturn [{ json: {\n  ...evento,\n  prompt,\n  historico\n}}];"
+      },
+      "id": "p12",
+      "name": "MONTAR_PROMPT_IA",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2200,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={{ $env[\"GEMINI_API_KEY_MOTOR\"] }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "contents",
+              "value": "={{ [ { \"parts\": [ {\"text\": $json.prompt} ] } ] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "p13",
+      "name": "CHAMAR_GEMINI",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2400,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.item.json;\nconst texto_resposta = response.candidates?.[0]?.content?.parts?.[0]?.text || '';\nconst evento = $node['MONTAR_PROMPT_IA'].json;\nreturn [{ json: { ...evento, texto_resposta } }];"
+      },
+      "id": "p14",
+      "name": "PROCESSAR_RESPOSTA_IA",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2600,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_social_mensagens",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env[\"SUPABASE_ANON_KEY\"] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "conversa_id",
+              "value": "={{ $json.conversa_id }}"
+            },
+            {
+              "name": "canal_origem",
+              "value": "={{ $json.canal_origem }}"
+            },
+            {
+              "name": "message_id",
+              "value": "={{ $json.message_id }}"
+            },
+            {
+              "name": "direction",
+              "value": "inbound"
+            },
+            {
+              "name": "texto",
+              "value": "={{ $json.texto_mensagem }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "p15",
+      "name": "REGISTRAR_INBOUND",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        2800,
+        200
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "supabase_anon_key",
+          "name": "Supabase Anon Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_social_mensagens",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env[\"SUPABASE_ANON_KEY\"] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "conversa_id",
+              "value": "={{ $json.conversa_id }}"
+            },
+            {
+              "name": "canal_origem",
+              "value": "={{ $json.canal_origem }}"
+            },
+            {
+              "name": "message_id",
+              "value": "=resp_{{ $json.message_id }}"
+            },
+            {
+              "name": "direction",
+              "value": "outbound"
+            },
+            {
+              "name": "texto",
+              "value": "={{ $json.texto_resposta }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "p16",
+      "name": "REGISTRAR_OUTBOUND",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        3000,
+        200
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "supabase_anon_key",
+          "name": "Supabase Anon Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.dry_run === false }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "p17",
+      "name": "IF_ENVIO_REAL",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3200,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env[\"TELEGRAM_DIOGO_CHAT_ID\"] }}",
+        "text": "=DRY_RUN: O SDR Social responderia a seguinte mensagem para {{ $json.sender_id }} ({{ $json.canal_origem }}):\n\n\"{{ $json.texto_resposta }}\"",
+        "additionalFields": {}
+      },
+      "id": "p18",
+      "name": "ALERTA_TELEGRAM_DRY_RUN",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        3400,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "4sGUaygxQklSMa3Z",
+          "name": "Aninha Telegram Bot (DL Nexus)"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook_GET_Verify": {
+      "main": [
+        [
+          {
+            "node": "VERIFICAR_TOKEN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "VERIFICAR_TOKEN": {
+      "main": [
+        [
+          {
+            "node": "Responder_Challenge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook_POST_Events": {
+      "main": [
+        [
+          {
+            "node": "NORMALIZAR_EVENTO_META",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NORMALIZAR_EVENTO_META": {
+      "main": [
+        [
+          {
+            "node": "IF_EVENTO_VALIDO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF_EVENTO_VALIDO": {
+      "main": [
+        [
+          {
+            "node": "VERIFICAR_DUPLICATA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "VERIFICAR_DUPLICATA": {
+      "main": [
+        [
+          {
+            "node": "IF_NAO_DUPLICADA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF_NAO_DUPLICADA": {
+      "main": [
+        [
+          {
+            "node": "BUSCAR_CONVERSA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "BUSCAR_CONVERSA": {
+      "main": [
+        [
+          {
+            "node": "PROCESSAR_CONVERSA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PROCESSAR_CONVERSA": {
+      "main": [
+        [
+          {
+            "node": "IF_CONVERSA_NOVA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF_CONVERSA_NOVA": {
+      "main": [
+        [
+          {
+            "node": "CRIAR_CONVERSA_SUPABASE",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "CARREGAR_HISTORICO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CRIAR_CONVERSA_SUPABASE": {
+      "main": [
+        [
+          {
+            "node": "ATRIBUIR_CONVERSA_ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ATRIBUIR_CONVERSA_ID": {
+      "main": [
+        [
+          {
+            "node": "CARREGAR_HISTORICO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CARREGAR_HISTORICO": {
+      "main": [
+        [
+          {
+            "node": "MONTAR_PROMPT_IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MONTAR_PROMPT_IA": {
+      "main": [
+        [
+          {
+            "node": "CHAMAR_GEMINI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CHAMAR_GEMINI": {
+      "main": [
+        [
+          {
+            "node": "PROCESSAR_RESPOSTA_IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PROCESSAR_RESPOSTA_IA": {
+      "main": [
+        [
+          {
+            "node": "REGISTRAR_INBOUND",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "REGISTRAR_INBOUND": {
+      "main": [
+        [
+          {
+            "node": "REGISTRAR_OUTBOUND",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "REGISTRAR_OUTBOUND": {
+      "main": [
+        [
+          {
+            "node": "IF_ENVIO_REAL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF_ENVIO_REAL": {
+      "main": [
+        [],
+        [
+          {
+            "node": "ALERTA_TELEGRAM_DRY_RUN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "2e5fb57d-9934-43c8-8195-601348a20416",
+  "activeVersionId": null,
+  "versionCounter": 4,
+  "triggerCount": 2,
+  "shared": [
+    {
+      "updatedAt": "2026-06-15T19:23:20.302Z",
+      "createdAt": "2026-06-15T19:23:20.302Z",
+      "role": "workflow:owner",
+      "workflowId": "u9xXNNLTlb1qkZeO",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

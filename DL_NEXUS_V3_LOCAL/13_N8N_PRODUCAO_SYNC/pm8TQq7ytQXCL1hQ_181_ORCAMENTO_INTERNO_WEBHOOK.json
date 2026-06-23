@@ -1,0 +1,172 @@
+{
+  "updatedAt": "2026-05-31T16:30:30.654Z",
+  "createdAt": "2026-05-30T15:56:44.362Z",
+  "id": "pm8TQq7ytQXCL1hQ",
+  "name": "181_ORCAMENTO_INTERNO_WEBHOOK",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "orcamento-interno-dl",
+        "httpMethod": "POST",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook_entry",
+      "name": "Webhook Orçamento",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "orcamento-interno-dl-181"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ═══════════════════════════════════════════════════════════════════\n// MOTOR DE ORÇAMENTO INTERNO DL SOLUÇÕES — v3.0\n// Gera DOIS documentos: Cliente (sanitizado) e Interno (completo)\n// ═══════════════════════════════════════════════════════════════════\n\nconst b = $input.item.json.body || $input.item.json;\nconst agora = new Date().toISOString().slice(0, 10);\nconst hora = new Date().toLocaleTimeString('pt-BR');\n\n// ── Parse de listas JSON ──\nlet servicos = [];\ntry { servicos = JSON.parse(b.servicos_lista || '[]'); } catch(e) { servicos = [b.servicos || 'Não informado']; }\nlet chapa = [];\ntry { chapa = JSON.parse(b.chapa_lista || '[]'); } catch(e) { chapa = []; }\nlet modalidade = [];\ntry { modalidade = JSON.parse(b.modalidade_lista || '[]'); } catch(e) { modalidade = []; }\n\n// ── Dados do cliente ──\nconst nome = b.nome_cliente || 'Cliente não identificado';\nconst endereco = b.endereco || 'Não informado';\nconst tipo = b.tipo_cliente || 'Não informado';\nconst tipoOutro = b.tipo_cliente_outro || '';\nconst documento = b.documento || 'Não informado';\nconst telefone = b.telefone || 'Não informado';\nconst email = b.email_cliente || 'Não informado';\n\n// ── Análise do local ──\nconst descLocal = b.descricao_local || 'Não descrito';\nconst estacionamento = b.estacionamento || 'Não informado';\nconst escada = b.escada || 'Não';\n\n// ── Dados elétricos ──\nconst voltagem = b.voltagem || 'Não medido';\nconst voltagemOutro = b.voltagem_outro || '';\nconst hz = b.frequencia_hz || '60Hz';\nconst amperagem = b.amperagem || 'Não medido';\nconst rede = b.rede_eletrica || 'Não identificado';\nconst concessionaria = b.concessionaria || 'Light';\n\n// ── Logística ──\nconst urgencia = b.urgencia || 'Normal';\nconst tempoExec = b.tempo_execucao || 'A definir';\nconst tempoDeslocamento = b.tempo_deslocamento || 'A calcular';\nconst qtdProf = b.qtd_profissionais || '1';\nconst tempoEntrega = b.tempo_entrega || '3-7 dias';\n\n// ── Chapa / Infra ──\nconst chapaOutros = b.chapa_outros || '';\nconst detalheInfra = b.detalhe_infra || '';\nconst observacoes = b.observacoes || '';\n\n// ── Dados internos (NÃO VAI PRO CLIENTE) ──\nconst materialInterno = b.material_interno || '';\nconst custoInterno = b.custo_interno || '';\nconst notasInternas = b.notas_internas || '';\n\n// ── Multiplicadores de urgência ──\nconst multUrgencia = { 'Normal': 1.0, 'Urgência': 1.5, 'Emergência': 2.5 };\nconst mult = multUrgencia[urgencia] || 1.0;\n\n// ═══════════════════════════════════════════\n// DOCUMENTO 1: ORÇAMENTO CLIENTE (SANITIZADO)\n// ═══════════════════════════════════════════\nlet docCliente = `# ORÇAMENTO — DL SOLUÇÕES CONDOMINIAIS LTDA\\n`;\ndocCliente += `## Orçamento Cliente: ${nome}\\n\\n`;\ndocCliente += `**Data:** ${agora} | **Hora:** ${hora}\\n`;\ndocCliente += `**Cliente:** ${nome}\\n`;\ndocCliente += `**Endereço:** ${endereco}\\n`;\ndocCliente += `**Tipo:** ${tipo} ${tipoOutro}\\n`;\ndocCliente += `**Contato:** ${telefone}\\n\\n`;\ndocCliente += `---\\n\\n`;\n\ndocCliente += `### Serviços Solicitados\\n\\n`;\nservicos.forEach(s => { docCliente += `- ✅ ${s}\\n`; });\nif (chapa.length > 0) {\n  docCliente += `\\n**Chapa:** ${chapa.join(', ')} ${chapaOutros ? '| ' + chapaOutros : ''}\\n`;\n}\nif (detalheInfra) docCliente += `\\n**Infraestrutura:** ${detalheInfra}\\n`;\n\ndocCliente += `\\n### Condições\\n\\n`;\ndocCliente += `| Item | Detalhe |\\n`;\ndocCliente += `|------|---------|\\n`;\ndocCliente += `| Prioridade | ${urgencia} |\\n`;\ndocCliente += `| Prazo estimado | ${tempoEntrega} |\\n`;\ndocCliente += `| Execução estimada | ${tempoExec} |\\n`;\ndocCliente += `| Modalidade | ${modalidade.join(', ') || 'A definir'} |\\n`;\ndocCliente += `\\n`;\n\ndocCliente += `### Materiais\\n\\n`;\ndocCliente += `> Os materiais e equipamentos serão especificados com nome comercial DL Soluções. `;\ndocCliente += `Detalhamento técnico completo (fabricante, modelo, part number) será fornecido `;\ndocCliente += `**somente após a assinatura do contrato**.\\n\\n`;\n\n// ── Pré-Contrato / Cláusula de Sigilo ──\nif (modalidade.includes('Contrato Recorrente')) {\n  docCliente += `### Pré-Contrato — Cláusula de Confidencialidade\\n\\n`;\n  docCliente += `Este documento constitui um **pré-contrato** de intenção de prestação de serviços. `;\n  docCliente += `Ao receber este orçamento, o destinatário concorda com as seguintes condições:\\n\\n`;\n  docCliente += `1. **Confidencialidade:** As informações contidas neste documento, incluindo `;\n  docCliente += `valores, especificações técnicas, escopo e condições comerciais, são de uso `;\n  docCliente += `exclusivo do destinatário listado acima. É **estritamente proibida** a divulgação, `;\n  docCliente += `reprodução, encaminhamento ou compartilhamento total ou parcial deste documento `;\n  docCliente += `com terceiros, empresas, profissionais ou pessoas não listadas neste instrumento, `;\n  docCliente += `sob pena de responsabilização civil e criminal nos termos da legislação vigente.\\n\\n`;\n  docCliente += `2. **Vigência:** Este pré-contrato tem validade de 15 (quinze) dias corridos a partir `;\n  docCliente += `da data de emissão.\\n\\n`;\n  docCliente += `3. **Exclusividade de informações:** As soluções técnicas apresentadas são propriedade `;\n  docCliente += `intelectual da DL Soluções Condominiais LTDA e não podem ser replicadas ou adaptadas `;\n  docCliente += `por empresas concorrentes sem autorização expressa.\\n\\n`;\n}\n\ndocCliente += `---\\n`;\ndocCliente += `*DL Soluções Condominiais LTDA — CREA-RJ*\\n`;\ndocCliente += `*contato@dlsolucoescondominiais.com.br*\\n`;\n\n// ═══════════════════════════════════════════\n// DOCUMENTO 2: ORÇAMENTO INTERNO DL (COMPLETO)\n// ═══════════════════════════════════════════\nlet docInterno = `# ORÇAMENTO INTERNO DL — CONFIDENCIAL\\n`;\ndocInterno += `## Orçamento Interno DL: ${nome}\\n\\n`;\ndocInterno += `**⚠️ DOCUMENTO INTERNO — NÃO ENVIAR AO CLIENTE**\\n\\n`;\ndocInterno += `**Data:** ${agora} | **Hora:** ${hora}\\n`;\ndocInterno += `**Cliente:** ${nome}\\n`;\ndocInterno += `**Endereço:** ${endereco}\\n`;\ndocInterno += `**Tipo:** ${tipo} ${tipoOutro}\\n`;\ndocInterno += `**Documento:** ${documento}\\n`;\ndocInterno += `**Telefone/WhatsApp:** ${telefone}\\n`;\ndocInterno += `**E-mail:** ${email}\\n\\n`;\ndocInterno += `---\\n\\n`;\n\ndocInterno += `### 📍 Análise do Local\\n\\n`;\ndocInterno += `| Campo | Valor |\\n`;\ndocInterno += `|-------|-------|\\n`;\ndocInterno += `| Descrição | ${descLocal} |\\n`;\ndocInterno += `| Estacionamento | ${estacionamento} |\\n`;\ndocInterno += `| Escada | ${escada} |\\n`;\ndocInterno += `| Deslocamento | ${tempoDeslocamento} |\\n`;\ndocInterno += `\\n`;\n\ndocInterno += `### ⚡ Dados Elétricos\\n\\n`;\ndocInterno += `| Campo | Valor |\\n`;\ndocInterno += `|-------|-------|\\n`;\ndocInterno += `| Voltagem | ${voltagem} ${voltagemOutro} |\\n`;\ndocInterno += `| Amperagem | ${amperagem} |\\n`;\ndocInterno += `| Frequência | ${hz} |\\n`;\ndocInterno += `| Rede | ${rede} |\\n`;\ndocInterno += `| Concessionária | ${concessionaria} |\\n`;\ndocInterno += `\\n`;\n\ndocInterno += `### 🔧 Serviços\\n\\n`;\nservicos.forEach(s => { docInterno += `- ✅ ${s}\\n`; });\nif (chapa.length > 0) docInterno += `\\n**Chapa:** ${chapa.join(', ')} ${chapaOutros ? '| ' + chapaOutros : ''}\\n`;\nif (detalheInfra) docInterno += `\\n**Infra:** ${detalheInfra}\\n`;\ndocInterno += `\\n`;\n\ndocInterno += `### 🚛 Logística\\n\\n`;\ndocInterno += `| Campo | Valor |\\n`;\ndocInterno += `|-------|-------|\\n`;\ndocInterno += `| Urgência | ${urgencia} (multiplicador: x${mult}) |\\n`;\ndocInterno += `| Tempo de Execução | ${tempoExec} |\\n`;\ndocInterno += `| Prazo de Entrega | ${tempoEntrega} |\\n`;\ndocInterno += `| Profissionais | ${qtdProf} |\\n`;\ndocInterno += `| Modalidade | ${modalidade.join(', ') || 'A definir'} |\\n`;\ndocInterno += `\\n`;\n\ndocInterno += `### 🔐 Material (FABRICANTE / MODELO / HARDWARE)\\n\\n`;\ndocInterno += `\\'\\'\\'\\n${materialInterno || 'Não especificado pelo solicitante'}\\n\\'\\'\\'\\n\\n`;\n\ndocInterno += `### 💰 Custo Interno\\n\\n`;\ndocInterno += `**Custo estimado:** ${custoInterno || 'A calcular'}\\n\\n`;\n\nif (notasInternas) {\n  docInterno += `### 📝 Notas Internas\\n\\n`;\n  docInterno += `${notasInternas}\\n\\n`;\n}\n\nif (observacoes) {\n  docInterno += `### 📌 Observações do Solicitante\\n\\n`;\n  docInterno += `${observacoes}\\n\\n`;\n}\n\ndocInterno += `---\\n`;\ndocInterno += `*Gerado automaticamente pelo DL Nexus — Motor de Orçamento v3.0*\\n`;\n\n// ── Definir destinos ──\nconst emailDestino = 'orcamento@dlsolucoescondominiais.com.br';\nconst contatoCliente = email !== 'Não informado' ? email : telefone;\n\nreturn [{\n  json: {\n    status: 'orcamento_gerado',\n    data: agora,\n    cliente: nome,\n    contato_cliente: contatoCliente,\n    telefone_cliente: telefone,\n    email_cliente: email,\n    urgencia: urgencia,\n    multiplicador_urgencia: mult,\n    orcamento_cliente_md: docCliente,\n    orcamento_interno_md: docInterno,\n    email_destino_interno: emailDestino,\n    assunto_cliente: `Orçamento Cliente — ${nome} — ${agora}`,\n    assunto_interno: `Orçamento Interno DL — ${nome} — ${agora}`,\n    enviar_whatsapp: email === 'Não informado' ? true : false,\n    enviar_email: email !== 'Não informado' ? true : false\n  }\n}];"
+      },
+      "id": "code_motor",
+      "name": "Motor Orçamento v3",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        260,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "orcamento@dlsolucoescondominiais.com.br",
+        "toEmail": "={{ $json.email_destino_interno }}",
+        "subject": "={{ $json.assunto_interno }}",
+        "text": "={{ $json.orcamento_interno_md }}",
+        "options": {}
+      },
+      "id": "smtp_interno",
+      "name": "SMTP Interno DL",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        540,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "={{ $json.orcamento_cliente_md }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram_diogo",
+      "name": "Telegram Diogo",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        540,
+        440
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={\"status\": \"ok\", \"mensagem\": \"Orçamento processado com sucesso. Documento do cliente enviado via Telegram. Cópia interna enviada para orcamento@dlsolucoescondominiais.com.br\"}"
+      },
+      "id": "respond_ok",
+      "name": "Respond OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        820,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Orçamento": {
+      "main": [
+        [
+          {
+            "node": "Motor Orçamento v3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Motor Orçamento v3": {
+      "main": [
+        [
+          {
+            "node": "SMTP Interno DL",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Telegram Diogo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SMTP Interno DL": {
+      "main": [
+        [
+          {
+            "node": "Respond OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Diogo": {
+      "main": [
+        [
+          {
+            "node": "Respond OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "a245901f-3738-43d1-bdde-225644768a98",
+  "activeVersionId": null,
+  "versionCounter": 5,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-30T15:56:44.362Z",
+      "createdAt": "2026-05-30T15:56:44.362Z",
+      "role": "workflow:owner",
+      "workflowId": "pm8TQq7ytQXCL1hQ",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

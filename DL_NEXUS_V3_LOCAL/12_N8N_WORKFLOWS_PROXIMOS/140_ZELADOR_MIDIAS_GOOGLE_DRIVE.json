@@ -87,10 +87,10 @@
     },
     {
       "parameters": {
-        "jsCode": "\nconst arquivos = [];\n\nfor (const item of $input.all()) {\n  const f = item.json;\n  \n  const original_name = f.name || \"\";\n  const ext = original_name.includes('.') ? original_name.split('.').pop().toLowerCase() : \"\";\n  const mime = f.mimeType || \"\";\n  \n  let tipo_midia = \"arquivo desconhecido\";\n  if (mime.includes(\"image\")) tipo_midia = \"imagem\";\n  else if (mime.includes(\"video\")) tipo_midia = \"vídeo\";\n  else if (mime.includes(\"audio\")) tipo_midia = \"áudio\";\n  else if (mime.includes(\"pdf\")) tipo_midia = \"PDF\";\n  else if (mime.includes(\"document\") || mime.includes(\"text\")) tipo_midia = \"documento\";\n  \n  let risco = \"\";\n  let usa_nao = false;\n  // Simulação de detecção básica de privacidade por nome\n  const nomes_risco = [\"placa\", \"cnh\", \"rg\", \"cpf\", \"boleto\", \"contrato\", \"rosto\", \"cliente\", \"email\"];\n  if (nomes_risco.some(r => original_name.toLowerCase().includes(r))) {\n    risco = \"POSSIVEL_DADO_SENSIVEL\";\n    usa_nao = true;\n  }\n  \n  const tema = tipo_midia === \"imagem\" ? \"foto_campo\" : (tipo_midia === \"vídeo\" ? \"video_campo\" : \"duvidoso\");\n  const produto = \"DL_NEXUS\"; \n  \n  const out = {\n    \"file_id\": f.id,\n    \"link_drive\": f.webViewLink || \"\",\n    \"file_name_original\": original_name,\n    \"file_name_sugerido\": `2026-06-02_${produto}_${tema}_CAMPO_NOVO_${original_name}`,\n    \"mime_type\": mime,\n    \"extensao\": ext,\n    \"pasta_origem\": f.parents ? f.parents[0] : \"\",\n    \"pasta_destino_sugerida\": \"00_INVENTARIO_GERAL\",\n    \"data_criacao\": f.createdTime,\n    \"data_modificacao\": f.modifiedTime,\n    \"tamanho_bytes\": f.size || 0,\n    \"tema_detectado\": tema,\n    \"produto_dl_relacionado\": produto,\n    \"status_midia\": \"NOVO\",\n    \"uso_recomendado\": usa_nao ? \"NAO_USAR\" : \"REVISAR\",\n    \"risco_privacidade\": risco,\n    \"precisa_revisao_humana\": true,\n    \"descricao_tecnica_curta\": \"Arquivo coletado em varredura automática\",\n    \"descricao_para_social\": \"\",\n    \"cta_recomendado\": \"https://dlsolucoescondominiais.com\",\n    \"modo_execucao\": \"DRY_RUN\",\n    \"acao_real_executada\": false,\n    \"observacoes\": \"Processado no modo DRY_RUN, arquivo não movido nem alterado.\"\n  };\n  \n  arquivos.push({ json: out });\n}\n\nreturn arquivos;\n"
+        "jsCode": "\nconst arquivos = [];\n\n// AQUI O USUARIO DEVE PREENCHER OS IDS DAS PASTAS RAIZ DE DESTINO\nconst ID_PASTA_FOTOS = \"COLOQUE_AQUI_O_ID_DA_PASTA_DE_FOTOS\";\nconst ID_PASTA_VIDEOS = \"COLOQUE_AQUI_O_ID_DA_PASTA_DE_VIDEOS\";\nconst ID_PASTA_DOCS = \"COLOQUE_AQUI_O_ID_DA_PASTA_DE_DOCS\";\nconst ID_PASTA_SENSIVEIS = \"COLOQUE_AQUI_O_ID_DA_PASTA_DE_SENSIVEIS\";\n\nfor (const item of $input.all()) {\n  const f = item.json;\n  \n  const original_name = f.name || \"\";\n  const ext = original_name.includes('.') ? original_name.split('.').pop().toLowerCase() : \"\";\n  const mime = f.mimeType || \"\";\n  \n  let tipo_midia = \"documento\";\n  let pasta_destino = ID_PASTA_DOCS;\n  \n  if (mime.includes(\"image\")) {\n      tipo_midia = \"imagem\";\n      pasta_destino = ID_PASTA_FOTOS;\n  }\n  else if (mime.includes(\"video\")) {\n      tipo_midia = \"vídeo\";\n      pasta_destino = ID_PASTA_VIDEOS;\n  }\n  else if (mime.includes(\"audio\") || mime.includes(\"pdf\") || mime.includes(\"document\") || mime.includes(\"text\")) {\n      tipo_midia = \"documento\";\n      pasta_destino = ID_PASTA_DOCS;\n  }\n  \n  let risco = \"\";\n  let usa_nao = false;\n  const nomes_risco = [\"placa\", \"cnh\", \"rg\", \"cpf\", \"boleto\", \"contrato\", \"rosto\", \"cliente\", \"email\"];\n  if (nomes_risco.some(r => original_name.toLowerCase().includes(r))) {\n    risco = \"POSSIVEL_DADO_SENSIVEL\";\n    pasta_destino = ID_PASTA_SENSIVEIS;\n  }\n  \n  const tema = tipo_midia === \"imagem\" ? \"foto_campo\" : (tipo_midia === \"vídeo\" ? \"video_campo\" : \"duvidoso\");\n  const produto = \"DL_NEXUS\"; \n  \n  const out = {\n    \"file_id\": f.id,\n    \"link_drive\": f.webViewLink || \"\",\n    \"file_name_original\": original_name,\n    \"file_name_sugerido\": `2026_${produto}_${tema}_${original_name}`,\n    \"pasta_origem_id\": f.parents ? f.parents[0] : \"\",\n    \"pasta_destino_id\": pasta_destino,\n    \"tipo_midia\": tipo_midia\n  };\n  \n  arquivos.push({ json: out });\n}\n\nreturn arquivos;\n"
       },
       "id": "classificar",
-      "name": "Classificar Mídias (DRY RUN)",
+      "name": "Classificar Mídias",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
@@ -99,15 +99,55 @@
       ]
     },
     {
-      "parameters": {},
-      "id": "dry_run_log",
-      "name": "Log Output DRY RUN",
-      "type": "n8n-nodes-base.noOp",
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.pasta_destino_id }}",
+        "rules": {
+          "rules": [
+            {
+              "operation": "notEqual",
+              "value2": "COLOQUE_AQUI_O_ID_DA_PASTA_DE_FOTOS"
+            }
+          ]
+        },
+        "fallbackOutput": 1
+      },
+      "id": "switch_configured",
+      "name": "Check Configured",
+      "type": "n8n-nodes-base.switch",
       "typeVersion": 1,
       "position": [
         1000,
         300
       ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": "={{ $json.file_id }}",
+        "options": {
+          "addParents": [
+            "={{ $json.pasta_destino_id }}"
+          ],
+          "removeParents": [
+            "={{ $json.pasta_origem_id }}"
+          ]
+        }
+      },
+      "id": "move_drive",
+      "name": "Mover Arquivo Fisicamente",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        200
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "vDUp3ZKxazIKho51",
+          "name": "Google Drive account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -165,21 +205,46 @@
           }
         ]
       ]
+    },
+    "Classificar Mídias": {
+      "main": [
+        [
+          {
+            "node": "Check Configured",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Configured": {
+      "main": [
+        [
+          {
+            "node": "Mover Arquivo Fisicamente",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
     }
+  },
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
   },
   "active": false,
-  "settings": {
-    "executionOrder": "v1"
-  },
-  "tags": [
-    {
-      "name": "Zelador"
-    },
-    {
-      "name": "Drive"
-    },
-    {
-      "name": "DryRun"
-    }
-  ]
+  "versionId": "a526c92e-4d2b-4865-906d-515344e3ebe0",
+  "id": "zYx9XBg8V2IpESle",
+  "description": null,
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "activeVersionId": null,
+  "updatedAt": "2026-05-28T04:00:06.171Z",
+  "createdAt": "2026-05-28T04:00:06.171Z",
+  "isArchived": false,
+  "versionCounter": 1,
+  "triggerCount": 0
 }

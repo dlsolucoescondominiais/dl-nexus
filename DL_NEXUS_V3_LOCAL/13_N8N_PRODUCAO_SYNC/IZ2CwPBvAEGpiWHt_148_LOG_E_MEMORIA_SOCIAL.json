@@ -1,0 +1,83 @@
+{
+  "updatedAt": "2026-05-30T05:33:54.987Z",
+  "createdAt": "2026-05-25T09:46:56.650Z",
+  "id": "IZ2CwPBvAEGpiWHt",
+  "name": "148_LOG_E_MEMORIA_SOCIAL",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Registrar mídias, status e classificações\nreturn items;"
+      },
+      "id": "2",
+      "name": "Salvar Memória",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        450,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Salvar Memória",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "d7836b57-4afb-4e70-aebb-d30e4726fe69",
+  "activeVersionId": null,
+  "versionCounter": 64,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-25T09:46:56.650Z",
+      "createdAt": "2026-05-25T09:46:56.650Z",
+      "role": "workflow:owner",
+      "workflowId": "IZ2CwPBvAEGpiWHt",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

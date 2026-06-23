@@ -1,0 +1,427 @@
+{
+  "name": "070_CRON_PROSPECCAO_DIARIA_DL",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "35 0 * * *"
+            }
+          ]
+        }
+      },
+      "id": "trigger_cron",
+      "name": "Schedule Trigger (00:35)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "notes": ""
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = new Date().toLocaleDateString(\"pt-BR\");\n\nconst prompt = `Você é Manus AI, o Diretor de Marketing B2B da DL Soluções Condominiais.\nHoje é dia ${d}. Sua missão: gerar a estratégia do dia de postagem para o Agente MarkSolar (Copywriter).\n\nPRODUTOS OFICIAIS DA DL (usar exatamente esses nomes):\n- DL Guardião: segurança eletrônica, CFTV, câmeras, proteção patrimonial\n- DL Fortress: portaria autônoma, gestão de acesso\n- DL GateKeeper: automação de portões\n- DL Acqua: cisternas, caixas d'água, bombas, automação hídrica\n- DL Volt: elétrica condominial, quadros, painéis, infraestrutura elétrica\n- DL EcoVolt: energia solar on-grid, híbrida, off-grid\n- DL Alerta: prevenção de incêndio, centrais, detectores\n- DL Partner: manutenção continuada Basic/Master/Premium\n- DL Suporte Grill's: atendimento técnico para equipamentos da linha Mult•Grill Express e similares\n\nFOCO COMERCIAL PRIORITÁRIO:\n- Receita recorrente rápida via DL Partner\n- Condomínios verticais pequenos e médios (até 400 unidades)\n- Condomínios antigos com infraestrutura defasada\n- Condomínios de baixa e média renda, populares, Minha Casa Minha Vida\n- Administradoras pequenas e médias\n- Restaurantes, hamburguerias e lanchonetes para DL Suporte Grill's\n\nREGIÕES: Rio de Janeiro — Zona Sul, Zona Norte, Zona Oeste, Barra, Recreio, Jacarepaguá, Tijuca, Centro, Niterói, São Gonçalo, Duque de Caxias, Nova Iguaçu.\n\nREGRAS ABSOLUTAS:\n- Nunca usar \"visita técnica\". Usar \"Avaliação Técnica\".\n- Nunca citar Condfy.\n- Nunca chamar Diogo de engenheiro. Usar \"Tecnólogo Responsável\".\n- CTA principal: https://dlsolucoescondominiais.com\n- CTA WhatsApp: https://wa.me/5521964742458\n\nOBJETIVO FINAL: Gerar lead para Avaliação Técnica.\n\nRetorne JSON com os campos: modo, estrategia_texto, produto, publico_alvo, perfil_condominio, bairro, dor_principal, oferta, angulo_comercial, canal_destino, objetivo, nivel_de_urgencia, cta.`;\n\nreturn { json: { prompt: prompt } };"
+      },
+      "id": "prepare_prompt",
+      "name": "Preparar Prompt Diário",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "notes": ""
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.deepseek.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{.DEEPSEEK_API_KEY}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"prompt\": \"={{$json.prompt}}\", \"agent_profile\": \"manus-1.6-lite\", \"interactive_mode\": false, \"structured_output_schema\": {\"type\": \"object\", \"properties\": {\"modo\": {\"type\": \"string\", \"description\": \"economico\"}, \"estrategia_texto\": {\"type\": \"string\", \"description\": \"Descreva o gancho, a dor do público e o tom que o MarkSolar deve usar no post.\"}, \"produto\": {\"type\": \"string\", \"description\": \"Nome do produto foco (ex: DL Partner, DL Guardião, DL Volt)\"}, \"publico_alvo\": {\"type\": \"string\", \"description\": \"Ex: Síndicos de pequenos condomínios\"}, \"perfil_condominio\": {\"type\": \"string\", \"description\": \"Ex: Vertical até 100 unidades, antigo, baixa renda\"}, \"bairro\": {\"type\": \"string\", \"description\": \"Ex: Zona Sul, Barra ou Tijuca\"}, \"dor_principal\": {\"type\": \"string\", \"description\": \"Ex: Fiação antiga, câmeras paradas, portaria cara\"}, \"oferta\": {\"type\": \"string\", \"description\": \"Ex: Avaliação Técnica gratuita + plano DL Partner Basic\"}, \"angulo_comercial\": {\"type\": \"string\", \"description\": \"Ex: Economia, segurança, valorização do imóvel\"}, \"canal_destino\": {\"type\": \"string\", \"description\": \"Instagram, Facebook e TikTok\"}, \"objetivo\": {\"type\": \"string\", \"description\": \"Gerar lead para Avaliação Técnica\"}, \"nivel_de_urgencia\": {\"type\": \"string\", \"description\": \"Ex: alto, médio, baixo\"}, \"cta\": {\"type\": \"string\", \"description\": \"Solicite uma Avaliação Técnica pelo WhatsApp da DL\"}}, \"required\": [\"modo\", \"estrategia_texto\", \"produto\", \"publico_alvo\", \"perfil_condominio\", \"bairro\", \"dor_principal\", \"oferta\", \"angulo_comercial\", \"canal_destino\", \"objetivo\", \"nivel_de_urgencia\", \"cta\"]}}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "api_manus_create",
+      "name": "HTTP Request DeepSeek_Gemini API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        440,
+        0
+      ],
+      "notes": ""
+    },
+    {
+      "parameters": {
+        "jsCode": "const task = $json.task || $json.data || $json;\nconst task_id = task.task_id || task.id || $json.task_id || $json.id;\n\nif (!task_id) {\n  throw new Error(\"Manus não retornou task_id. Verificar payload ou endpoint task.create.\");\n}\n\nreturn {\n  json: {\n    task_id: task_id,\n    attempt: 0,\n    max_attempts: 30\n  }\n};"
+      },
+      "id": "extract_task_id",
+      "name": "Extrair Task ID",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        0
+      ],
+      "notes": ""
+    },
+    {
+      "parameters": {
+        "amount": 30,
+        "unit": "seconds"
+      },
+      "id": "wait_initial",
+      "name": "Wait 30s Inicial",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        880,
+        0
+      ],
+      "notes": ""
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.deepseek.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{.DEEPSEEK_API_KEY}}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "check_task_status",
+      "name": "Check Task Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1100,
+        0
+      ],
+      "notes": ""
+    },
+    {
+      "parameters": {
+        "jsCode": "const task = $json.task || $json.data || $json;\nconst status = String(task.status || $json.status || '').toLowerCase();\n\nconst doneStatuses = ['stopped', 'completed', 'succeeded', 'success', 'finished', 'waiting'];\nconst errorStatuses = ['failed', 'error', 'cancelled', 'timeout'];\nconst runningStatuses = ['running', 'pending', 'queued', 'processing', 'created'];\n\nreturn {\n  json: {\n    task_id: task.id || task.task_id || $json.task_id,\n    status,\n    is_done: doneStatuses.includes(status),\n    is_error: errorStatuses.includes(status),\n    is_running: runningStatuses.includes(status),\n    attempt: $json.attempt || 0,\n    max_attempts: $json.max_attempts || 30\n  }\n};"
+      },
+      "id": "normalize_status",
+      "name": "Normalizar Status",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1320,
+        0
+      ],
+      "notes": ""
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.is_done}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if_done",
+      "name": "IF DeepSeek_Gemini concluído?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1540,
+        0
+      ],
+      "notes": ""
+    },
+    {
+      "parameters": {
+        "jsCode": "const attempt = ($json.attempt || 0) + 1;\nconst max_attempts = $json.max_attempts || 30;\n\nif (attempt >= max_attempts) {\n  throw new Error(\"Timeout Manus: tarefa não concluiu em 15 minutos (\" + max_attempts + \" tentativas x 30s).\");\n}\n\nreturn {\n  json: {\n    task_id: $json.task_id,\n    attempt: attempt,\n    max_attempts: max_attempts\n  }\n};"
+      },
+      "id": "increment_attempt",
+      "name": "Incrementar Tentativa",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        250
+      ],
+      "notes": ""
+    },
+    {
+      "parameters": {
+        "amount": 30,
+        "unit": "seconds"
+      },
+      "id": "wait_loop",
+      "name": "Wait 30s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        1320,
+        250
+      ],
+      "notes": ""
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://api.deepseek.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{.DEEPSEEK_API_KEY}}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "get_messages",
+      "name": "Get Final Messages",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1760,
+        0
+      ],
+      "notes": ""
+    },
+    {
+      "parameters": {
+        "jsCode": "const events = $input.all()[0].json.data || [];\n\n// 1. Buscar structured_output_result\nconst resultEvent = events.find(e => e.type === 'structured_output_result');\n\nif (\n  resultEvent &&\n  resultEvent.structured_output_result &&\n  resultEvent.structured_output_result.success\n) {\n  const value = resultEvent.structured_output_result.value;\n\n  if (typeof value === 'string') {\n    return { json: JSON.parse(value) };\n  }\n\n  return { json: value };\n}\n\n// 2. Fallback: buscar assistant_message com JSON\nconst assistantEvent = events.find(e =>\n  e.type === 'assistant_message' &&\n  e.assistant_message &&\n  e.assistant_message.content\n);\n\nif (assistantEvent) {\n  const content = assistantEvent.assistant_message.content;\n  const match = content.match(/\\{[\\s\\S]*\\}/);\n\n  if (match) {\n    const parsed = JSON.parse(match[0]);\n\n    if (!parsed.estrategia_texto || !parsed.produto) {\n      throw new Error('JSON do Manus incompleto.');\n    }\n\n    return { json: parsed };\n  }\n}\n\nthrow new Error('Resultado estruturado do Manus não encontrado em task.listMessages.');"
+      },
+      "id": "clean_json",
+      "name": "Limpar JSON do DeepSeek_Gemini",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1980,
+        0
+      ],
+      "notes": ""
+    },
+    {
+      "parameters": {
+        "workflowId": "publicadorSocialDlNexusV320260518"
+      },
+      "id": "call_marksolar",
+      "name": "Chamar MarkSolar (020)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        2200,
+        0
+      ],
+      "notes": ""
+    },
+    {
+      "parameters": {
+        "chatId": "-1002012015091",
+        "text": "={{ \"🎯 DIRETRIZ MANUS B2B\\n\\nPúblico: \" + $json.publico_alvo + \"\\nProduto: \" + $json.produto + \"\\nRegião: \" + $json.bairro + \"\\nEstratégia: \" + $json.estrategia_texto }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram_entrega",
+      "name": "Telegram Entrega",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        2420,
+        0
+      ],
+      "continueOnFail": true,
+      "notes": ""
+    }
+  ],
+  "connections": {
+    "Schedule Trigger (00:35)": {
+      "main": [
+        [
+          {
+            "node": "Preparar Prompt Diário",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Prompt Diário": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request Manus API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request Manus API": {
+      "main": [
+        [
+          {
+            "node": "Extrair Task ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair Task ID": {
+      "main": [
+        [
+          {
+            "node": "Wait 30s Inicial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 30s Inicial": {
+      "main": [
+        [
+          {
+            "node": "Check Task Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Task Status": {
+      "main": [
+        [
+          {
+            "node": "Normalizar Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizar Status": {
+      "main": [
+        [
+          {
+            "node": "IF Manus concluído?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Manus concluído?": {
+      "main": [
+        [
+          {
+            "node": "Get Final Messages",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Incrementar Tentativa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Incrementar Tentativa": {
+      "main": [
+        [
+          {
+            "node": "Wait 30s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 30s": {
+      "main": [
+        [
+          {
+            "node": "Check Task Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Final Messages": {
+      "main": [
+        [
+          {
+            "node": "Limpar JSON do Manus",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limpar JSON do Manus": {
+      "main": [
+        [
+          {
+            "node": "Chamar MarkSolar (020)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Telegram Entrega",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  }
+}

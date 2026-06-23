@@ -1,0 +1,393 @@
+{
+  "updatedAt": "2026-05-30T05:33:56.828Z",
+  "createdAt": "2026-05-30T05:33:56.828Z",
+  "id": "YnO6n0aOSjDrJ5NN",
+  "name": "153_ANINHA_RELATORIO_SEMANAL",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 18 * * 5"
+            }
+          ]
+        }
+      },
+      "id": "trigger_cron",
+      "name": "Sexta 18h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": "primary",
+        "returnAll": true,
+        "options": {
+          "timeMin": "={{$now.minus(5, 'days').toISO()}}",
+          "timeMax": "={{$now.toISO()}}"
+        }
+      },
+      "id": "calendar_get",
+      "name": "Buscar Agenda Semanal",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1,
+      "position": [
+        200,
+        300
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "placeholder_calendar",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nlet resumo = \"\";\nitems.forEach(item => {\n  const ev = item.json;\n  resumo += `- Data: ${ev.start.dateTime || ev.start.date} | Local: ${ev.location || 'Sem local'} | Tarefa: ${ev.summary}\\n`;\n});\nreturn [{ json: { resumo_bruto: resumo } }];"
+      },
+      "id": "aggregate_events",
+      "name": "Agrupar Eventos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://integrate.api.nvidia.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"meta/llama3-70b-instruct\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Atue como Secretária Executiva da DL Soluções Condominiais. Transforme a lista de compromissos brutos em um Relatório Semanal de Logística elegante e objetivo. Destaque os principais polos atendidos.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Dados da semana:\\n{{$json.resumo_bruto}}\"\n    }\n  ],\n  \"max_tokens\": 1024\n}",
+        "options": {}
+      },
+      "id": "nvidia_report",
+      "name": "Gerar Relatório (NVIDIA)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        600,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$env.TELEGRAM_DIOGO_CHAT_ID}}",
+        "text": "=📊 *RELATÓRIO DE DESLOCAMENTO DA SEMANA* 📊\n\n{{$('Gerar Relatório (NVIDIA)').item.json.choices[0].message.content}}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram_send",
+      "name": "Enviar Relatório (Telegram)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        800,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "4sGUaygxQklSMa3Z",
+          "name": "Aninha Telegram Bot (DL Nexus)"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Sexta 18h": {
+      "main": [
+        [
+          {
+            "node": "Buscar Agenda Semanal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Agenda Semanal": {
+      "main": [
+        [
+          {
+            "node": "Agrupar Eventos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agrupar Eventos": {
+      "main": [
+        [
+          {
+            "node": "Gerar Relatório (NVIDIA)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gerar Relatório (NVIDIA)": {
+      "main": [
+        [
+          {
+            "node": "Enviar Relatório (Telegram)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Sexta 18h": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": null,
+  "versionId": "42f0a0b6-5884-40db-bf58-55ea1c962f01",
+  "activeVersionId": "42f0a0b6-5884-40db-bf58-55ea1c962f01",
+  "versionCounter": 8,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-30T05:33:56.828Z",
+      "createdAt": "2026-05-30T05:33:56.828Z",
+      "role": "workflow:owner",
+      "workflowId": "YnO6n0aOSjDrJ5NN",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-30T05:33:56.831Z",
+    "createdAt": "2026-05-30T05:33:56.831Z",
+    "versionId": "42f0a0b6-5884-40db-bf58-55ea1c962f01",
+    "workflowId": "YnO6n0aOSjDrJ5NN",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "cronExpression",
+                "expression": "0 18 * * 5"
+              }
+            ]
+          }
+        },
+        "id": "trigger_cron",
+        "name": "Sexta 18h",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          0,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "getAll",
+          "calendar": "primary",
+          "returnAll": true,
+          "options": {
+            "timeMin": "={{$now.minus(5, 'days').toISO()}}",
+            "timeMax": "={{$now.toISO()}}"
+          }
+        },
+        "id": "calendar_get",
+        "name": "Buscar Agenda Semanal",
+        "type": "n8n-nodes-base.googleCalendar",
+        "typeVersion": 1,
+        "position": [
+          200,
+          300
+        ],
+        "credentials": {
+          "googleCalendarOAuth2Api": {
+            "id": "placeholder_calendar",
+            "name": "Google Calendar account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\nlet resumo = \"\";\nitems.forEach(item => {\n  const ev = item.json;\n  resumo += `- Data: ${ev.start.dateTime || ev.start.date} | Local: ${ev.location || 'Sem local'} | Tarefa: ${ev.summary}\\n`;\n});\nreturn [{ json: { resumo_bruto: resumo } }];"
+        },
+        "id": "aggregate_events",
+        "name": "Agrupar Eventos",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          400,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://integrate.api.nvidia.com/v1/chat/completions",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer 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"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"model\": \"meta/llama3-70b-instruct\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Atue como Secretária Executiva da DL Soluções Condominiais. Transforme a lista de compromissos brutos em um Relatório Semanal de Logística elegante e objetivo. Destaque os principais polos atendidos.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Dados da semana:\\n{{$json.resumo_bruto}}\"\n    }\n  ],\n  \"max_tokens\": 1024\n}",
+          "options": {}
+        },
+        "id": "nvidia_report",
+        "name": "Gerar Relatório (NVIDIA)",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          600,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "chatId": "={{$env.TELEGRAM_DIOGO_CHAT_ID}}",
+          "text": "=📊 *RELATÓRIO DE DESLOCAMENTO DA SEMANA* 📊\n\n{{$('Gerar Relatório (NVIDIA)').item.json.choices[0].message.content}}",
+          "additionalFields": {
+            "parse_mode": "Markdown"
+          }
+        },
+        "id": "telegram_send",
+        "name": "Enviar Relatório (Telegram)",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.1,
+        "position": [
+          800,
+          300
+        ],
+        "credentials": {
+          "telegramApi": {
+            "id": "4sGUaygxQklSMa3Z",
+            "name": "Aninha Telegram Bot (DL Nexus)"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Sexta 18h": {
+        "main": [
+          [
+            {
+              "node": "Buscar Agenda Semanal",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Buscar Agenda Semanal": {
+        "main": [
+          [
+            {
+              "node": "Agrupar Eventos",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Agrupar Eventos": {
+        "main": [
+          [
+            {
+              "node": "Gerar Relatório (NVIDIA)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gerar Relatório (NVIDIA)": {
+        "main": [
+          [
+            {
+              "node": "Enviar Relatório (Telegram)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-06-15T03:48:26.441Z",
+        "id": 2444,
+        "workflowId": "YnO6n0aOSjDrJ5NN",
+        "versionId": "42f0a0b6-5884-40db-bf58-55ea1c962f01",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:26.453Z",
+        "id": 2445,
+        "workflowId": "YnO6n0aOSjDrJ5NN",
+        "versionId": "42f0a0b6-5884-40db-bf58-55ea1c962f01",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:56.977Z",
+        "id": 2055,
+        "workflowId": "YnO6n0aOSjDrJ5NN",
+        "versionId": "42f0a0b6-5884-40db-bf58-55ea1c962f01",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

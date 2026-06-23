@@ -1,0 +1,2348 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ============================================================
+       SEO MODULE — Modular Head (n8n Agent Ready)
+       Este bloco é modular para injeção dinâmica via Agente n8n.
+       IDs de referência: dl-seo-title, dl-seo-description, dl-seo-keywords
+       ============================================================ -->
+  <title id="dl-seo-title">DL Soluções Condominiais | Soluções Técnicas para Condomínios no Rio de Janeiro</title>
+  <meta id="dl-seo-description" name="description" content="A DL atende condomínios pequenos e médios, verticais, antigos e novos, em todos os bairros do Rio de Janeiro, com proteção patrimonial, CFTV, elétrica, automação e manutenção. Solicite Avaliação Técnica.">
+  <meta id="dl-seo-keywords" name="keywords" content="proteção patrimonial condominial, segurança eletrônica para condomínios pequenos, modernização técnica de condomínio, CFTV condomínio RJ, elétrica predial Rio de Janeiro, automação condominial, controle de acesso condomínio, energia solar condomínio">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="theme-color" content="#0b1f33">
+  <meta name="author" content="DL Soluções Condominiais LTDA">
+  <link rel="canonical" href="https://dlsolucoescondominiais.com.br/">
+  <meta name="openai-domain-verification" content="dv-9jE8dsC3sMMs8l8GJEqyBGhe">
+
+  <!-- Open Graph / Meta Ads -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://dlsolucoescondominiais.com.br/">
+  <meta property="og:title" content="DL Soluções Condominiais | Proteção Patrimonial e Tecnologia para Condomínios">
+  <meta property="og:description" content="Soluções técnicas para condomínios em todos os bairros do Rio de Janeiro. CFTV, elétrica, automação e manutenção recorrente.">
+  <meta property="og:image" content="https://dlsolucoescondominiais.com.br/assets/Capa%20DL%20Solu%C3%A7%C3%B5es%20Condominiais%20comprimida.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="assets/Soluções Condominiais favicon.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome for Social Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- ============================================================
+       TELEMETRIA MODULE — DataLayer + GTM (n8n Agent Ready)
+       O Agente de Growth do n8n injeta/substitui os IDs dinamicamente.
+       Placeholder: GTM-XXXXXXX
+       ============================================================ -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+
+    // Consent defaults (LGPD compliance)
+    gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'analytics_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied',
+      'functionality_storage': 'granted',
+      'security_storage': 'granted',
+      'wait_for_update': 500
+    });
+
+    // Custom DL events for n8n agent tracking
+    dataLayer.push({
+      'dl_page_type': 'home',
+      'dl_business_unit': 'condominial',
+      'dl_geo_target': 'rio-de-janeiro',
+      'dl_site_version': 'fortress-v1'
+    });
+  </script>
+
+  <!-- Google Tag Manager (Placeholder — substituir GTM-XXXXXXX) -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-XXXXXXX');</script>
+
+  <!-- Meta Pixel (Placeholder — substituir PIXEL-XXXXXXX) -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', 'PIXEL-XXXXXXX');
+    fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=PIXEL-XXXXXXX&ev=PageView&noscript=1"/></noscript>
+
+  <!-- ============================================================
+       Meta Conversions API — Server-Side Event Structure
+       O endpoint do servidor n8n recebe eventos via fetch POST.
+       ============================================================ -->
+  <script>
+    window.dlMetaCAPI = function(eventName, eventData) {
+      fetch('https://n8n.dlsolucoescondominiais.com.br/webhook/meta-capi', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event_name: eventName,
+          event_time: Math.floor(Date.now() / 1000),
+          user_agent: navigator.userAgent,
+          source_url: window.location.href,
+          custom_data: eventData || {}
+        })
+      }).catch(function(){});
+    };
+  </script>
+
+  <style>
+    /* ============================================
+       DESIGN SYSTEM — Fortress Theme v1
+       ============================================ */
+    :root {
+      --dl-bg: #f7f9fb;
+      --dl-bg-alt: #eef2f6;
+      --dl-text: #1a2b3c;
+      --dl-text-muted: #5b6b7c;
+      --dl-surface: #ffffff;
+      --dl-border: #dde4ec;
+      --dl-blue-dark: #0b1f33;
+      --dl-blue: #123a5f;
+      --dl-blue-light: #1d5d8f;
+      --dl-gold: #c8962e;
+      --dl-gold-light: #e8b84a;
+      --dl-danger: #b42318;
+      --dl-success: #087443;
+      --dl-white: #ffffff;
+      --dl-heading: #0b1f33;
+      --shadow-soft: 0 8px 32px rgba(11,31,51,0.08);
+      --shadow-card: 0 4px 20px rgba(11,31,51,0.06);
+      --shadow-hover: 0 12px 40px rgba(11,31,51,0.14);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --max-width: 1200px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="dark"] {
+      --dl-bg: #071422;
+      --dl-bg-alt: #0c1e30;
+      --dl-text: #e8edf2;
+      --dl-text-muted: #94a3b8;
+      --dl-surface: #0f2640;
+      --dl-border: #1e3a56;
+      --dl-heading: #f1f5f9;
+      --shadow-soft: 0 8px 32px rgba(0,0,0,0.3);
+      --shadow-card: 0 4px 20px rgba(0,0,0,0.25);
+      --shadow-hover: 0 12px 40px rgba(0,0,0,0.4);
+    }
+
+    /* Ajuste de contraste para logo no Dark Mode */
+    [data-theme="dark"] .header-logo img,
+    [data-theme="dark"] .footer-brand img {
+      filter: brightness(0) invert(1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--dl-text);
+      background: var(--dl-bg);
+      line-height: 1.7;
+      transition: background var(--transition), color var(--transition);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; text-decoration: none; transition: color var(--transition); }
+    img { max-width: 100%; height: auto; display: block; }
+
+    .container {
+      width: min(100% - 40px, var(--max-width));
+      margin-inline: auto;
+    }
+
+    /* ============================================
+       HEADER
+       ============================================ */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--dl-border);
+      transition: background var(--transition), border-color var(--transition);
+    }
+
+    [data-theme="dark"] .header {
+      background: rgba(7,20,34,0.92);
+    }
+
+    .header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-logo img {
+      height: 42px;
+      width: auto;
+    }
+
+    .header-logo span {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--dl-heading);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--dl-text-muted);
+      transition: color var(--transition);
+    }
+
+    .nav-links a:hover {
+      color: var(--dl-blue-light);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    #theme-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--dl-border);
+      background: var(--dl-bg-alt);
+      cursor: pointer;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition);
+    }
+
+    #theme-toggle:hover {
+      background: var(--dl-blue);
+      color: white;
+      border-color: var(--dl-blue);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.9rem;
+      border: none;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--dl-gold), var(--dl-gold-light));
+      color: #1a1a1a;
+      box-shadow: 0 4px 16px rgba(200,150,46,0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(200,150,46,0.35);
+    }
+
+    .btn-secondary {
+      background: var(--dl-surface);
+      color: var(--dl-blue);
+      border: 1px solid var(--dl-border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--dl-blue);
+      color: white;
+      border-color: var(--dl-blue);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--dl-blue-light);
+      padding: 8px 16px;
+    }
+
+    .btn-ghost:hover {
+      background: var(--dl-bg-alt);
+    }
+
+    /* ============================================
+       HERO SECTION
+       ============================================ */
+    .hero {
+      padding: 140px 0 80px;
+      background: linear-gradient(165deg, var(--dl-blue-dark) 0%, var(--dl-blue) 60%, var(--dl-blue-light) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='1.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .hero .container {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 900px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(8px);
+      padding: 8px 20px;
+      border-radius: 50px;
+      color: var(--dl-gold-light);
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 28px;
+      border: 1px solid rgba(232,184,74,0.2);
+    }
+
+    .hero h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 2vw, 1.15rem);
+      color: rgba(255,255,255,0.8);
+      max-width: 750px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+
+    .hero-ctas .btn-primary {
+      font-size: 1rem;
+      padding: 16px 32px;
+    }
+
+    .hero-ctas .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.25);
+      color: #fff;
+    }
+
+    .hero-ctas .btn-secondary:hover {
+      background: rgba(255,255,255,0.2);
+      border-color: rgba(255,255,255,0.4);
+      color: #fff;
+    }
+
+    .hero-notice {
+      display: inline-block;
+      background: rgba(180, 35, 24, 0.15);
+      border: 1px solid rgba(180, 35, 24, 0.3);
+      color: #ffccc7;
+      padding: 10px 22px;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+
+    /* Credenciais */
+    .hero-credentials {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 32px;
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .hero-credentials img {
+      height: 48px;
+      opacity: 0.85;
+      transition: opacity var(--transition);
+    }
+
+    .hero-credentials img:hover { opacity: 1; }
+
+    /* ============================================
+       SECTION COMMON
+       ============================================ */
+    .section {
+      padding: 80px 0;
+    }
+
+    .section-alt {
+      background: var(--dl-bg-alt);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section-header h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+      font-weight: 700;
+      color: var(--dl-heading);
+      margin-bottom: 12px;
+    }
+
+    .section-header p {
+      color: var(--dl-text-muted);
+      font-size: 1.05rem;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--dl-gold);
+      margin-bottom: 8px;
+    }
+
+    /* ============================================
+       SERVICES GRID
+       ============================================ */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .service-card {
+      background: var(--dl-surface);
+      border-radius: var(--radius-md);
+      padding: 32px 28px;
+      border: 1px solid var(--dl-border);
+      transition: all var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--dl-blue), var(--dl-gold));
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+
+    .service-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .service-card:hover::before { opacity: 1; }
+
+    .service-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-sm);
+      background: var(--dl-bg-alt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    .service-card h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--dl-heading);
+      margin-bottom: 10px;
+    }
+
+    .service-card p {
+      color: var(--dl-text-muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    /* ============================================
+       PORTFOLIO CARDS
+       ============================================ */
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+    }
+
+    .portfolio-card {
+      background: var(--dl-surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--dl-border);
+      overflow: hidden;
+      transition: all var(--transition);
+    }
+
+    .portfolio-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .portfolio-card-img {
+      height: 200px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+
+    .portfolio-card-img .portfolio-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: var(--dl-blue-dark);
+      color: var(--dl-gold-light);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 5px 12px;
+      border-radius: 4px;
+    }
+
+    .portfolio-card-body {
+      padding: 24px;
+    }
+
+    .portfolio-card-body h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dl-heading);
+      margin-bottom: 16px;
+    }
+
+    .portfolio-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .portfolio-meta-item {
+      display: flex;
+      gap: 8px;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .portfolio-meta-label {
+      font-weight: 600;
+      color: var(--dl-heading);
+      min-width: 90px;
+      flex-shrink: 0;
+    }
+
+    .portfolio-meta-value {
+      color: var(--dl-text-muted);
+    }
+
+    .portfolio-card-body .btn {
+      width: 100%;
+      justify-content: center;
+      font-size: 0.85rem;
+      padding: 10px 20px;
+    }
+
+    /* ============================================
+       GASTRONOMIA SECTION
+       ============================================ */
+    .gastro-banner {
+      background: var(--dl-surface);
+      border: 1px solid var(--dl-border);
+      border-radius: var(--radius-md);
+      padding: 32px 36px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      transition: all var(--transition);
+    }
+
+    .gastro-banner:hover {
+      box-shadow: var(--shadow-hover);
+    }
+
+    .gastro-icon {
+      font-size: 2.5rem;
+      flex-shrink: 0;
+    }
+
+    .gastro-banner h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--dl-heading);
+      margin-bottom: 6px;
+    }
+
+    .gastro-banner p {
+      color: var(--dl-text-muted);
+      font-size: 0.92rem;
+    }
+
+    /* ============================================
+       SEO GEO BLOCK
+       ============================================ */
+    .geo-block {
+      background: var(--dl-surface);
+      border-radius: var(--radius-md);
+      padding: 40px;
+      border: 1px solid var(--dl-border);
+    }
+
+    .geo-block h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--dl-heading);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .geo-zones {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .geo-zone h4 {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--dl-blue-light);
+      margin-bottom: 8px;
+    }
+
+    .geo-zone p {
+      color: var(--dl-text-muted);
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+
+    /* ============================================
+       CTA SECTION
+       ============================================ */
+    .cta-section {
+      padding: 80px 0;
+      background: linear-gradient(135deg, var(--dl-blue-dark) 0%, var(--dl-blue) 100%);
+      text-align: center;
+    }
+
+    .cta-section h2 {
+      font-family: 'Outfit', sans-serif;
+      color: #fff;
+      font-size: clamp(1.6rem, 3vw, 2rem);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .cta-section p {
+      color: rgba(255,255,255,0.7);
+      margin-bottom: 28px;
+      font-size: 1.05rem;
+    }
+
+    .cta-section .btn-primary {
+      font-size: 1rem;
+      padding: 16px 36px;
+    }
+
+    /* ============================================
+       FOOTER
+       ============================================ */
+    .footer {
+      background: var(--dl-blue-dark);
+      color: rgba(255,255,255,0.7);
+      padding: 60px 0 28px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 40px;
+    }
+
+    .footer-brand p {
+      font-size: 0.88rem;
+      line-height: 1.7;
+      margin-top: 16px;
+    }
+
+    .footer-brand img {
+      height: 40px;
+      margin-bottom: 4px;
+    }
+
+    .footer h4 {
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li { margin-bottom: 10px; }
+
+    .footer-links a {
+      font-size: 0.88rem;
+      transition: color var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: var(--dl-gold-light);
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .footer-social a {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      transition: all var(--transition);
+    }
+
+    .footer-social a:hover {
+      background: var(--dl-gold);
+      color: #1a1a1a;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.8rem;
+    }
+
+    /* ============================================
+       FLOATING WhatsApp
+       ============================================ */
+    .wa-float {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 999;
+      width: 60px;
+      height: 60px;
+      background: #25d366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 24px rgba(37,211,102,0.4);
+      transition: all var(--transition);
+      cursor: pointer;
+    }
+
+    .wa-float:hover {
+      transform: scale(1.1);
+      box-shadow: 0 10px 32px rgba(37,211,102,0.5);
+    }
+
+    .wa-float svg {
+      width: 30px;
+      height: 30px;
+      fill: white;
+    }
+
+    /* ============================================
+       COOKIE BANNER
+       ============================================ */
+    .cookie-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 9999;
+      background: var(--dl-blue-dark);
+      color: rgba(255,255,255,0.9);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      font-size: 0.85rem;
+      transform: translateY(100%);
+      transition: transform 0.4s ease;
+      flex-wrap: wrap;
+    }
+
+    .cookie-banner.active {
+      transform: translateY(0);
+    }
+
+    .cookie-banner a { color: var(--dl-gold-light); text-decoration: underline; }
+
+    .cookie-accept {
+      background: var(--dl-gold);
+      color: #1a1a1a;
+      border: none;
+      padding: 8px 20px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all var(--transition);
+    }
+
+    .cookie-accept:hover {
+      background: var(--dl-gold-light);
+    }
+
+    /* ============================================
+       MOBILE NAV
+       ============================================ */
+    .mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      font-size: 1.5rem;
+      color: var(--dl-heading);
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .mobile-toggle { display: block; }
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .hero-credentials {
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-ctas {
+        flex-direction: column;
+        align-items: center;
+      }
+      .gastro-banner {
+        flex-direction: column;
+        text-align: center;
+      }
+      .geo-zones {
+        grid-template-columns: 1fr;
+      }
+      .cookie-banner {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- GTM noscript fallback -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+  <!-- ============================================
+       HEADER
+       ============================================ -->
+  <header class="header" id="header">
+    <div class="container">
+      <a href="index.html" class="header-logo" aria-label="DL Soluções Condominiais - Página Inicial">
+        <img src="assets/logo 250x150px sem fundo.png" alt="DL Soluções Condominiais" width="150" height="42">
+      </a>
+
+      <nav>
+        <ul class="nav-links" id="nav-links">
+          <li><a href="#servicos">Serviços</a></li>
+          <li><a href="#portfolio">Portfólio</a></li>
+          <li><a href="a-empresa.html">A Empresa</a></li>
+          <li><a href="o-fundador.html">O Fundador</a></li>
+          <li><a href="#contato">Contato</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <button id="theme-toggle" aria-label="Alternar tema claro/escuro">🌙</button>
+        <a href="https://n8n.dlsolucoescondominiais.com.br/webhook/start?utm_source=site&utm_medium=header&utm_campaign=fortress" class="btn btn-primary" id="cta-header"
+           onclick="dataLayer.push({'event':'cta_click','cta_location':'header','cta_text':'Solicitar Avaliação Técnica'}); if(typeof fbq==='function') fbq('track','Lead'); if(typeof dlMetaCAPI==='function') dlMetaCAPI('Lead',{source:'header'});">
+          ⚡ Solicitar Avaliação Técnica
+        </a>
+        <button class="mobile-toggle" id="mobile-toggle" aria-label="Menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================
+       HERO
+       ============================================ -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <div class="hero-badge">🛡️ CREA-RJ 2022346653 · ABESE-SP · Seguro de Obra</div>
+
+      <h1>Soluções técnicas para condomínios em todos os bairros do Rio de Janeiro</h1>
+
+      <p class="hero-subtitle">
+        Atendemos condomínios pequenos e médios, verticais, antigos e novos, com foco em proteção patrimonial, segurança eletrônica, controle de acesso, elétrica predial, automação e manutenção recorrente.
+      </p>
+
+      <div class="hero-ctas">
+        <a href="https://n8n.dlsolucoescondominiais.com.br/webhook/start?utm_source=site&utm_medium=hero&utm_campaign=fortress" class="btn btn-primary" id="cta-hero-primary"
+           onclick="dataLayer.push({'event':'cta_click','cta_location':'hero','cta_text':'Solicitar Avaliação Técnica'}); if(typeof fbq==='function') fbq('track','Lead'); if(typeof dlMetaCAPI==='function') dlMetaCAPI('Lead',{source:'hero'});">
+          ⚡ Solicitar Avaliação Técnica
+        </a>
+        <a href="https://n8n.dlsolucoescondominiais.com.br/webhook/atendimento-comercial?utm_source=site&utm_medium=hero&utm_campaign=fortress" class="btn btn-secondary" id="cta-hero-secondary"
+           onclick="dataLayer.push({'event':'cta_click','cta_location':'hero','cta_text':'Falar com atendimento comercial'});">
+          💬 Falar com atendimento comercial
+        </a>
+      </div>
+
+      <div class="hero-notice">
+        ⚠️ Não atendemos serviço residencial comum. O foco da DL é o atendimento direto a condomínios, administradoras e empresas.
+      </div>
+
+      <div class="hero-credentials">
+        <img src="assets/CREA_RJ DL soluções condominiais.png" alt="CREA-RJ" loading="lazy">
+        <img src="assets/ABESE-SP DL Soluções Condominiais_1.png" alt="ABESE-SP" loading="lazy">
+        <img src="assets/segurimax DL Soluções Condominiais.png" alt="Segurimax Parceiro" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SERVIÇOS
+       ============================================ -->
+  <section class="section" id="servicos">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Nossos Serviços</span>
+        <h2>Proteção patrimonial completa para o seu condomínio</h2>
+        <p>Cada solução é projetada para reduzir riscos, garantir conformidade e valorizar o patrimônio dos condôminos.</p>
+      </div>
+
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">📹</div>
+          <h3>DL Guardião</h3>
+          <p>Sistemas de CFTV IP e analógico, câmeras de segurança com Inteligência Artificial, DVR, NVR e monitoramento local ou remoto. Realizamos a modernização de CFTV antigo, instalação de câmeras para portaria, garagem, hall, elevador e áreas comuns, garantindo proteção patrimonial completa com manutenção preventiva/corretiva de CFTV, organização de infraestrutura e relatórios técnicos de falhas.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">🔐</div>
+          <h3>DL Fortress</h3>
+          <p>Soluções completas de controle de acesso, portaria autônoma e apoio à administração condominial. Gestão de moradores, visitantes e prestadores de serviços com autorização de entrada e histórico de acessos. Oferecemos acesso por senha, QR Code, biometria e leitura facial avançada com integração a sistemas de acesso predial.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">💧</div>
+          <h3>DL Acqua</h3>
+          <p>Monitoramento e automação de bombas, cisternas e caixas d’água com controle de nível e alertas operacionais. Oferecemos instalação de painéis de comando para recalque, diagnóstico de falhas em bombas, histórico de funcionamento e manutenção preventiva/corretiva de bombas. O DL Acqua ajuda condomínios a monitorar água, bombas e reservatórios, reduzindo falhas por funcionamento manual e melhorando o controle técnico.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">🚪</div>
+          <h3>DL Gatekeeper</h3>
+          <p>Automação de portões de garagem, portas, depósitos, áreas restritas e portas técnicas com controle de abertura, permissões e histórico. Oferecemos acesso por Bluetooth, Wi-Fi, controle de acesso de veículos e pedestres, e modernização de sistemas antigos sem rastreabilidade. O DL Gatekeeper automatiza portões e acessos, trazendo mais controle, praticidade e histórico operacional para o condomínio.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">⚡</div>
+          <h3>DL Volt</h3>
+          <p>Elétrica predial de alta demanda, montagem de quadros elétricos, painéis de comando, circuitos de bombas e iluminação de áreas comuns com automação elétrica. Fazemos a infraestrutura elétrica dedicada para CFTV, controle de acesso e automação, além de correção de falhas elétricas, identificação de sobrecargas, organização de circuitos e manutenção preventiva/corretiva. A DL Volt cuida da infraestrutura elétrica que mantém o condomínio funcionando com mais segurança, organização e previsibilidade.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">🔌</div>
+          <h3>DL VoltCharge</h3>
+          <p>Infraestrutura completa para carregador veicular e pontos de recarga em garagens condominiais. Realizamos a avaliação de carga disponível, circuitos dedicados, proteção elétrica, pré-instalação de infraestrutura e adequação de quadros para veículos elétricos. A DL VoltCharge (sublinha da DL Volt) prepara condomínios para carregadores veiculares com infraestrutura elétrica adequada e Avaliação Técnica antes da instalação.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">☀️</div>
+          <h3>DL EcoVolt</h3>
+          <p>Sistemas de energia solar on-grid, híbrida e off-grid com baterias, backup para cargas críticas (CFTV, portões e essenciais), carport solar e estudos de viabilidade. Oferecemos análise de consumo, eficiência energética, manutenção e limpeza técnica de módulos. A DL EcoVolt avalia soluções de energia solar e eficiência energética para condomínios, empresas e áreas comuns, considerando economia, continuidade e cargas críticas (o sistema híbrido pode ser mais vantajoso quando há necessidade de backup e continuidade).</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">🚨</div>
+          <h3>DL Alerta</h3>
+          <p>Infraestrutura de prevenção de incêndio. Instalação e configuração de central de alarme de incêndio, detectores de fumaça, calor e gás, acionadores manuais, sirenes e iluminação de emergência. Realizamos testes periódicos, relatório de falhas e manutenção preventiva/corretiva. A DL Alerta apoia condomínios e empresas com sistemas de prevenção de incêndio, alarmes, detectores, testes e manutenção técnica (não prestamos serviços de hidrantes, sprinklers ou hidráulica em geral).</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">🤝</div>
+          <h3>DL Partner</h3>
+          <p>Contratos recorrentes de manutenção preventiva/corretiva para reduzir improvisos e emergências. Com histórico de atendimento, tempo de resposta ágil, relatórios técnicos e prioridade operacional. Oferecido em 3 planos: <strong>Basic</strong> (manutenção essencial, chamados limitados, deslocamento à parte), <strong>Master</strong> (manutenção recorrente, prioridade, franquia técnica e relatório) e <strong>Premium</strong> (máxima prioridade, mais horas técnicas, relatórios e garantia estendida com contrato ativo). O DL Partner reduz falhas repetitivas e organiza seu tempo de resposta.</p>
+        </div>
+
+        <div class="service-card">
+          <div class="service-icon">🍳</div>
+          <h3>DL Express</h3>
+          <p>Suporte técnico especializado para equipamentos profissionais Mult•Grill, incluindo chapas, grills e fritadeiras profissionais de cozinhas comerciais, restaurantes, lanchonetes, padarias e hamburguerias. Fazemos diagnóstico técnico, orientação operacional e manutenção preventiva/corretiva. A DL Express é a nossa linha de suporte técnico dedicada a atender operações comerciais que dependem desses equipamentos funcionando, reduzindo a parada operacional e a perda de vendas (a Mult•Grill é nossa marca/parceira homologada de equipamentos).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       PORTFÓLIO ESTRUTURADO
+       ============================================ -->
+  <section class="section section-alt" id="portfolio">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Portfólio</span>
+        <h2>Cases de sucesso por tipo de condomínio</h2>
+        <p>Cada projeto é desenhado para o perfil específico do imóvel, com soluções sob medida.</p>
+      </div>
+
+      <div class="portfolio-grid">
+        <!-- Card 1: Condomínios Pequenos -->
+        <div class="portfolio-card">
+          <div class="portfolio-card-img" style="background-image: url('assets/controle_acesso.png');">
+            <span class="portfolio-badge">Condomínios Pequenos</span>
+          </div>
+          <div class="portfolio-card-body">
+            <h3>Proteção Patrimonial e Redução de Falhas</h3>
+            <div class="portfolio-meta">
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Tipo:</span>
+                <span class="portfolio-meta-value">Condomínio residencial de pequeno porte (até 40 unidades)</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Região:</span>
+                <span class="portfolio-meta-value">Zona Oeste — Jacarepaguá, RJ</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Serviço:</span>
+                <span class="portfolio-meta-value">DL Guardião + DL Fortress + DL Volt</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Desafio:</span>
+                <span class="portfolio-meta-value">Câmeras analógicas obsoletas, portaria sem controle de acesso e quadro elétrico sem disjuntores adequados.</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Solução:</span>
+                <span class="portfolio-meta-value">Migração para CFTV IP Intelbras com 16 câmeras, biometria facial na portaria e adequações técnicas no QGBT conforme boas práticas aplicáveis e Avaliação Técnica.</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Resultado:</span>
+                <span class="portfolio-meta-value">Redução de 85% nas ocorrências de segurança e economia de 30% no consumo elétrico das áreas comuns.</span>
+              </div>
+            </div>
+            <a href="https://n8n.dlsolucoescondominiais.com.br/webhook/start?utm_source=site&utm_medium=portfolio&utm_campaign=condo-pequeno" class="btn btn-primary"
+               onclick="dataLayer.push({'event':'cta_click','cta_location':'portfolio','cta_text':'Solicitar Avaliação Técnica','portfolio_type':'pequeno'});">
+              ⚡ Solicitar Avaliação Técnica
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 2: Condomínios Médios -->
+        <div class="portfolio-card">
+          <div class="portfolio-card-img" style="background-image: url('assets/cftv.png');">
+            <span class="portfolio-badge">Condomínios Médios</span>
+          </div>
+          <div class="portfolio-card-body">
+            <h3>Segurança, Previsibilidade e DL Partner</h3>
+            <div class="portfolio-meta">
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Tipo:</span>
+                <span class="portfolio-meta-value">Condomínio residencial de médio porte (40–200 unidades)</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Região:</span>
+                <span class="portfolio-meta-value">Zona Sul — Tijuca, RJ</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Serviço:</span>
+                <span class="portfolio-meta-value">DL Guardião (64 câmeras IP) + DL Partner + Monitoramento Inteligente</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Desafio:</span>
+                <span class="portfolio-meta-value">Sistema de CFTV legado com falhas frequentes, sem contrato de manutenção, e iluminação das áreas comuns sem automação.</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Solução:</span>
+                <span class="portfolio-meta-value">Projeto completo com 64 câmeras IP, sensores de presença em corredores e garagens, e contrato recorrente com SLA de 4h.</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Resultado:</span>
+                <span class="portfolio-meta-value">Zero indisponibilidade de CFTV em 12 meses e economia de 40% na conta de luz das áreas comuns.</span>
+              </div>
+            </div>
+            <a href="https://n8n.dlsolucoescondominiais.com.br/webhook/start?utm_source=site&utm_medium=portfolio&utm_campaign=condo-medio" class="btn btn-primary"
+               onclick="dataLayer.push({'event':'cta_click','cta_location':'portfolio','cta_text':'Solicitar Avaliação Técnica','portfolio_type':'medio'});">
+              ⚡ Solicitar Avaliação Técnica
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 3: Condomínios Verticais Antigos -->
+        <div class="portfolio-card">
+          <div class="portfolio-card-img" style="background-image: url('assets/eletrica.png');">
+            <span class="portfolio-badge">Verticais Antigos</span>
+          </div>
+          <div class="portfolio-card-body">
+            <h3>Modernização Elétrica e Infraestrutura</h3>
+            <div class="portfolio-meta">
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Tipo:</span>
+                <span class="portfolio-meta-value">Edifício vertical com mais de 30 anos de construção</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Região:</span>
+                <span class="portfolio-meta-value">Centro — Lapa, RJ</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Serviço:</span>
+                <span class="portfolio-meta-value">DL Volt (Retrofit Elétrico) + SPDA + DL Alerta</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Desafio:</span>
+                <span class="portfolio-meta-value">Fiação original dos anos 80, quadros sem proteção adequada, sem laudo elétrico vigente e notificação do Corpo de Bombeiros.</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Solução:</span>
+                <span class="portfolio-meta-value">Substituição integral da infraestrutura elétrica, novos quadros de comando com DR e DPS, emissão de ART e obtenção do AVCB.</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Resultado:</span>
+                <span class="portfolio-meta-value">Conformidade total com normas vigentes, eliminação de risco de incêndio elétrico e valorização imobiliária estimada em 12%.</span>
+              </div>
+            </div>
+            <a href="https://n8n.dlsolucoescondominiais.com.br/webhook/start?utm_source=site&utm_medium=portfolio&utm_campaign=vertical-antigo" class="btn btn-primary"
+               onclick="dataLayer.push({'event':'cta_click','cta_location':'portfolio','cta_text':'Solicitar Avaliação Técnica','portfolio_type':'vertical-antigo'});">
+              ⚡ Solicitar Avaliação Técnica
+            </a>
+          </div>
+        </div>
+
+        <!-- Card 4: Condomínios Verticais Novos -->
+        <div class="portfolio-card">
+          <div class="portfolio-card-img" style="background-image: url('assets/solar.png');">
+            <span class="portfolio-badge">Verticais Novos</span>
+          </div>
+          <div class="portfolio-card-body">
+            <h3>Estruturação Tecnológica desde a Construção</h3>
+            <div class="portfolio-meta">
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Tipo:</span>
+                <span class="portfolio-meta-value">Empreendimento novo em fase de entrega ou recém-entregue</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Região:</span>
+                <span class="portfolio-meta-value">Zona Oeste — Barra da Tijuca, RJ</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Serviço:</span>
+                <span class="portfolio-meta-value">DL Guardião + DL Fortress + DL EcoVolt + DL VoltCharge</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Desafio:</span>
+                <span class="portfolio-meta-value">Construtora entregou infraestrutura básica sem projeto de segurança, automação ou eficiência energética adequados.</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Solução:</span>
+                <span class="portfolio-meta-value">Projeto executivo completo de CFTV com 48 câmeras, automação predial, usina solar de 20kWp e 6 pontos de recarga EV.</span>
+              </div>
+              <div class="portfolio-meta-item">
+                <span class="portfolio-meta-label">Resultado:</span>
+                <span class="portfolio-meta-value">Condomínio 100% operacional em tecnologia desde o primeiro mês, com payback solar estimado em 4 anos.</span>
+              </div>
+            </div>
+            <a href="https://n8n.dlsolucoescondominiais.com.br/webhook/start?utm_source=site&utm_medium=portfolio&utm_campaign=vertical-novo" class="btn btn-primary"
+               onclick="dataLayer.push({'event':'cta_click','cta_location':'portfolio','cta_text':'Solicitar Avaliação Técnica','portfolio_type':'vertical-novo'});">
+              ⚡ Solicitar Avaliação Técnica
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       QUEM ATENDEMOS (PÚBLICOS ATENDIDOS)
+       ============================================ -->
+  <section class="section" id="segmentos">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">Públicos Atendidos</span>
+        <h2>Soluções sob medida para o seu perfil de infraestrutura</h2>
+        <p>A DL Soluções Condominiais atua com soluções técnicas planejadas e executadas para atender as demandas específicas de cada segmento no Rio de Janeiro.</p>
+      </div>
+
+      <style>
+        .segments-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 24px;
+          margin-top: 40px;
+        }
+
+        .segment-card {
+          background: var(--dl-surface);
+          border: 1px solid var(--dl-border);
+          border-radius: var(--radius-md);
+          padding: 30px;
+          transition: all var(--transition);
+          display: flex;
+          flex-direction: column;
+        }
+
+        .segment-card:hover {
+          transform: translateY(-4px);
+          box-shadow: var(--shadow-hover);
+          border-color: var(--dl-gold);
+        }
+
+        .segment-header-block {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          margin-bottom: 20px;
+        }
+
+        .segment-icon-box {
+          font-size: 2rem;
+          background: var(--dl-bg-alt);
+          width: 50px;
+          height: 50px;
+          border-radius: var(--radius-sm);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .segment-card h3 {
+          font-family: 'Outfit', sans-serif;
+          font-size: 1.25rem;
+          color: var(--dl-heading);
+          font-weight: 700;
+        }
+
+        .segment-card p {
+          font-size: 0.9rem;
+          color: var(--dl-text-muted);
+          line-height: 1.5;
+          margin-bottom: 20px;
+        }
+
+        .segment-services {
+          margin-top: auto;
+          border-top: 1px solid var(--dl-border);
+          padding-top: 16px;
+        }
+
+        .segment-services h4 {
+          font-size: 0.8rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          color: var(--dl-gold);
+          margin-bottom: 12px;
+          font-weight: 700;
+        }
+
+        .segment-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .segment-tag {
+          font-size: 0.78rem;
+          font-weight: 600;
+          color: var(--dl-text);
+          background: var(--dl-bg-alt);
+          padding: 4px 10px;
+          border-radius: 4px;
+          border: 1px solid var(--dl-border);
+          transition: all var(--transition);
+        }
+
+        .segment-card:hover .segment-tag {
+          border-color: rgba(200,150,46,0.3);
+        }
+      </style>
+
+      <div class="segments-grid">
+        <!-- Card 1 -->
+        <div class="segment-card">
+          <div class="segment-header-block">
+            <div class="segment-icon-box">🏢</div>
+            <h3>Condomínios Pequenos</h3>
+          </div>
+          <p>Otimização de custos prediais, controle técnico e proteção sob medida para edifícios e blocos residenciais de menor porte.</p>
+          <div class="segment-services">
+            <h4>Soluções Indicadas:</h4>
+            <div class="segment-tags">
+              <span class="segment-tag">DL Guardião</span>
+              <span class="segment-tag">DL Fortress</span>
+              <span class="segment-tag">DL Gatekeeper</span>
+              <span class="segment-tag">DL Volt</span>
+              <span class="segment-tag">DL Partner</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="segment-card">
+          <div class="segment-header-block">
+            <div class="segment-icon-box">🏰</div>
+            <h3>Condomínios Médios</h3>
+          </div>
+          <p>Gestão integrada de segurança eletrônica, controle de nível de reservatórios, conformidade de alarmes e elétrica geral.</p>
+          <div class="segment-services">
+            <h4>Soluções Indicadas:</h4>
+            <div class="segment-tags">
+              <span class="segment-tag">DL Guardião</span>
+              <span class="segment-tag">DL Fortress</span>
+              <span class="segment-tag">DL Acqua</span>
+              <span class="segment-tag">DL Alerta</span>
+              <span class="segment-tag">DL Volt</span>
+              <span class="segment-tag">DL Partner</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="segment-card">
+          <div class="segment-header-block">
+            <div class="segment-icon-box">🏛️</div>
+            <h3>Verticais Antigos</h3>
+          </div>
+          <p>Projetos de modernização técnica (retrofit) para quadros elétricos, sistemas elétricos desorganizados e prevenção de incêndio.</p>
+          <div class="segment-services">
+            <h4>Soluções Indicadas:</h4>
+            <div class="segment-tags">
+              <span class="segment-tag">DL Volt</span>
+              <span class="segment-tag">DL Guardião</span>
+              <span class="segment-tag">DL Acqua</span>
+              <span class="segment-tag">DL Gatekeeper</span>
+              <span class="segment-tag">DL Fortress</span>
+              <span class="segment-tag">DL Alerta</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="segment-card">
+          <div class="segment-header-block">
+            <div class="segment-icon-box">🏢</div>
+            <h3>Verticais Novos</h3>
+          </div>
+          <p>Estruturação de alta tecnologia desde o início: infraestrutura de recarga veicular, eficiência solar e controle de acessos.</p>
+          <div class="segment-services">
+            <h4>Soluções Indicadas:</h4>
+            <div class="segment-tags">
+              <span class="segment-tag">DL Fortress</span>
+              <span class="segment-tag">DL Guardião</span>
+              <span class="segment-tag">DL VoltCharge</span>
+              <span class="segment-tag">DL EcoVolt</span>
+              <span class="segment-tag">DL Gatekeeper</span>
+              <span class="segment-tag">DL Partner</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="segment-card">
+          <div class="segment-header-block">
+            <div class="segment-icon-box">📋</div>
+            <h3>Administradoras</h3>
+          </div>
+          <p>Tranquilidade jurídica e conformidade técnica para administradoras de condomínios parceiras com relatórios e suporte ágil.</p>
+          <div class="segment-services">
+            <h4>Soluções Indicadas:</h4>
+            <div class="segment-tags">
+              <span class="segment-tag">DL Partner</span>
+              <span class="segment-tag">DL Guardião</span>
+              <span class="segment-tag">DL Fortress</span>
+              <span class="segment-tag">DL Volt</span>
+              <span class="segment-tag">DL Acqua</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="segment-card">
+          <div class="segment-header-block">
+            <div class="segment-icon-box">🏫</div>
+            <h3>Escolas e Colégios</h3>
+          </div>
+          <p>Proteção patrimonial escolar, controle rígido de portarias de alunos e prevenção eletrônica de incêndio para instituições de ensino.</p>
+          <div class="segment-services">
+            <h4>Soluções Indicadas:</h4>
+            <div class="segment-tags">
+              <span class="segment-tag">DL Guardião</span>
+              <span class="segment-tag">DL Fortress</span>
+              <span class="segment-tag">DL Gatekeeper</span>
+              <span class="segment-tag">DL Volt</span>
+              <span class="segment-tag">DL Alerta</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 7 -->
+        <div class="segment-card">
+          <div class="segment-header-block">
+            <div class="segment-icon-box">🏪</div>
+            <h3>Empresas e Lojas</h3>
+          </div>
+          <p>Segurança física de patrimônio comercial, redução do custo energético com painéis solares e manutenção elétrica preventiva.</p>
+          <div class="segment-services">
+            <h4>Soluções Indicadas:</h4>
+            <div class="segment-tags">
+              <span class="segment-tag">DL Guardião</span>
+              <span class="segment-tag">DL Fortress</span>
+              <span class="segment-tag">DL Volt</span>
+              <span class="segment-tag">DL EcoVolt</span>
+              <span class="segment-tag">DL Partner</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 8 -->
+        <div class="segment-card">
+          <div class="segment-header-block">
+            <div class="segment-icon-box">🍳</div>
+            <h3>Restaurantes e Padarias</h3>
+          </div>
+          <p>Suporte de alto desempenho para chapas, grills e fritadeiras profissionais, além de infraestrutura elétrica e CFTV predial.</p>
+          <div class="segment-services">
+            <h4>Soluções Indicadas:</h4>
+            <div class="segment-tags">
+              <span class="segment-tag">DL Express</span>
+              <span class="segment-tag">DL Volt</span>
+              <span class="segment-tag">DL Guardião</span>
+              <span class="segment-tag">DL Fortress</span>
+              <span class="segment-tag">DL Partner</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       GASTRONOMIA (DL Express)
+       ============================================ -->
+  <section class="section" id="gastronomia">
+    <div class="container">
+      <div class="gastro-banner">
+        <div class="gastro-icon">🍔</div>
+        <div>
+          <h3>DL Express: Suporte Técnico Oficial Mult•Grill no Rio de Janeiro</h3>
+          <p>Através da nossa divisão especializada DL Express, a DL Soluções Condominiais atende redes de padarias, lanchonetes e hamburguerias no RJ com manutenção rápida, instalação elétrica e infraestrutura de alta demanda para equipamentos Mult•Grill e Mult•Solution.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SEO GEO BLOCK
+       ============================================ -->
+  <section class="section section-alt" id="cobertura">
+    <div class="container">
+      <div class="geo-block">
+        <h3>Atendemos todos os bairros do Rio de Janeiro</h3>
+        <div class="geo-zones">
+          <div class="geo-zone">
+            <h4>Zona Oeste</h4>
+            <p>Barra da Tijuca, Recreio dos Bandeirantes, Jacarepaguá, Freguesia, Taquara, Pechincha, Tanque, Anil, Gardênia Azul, Curicica, Vargem Grande, Vargem Pequena, Camorim, Itanhangá e Campo Grande.</p>
+          </div>
+          <div class="geo-zone">
+            <h4>Zona Sul</h4>
+            <p>Copacabana, Ipanema, Leblon, Botafogo, Flamengo, Laranjeiras, Catete, Glória, Humaitá, Jardim Botânico, Gávea, São Conrado, Leme e Urca.</p>
+          </div>
+          <div class="geo-zone">
+            <h4>Zona Norte</h4>
+            <p>Tijuca, Vila Isabel, Grajaú, Méier, Maracanã, Engenho Novo, Ilha do Governador, Bonsucesso, Penha, Olaria, Ramos, Del Castilho e Cachambi.</p>
+          </div>
+          <div class="geo-zone">
+            <h4>Centro e Região</h4>
+            <p>Centro, Lapa, Santa Teresa, Saúde, Gamboa, Cidade Nova, Estácio, Rio Comprido, São Cristóvão e Benfica.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       CTA FINAL
+       ============================================ -->
+  <section class="cta-section" id="contato">
+    <div class="container">
+      <style>
+        .contact-container {
+          max-width: 800px;
+          margin: 0 auto;
+          text-align: left;
+          background: rgba(255,255,255,0.03);
+          border: 1px solid rgba(255,255,255,0.08);
+          border-radius: var(--radius-lg);
+          padding: 40px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .contact-container h2 {
+          font-family: 'Outfit', sans-serif;
+          color: var(--dl-white);
+          font-size: 2rem;
+          margin-bottom: 12px;
+          text-align: center;
+        }
+
+        .contact-container p.subtitle {
+          color: rgba(255,255,255,0.7);
+          text-align: center;
+          margin-bottom: 30px;
+          font-size: 1rem;
+        }
+
+        .form-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+        }
+
+        .form-group {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .form-group.full-width {
+          grid-column: span 2;
+        }
+
+        .form-group label {
+          color: rgba(255,255,255,0.9);
+          font-size: 0.85rem;
+          font-weight: 600;
+          margin-bottom: 8px;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.15);
+          border-radius: var(--radius-sm);
+          padding: 12px 16px;
+          color: var(--dl-white);
+          font-size: 0.95rem;
+          font-family: 'Inter', sans-serif;
+          transition: all var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+          outline: none;
+          border-color: var(--dl-gold);
+          background: rgba(255,255,255,0.08);
+          box-shadow: 0 0 10px rgba(200,150,46,0.2);
+        }
+
+        .form-group select option {
+          background: var(--dl-blue-dark);
+          color: var(--dl-white);
+        }
+
+        .form-checkbox {
+          display: flex;
+          align-items: flex-start;
+          gap: 10px;
+          grid-column: span 2;
+          margin-top: 10px;
+        }
+
+        .form-checkbox input {
+          margin-top: 4px;
+          width: 16px;
+          height: 16px;
+          accent-color: var(--dl-gold);
+          cursor: pointer;
+        }
+
+        .form-checkbox label {
+          color: rgba(255,255,255,0.8);
+          font-size: 0.82rem;
+          line-height: 1.5;
+          cursor: pointer;
+        }
+
+        .form-checkbox a {
+          color: var(--dl-gold-light);
+          text-decoration: underline;
+        }
+
+        .form-submit-block {
+          grid-column: span 2;
+          text-align: center;
+          margin-top: 20px;
+        }
+
+        .btn-submit {
+          background: linear-gradient(135deg, var(--dl-gold), var(--dl-gold-light));
+          color: rgb(27, 43, 60);
+          border: none;
+          font-weight: 700;
+          padding: 16px 40px;
+          font-size: 1.05rem;
+          border-radius: var(--radius-sm);
+          cursor: pointer;
+          transition: all var(--transition);
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .btn-submit:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(200,150,46,0.3);
+        }
+
+        .btn-submit:disabled {
+          background: #5b6b7c;
+          color: #dde4ec;
+          cursor: not-allowed;
+          transform: none;
+          box-shadow: none;
+        }
+
+        .alert-message {
+          padding: 16px 20px;
+          border-radius: var(--radius-sm);
+          font-size: 0.92rem;
+          line-height: 1.6;
+          margin-top: 20px;
+          display: none;
+          grid-column: span 2;
+        }
+
+        .alert-message.error {
+          background: rgba(180,35,24,0.15);
+          border: 1px solid var(--dl-danger);
+          color: #fecdca;
+        }
+
+        .alert-message.success {
+          background: rgba(8,116,67,0.15);
+          border: 1px solid var(--dl-success);
+          color: #d1fadf;
+        }
+
+        .alert-message.warning {
+          background: rgba(200,150,46,0.15);
+          border: 1px solid var(--dl-gold);
+          color: #fef08a;
+        }
+
+        @media (max-width: 600px) {
+          .form-grid {
+            grid-template-columns: 1fr;
+          }
+          .form-group.full-width {
+            grid-column: span 1;
+          }
+          .form-checkbox {
+            grid-column: span 1;
+          }
+          .alert-message {
+            grid-column: span 1;
+          }
+          .contact-container {
+            padding: 24px;
+          }
+        }
+      </style>
+
+      <div class="contact-container">
+        <h2>Solicitar Avaliação Técnica</h2>
+        <p class="subtitle">Receba um diagnóstico completo da infraestrutura do seu condomínio ou empresa.</p>
+
+        <form id="dl-contact-form" class="form-grid">
+          <!-- Nome -->
+          <div class="form-group">
+            <label for="nome">Nome Completo</label>
+            <input type="text" id="nome" name="nome" required placeholder="Ex: Diogo Luiz">
+          </div>
+
+          <!-- WhatsApp -->
+          <div class="form-group">
+            <label for="whatsapp">WhatsApp</label>
+            <input type="tel" id="whatsapp" name="whatsapp" required placeholder="Ex: (21) 96878-2196">
+          </div>
+
+          <!-- E-mail -->
+          <div class="form-group">
+            <label for="email">E-mail Corporativo/Condominial</label>
+            <input type="email" id="email" name="email" required placeholder="Ex: contato@condominio.com.br">
+          </div>
+
+          <!-- Empresa ou Condomínio -->
+          <div class="form-group">
+            <label for="nome_empresa_ou_condominio">Empresa ou Condomínio</label>
+            <input type="text" id="nome_empresa_ou_condominio" name="nome_empresa_ou_condominio" required placeholder="Ex: Condomínio Edifício Lapa">
+          </div>
+
+          <!-- Tipo de Cliente -->
+          <div class="form-group">
+            <label for="tipo_cliente">Tipo de Empreendimento</label>
+            <select id="tipo_cliente" name="tipo_cliente" required>
+              <option value="" disabled selected>Selecione uma opção</option>
+              <option value="condominio">Condomínio Residencial</option>
+              <option value="administradora">Administradora</option>
+              <option value="escola">Escola / Colégio</option>
+              <option value="comercio">Comércio / Lanchonete / Restaurante</option>
+              <option value="empresa">Empresa / Escritório</option>
+              <option value="outro">Outro</option>
+            </select>
+          </div>
+
+          <!-- Cliente Ativo -->
+          <div class="form-group">
+            <label for="cliente_ativo">Já é cliente ativo da DL?</label>
+            <select id="cliente_ativo" name="cliente_ativo" required>
+              <option value="false">Não, desejo atendimento comercial</option>
+              <option value="true">Sim, necessito de suporte/manutenção</option>
+            </select>
+          </div>
+
+          <!-- Bairro -->
+          <div class="form-group">
+            <label for="bairro">Bairro</label>
+            <input type="text" id="bairro" name="bairro" required placeholder="Ex: Barra da Tijuca">
+          </div>
+
+          <!-- Cidade -->
+          <div class="form-group">
+            <label for="cidade">Cidade</label>
+            <input type="text" id="cidade" name="cidade" required value="Rio de Janeiro" placeholder="Ex: Rio de Janeiro">
+          </div>
+
+          <!-- Serviço de Interesse -->
+          <div class="form-group">
+            <label for="servico_interesse">Serviço de Interesse</label>
+            <select id="servico_interesse" name="servico_interesse" required>
+              <option value="" disabled selected>Selecione o serviço</option>
+              <option value="DL Guardião">DL Guardião (CFTV e Segurança)</option>
+              <option value="DL Fortress">DL Fortress (Controle de Acesso)</option>
+              <option value="DL Acqua">DL Acqua (Automação de Bombas)</option>
+              <option value="DL Gatekeeper">DL Gatekeeper (Automação de Portões)</option>
+              <option value="DL Volt">DL Volt (Elétrica Predial)</option>
+              <option value="DL VoltCharge">DL VoltCharge (Carregadores EV)</option>
+              <option value="DL EcoVolt">DL EcoVolt (Energia Solar)</option>
+              <option value="DL Alerta">DL Alerta (Prevenção de Incêndio)</option>
+              <option value="DL Partner">DL Partner (Contrato de Manutenção)</option>
+              <option value="DL Express">DL Express (Suporte Mult•Grill)</option>
+            </select>
+          </div>
+
+          <!-- Urgência -->
+          <div class="form-group">
+            <label for="urgencia">Urgência do Atendimento</label>
+            <select id="urgencia" name="urgencia" required>
+              <option value="baixa">Baixa (Planejamento / Cotação)</option>
+              <option value="media" selected>Média (Instalação em breve)</option>
+              <option value="alta">Alta (Emergência / Equipamento parado)</option>
+            </select>
+          </div>
+
+          <!-- Melhor Horário -->
+          <div class="form-group">
+            <label for="melhor_horario">Melhor Horário para Contato</label>
+            <input type="text" id="melhor_horario" name="melhor_horario" required placeholder="Ex: Horário comercial (Manhã/Tarde)">
+          </div>
+
+          <!-- Descrição -->
+          <div class="form-group full-width">
+            <label for="descricao">Descrição da Necessidade</label>
+            <textarea id="descricao" name="descricao" rows="4" required placeholder="Descreva brevemente o problema ou projeto que necessita de suporte técnico..."></textarea>
+          </div>
+
+          <!-- Checkboxes Consentimento -->
+          <div class="form-checkbox">
+            <input type="checkbox" id="aceite_contato" name="aceite_contato" required checked>
+            <label for="aceite_contato">Concordo em receber contatos comerciais e técnicos da equipe DL Soluções Condominiais.</label>
+          </div>
+
+          <div class="form-checkbox">
+            <input type="checkbox" id="aceite_lgpd" name="aceite_lgpd" required checked>
+            <label for="aceite_lgpd">Aceito o tratamento dos meus dados conforme a LGPD para fins de atendimento e proposta comercial. Consulte nossa <a href="politica-privacidade.html" target="_blank">Política de Privacidade</a>.</label>
+          </div>
+
+          <!-- Mensagens de Alerta -->
+          <div id="alert-msg" class="alert-message"></div>
+
+          <!-- Submit -->
+          <div class="form-submit-block">
+            <button type="submit" id="btn-submit-contact" class="btn-submit">
+              <span>⚡ Enviar Solicitação Técnica</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       BLOG DO SÍNDICO (INBOUND)
+       ============================================ -->
+  <style>
+    .blog-section { padding: 80px 0; background: var(--dl-bg); }
+    .blog-header { text-align: center; margin-bottom: 48px; }
+    .blog-header h2 { font-family: 'Outfit', sans-serif; font-size: clamp(2rem, 4vw, 2.5rem); color: var(--dl-heading); margin-bottom: 16px; }
+    .blog-header p { color: var(--dl-text-muted); font-size: 1.1rem; max-width: 700px; margin: 0 auto; }
+    
+    .blog-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 50px; }
+    .blog-card { background: var(--dl-surface); border: 1px solid var(--dl-border); border-radius: var(--radius-md); overflow: hidden; transition: all var(--transition); display: flex; flex-direction: column; }
+    .blog-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+    .blog-card-img { height: 180px; background: var(--dl-blue-dark); position: relative; }
+    .blog-card-img.c1 { background: linear-gradient(135deg, rgba(11,31,51,0.8), rgba(29,93,143,0.8)), url('assets/controle_acesso.png') center/cover; }
+    .blog-card-img.c2 { background: linear-gradient(135deg, rgba(11,31,51,0.8), rgba(200,150,46,0.8)), url('assets/eletrica.png') center/cover; }
+    .blog-card-img.c3 { background: linear-gradient(135deg, rgba(11,31,51,0.8), rgba(8,116,67,0.8)), url('assets/cftv.png') center/cover; }
+    .blog-card-body { padding: 24px; flex-grow: 1; display: flex; flex-direction: column; }
+    .blog-card-body h3 { font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--dl-heading); margin-bottom: 12px; line-height: 1.3; }
+    .blog-card-body p { color: var(--dl-text-muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px; flex-grow: 1; }
+    .blog-card-link { color: var(--dl-blue-light); font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 6px; margin-top: auto; }
+    [data-theme="dark"] .blog-card-link { color: var(--dl-gold-light); }
+    
+    .newsletter-banner { background: linear-gradient(135deg, var(--dl-blue-dark), var(--dl-blue)); border-radius: var(--radius-lg); padding: 40px; text-align: center; color: white; box-shadow: var(--shadow-card); }
+    .newsletter-banner h3 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; margin-bottom: 24px; }
+    .newsletter-form { display: flex; gap: 12px; max-width: 500px; margin: 0 auto; flex-wrap: wrap; }
+    .newsletter-form input { flex: 1; min-width: 200px; padding: 14px 20px; border: none; border-radius: var(--radius-sm); font-size: 1rem; }
+    .newsletter-form button { background: var(--dl-gold); color: #1a1a1a; font-weight: 700; padding: 14px 28px; border: none; border-radius: var(--radius-sm); cursor: pointer; transition: all var(--transition); white-space: nowrap; }
+    .newsletter-form button:hover { background: var(--dl-gold-light); transform: translateY(-2px); }
+  </style>
+
+  <section class="blog-section" id="blog">
+    <div class="container">
+      <div class="blog-header">
+        <h2>Blog do Síndico: Gestão e Tecnologia Condominial</h2>
+        <p>Artigos técnicos, dicas de infraestrutura e guias de segurança para condomínios no Rio de Janeiro.</p>
+      </div>
+      
+      <div class="blog-grid">
+        <!-- Card 1 -->
+        <article class="blog-card">
+          <div class="blog-card-img c1"></div>
+          <div class="blog-card-body">
+            <h3>Como a falha no controle de acesso expõe condomínios na Zona Sul.</h3>
+            <p>Entenda os riscos de sistemas desatualizados e como a tecnologia Fortress blinda o seu patrimônio.</p>
+            <a href="#" class="blog-card-link">Ler artigo <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="blog-card">
+          <div class="blog-card-img c2"></div>
+          <div class="blog-card-body">
+            <h3>Prédios Antigos: Os perigos invisíveis no quadro elétrico.</h3>
+            <p>Aprenda a identificar sinais de sobrecarga antes que uma emergência aconteça no seu condomínio.</p>
+            <a href="#" class="blog-card-link">Ler artigo <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="blog-card">
+          <div class="blog-card-img c3"></div>
+          <div class="blog-card-body">
+            <h3>Manutenção Corretiva vs. Preventiva: Onde o seu condomínio perde dinheiro?</h3>
+            <p>Veja como um contrato de manutenção técnica reduz custos e dores de cabeça para o síndico.</p>
+            <a href="#" class="blog-card-link">Ler artigo <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </article>
+      </div>
+
+      <div class="newsletter-banner">
+        <h3>Receba dicas técnicas exclusivas para síndicos diretamente no seu WhatsApp.</h3>
+        <form action="https://n8n.dlsolucoescondominiais.com.br/webhook/start" method="POST" class="newsletter-form">
+          <input type="tel" name="whatsapp" placeholder="Seu número de WhatsApp" required>
+          <input type="hidden" name="source" value="newsletter_blog">
+          <button type="submit">Quero Receber Dicas</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       FOOTER
+       ============================================ -->
+  <footer class="footer" id="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <img src="assets/logo 250x150px sem fundo.png" alt="DL Soluções Condominiais" loading="lazy">
+          <p>DL SOLUÇÕES CONDOMINIAIS LTDA<br>CNPJ 36.354.697/0001-46<br>CREA-RJ 2022346653<br>Associada ABESE-SP</p>
+          
+          <div style="margin-top: 16px; font-size: 0.9rem;">
+            <a href="mailto:contato@dlsolucoescondominiais.com.br" style="display:block; margin-bottom: 6px;"><i class="fas fa-envelope"></i> contato@dlsolucoescondominiais.com.br</a>
+            <a href="mailto:suporte@dlsolucoescondominiais.com.br" style="display:block; margin-bottom: 6px;"><i class="fas fa-headset"></i> suporte@dlsolucoescondominiais.com.br</a>
+            <a href="mailto:orcamento@dlsolucoescondominiais.com.br" style="display:block;"><i class="fas fa-file-invoice-dollar"></i> orcamento@dlsolucoescondominiais.com.br</a>
+          </div>
+
+          <div class="footer-social" style="margin-top: 24px;">
+            <a href="https://www.instagram.com/dlsolucoescondominiais/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.facebook.com/dlsolucoescondominiais" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.youtube.com/@dlsolucoescondominiais" target="_blank" rel="noopener" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+            <a href="https://www.tiktok.com/@dlsolucoescondominiais" target="_blank" rel="noopener" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+            <a href="https://n8n.dlsolucoescondominiais.com.br/webhook/telegram-redirect" target="_blank" rel="noopener" aria-label="Telegram"><i class="fab fa-telegram-plane"></i></a>
+            <a href="#" target="_blank" rel="noopener" aria-label="Google Meu Negócio"><i class="fab fa-google"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4>Serviços</h4>
+          <ul class="footer-links">
+            <li><a href="#servicos">DL Guardião (CFTV)</a></li>
+            <li><a href="#servicos">DL Fortress (Acesso)</a></li>
+            <li><a href="#servicos">DL Acqua (Bombas)</a></li>
+            <li><a href="#servicos">DL Gatekeeper (Portões)</a></li>
+            <li><a href="#servicos">DL Volt (Elétrica)</a></li>
+            <li><a href="#servicos">DL VoltCharge (Recarga)</a></li>
+            <li><a href="#servicos">DL EcoVolt (Solar)</a></li>
+            <li><a href="#servicos">DL Alerta (Incêndio)</a></li>
+            <li><a href="#servicos">DL Partner (Manutenção)</a></li>
+            <li><a href="#servicos">DL Express (Mult•Grill)</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Institucional</h4>
+          <ul class="footer-links">
+            <li><a href="a-empresa.html">A Empresa</a></li>
+            <li><a href="o-fundador.html">O Fundador</a></li>
+            <li><a href="#portfolio">Portfólio Completo</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Legal</h4>
+          <ul class="footer-links">
+            <li><a href="politica-privacidade.html">Política de Privacidade</a></li>
+            <li><a href="politica-cookies.html">Política de Cookies</a></li>
+            <li><a href="termos-de-uso.html">Termos de Uso</a></li>
+            <li><a href="lgpd-gdpr.html">Direitos do Titular LGPD</a></li>
+            <li><a href="politica-atendimento.html">Política de Atendimento Digital</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2026 DL Soluções Condominiais LTDA — Todos os direitos reservados.</span>
+        <span>Fortress v1 · DL Soluções Condominiais</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================
+       FLOATING WhatsApp (Roteador Aninha — n8n)
+       ============================================ -->
+  <a href="https://n8n.dlsolucoescondominiais.com.br/webhook/whatsapp-redirect?utm_source=site&utm_medium=float&utm_campaign=fortress"
+     class="wa-float" target="_blank" rel="noopener" aria-label="Falar pelo WhatsApp" id="wa-float"
+     onclick="dataLayer.push({'event':'whatsapp_click','source':'floating_button'}); if(typeof fbq==='function') fbq('track','Contact'); if(typeof dlMetaCAPI==='function') dlMetaCAPI('Contact',{source:'whatsapp-float'});">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.625.846 5.059 2.284 7.034L.789 23.492a.5.5 0 00.612.638l4.687-1.412A11.935 11.935 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-2.24 0-4.318-.724-6.004-1.954a.5.5 0 00-.41-.082l-3.29.99.926-3.117a.5.5 0 00-.068-.435A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+  </a>
+
+  <!-- ============================================
+       COOKIE BANNER (Não bloqueante)
+       ============================================ -->
+  <div class="cookie-banner" id="cookie-banner">
+    <span>🍪 Utilizamos cookies para melhorar sua experiência. Ao continuar navegando, você concorda com nossa <a href="politica-cookies.html">Política de Cookies</a> e <a href="politica-privacidade.html">Política de Privacidade</a>.</span>
+    <button class="cookie-accept" id="cookie-accept">Aceitar</button>
+  </div>
+
+  <!-- ============================================
+       SCRIPTS
+       ============================================ -->
+  <script>
+    // === Theme Toggle ===
+    const themeToggle = document.getElementById('theme-toggle');
+    const savedTheme = localStorage.getItem('dl-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    themeToggle.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('dl-theme', next);
+      themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+      dataLayer.push({'event': 'theme_change', 'theme': next});
+    });
+
+    // === Mobile Nav ===
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const navLinks = document.getElementById('nav-links');
+    mobileToggle.addEventListener('click', () => {
+      const isOpen = navLinks.style.display === 'flex';
+      navLinks.style.display = isOpen ? 'none' : 'flex';
+      navLinks.style.flexDirection = 'column';
+      navLinks.style.position = 'absolute';
+      navLinks.style.top = '70px';
+      navLinks.style.left = '0';
+      navLinks.style.right = '0';
+      navLinks.style.background = 'var(--dl-surface)';
+      navLinks.style.padding = '20px';
+      navLinks.style.borderBottom = '1px solid var(--dl-border)';
+      navLinks.style.gap = '16px';
+      if (isOpen) navLinks.removeAttribute('style');
+    });
+
+    // === Cookie Banner ===
+    const cookieBanner = document.getElementById('cookie-banner');
+    const cookieAccept = document.getElementById('cookie-accept');
+
+    if (!localStorage.getItem('dl-cookies-accepted')) {
+      setTimeout(() => cookieBanner.classList.add('active'), 1500);
+    }
+
+    cookieAccept.addEventListener('click', () => {
+      localStorage.setItem('dl-cookies-accepted', 'true');
+      cookieBanner.classList.remove('active');
+
+      // Upgrade consent
+      gtag('consent', 'update', {
+        'ad_storage': 'granted',
+        'analytics_storage': 'granted',
+        'ad_user_data': 'granted',
+        'ad_personalization': 'granted'
+      });
+
+      dataLayer.push({'event': 'cookie_consent_granted'});
+    });
+
+    // === Scroll tracking for n8n agent ===
+    let maxScroll = 0;
+    window.addEventListener('scroll', () => {
+      const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+      if (scrollPercent > maxScroll) {
+        maxScroll = scrollPercent;
+        if (maxScroll === 25 || maxScroll === 50 || maxScroll === 75 || maxScroll === 90) {
+          dataLayer.push({'event': 'scroll_depth', 'depth': maxScroll + '%'});
+        }
+      }
+    });
+
+    // === Time on page tracking ===
+    setTimeout(() => { dataLayer.push({'event': 'engaged_visit', 'seconds': 30}); }, 30000);
+    setTimeout(() => { dataLayer.push({'event': 'engaged_visit', 'seconds': 60}); }, 60000);
+
+    // === FLOATING WhatsApp Interception & Routing ===
+    const waFloatBtn = document.getElementById('wa-float');
+    if (waFloatBtn) {
+      waFloatBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        const urlParams = new URLSearchParams(window.location.search);
+        const utm_source = urlParams.get('utm_source') || '';
+        
+        let targetUrl = 'https://n8n.dlsolucoescondominiais.com.br/webhook/whatsapp-redirect?utm_source=site&utm_medium=float&utm_campaign=fortress';
+        let eventName = 'clique_whatsapp_comercial';
+        
+        const isMeta = ['instagram', 'facebook', 'meta', 'threads'].some(source => 
+          utm_source.toLowerCase().includes(source)
+        );
+        
+        if (localStorage.getItem('dl_cliente_ativo') === 'true') {
+          eventName = 'clique_suporte_cliente';
+          targetUrl = 'https://n8n.dlsolucoescondominiais.com.br/webhook/whatsapp-redirect?utm_source=site&utm_medium=float&utm_campaign=suporte';
+        } else if (isMeta) {
+          eventName = 'clique_whatsapp_meta';
+          targetUrl = 'https://n8n.dlsolucoescondominiais.com.br/webhook/whatsapp-redirect?utm_source=' + encodeURIComponent(utm_source) + '&utm_medium=float&utm_campaign=meta';
+        }
+        
+        dataLayer.push({
+          'event': eventName,
+          'source': 'floating_button',
+          'target_url': targetUrl
+        });
+        
+        if (typeof fbq === 'function') fbq('track', 'Contact');
+        if (typeof dlMetaCAPI === 'function') dlMetaCAPI('Contact', {source: 'whatsapp-float'});
+        
+        window.open(targetUrl, '_blank');
+      });
+    }
+
+    // === Contact Form Submission & Routing Logic ===
+    const contactForm = document.getElementById('dl-contact-form');
+    const alertMsg = document.getElementById('alert-msg');
+    const submitBtn = document.getElementById('btn-submit-contact');
+
+    if (contactForm) {
+      contactForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        alertMsg.style.display = 'none';
+        alertMsg.className = 'alert-message';
+
+        // 1. Gather form fields
+        const nome = document.getElementById('nome').value.trim();
+        const whatsapp = document.getElementById('whatsapp').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const nome_empresa_ou_condominio = document.getElementById('nome_empresa_ou_condominio').value.trim();
+        const tipo_cliente = document.getElementById('tipo_cliente').value;
+        const cliente_ativo_val = document.getElementById('cliente_ativo').value;
+        const cliente_ativo = cliente_ativo_val === 'true';
+        const bairro = document.getElementById('bairro').value.trim();
+        const cidade = document.getElementById('cidade').value.trim();
+        const servico_interesse = document.getElementById('servico_interesse').value;
+        const urgencia = document.getElementById('urgencia').value;
+        const melhor_horario = document.getElementById('melhor_horario').value.trim();
+        const descricao = document.getElementById('descricao').value.trim();
+        const aceite_contato = document.getElementById('aceite_contato').checked;
+        const aceite_lgpd = document.getElementById('aceite_lgpd').checked;
+
+        // 2. Residential Block validation
+        const blockedTerms = ['casa', 'minha casa', 'apartamento particular', 'residência', 'residencia', 'quarto', 'sala', 'moradia'];
+        const fieldsToCheck = [nome, tipo_cliente, nome_empresa_ou_condominio, bairro, cidade, servico_interesse, descricao, melhor_horario];
+        
+        let isBlocked = false;
+        const checkText = fieldsToCheck.join(' ').toLowerCase();
+
+        blockedTerms.forEach(term => {
+          if (checkText.includes(term)) {
+            isBlocked = true;
+          }
+        });
+
+        if (isBlocked) {
+          dataLayer.push({
+            'event': 'lead_bloqueado_residencial',
+            'details': {
+              'nome': nome,
+              'whatsapp': whatsapp,
+              'tipo_cliente': tipo_cliente
+            }
+          });
+          
+          alertMsg.textContent = 'No momento, a DL Soluções Condominiais atua com atendimento técnico para condomínios, administradoras, colégios, restaurantes, lanchonetes, empresas e operações comerciais.';
+          alertMsg.classList.add('error');
+          alertMsg.style.display = 'block';
+          return;
+        }
+
+        // 3. Normalize WhatsApp
+        const normalizarWhatsapp = (num) => {
+          let clean = num.replace(/\D/g, '');
+          if (clean.length === 10 || clean.length === 11) {
+            clean = '55' + clean;
+          }
+          return clean;
+        };
+        const whatsapp_normalizado = normalizarWhatsapp(whatsapp);
+
+        // 4. URL parameters and UTMs
+        const urlParams = new URLSearchParams(window.location.search);
+        const utm_source = urlParams.get('utm_source') || '';
+        const utm_medium = urlParams.get('utm_medium') || '';
+        const utm_campaign = urlParams.get('utm_campaign') || '';
+        const utm_term = urlParams.get('utm_term') || '';
+        const utm_content = urlParams.get('utm_content') || '';
+        const gclid = urlParams.get('gclid') || '';
+        const gbraid = urlParams.get('gbraid') || '';
+        const wbraid = urlParams.get('wbraid') || '';
+
+        // 5. Determine Route & Dest
+        let tipo_rota = 'novo_lead_comercial';
+        let numero_destino = '55219' + '68782196';
+        let canal_destino_preferencial = 'whatsapp_evolution_comercial';
+
+        const isMeta = ['instagram', 'facebook', 'meta', 'threads'].some(source => 
+          utm_source.toLowerCase().includes(source)
+        );
+
+        if (cliente_ativo) {
+          tipo_rota = 'suporte_cliente_ativo';
+          numero_destino = '55219' + '64742458';
+          canal_destino_preferencial = 'whatsapp_business_suporte';
+        } else if (isMeta) {
+          tipo_rota = 'lead_meta_oficial';
+          numero_destino = '55219' + '92698612';
+          canal_destino_preferencial = 'whatsapp_meta_oficial';
+        }
+
+        localStorage.setItem('dl_cliente_ativo', cliente_ativo ? 'true' : 'false');
+
+        // 6. Payload construction
+        const payload = {
+          origem: 'site_institucional',
+          canal_entrada: 'formulario',
+          dominio: window.location.hostname || 'dlsolucoescondominiais.com.br',
+          nome: nome,
+          whatsapp: whatsapp,
+          whatsapp_normalizado: whatsapp_normalizado,
+          email: email,
+          tipo_cliente: tipo_cliente,
+          cliente_ativo: cliente_ativo,
+          nome_empresa_ou_condominio: nome_empresa_ou_condominio,
+          bairro: bairro,
+          cidade: cidade,
+          servico_interesse: servico_interesse,
+          urgencia: urgencia,
+          descricao: descricao,
+          melhor_horario: melhor_horario,
+          aceite_contato: aceite_contato,
+          aceite_lgpd: aceite_lgpd,
+          canal_destino_preferencial: canal_destino_preferencial,
+          numero_destino: numero_destino,
+          tipo_rota: tipo_rota,
+          pagina_origem: window.location.href,
+          user_agent: navigator.userAgent,
+          utm_source: utm_source,
+          utm_medium: utm_medium,
+          utm_campaign: utm_campaign,
+          utm_term: utm_term,
+          utm_content: utm_content,
+          gclid: gclid,
+          gbraid: gbraid,
+          wbraid: wbraid,
+          data_envio: new Date().toISOString(),
+          status_inicial: 'novo'
+        };
+
+        // Disable button during submit
+        submitBtn.disabled = true;
+        submitBtn.querySelector('span').textContent = 'Processando...';
+
+        try {
+          const response = await fetch('https://n8n.dlsolucoescondominiais.com.br/webhook/dl-receptor', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) {
+            throw new Error('Erro na resposta do servidor.');
+          }
+
+          dataLayer.push({
+            'event': 'envio_formulario_avaliacao',
+            'tipo_rota': tipo_rota,
+            'canal_destino': canal_destino_preferencial,
+            'lead_email': email
+          });
+
+          const redirectUrl = `https://wa.me/${numero_destino}?text=${encodeURIComponent('Olá, acabei de enviar o formulário no site e gostaria de agilizar o meu atendimento.')}`;
+          
+          alertMsg.textContent = 'Solicitação enviada com sucesso! Redirecionando para o WhatsApp...';
+          alertMsg.classList.add('success');
+          alertMsg.style.display = 'block';
+
+          setTimeout(() => {
+            window.location.href = redirectUrl;
+          }, 1500);
+
+        } catch (error) {
+          console.error(error);
+          dataLayer.push({
+            'event': 'erro_formulario',
+            'error_message': error.message
+          });
+          
+          alertMsg.textContent = 'Erro ao enviar a solicitação. Por favor, tente novamente ou fale com nosso atendimento via WhatsApp.';
+          alertMsg.classList.add('error');
+          alertMsg.style.display = 'block';
+          submitBtn.disabled = false;
+          submitBtn.querySelector('span').textContent = '⚡ Enviar Solicitação Técnica';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

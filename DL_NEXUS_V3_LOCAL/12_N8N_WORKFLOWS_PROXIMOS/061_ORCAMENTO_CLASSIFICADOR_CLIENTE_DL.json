@@ -1,0 +1,149 @@
+{
+  "name": "061_ORCAMENTO_CLASSIFICADOR_CLIENTE_DL",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "id": "trigger_061",
+      "name": "Schedule (15m)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [0, 300]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "schema": "public",
+        "table": "dl_orcamentos_site_v2",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "status_orcamento",
+              "condition": "eq",
+              "keyValue": "recebido_para_triagem"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "supa_061_get",
+      "name": "Supabase Get Pendentes",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase DL Nexus"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "if (!$input.all().length || !$input.all()[0].json.id) {\n  return [];\n}\nreturn $input.all();"
+      },
+      "id": "code_061_check",
+      "name": "Check Empty",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.item.json;\nconst prompt = `\nVocê é o Classificador DL Nexus. Analise este lead e retorne um JSON estrito.\n\nRegras de Perfil (perfil_classificado):\n- sindico_condominio, pessoa_fisica, pj_escola, pj_restaurante, pj_lanchonete, pj_confeitaria, pj_empresa_comercio, administradora.\n\nLinhas DL (linha_dl):\n- DL Guardião, DL Fortress, DL Acqua, DL Gatekeeper, DL Volt, DL VoltCharge, DL EcoVolt, DL Alerta, DL Partner, DL Express.\n- Escolha a mais provável.\n\nPendências (array de strings):\n- 'sem_cnpj', 'sem_numero_unidades', 'sem_endereco', 'sem_descricao', 'sem_midia', 'escopo_insuficiente'\n\nRetorne EXATAMENTE este JSON e mais nada:\n{\n  \"perfil_classificado\": \"\",\n  \"linha_dl\": \"\",\n  \"novas_pendencias\": []\n}\n\nLEAD:\nTipo: ${d.tipo_cliente}\nNome Empresa: ${d.nome_empresa_ou_condominio}\nServiço Interesse: ${d.servico_interesse}\nDescrição: ${d.descricao}\nCNPJ: ${d.cnpj}\nUnidades: ${d.numero_unidades}\nEndereco: ${d.endereco_completo}\nMidia: ${d.midia_urls}\n`;\n\nreturn [{ json: { ...d, ai_prompt: prompt } }];"
+      },
+      "id": "code_061_prep_prompt",
+      "name": "Prep Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.deepseek.com/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "deepseek-chat"
+            },
+            {
+              "name": "messages",
+              "value": "=[{\"role\":\"user\", \"content\": {{$json.ai_prompt}} }]"
+            },
+            {
+              "name": "response_format",
+              "value": "={\"type\": \"json_object\"}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http_061_deepseek",
+      "name": "DeepSeek Classify",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [960, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "DEEPSEEK_CREDENTIAL_ID",
+          "name": "DeepSeek API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const original = $input.item.json;\nconst aiResponse = JSON.parse(original.choices[0].message.content);\n\nlet pendenciasAtuais = [];\ntry {\n  pendenciasAtuais = typeof original.pendencias === 'string' ? JSON.parse(original.pendencias) : (original.pendencias || []);\n} catch (e) {}\n\nconst novasPendencias = aiResponse.novas_pendencias || [];\nconst pendenciasFinais = [...new Set([...pendenciasAtuais, ...novasPendencias])];\n\nreturn [{\n  json: {\n    id: original.id,\n    perfil_classificado: aiResponse.perfil_classificado || 'indefinido',\n    linha_dl: aiResponse.linha_dl || 'indefinida',\n    pendencias: JSON.stringify(pendenciasFinais),\n    status_orcamento: 'classificado'\n  }\n}];"
+      },
+      "id": "code_061_parse",
+      "name": "Parse Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 300]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "dl_orcamentos_site_v2",
+        "matchColumns": "id",
+        "columns": "perfil_classificado,linha_dl,pendencias,status_orcamento",
+        "options": {}
+      },
+      "id": "supa_061_update",
+      "name": "Supabase Update",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1440, 300],
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase DL Nexus"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule (15m)": { "main": [ [ { "node": "Supabase Get Pendentes", "type": "main", "index": 0 } ] ] },
+    "Supabase Get Pendentes": { "main": [ [ { "node": "Check Empty", "type": "main", "index": 0 } ] ] },
+    "Check Empty": { "main": [ [ { "node": "Prep Prompt", "type": "main", "index": 0 } ] ] },
+    "Prep Prompt": { "main": [ [ { "node": "DeepSeek Classify", "type": "main", "index": 0 } ] ] },
+    "DeepSeek Classify": { "main": [ [ { "node": "Parse Result", "type": "main", "index": 0 } ] ] },
+    "Parse Result": { "main": [ [ { "node": "Supabase Update", "type": "main", "index": 0 } ] ] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

@@ -1,0 +1,119 @@
+{
+  "name": "205_AGENTE_RISCO_CONTRATUAL",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "agente-risco-contratual",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook",
+      "name": "Webhook Call",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Tenta extrair dados do body\nlet inputData = $json.body || $json;\nreturn { json: inputData };\n"
+      },
+      "id": "parse_input",
+      "name": "Parse Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.deepseek.com/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.DEEPSEEK_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendQuery": false,
+        "queryParameters": {
+          "parameters": []
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"model\": \"deepseek-chat\", \"response_format\": {\"type\": \"json_object\"}, \"messages\": [{\"role\": \"system\", \"content\": \"Você é o Agente de Risco Contratual. Analise os riscos operacionais da execução. Sugira cláusulas comerciais de proteção (ex: exclusão de danos pré-existentes) e condições de pagamento seguras.\"}, {\"role\": \"user\", \"content\": \"PAYLOAD DO AGENTE:\\n={{JSON.stringify($json)}}\"}]}",
+        "options": {}
+      },
+      "id": "api_llm",
+      "name": "API LLM",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nlet orc_id = $('Parse Input').item.json.orcamento_id || \"ID_NAO_INFORMADO\";\nlet api_response = {};\n\ntry {\n  api_response = JSON.parse($('API LLM').item.json.choices[0].message.content);\n} catch(e) {\n  api_response = { erro: \"Falha ao parsear JSON da LLM\" };\n}\n\nreturn {\n  json: {\n    orcamento_id: orc_id,\n    agente: \"205_AGENTE_RISCO_CONTRATUAL\",\n    status: api_response.erro ? \"erro\" : \"ok\",\n    score_confianca: api_response.score_confianca || 85,\n    dados: api_response,\n    pendencias: []\n  }\n};\n"
+      },
+      "id": "format_output",
+      "name": "Format Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        600,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Call": {
+      "main": [
+        [
+          {
+            "node": "Parse Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Input": {
+      "main": [
+        [
+          {
+            "node": "API LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "API LLM": {
+      "main": [
+        [
+          {
+            "node": "Format Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

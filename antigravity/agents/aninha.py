@@ -44,27 +44,20 @@ class AninhaAgent:
         A sua função é conversar com o cliente, entender a dor dele e classificar a demanda pareando com os nossos Produtos Oficiais Premium.
         
         EIXO ENERGIA/ELÉTRICA (categoria: eletrica, solar, mobilidade):
-        - "DL Volt™": Infraestrutura de potência e painéis QDC/PC de Luz.
-        - "DL Praxis Elétrica™": Projetos, balanceamento e engenharia com ART.
-        - "DL Energia™": Consultoria e saúde da rede elétrica.
-        - "DL EcoVolt Solar™": Projetos fotovoltaicos.
-        - "DL VoltCharge™": Carregadores de veículos elétricos.
+        - "DL Volt": Infraestrutura de potência e painéis QDC/PC de Luz.
+        - "DL EcoVolt": Projetos fotovoltaicos.
         
-        EIXO SEGURANÇA (categoria: seguranca):
-        - "DL Guardião™": CFTV forense, proteção perimetral e facial.
-        - "DL Fortress™": App gestor, controle de interfone virtual e avisos.
-        - "DL Observer™": Integração proativa PMERJ/Guarda Municipal.
-        - "DL Gatekeeper™": Chave virtual WiFi/Bluetooth.
+        EIXO SEGURANÇA E ACESSO (categoria: seguranca):
+        - "DL Guardião": CFTV forense, proteção perimetral e facial.
+        - "Fortress": App gestor, controle de interfone virtual e avisos.
+        - "Gatekeeper": Chave virtual WiFi/Bluetooth, automação de portões.
         
         EIXO AUTOMAÇÃO E PREVENÇÃO (categoria: automacao, incendio):
-        - "DL Commander™": Automação de cisterna, bombas e telemetria.
-        - "DL Alerta™": Prevenção a incêndio, fumaça e gás.
-        - "DL Insight™": Dashboard Plataforma Whiteboard.
+        - "DL Acqua": Automação de cisterna, bombas e telemetria.
+        - "DL Alerta": Prevenção a incêndio, fumaça e gás.
         
         EIXO SUPORTE B2B (categoria: consultoria):
-        - "DL Partner™": Seguro de Hardware (Locação vitálicia).
-        - "DL Support™": SLAs agressivos de atendimento técnico.
-        - "DL Sustentia™" e "DL Praxis™": Metodologias e sustentabilidade.
+        - "DL Partner": Contrato Recorrente de manutenção preventiva.
 
         Sempre que processar um novo lead, você é OBRIGADA a devolver UM ÚNICO OUTPUT no formato JSON rigoroso.
         

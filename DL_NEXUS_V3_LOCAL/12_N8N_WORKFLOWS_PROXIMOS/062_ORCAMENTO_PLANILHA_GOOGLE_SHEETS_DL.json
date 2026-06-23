@@ -1,0 +1,167 @@
+{
+  "name": "062_ORCAMENTO_PLANILHA_GOOGLE_SHEETS_DL",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "id": "trigger_062",
+      "name": "Schedule (15m)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [0, 300]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "schema": "public",
+        "table": "dl_orcamentos_site_v2",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "status_orcamento",
+              "condition": "eq",
+              "keyValue": "classificado"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "supa_062_get",
+      "name": "Supabase Get Classificados",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase DL Nexus"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "if (!$input.all().length || !$input.all()[0].json.id) {\n  return [];\n}\nreturn $input.all();"
+      },
+      "id": "code_062_check",
+      "name": "Check Empty",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.item.json;\nconst hoje = new Date().toLocaleDateString('pt-BR');\n\nreturn [{\n  json: {\n    ...d,\n    data_formatada: hoje,\n    link_supabase: `https://supabase.com/dashboard/project/YOUR_PROJECT_REF/editor/${d.id}`\n  }\n}];"
+      },
+      "id": "code_062_prep_sheets",
+      "name": "Prep Data Sheets",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "GOOGLE_SHEETS_ID_AQUI",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Orçamentos",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Protocolo": "={{ $json.protocolo }}",
+            "Data": "={{ $json.data_formatada }}",
+            "Nome": "={{ $json.nome }}",
+            "WhatsApp": "={{ $json.whatsapp }}",
+            "Email": "={{ $json.email }}",
+            "Tipo Cliente": "={{ $json.tipo_cliente }}",
+            "Perfil Classificado": "={{ $json.perfil_classificado }}",
+            "Empresa/Condomínio": "={{ $json.nome_empresa_ou_condominio }}",
+            "CNPJ": "={{ $json.cnpj }}",
+            "CPF Mascarado": "={{ $json.cpf_hash_ou_mascarado }}",
+            "Endereço": "={{ $json.endereco_completo }}",
+            "Bairro": "={{ $json.bairro }}",
+            "Cidade": "={{ $json.cidade }}",
+            "Serviço Interesse": "={{ $json.servico_interesse }}",
+            "Linha DL": "={{ $json.linha_dl }}",
+            "Unidades": "={{ $json.numero_unidades }}",
+            "Rateio": "={{ $json.rateio_permitido ? 'Sim' : 'Não' }}",
+            "Descrição": "={{ $json.descricao }}",
+            "Pendências": "={{ $json.pendencias }}",
+            "Status": "enviado_para_planilha",
+            "Responsável": "",
+            "Observações": "",
+            "Link Supabase": "={{ $json.link_supabase }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "sheets_062_append",
+      "name": "Google Sheets Append",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.1,
+      "position": [960, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GOOGLE_SHEETS_CREDENTIAL_ID",
+          "name": "Google Sheets DL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{\n  json: {\n    id: $input.item.json.id,\n    status_orcamento: 'enviado_para_planilha'\n  }\n}];"
+      },
+      "id": "code_062_prep_update",
+      "name": "Prep Update",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 300]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "dl_orcamentos_site_v2",
+        "matchColumns": "id",
+        "columns": "status_orcamento",
+        "options": {}
+      },
+      "id": "supa_062_update",
+      "name": "Supabase Update",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1440, 300],
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase DL Nexus"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule (15m)": { "main": [ [ { "node": "Supabase Get Classificados", "type": "main", "index": 0 } ] ] },
+    "Supabase Get Classificados": { "main": [ [ { "node": "Check Empty", "type": "main", "index": 0 } ] ] },
+    "Check Empty": { "main": [ [ { "node": "Prep Data Sheets", "type": "main", "index": 0 } ] ] },
+    "Prep Data Sheets": { "main": [ [ { "node": "Google Sheets Append", "type": "main", "index": 0 } ] ] },
+    "Google Sheets Append": { "main": [ [ { "node": "Prep Update", "type": "main", "index": 0 } ] ] },
+    "Prep Update": { "main": [ [ { "node": "Supabase Update", "type": "main", "index": 0 } ] ] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

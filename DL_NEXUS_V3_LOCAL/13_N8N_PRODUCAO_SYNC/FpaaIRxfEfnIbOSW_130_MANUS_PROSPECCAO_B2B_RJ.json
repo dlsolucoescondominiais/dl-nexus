@@ -1,0 +1,903 @@
+{
+  "updatedAt": "2026-05-30T05:33:49.925Z",
+  "createdAt": "2026-05-25T21:55:32.205Z",
+  "id": "FpaaIRxfEfnIbOSW",
+  "name": "130_MANUS_PROSPECCAO_B2B_RJ",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "prospeccao-b2b-rj",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "2bc0a4de-1234-4567-8901-234567890abc",
+      "name": "Webhook Inicia Prospecção",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "2bc0a4de-1234-4567-8901-234567890abc"
+    },
+    {
+      "parameters": {
+        "jsCode": "const targets = [\n  {\n    \"nome\": \"Condomínio Residencial Vista Mar\",\n    \"tipo\": \"Condomínio\",\n    \"bairro\": \"Copacabana\",\n    \"cidade\": \"Rio de Janeiro\",\n    \"endereco_publico\": \"Rua Barata Ribeiro, 100 - Copacabana\",\n    \"telefone_publico\": \"(21) 99999-0001\",\n    \"email_institucional\": \"sindico@vistamar.com.br\",\n    \"site\": \"www.vistamar.com.br\",\n    \"instagram\": \"@condominiovistamar\",\n    \"facebook\": \"CondominioVistaMar\",\n    \"google_business_link\": \"https://maps.google.com/?cid=123456\",\n    \"dor_provavel\": \"Falta de segurança no acesso de moradores e conta de energia alta\",\n    \"produto_recomendado\": \"CFTV IP, Controle de Acesso e Energia Solar\",\n    \"score_oportunidade\": 0,\n    \"acao_recomendada\": \"Agendar Avaliação Técnica com o Responsável Técnico\",\n    \"status\": \"novo\",\n    \"observacoes\": \"Captado via simulação de busca no Google Places.\"\n  },\n  {\n    \"nome\": \"Colégio Saber e Crescer\",\n    \"tipo\": \"Colégio\",\n    \"bairro\": \"Tijuca\",\n    \"cidade\": \"Rio de Janeiro\",\n    \"endereco_publico\": \"Rua Conde de Bonfim, 500 - Tijuca\",\n    \"telefone_publico\": \"(21) 98888-0002\",\n    \"email_institucional\": \"diretoria@saberecrescer.edu.br\",\n    \"site\": \"www.saberecrescer.edu.br\",\n    \"instagram\": \"@colegiosaberecrescer\",\n    \"facebook\": \"ColegioSaberECrescer\",\n    \"google_business_link\": \"https://maps.google.com/?cid=654321\",\n    \"dor_provavel\": \"Alto consumo de energia devido a ar-condicionado nas salas de aula\",\n    \"produto_recomendado\": \"Sistema de Energia Solar Fotovoltaica (Lei 14.300)\",\n    \"score_oportunidade\": 0,\n    \"acao_recomendada\": \"Apresentar estudo de economia de energia. Agendar Avaliação Técnica.\",\n    \"status\": \"novo\",\n    \"observacoes\": \"Identificado na base de escolas privadas.\"\n  },\n  {\n    \"nome\": \"Restaurante Sabor Carioca\",\n    \"tipo\": \"Restaurante\",\n    \"bairro\": \"Botafogo\",\n    \"cidade\": \"Rio de Janeiro\",\n    \"endereco_publico\": \"Rua Voluntários da Pátria, 300 - Botafogo\",\n    \"telefone_publico\": \"(21) 97777-0003\",\n    \"email_institucional\": \"contato@saborcarioca.com.br\",\n    \"site\": \"www.saborcarioca.com.br\",\n    \"instagram\": \"@saborcariocarj\",\n    \"facebook\": \"RestauranteSaborCarioca\",\n    \"google_business_link\": \"https://maps.google.com/?cid=987654\",\n    \"dor_provavel\": \"Quedas de energia prejudicando refrigeração e segurança\",\n    \"produto_recomendado\": \"Revisão elétrica, Nobreak para CFTV e Automação de iluminação\",\n    \"score_oportunidade\": 0,\n    \"acao_recomendada\": \"Contato telefônico para oferecer Avaliação Técnica de elétrica.\",\n    \"status\": \"novo\",\n    \"observacoes\": \"Alto volume de clientes, precisa de estabilidade.\"\n  }\n];\n\nreturn targets.map(item => ({ json: item }));"
+      },
+      "id": "e2f07ab9-5432-4e89-bdc1-42353ef82bc1",
+      "name": "Simulador de Scraping (Google Places/Bases DL)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        450,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Inicia Prospecção": {
+      "main": [
+        [
+          {
+            "node": "Simulador de Scraping (Google Places/Bases DL)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+  "activeVersionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+  "versionCounter": 123,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-25T21:55:32.205Z",
+      "createdAt": "2026-05-25T21:55:32.205Z",
+      "role": "workflow:owner",
+      "workflowId": "FpaaIRxfEfnIbOSW",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-25T21:55:32.208Z",
+    "createdAt": "2026-05-25T21:55:32.208Z",
+    "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+    "workflowId": "FpaaIRxfEfnIbOSW",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "prospeccao-b2b-rj",
+          "responseMode": "lastNode",
+          "options": {}
+        },
+        "id": "2bc0a4de-1234-4567-8901-234567890abc",
+        "name": "Webhook Inicia Prospecção",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 1,
+        "position": [
+          250,
+          300
+        ],
+        "webhookId": "2bc0a4de-1234-4567-8901-234567890abc"
+      },
+      {
+        "parameters": {
+          "jsCode": "const targets = [\n  {\n    \"nome\": \"Condomínio Residencial Vista Mar\",\n    \"tipo\": \"Condomínio\",\n    \"bairro\": \"Copacabana\",\n    \"cidade\": \"Rio de Janeiro\",\n    \"endereco_publico\": \"Rua Barata Ribeiro, 100 - Copacabana\",\n    \"telefone_publico\": \"(21) 99999-0001\",\n    \"email_institucional\": \"sindico@vistamar.com.br\",\n    \"site\": \"www.vistamar.com.br\",\n    \"instagram\": \"@condominiovistamar\",\n    \"facebook\": \"CondominioVistaMar\",\n    \"google_business_link\": \"https://maps.google.com/?cid=123456\",\n    \"dor_provavel\": \"Falta de segurança no acesso de moradores e conta de energia alta\",\n    \"produto_recomendado\": \"CFTV IP, Controle de Acesso e Energia Solar\",\n    \"score_oportunidade\": 0,\n    \"acao_recomendada\": \"Agendar Avaliação Técnica com o Responsável Técnico\",\n    \"status\": \"novo\",\n    \"observacoes\": \"Captado via simulação de busca no Google Places.\"\n  },\n  {\n    \"nome\": \"Colégio Saber e Crescer\",\n    \"tipo\": \"Colégio\",\n    \"bairro\": \"Tijuca\",\n    \"cidade\": \"Rio de Janeiro\",\n    \"endereco_publico\": \"Rua Conde de Bonfim, 500 - Tijuca\",\n    \"telefone_publico\": \"(21) 98888-0002\",\n    \"email_institucional\": \"diretoria@saberecrescer.edu.br\",\n    \"site\": \"www.saberecrescer.edu.br\",\n    \"instagram\": \"@colegiosaberecrescer\",\n    \"facebook\": \"ColegioSaberECrescer\",\n    \"google_business_link\": \"https://maps.google.com/?cid=654321\",\n    \"dor_provavel\": \"Alto consumo de energia devido a ar-condicionado nas salas de aula\",\n    \"produto_recomendado\": \"Sistema de Energia Solar Fotovoltaica (Lei 14.300)\",\n    \"score_oportunidade\": 0,\n    \"acao_recomendada\": \"Apresentar estudo de economia de energia. Agendar Avaliação Técnica.\",\n    \"status\": \"novo\",\n    \"observacoes\": \"Identificado na base de escolas privadas.\"\n  },\n  {\n    \"nome\": \"Restaurante Sabor Carioca\",\n    \"tipo\": \"Restaurante\",\n    \"bairro\": \"Botafogo\",\n    \"cidade\": \"Rio de Janeiro\",\n    \"endereco_publico\": \"Rua Voluntários da Pátria, 300 - Botafogo\",\n    \"telefone_publico\": \"(21) 97777-0003\",\n    \"email_institucional\": \"contato@saborcarioca.com.br\",\n    \"site\": \"www.saborcarioca.com.br\",\n    \"instagram\": \"@saborcariocarj\",\n    \"facebook\": \"RestauranteSaborCarioca\",\n    \"google_business_link\": \"https://maps.google.com/?cid=987654\",\n    \"dor_provavel\": \"Quedas de energia prejudicando refrigeração e segurança\",\n    \"produto_recomendado\": \"Revisão elétrica, Nobreak para CFTV e Automação de iluminação\",\n    \"score_oportunidade\": 0,\n    \"acao_recomendada\": \"Contato telefônico para oferecer Avaliação Técnica de elétrica.\",\n    \"status\": \"novo\",\n    \"observacoes\": \"Alto volume de clientes, precisa de estabilidade.\"\n  }\n];\n\nreturn targets.map(item => ({ json: item }));"
+        },
+        "id": "e2f07ab9-5432-4e89-bdc1-42353ef82bc1",
+        "name": "Simulador de Scraping (Google Places/Bases DL)",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          450,
+          300
+        ]
+      }
+    ],
+    "connections": {
+      "Webhook Inicia Prospecção": {
+        "main": [
+          [
+            {
+              "node": "Simulador de Scraping (Google Places/Bases DL)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-05-26T03:54:17.644Z",
+        "id": 1373,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:17.653Z",
+        "id": 1374,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T21:55:32.359Z",
+        "id": 256,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:02:54.526Z",
+        "id": 331,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:02:54.546Z",
+        "id": 332,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:02:54.762Z",
+        "id": 333,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:02:54.771Z",
+        "id": 334,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:00.641Z",
+        "id": 378,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:00.650Z",
+        "id": 379,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:00.498Z",
+        "id": 376,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:00.507Z",
+        "id": 377,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:17.445Z",
+        "id": 1371,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:14.051Z",
+        "id": 488,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:14.064Z",
+        "id": 489,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:17.455Z",
+        "id": 1372,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:26.905Z",
+        "id": 1419,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:26.914Z",
+        "id": 1420,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:14.212Z",
+        "id": 490,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:14.221Z",
+        "id": 491,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-27T23:36:42.098Z",
+        "id": 1813,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-27T23:36:42.111Z",
+        "id": 1814,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:44.857Z",
+        "id": 536,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:44.866Z",
+        "id": 537,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:45.006Z",
+        "id": 538,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:45.014Z",
+        "id": 539,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:51.183Z",
+        "id": 586,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:51.192Z",
+        "id": 587,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-27T23:38:13.784Z",
+        "id": 1825,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-27T23:38:13.796Z",
+        "id": 1826,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:51.017Z",
+        "id": 584,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:51.028Z",
+        "id": 585,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:50:04.151Z",
+        "id": 696,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:50:04.161Z",
+        "id": 697,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:27.055Z",
+        "id": 1421,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:27.066Z",
+        "id": 1422,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:50:04.299Z",
+        "id": 698,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:50:04.308Z",
+        "id": 699,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:22.132Z",
+        "id": 744,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:22.141Z",
+        "id": 745,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:22.406Z",
+        "id": 746,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:22.415Z",
+        "id": 747,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:28.832Z",
+        "id": 793,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:28.842Z",
+        "id": 794,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:28.982Z",
+        "id": 795,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:28.990Z",
+        "id": 796,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:39.304Z",
+        "id": 907,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:39.312Z",
+        "id": 908,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:37.765Z",
+        "id": 1531,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:37.773Z",
+        "id": 1532,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:39.101Z",
+        "id": 905,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:39.109Z",
+        "id": 906,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:04:46.743Z",
+        "id": 953,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:04:46.752Z",
+        "id": 954,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:04:46.913Z",
+        "id": 955,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:04:46.922Z",
+        "id": 956,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:04:56.521Z",
+        "id": 1001,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:04:56.530Z",
+        "id": 1002,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:04:56.852Z",
+        "id": 1003,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:04:56.860Z",
+        "id": 1004,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:05:09.123Z",
+        "id": 1113,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:05:09.132Z",
+        "id": 1114,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:37.917Z",
+        "id": 1533,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:37.926Z",
+        "id": 1534,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:11.391Z",
+        "id": 1581,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:11.399Z",
+        "id": 1582,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:05:09.295Z",
+        "id": 1115,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:05:09.304Z",
+        "id": 1116,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:21.100Z",
+        "id": 1163,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:21.110Z",
+        "id": 1164,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:21.272Z",
+        "id": 1165,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:21.282Z",
+        "id": 1166,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:50.111Z",
+        "id": 1985,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:50.119Z",
+        "id": 1986,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:30.199Z",
+        "id": 1211,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:30.210Z",
+        "id": 1212,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:49.947Z",
+        "id": 1983,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:49.962Z",
+        "id": 1984,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:30.364Z",
+        "id": 1213,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:30.373Z",
+        "id": 1214,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:41.162Z",
+        "id": 1325,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:41.171Z",
+        "id": 1326,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:10.677Z",
+        "id": 1579,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:10.685Z",
+        "id": 1580,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:19.653Z",
+        "id": 1627,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:19.663Z",
+        "id": 1628,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:41.026Z",
+        "id": 1323,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:41.035Z",
+        "id": 1324,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:19.809Z",
+        "id": 1629,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:19.818Z",
+        "id": 1630,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:30.647Z",
+        "id": 1739,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:30.655Z",
+        "id": 1740,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:30.818Z",
+        "id": 1741,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:30.826Z",
+        "id": 1742,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:22.792Z",
+        "id": 2423,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:22.801Z",
+        "id": 2424,
+        "workflowId": "FpaaIRxfEfnIbOSW",
+        "versionId": "5194dbf2-a380-492a-87a3-7e4630d0ed2c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

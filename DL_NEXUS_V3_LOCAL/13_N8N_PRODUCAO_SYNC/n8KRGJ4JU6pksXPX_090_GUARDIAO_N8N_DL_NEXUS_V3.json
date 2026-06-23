@@ -1,0 +1,729 @@
+{
+  "updatedAt": "2026-05-25T19:14:53.527Z",
+  "createdAt": "2026-05-22T00:15:36.862Z",
+  "id": "n8KRGJ4JU6pksXPX",
+  "name": "090_GUARDIAO_N8N_DL_NEXUS_V3",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            },
+            {
+              "triggerAtHour": 20
+            }
+          ]
+        }
+      },
+      "id": "196e79e2-eb92-4a61-a359-4a82b8cc051c",
+      "name": "Verificação Periódica",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1584,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://n8n.dlsolucoescondominiais.com.br/healthz",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "n8nApi",
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "id": "8a3c333b-866e-40e4-86cc-8590a5548aea",
+      "name": "Verificar n8n Online",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -1376,
+        128
+      ],
+      "credentials": {
+        "n8nApi": {
+          "id": "2Im2cG7cFXlF4yYB",
+          "name": "n8n account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://n8n.dlsolucoescondominiais.com.br/api/v1/workflows",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "n8nApi",
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "id": "839ae8f3-7e7b-40d8-a036-e3e6ada393de",
+      "name": "Listar Workflows n8n",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -1184,
+        128
+      ],
+      "credentials": {
+        "n8nApi": {
+          "id": "2Im2cG7cFXlF4yYB",
+          "name": "n8n account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://n8n.dlsolucoescondominiais.com.br/api/v1/executions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "n8nApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "status",
+              "value": "error"
+            },
+            {
+              "name": "limit",
+              "value": "50"
+            }
+          ]
+        },
+        "options": {
+          "allowUnauthorizedCerts": true
+        }
+      },
+      "id": "6f1babbd-496a-4998-909e-c294539d2344",
+      "name": "Buscar Execuções com Falha",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        -976,
+        128
+      ],
+      "credentials": {
+        "n8nApi": {
+          "id": "2Im2cG7cFXlF4yYB",
+          "name": "n8n account"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Classificar falhas baseadas nas execucoes\nconst executions = items[0]?.json?.data || [];\nlet falhasClassificadas = [];\n\nfor (const exec of executions) {\n  let falha = { id: exec.id, workflowId: exec.workflowId, error: exec.error || {}, classificacao: 'ERRO_DESCONHECIDO' };\n  let errorString = JSON.stringify(exec.error || '').toLowerCase();\n  \n  if (errorString.includes('unauthorized') || errorString.includes('credential')) {\n    falha.classificacao = 'CREDENCIAL_AUSENTE';\n  } else if (errorString.includes('expired')) {\n    falha.classificacao = 'TOKEN_EXPIRADO';\n  } else if (errorString.includes('timeout') || errorString.includes('econnrefused')) {\n    falha.classificacao = 'WEBHOOK_SEM_RESPOSTA';\n  } else if (errorString.includes('json')) {\n    falha.classificacao = 'JSON_INVALIDO';\n  } else if (errorString.includes('meta') && errorString.includes('restrict')) {\n    falha.classificacao = 'META_API_RESTRITA';\n  } else if (errorString.includes('google') && errorString.includes('denied')) {\n    falha.classificacao = 'GOOGLE_API_REQUEST_DENIED';\n  } else if (errorString.includes('deepseek') && (errorString.includes('balance') || errorString.includes('insufficient'))) {\n    falha.classificacao = 'DEEPSEEK_SALDO_INSUFICIENTE';\n  } else if (errorString.includes('restart loop')) {\n    falha.classificacao = 'CONTAINER_RESTART_LOOP';\n  } else if (!exec.workflowId) {\n    falha.classificacao = 'WORKFLOW_SEM_ID';\n  }\n  \n  falhasClassificadas.push(falha);\n}\n\nreturn [{ json: { falhasClassificadas, count: falhasClassificadas.length } }];"
+      },
+      "id": "e431eacb-cd74-4f4b-ad8b-b1d15936ccaf",
+      "name": "CLASSIFICAR_FALHAS_N8N",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -784,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const falhas = items[0]?.json?.falhasClassificadas || [];\n\nconst relatorio = {\n  status_geral: falhas.length > 0 ? (falhas.length > 10 ? 'CRITICO' : 'ATENCAO') : 'OK',\n  total_workflows: items[0]?.json?.count || 0,\n  workflows_com_erro: falhas.map(f => f.workflowId),\n  falhas_classificadas: falhas,\n  acoes_recomendadas: falhas.length > 0 ? ['Verificar nodes com erro reportados', 'Revisar credenciais se houver CREDENCIAL_AUSENTE'] : [],\n  acoes_bloqueadas_sem_aprovacao: ['Nenhuma alteracao automatica em producao foi feita', 'Nenhum workflow foi desativado'],\n  timestamp: new Date().toISOString()\n};\n\nreturn [{ json: relatorio }];"
+      },
+      "id": "299914a8-ff8e-414b-ac4f-4616303429a1",
+      "name": "GERAR_RELATORIO_TECNICO",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -576,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.status_geral }}",
+              "operation": "notEqual",
+              "value2": "OK"
+            }
+          ]
+        }
+      },
+      "id": "b03ad3a8-2b63-44c3-8b99-b8fed4518183",
+      "name": "Tem Falha Crítica?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "8451974631",
+        "text": "=🚨 <b>Guardião n8n DL Nexus detectou falha!</b>\n\n<b>Status:</b> {{ $json.status_geral }}\n<b>Workflows afetados:</b> {{ $json.total_workflows }}\n<b>Ações recomendadas:</b> {{ $json.acoes_recomendadas.join(', ') }}\n\n⚠️ <i>Aprovação humana necessária para qualquer alteração de produção.</i>",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "62fccf8b-4f54-4d06-b6a4-a7c915c371a6",
+      "name": "Alerta Diogo/Raphael",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        16
+      ],
+      "webhookId": "c8955bc6-85b1-4d6c-9343-6d3a6ac26f35",
+      "credentials": {
+        "telegramApi": {
+          "id": "sUl1HnDTJ1eOyU4S",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "tableId": "dl_nexus_monitora\n_n8n",
+        "dataToSend": "autoMapInputData"
+      },
+      "id": "533ea019-c731-4b33-9b2c-4e43a28a8e7f",
+      "name": "Registrar Log Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        32,
+        16
+      ],
+      "notesInFlow": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "Fr0FEslxhLoXTbWc",
+          "name": "Supabase account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update"
+      },
+      "id": "397d8b68-6d96-4140-adc9-57125dd81597",
+      "name": "Registrar Log OK Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        224
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "Fr0FEslxhLoXTbWc",
+          "name": "Supabase account"
+        }
+      },
+      "disabled": true
+    }
+  ],
+  "connections": {
+    "Verificação Periódica": {
+      "main": [
+        [
+          {
+            "node": "Verificar n8n Online",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar n8n Online": {
+      "main": [
+        [
+          {
+            "node": "Listar Workflows n8n",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Listar Workflows n8n": {
+      "main": [
+        [
+          {
+            "node": "Buscar Execuções com Falha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Execuções com Falha": {
+      "main": [
+        [
+          {
+            "node": "CLASSIFICAR_FALHAS_N8N",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CLASSIFICAR_FALHAS_N8N": {
+      "main": [
+        [
+          {
+            "node": "GERAR_RELATORIO_TECNICO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GERAR_RELATORIO_TECNICO": {
+      "main": [
+        [
+          {
+            "node": "Tem Falha Crítica?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tem Falha Crítica?": {
+      "main": [
+        [
+          {
+            "node": "Alerta Diogo/Raphael",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Registrar Log OK Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alerta Diogo/Raphael": {
+      "main": [
+        [
+          {
+            "node": "Registrar Log Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Verificação Periódica": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "24c91200-d7e8-42c0-b12d-71cc0241877b",
+  "activeVersionId": "24c91200-d7e8-42c0-b12d-71cc0241877b",
+  "versionCounter": 72,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-22T00:15:36.862Z",
+      "createdAt": "2026-05-22T00:15:36.862Z",
+      "role": "workflow:owner",
+      "workflowId": "n8KRGJ4JU6pksXPX",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-25T19:15:10.173Z",
+    "createdAt": "2026-05-25T19:14:53.528Z",
+    "versionId": "24c91200-d7e8-42c0-b12d-71cc0241877b",
+    "workflowId": "n8KRGJ4JU6pksXPX",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 9
+              },
+              {
+                "triggerAtHour": 20
+              }
+            ]
+          }
+        },
+        "id": "196e79e2-eb92-4a61-a359-4a82b8cc051c",
+        "name": "Verificação Periódica",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1,
+        "position": [
+          -1584,
+          128
+        ]
+      },
+      {
+        "parameters": {
+          "url": "https://n8n.dlsolucoescondominiais.com.br/healthz",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "n8nApi",
+          "options": {
+            "allowUnauthorizedCerts": true
+          }
+        },
+        "id": "8a3c333b-866e-40e4-86cc-8590a5548aea",
+        "name": "Verificar n8n Online",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4,
+        "position": [
+          -1376,
+          128
+        ],
+        "credentials": {
+          "n8nApi": {
+            "id": "2Im2cG7cFXlF4yYB",
+            "name": "n8n account"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "url": "https://n8n.dlsolucoescondominiais.com.br/api/v1/workflows",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "n8nApi",
+          "options": {
+            "allowUnauthorizedCerts": true
+          }
+        },
+        "id": "839ae8f3-7e7b-40d8-a036-e3e6ada393de",
+        "name": "Listar Workflows n8n",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4,
+        "position": [
+          -1184,
+          128
+        ],
+        "credentials": {
+          "n8nApi": {
+            "id": "2Im2cG7cFXlF4yYB",
+            "name": "n8n account"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "url": "https://n8n.dlsolucoescondominiais.com.br/api/v1/executions",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "n8nApi",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "status",
+                "value": "error"
+              },
+              {
+                "name": "limit",
+                "value": "50"
+              }
+            ]
+          },
+          "options": {
+            "allowUnauthorizedCerts": true
+          }
+        },
+        "id": "6f1babbd-496a-4998-909e-c294539d2344",
+        "name": "Buscar Execuções com Falha",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4,
+        "position": [
+          -976,
+          128
+        ],
+        "credentials": {
+          "n8nApi": {
+            "id": "2Im2cG7cFXlF4yYB",
+            "name": "n8n account"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Classificar falhas baseadas nas execucoes\nconst executions = items[0]?.json?.data || [];\nlet falhasClassificadas = [];\n\nfor (const exec of executions) {\n  let falha = { id: exec.id, workflowId: exec.workflowId, error: exec.error || {}, classificacao: 'ERRO_DESCONHECIDO' };\n  let errorString = JSON.stringify(exec.error || '').toLowerCase();\n  \n  if (errorString.includes('unauthorized') || errorString.includes('credential')) {\n    falha.classificacao = 'CREDENCIAL_AUSENTE';\n  } else if (errorString.includes('expired')) {\n    falha.classificacao = 'TOKEN_EXPIRADO';\n  } else if (errorString.includes('timeout') || errorString.includes('econnrefused')) {\n    falha.classificacao = 'WEBHOOK_SEM_RESPOSTA';\n  } else if (errorString.includes('json')) {\n    falha.classificacao = 'JSON_INVALIDO';\n  } else if (errorString.includes('meta') && errorString.includes('restrict')) {\n    falha.classificacao = 'META_API_RESTRITA';\n  } else if (errorString.includes('google') && errorString.includes('denied')) {\n    falha.classificacao = 'GOOGLE_API_REQUEST_DENIED';\n  } else if (errorString.includes('deepseek') && (errorString.includes('balance') || errorString.includes('insufficient'))) {\n    falha.classificacao = 'DEEPSEEK_SALDO_INSUFICIENTE';\n  } else if (errorString.includes('restart loop')) {\n    falha.classificacao = 'CONTAINER_RESTART_LOOP';\n  } else if (!exec.workflowId) {\n    falha.classificacao = 'WORKFLOW_SEM_ID';\n  }\n  \n  falhasClassificadas.push(falha);\n}\n\nreturn [{ json: { falhasClassificadas, count: falhasClassificadas.length } }];"
+        },
+        "id": "e431eacb-cd74-4f4b-ad8b-b1d15936ccaf",
+        "name": "CLASSIFICAR_FALHAS_N8N",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -784,
+          128
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const falhas = items[0]?.json?.falhasClassificadas || [];\n\nconst relatorio = {\n  status_geral: falhas.length > 0 ? (falhas.length > 10 ? 'CRITICO' : 'ATENCAO') : 'OK',\n  total_workflows: items[0]?.json?.count || 0,\n  workflows_com_erro: falhas.map(f => f.workflowId),\n  falhas_classificadas: falhas,\n  acoes_recomendadas: falhas.length > 0 ? ['Verificar nodes com erro reportados', 'Revisar credenciais se houver CREDENCIAL_AUSENTE'] : [],\n  acoes_bloqueadas_sem_aprovacao: ['Nenhuma alteracao automatica em producao foi feita', 'Nenhum workflow foi desativado'],\n  timestamp: new Date().toISOString()\n};\n\nreturn [{ json: relatorio }];"
+        },
+        "id": "299914a8-ff8e-414b-ac4f-4616303429a1",
+        "name": "GERAR_RELATORIO_TECNICO",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -576,
+          128
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "string": [
+              {
+                "value1": "={{ $json.status_geral }}",
+                "operation": "notEqual",
+                "value2": "OK"
+              }
+            ]
+          }
+        },
+        "id": "b03ad3a8-2b63-44c3-8b99-b8fed4518183",
+        "name": "Tem Falha Crítica?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 1,
+        "position": [
+          -384,
+          128
+        ]
+      },
+      {
+        "parameters": {
+          "chatId": "8451974631",
+          "text": "=🚨 <b>Guardião n8n DL Nexus detectou falha!</b>\n\n<b>Status:</b> {{ $json.status_geral }}\n<b>Workflows afetados:</b> {{ $json.total_workflows }}\n<b>Ações recomendadas:</b> {{ $json.acoes_recomendadas.join(', ') }}\n\n⚠️ <i>Aprovação humana necessária para qualquer alteração de produção.</i>",
+          "additionalFields": {
+            "parse_mode": "HTML"
+          }
+        },
+        "id": "62fccf8b-4f54-4d06-b6a4-a7c915c371a6",
+        "name": "Alerta Diogo/Raphael",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1,
+        "position": [
+          -176,
+          16
+        ],
+        "webhookId": "c8955bc6-85b1-4d6c-9343-6d3a6ac26f35",
+        "credentials": {
+          "telegramApi": {
+            "id": "sUl1HnDTJ1eOyU4S",
+            "name": "Telegram account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "tableId": "dl_nexus_monitora\n_n8n",
+          "dataToSend": "autoMapInputData"
+        },
+        "id": "533ea019-c731-4b33-9b2c-4e43a28a8e7f",
+        "name": "Registrar Log Supabase",
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          32,
+          16
+        ],
+        "notesInFlow": true,
+        "credentials": {
+          "supabaseApi": {
+            "id": "Fr0FEslxhLoXTbWc",
+            "name": "Supabase account"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "operation": "update"
+        },
+        "id": "397d8b68-6d96-4140-adc9-57125dd81597",
+        "name": "Registrar Log OK Supabase",
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          -176,
+          224
+        ],
+        "credentials": {
+          "supabaseApi": {
+            "id": "Fr0FEslxhLoXTbWc",
+            "name": "Supabase account"
+          }
+        },
+        "disabled": true
+      }
+    ],
+    "connections": {
+      "Verificação Periódica": {
+        "main": [
+          [
+            {
+              "node": "Verificar n8n Online",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Verificar n8n Online": {
+        "main": [
+          [
+            {
+              "node": "Listar Workflows n8n",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Listar Workflows n8n": {
+        "main": [
+          [
+            {
+              "node": "Buscar Execuções com Falha",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Buscar Execuções com Falha": {
+        "main": [
+          [
+            {
+              "node": "CLASSIFICAR_FALHAS_N8N",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "CLASSIFICAR_FALHAS_N8N": {
+        "main": [
+          [
+            {
+              "node": "GERAR_RELATORIO_TECNICO",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "GERAR_RELATORIO_TECNICO": {
+        "main": [
+          [
+            {
+              "node": "Tem Falha Crítica?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Tem Falha Crítica?": {
+        "main": [
+          [
+            {
+              "node": "Alerta Diogo/Raphael",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Registrar Log OK Supabase",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Alerta Diogo/Raphael": {
+        "main": [
+          [
+            {
+              "node": "Registrar Log Supabase",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": "Version 24c91200",
+    "description": "",
+    "autosaved": true,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-05-25T19:15:10.171Z",
+        "id": 199,
+        "workflowId": "n8KRGJ4JU6pksXPX",
+        "versionId": "24c91200-d7e8-42c0-b12d-71cc0241877b",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:14.654Z",
+        "id": 2376,
+        "workflowId": "n8KRGJ4JU6pksXPX",
+        "versionId": "24c91200-d7e8-42c0-b12d-71cc0241877b",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:14.667Z",
+        "id": 2377,
+        "workflowId": "n8KRGJ4JU6pksXPX",
+        "versionId": "24c91200-d7e8-42c0-b12d-71cc0241877b",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

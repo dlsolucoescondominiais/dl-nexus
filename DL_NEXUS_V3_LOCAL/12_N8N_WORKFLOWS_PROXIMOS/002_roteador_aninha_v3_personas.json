@@ -1,0 +1,566 @@
+{
+  "name": "002_roteador_aninha_v3_personas",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-aninha",
+        "options": {}
+      },
+      "id": "d19572ad-534b-4669-9208-232ae2c01b66",
+      "name": "Entrada Aninha",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        112,
+        400
+      ],
+      "webhookId": "f389f00d-30e8-4361-852a-38bb655fcc9c"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "leads",
+        "limit": 1,
+        "filters": {
+          "conditions": [
+            {}
+          ]
+        }
+      },
+      "id": "552ac0b8-7135-4561-bb6e-a7580f9ad1de",
+      "name": "Ler Persona Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        320,
+        400
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "Oz1k9Fk3QD5tOU8E",
+          "name": "Supabase account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json[0]?.persona || '' }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "sindico"
+            },
+            {
+              "value2": "admin_condominio"
+            },
+            {
+              "value2": "admin_escola"
+            }
+          ]
+        },
+        "fallbackOutput": 3
+      },
+      "id": "329cf52d-c4bd-4d3e-b9a6-32927582fe39",
+      "name": "Switch Persona",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        560,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "id": "9edaeade-eaf6-4a6a-b909-2b715cdde22c",
+      "name": "OpenAI",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        864,
+        1056
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "3qLmNTIyyFgIGSHq",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "0b9ad504-b70c-4538-946e-5151ee310423",
+      "name": "Memória Buffer",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.2,
+      "position": [
+        480,
+        1120
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Entrada Aninha').item.json.body.mensagem_original || $('Entrada Aninha').item.json.body.mensagem || '' }}",
+        "options": {
+          "systemMessage": "Você é a ANINHA da DL Soluções Condominiais. Este lead ainda não tem perfil identificado.\n\nSua tarefa: Fazer perguntas curtas e amigáveis para descobrir se o contato é:\n1) Síndico de Condomínio\n2) Administrador de Condomínios (Imobiliária / Administradora)\n3) Administrador de Escola ou Colégio\n\nBoas práticas:\n- Seja calorosa mas objetiva\n- Máximo 2 perguntas por mensagem\n- Nunca mencione preços\n- Se a pessoa já indicou o tipo, não pergunte de novo\n\nQuando descobrir a persona, adicione UMA das seguintes tags no FINAL da sua resposta:\n[PERSONA_SINDICO]\n[PERSONA_ADMIN_COND]\n[PERSONA_ESCOLA]"
+        }
+      },
+      "id": "cbd9813d-b208-48f8-8a93-a0eae98dc7cd",
+      "name": "Agent Classificador",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        864,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Entrada Aninha').item.json.body.mensagem_original || $('Entrada Aninha').item.json.body.mensagem || '' }}",
+        "options": {
+          "systemMessage": "Você é a ANINHA, especialista comercial da DL Soluções Condominiais.\nO lead é um SÍNDICO.\n\nDOR PRINCIPAL DESSA PERSONA:\n- Quer agilidade e resolução sem drama para os moradores\n- Medo de gambiarras, quer segurança técnica e conformidade normativa\n- Precisa de relatórios e prestação de contas claros para a assembleia\n- Não quer ser responsabilizado por problemas de segurança (incêndio, CFTV, elétrica)\n\nSua conduta:\n- Fale diretamente sobre as vantagens da DL: padrão normativo (eletrodutos metálicos, não usamos canaleta plástica), laudos técnicos para assembleia, SLA de atendimento\n- Mencione cases de sucesso de condomínios similares (genéricos)\n- Nunca dê preço — o preço só sai após Avaliação Técnica\n\nQuando o lead demonstrar interesse em avançar para orçamento ou avaliação técnica, adicione a tag [ENCAMINHAR_JULES] no FINAL da sua resposta."
+        }
+      },
+      "id": "0651d29d-55ea-4d5f-991f-b1730fef085b",
+      "name": "Agent Síndico",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        864,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Entrada Aninha').item.json.body.mensagem_original || $('Entrada Aninha').item.json.body.mensagem || '' }}",
+        "options": {
+          "systemMessage": "Você é a ANINHA, especialista comercial da DL Soluções Condominiais.\nO lead é um ADMINISTRADOR DE CONDOMÍNIOS (trabalha em administradora / imobiliária).\n\nDOR PRINCIPAL DESSA PERSONA:\n- Gerencia vários condomínios, quer fornecedores confiáveis e multidisciplinares\n- Precisa de SLAs claros e documentação técnica para os condomínios que administra\n- Quer redução de custos operacionais (energia solar, manutenção preventiva)\n- Alta exigência por conformidade: NR-10, ABNT\n\nSua conduta:\n- Destaque o portfólio completo da DL: elétrica, solar, CFTV, automação, incêndio\n- Fale de parceria B2B de longo prazo e atendimento preferencial\n- Mencione a capacidade de emitir laudos para múltiplos condomínios\n- Nunca dê preço\n\nQuando o lead quiser avançar, adicione a tag [ENCAMINHAR_JULES] no FINAL da resposta."
+        }
+      },
+      "id": "165ea6f1-832a-4888-b6ae-611c73557963",
+      "name": "Agent Admin Cond",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        864,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Entrada Aninha').item.json.body.mensagem_original || $('Entrada Aninha').item.json.body.mensagem || '' }}",
+        "options": {
+          "systemMessage": "Você é a ANINHA, especialista comercial da DL Soluções Condominiais.\nO lead é um ADMINISTRADOR DE ESCOLA ou COLÉGIO.\n\nDOR PRINCIPAL DESSA PERSONA:\n- Segurança dos alunos é prioridade máxima: CFTV, controle de acesso, elétrica segura\n- Quer obras e manutenções executadas nas férias escolares para não impactar aulas\n- Preocupação com economia de energia (escolas têm alto consumo)\n- Conformidade com normas de prevenção de incêndio (AVCB) é crítica\n\nSua conduta:\n- Fale do DL Guardião™ (CFTV) e DL Gatekeeper™ (controle de acesso) para segurança\n- Destaque o DL EcoVolt Solar™ para economia de energia\n- Mencione a capacidade de executar em cronograma de férias\n- Nunca dê preço\n\nQuando o lead quiser avançar, adicione a tag [ENCAMINHAR_JULES] no FINAL da resposta."
+        }
+      },
+      "id": "5bee0ce5-85d0-47db-bcba-cfe1e25db862",
+      "name": "Agent Escola",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        864,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.output }}",
+              "operation": "contains",
+              "value2": "[ENCAMINHAR_JULES]"
+            }
+          ]
+        }
+      },
+      "id": "a00212de-1094-4128-aa00-5a71b3456d64",
+      "name": "Encaminhar para Engenharia?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-especialistas",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "telefone",
+              "value": "={{ $('Entrada Aninha').item.json.body.telefone || $('Entrada Aninha').item.json.body.sender_id }}"
+            },
+            {
+              "name": "historico_dor",
+              "value": "={{ $json.output }}"
+            },
+            {
+              "name": "persona",
+              "value": "={{ $('Ler Persona Supabase').item.json[0]?.persona || 'indefinido' }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "97b9ec1a-41d6-4a1e-83cf-dd477eda4032",
+      "name": "Chamar 004 Jules",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1408,
+        512
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.output }}",
+              "operation": "contains",
+              "value2": "[PERSONA_SINDICO]"
+            }
+          ]
+        }
+      },
+      "id": "7633a19e-1bdb-4020-99cf-be6b1f16c156",
+      "name": "Detectou Sindico?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.output }}",
+              "operation": "contains",
+              "value2": "[PERSONA_ADMIN_COND]"
+            }
+          ]
+        }
+      },
+      "id": "fe2f683f-6680-4663-bfbc-bb01ac7ff2ff",
+      "name": "Detectou Admin Cond?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.output }}",
+              "operation": "contains",
+              "value2": "[PERSONA_ESCOLA]"
+            }
+          ]
+        }
+      },
+      "id": "133261d1-a0bd-45f2-b777-c6fef74e5e3e",
+      "name": "Detectou Escola?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "leads",
+        "filters": {
+          "conditions": [
+            {}
+          ]
+        }
+      },
+      "id": "2e20d13c-5588-4aa1-86b0-7766cc7b0e81",
+      "name": "Salvar Persona Sindico",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1408,
+        64
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "Oz1k9Fk3QD5tOU8E",
+          "name": "Supabase account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "leads",
+        "filters": {
+          "conditions": [
+            {}
+          ]
+        }
+      },
+      "id": "39572fd7-c2bd-4570-a7c8-239444e2aa42",
+      "name": "Salvar Persona Admin",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1408,
+        208
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "Oz1k9Fk3QD5tOU8E",
+          "name": "Supabase account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Entrada Aninha": {
+      "main": [
+        [
+          {
+            "node": "Ler Persona Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler Persona Supabase": {
+      "main": [
+        [
+          {
+            "node": "Switch Persona",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Persona": {
+      "main": [
+        [
+          {
+            "node": "Agent Síndico",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agent Admin Cond",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agent Escola",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agent Classificador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent Classificador",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agent Síndico",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agent Admin Cond",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agent Escola",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memória Buffer": {
+      "ai_memory": [
+        [
+          {
+            "node": "Agent Classificador",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agent Síndico",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agent Admin Cond",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agent Escola",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent Classificador": {
+      "main": [
+        [
+          {
+            "node": "Detectou Sindico?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Detectou Admin Cond?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Detectou Escola?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent Síndico": {
+      "main": [
+        [
+          {
+            "node": "Encaminhar para Engenharia?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent Admin Cond": {
+      "main": [
+        [
+          {
+            "node": "Encaminhar para Engenharia?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent Escola": {
+      "main": [
+        [
+          {
+            "node": "Encaminhar para Engenharia?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Encaminhar para Engenharia?": {
+      "main": [
+        [
+          {
+            "node": "Chamar 004 Jules",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Detectou Sindico?": {
+      "main": [
+        [
+          {
+            "node": "Salvar Persona Sindico",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Detectou Admin Cond?": {
+      "main": [
+        [
+          {
+            "node": "Salvar Persona Admin",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Detectou Escola?": {
+      "main": [
+        [],
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "824b30e9dd5b4de2e0751d58c32084e6728f4773ae8ea4ca84318c5bc6ba2207"
+  }
+}

@@ -1,0 +1,217 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "35 0 * * *"
+            }
+          ]
+        }
+      },
+      "id": "45993c43-3a22-4148-a271-9b624b594863",
+      "name": "Schedule Trigger (00:35)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const date = new Date().toLocaleDateString('pt-BR');\nreturn {\n  json: {\n    prompt: `Você é Manus AI, o Diretor de Marketing B2B da DL Soluções Condominiais.\\nHoje é dia ${date}. Vasculhe e pense em condomínios pequenos/médios, colégios e restaurantes na zona e região do Rio de Janeiro.\\nSua missão: Gerar a estratégia do dia de postagem para o Agente MarkSolar (Copywriter).\\nA estratégia DEVE focar em um ou mais de nossos produtos chave: DL Fortress, DL Guardião e DL Acqua.\\n\\nVocê DEVE retornar sua saída estritamente em um JSON válido com a seguinte estrutura:\\n{\\n  \"estrategia_texto\": \"Descreva o gancho, a dor do público e o tom que o MarkSolar deve usar no post.\",\\n  \"produto\": \"Nome do produto foco\",\\n  \"publico_alvo\": \"Ex: Síndicos de pequenos condomínios\",\\n  \"bairro\": \"Ex: Zona Sul, Barra ou Tijuca\",\\n  \"canal_destino\": \"Instagram, Facebook e TikTok\",\\n  \"objetivo\": \"Agendar Avaliação Técnica\"\\n}`\n  }\n};\n"
+      },
+      "id": "e041ce16-1163-4ee4-ab33-2969daaa90a6",
+      "name": "Preparar Prompt Diário",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -176,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.manus.ai/v2/task.create",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-manus-api-key",
+              "value": "sk-ipp_CVwftXakIuh3foL7fbC6ZwU4qXseOHAOkj8i4iveHkiEscO1sTPe5jnWAO8oYGKYm7m4QvH4r4AHJiWT9a2xrRhA"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": {\n    \"content\": {{ JSON.stringify($json.prompt) }}\n  },\n  \"structured_output_schema\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"estrategia_texto\": { \"type\": \"string\" },\n      \"produto\": { \"type\": \"string\" },\n      \"publico_alvo\": { \"type\": \"string\" },\n      \"bairro\": { \"type\": \"string\" },\n      \"canal_destino\": { \"type\": \"string\" },\n      \"objetivo\": { \"type\": \"string\" }\n    },\n    \"required\": [\"estrategia_texto\", \"produto\", \"publico_alvo\", \"bairro\", \"canal_destino\", \"objetivo\"],\n    \"additionalProperties\": false\n  },\n  \"agent_profile\": \"manus-1.6-lite\"\n}",
+        "options": {}
+      },
+      "id": "22431c44-f056-4e6d-be9e-09dc1cfa0e29",
+      "name": "HTTP Request Manus API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        0,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.manus.ai/v2/task.listMessages?task_id={{ $json.task_id }}&order=desc&limit=10",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-manus-api-key",
+              "value": "sk-ipp_CVwftXakIuh3foL7fbC6ZwU4qXseOHAOkj8i4iveHkiEscO1sTPe5jnWAO8oYGKYm7m4QvH4r4AHJiWT9a2xrRhA"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "id": "39f0cc1c-b416-4a0a-bb89-46e2cbcad952",
+      "name": "Wait for Manus Result",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        176,
+        816
+      ],
+      "retryOnFail": true,
+      "maxRetries": 20,
+      "waitBetweenRetries": 30000
+    },
+    {
+      "parameters": {
+        "jsCode": "const events = $input.all()[0].json.data || [];\nconst resultEvent = events.find(e => e.type === 'structured_output_result');\n\nif (resultEvent && resultEvent.structured_output_result.success) {\n  return { json: resultEvent.structured_output_result.value };\n}\n\n// Se não encontrou o evento de sucesso, joga erro para o nó de retry tentar novamente\nthrow new Error('Resultado estruturado do Manus ainda não disponível ou falhou.');"
+      },
+      "id": "0e406f21-11e7-42a9-93d9-b89178857857",
+      "name": "Limpar JSON do Manus",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        352,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "publicadorSocialDlNexusV320260518",
+        "mode": "wait",
+        "options": {}
+      },
+      "id": "a56ae7b8-04a3-410a-be9a-d177f180a4e4",
+      "name": "Chamar MarkSolar (020)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        576,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "-1002012015091",
+        "text": "🎯 *DIRETRIZ B2B DO MANUS GERADA E ENVIADA AO MARKSOLAR*\\n\\n*Público:* {{ $json.publico_alvo }}\\n*Produto:* {{ $json.produto }}\\n*Região:* {{ $json.bairro }}\\n\\n*Estratégia:* {{ $json.estrategia_texto }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "90b185ed-b2ab-4570-a26e-b5aedf166511",
+      "name": "Telegram Entrega",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        576,
+        912
+      ],
+      "webhookId": "51319472-ca2c-466b-85b7-b9027453f9d4",
+      "credentials": {
+        "telegramApi": {
+          "id": "j1fpzPAZUa1A0i6r",
+          "name": "Telegram account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger (00:35)": {
+      "main": [
+        [
+          {
+            "node": "Preparar Prompt Diário",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Prompt Diário": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request Manus API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request Manus API": {
+      "main": [
+        [
+          {
+            "node": "Wait for Manus Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Manus Result": {
+      "main": [
+        [
+          {
+            "node": "Limpar JSON do Manus",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limpar JSON do Manus": {
+      "main": [
+        [
+          {
+            "node": "Chamar MarkSolar (020)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Telegram Entrega",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "824b30e9dd5b4de2e0751d58c32084e6728f4773ae8ea4ca84318c5bc6ba2207"
+  }
+}

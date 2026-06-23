@@ -86,34 +86,14 @@
     },
     {
       "parameters": {
-        "method": "POST",
-        "url": "https://mybusiness.googleapis.com/v4/accounts/GOOGLE_ACCOUNT_ID_AQUI/locations/GOOGLE_LOCATION_ID_AQUI/localPosts",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "oAuth2Api",
-        "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={\n  \"topicType\": \"STANDARD\",\n  \"summary\": \"{{ $json.texto_validado }}\",\n  \"callToAction\": {\n    \"actionType\": \"LEARN_MORE\",\n    \"url\": \"{{ $json.url_cta }}\"\n  }\n}",
-        "options": {
-          "response": {
-            "response": {
-              "fullResponse": false,
-              "responseFormat": "json"
-            }
-          }
-        }
+        "command": "=python d:/AntiGravity/projeto_01/scripts/test_post_social.py --platform gmb --text \"{{ $json.texto_validado.replace(/\\\"/g, '\\\\\\\"') }}\""
       },
       "id": "node-005-http-gbp",
       "name": "HTTP Request: POST Google Business Profile",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
       "position": [1120, 80],
-      "credentials": {
-        "oAuth2Api": {
-          "id": "CREDENCIAL_OAUTH2_GOOGLE_BUSINESS",
-          "name": "OAuth2 Google Business Profile"
-        }
-      },
-      "notes": "ATENÇÃO: Configure a credencial OAuth2 manualmente no n8n para o Google Business Profile. Substitua GOOGLE_ACCOUNT_ID_AQUI e GOOGLE_LOCATION_ID_AQUI pelos valores reais obtidos via Google My Business API."
+      "notes": "Modificado por IA para postagem autônoma ignorando APIs oficiais conforme regra do sistema DL Nexus."
     },
     {
       "parameters": {

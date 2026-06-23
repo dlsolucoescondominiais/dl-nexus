@@ -1,0 +1,475 @@
+{
+  "updatedAt": "2026-05-30T05:33:52.915Z",
+  "createdAt": "2026-05-25T09:46:55.015Z",
+  "id": "IKanqYBWFVv1P9HU",
+  "name": "142_CLASSIFICADOR_TEMA_MIDIA",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Conversão da mídia em pauta comercial\nreturn items;"
+      },
+      "id": "2",
+      "name": "Classificar Tema",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        450,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Classificar Tema",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+  "activeVersionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+  "versionCounter": 57,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-25T09:46:55.015Z",
+      "createdAt": "2026-05-25T09:46:55.015Z",
+      "role": "workflow:owner",
+      "workflowId": "IKanqYBWFVv1P9HU",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-25T10:19:26.127Z",
+    "createdAt": "2026-05-25T09:46:55.021Z",
+    "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+    "workflowId": "IKanqYBWFVv1P9HU",
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "1",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          250,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Conversão da mídia em pauta comercial\nreturn items;"
+        },
+        "id": "2",
+        "name": "Classificar Tema",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          450,
+          300
+        ]
+      }
+    ],
+    "connections": {
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "Classificar Tema",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": "Version e2eaa508",
+    "description": "",
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-06-15T03:48:21.445Z",
+        "id": 2414,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:21.452Z",
+        "id": 2415,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T10:19:26.125Z",
+        "id": 193,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T21:54:26.522Z",
+        "id": 210,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T21:54:26.529Z",
+        "id": 211,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T21:54:26.750Z",
+        "id": 212,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T21:54:26.758Z",
+        "id": 213,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T21:55:34.926Z",
+        "id": 275,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T21:55:34.933Z",
+        "id": 276,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T21:55:35.082Z",
+        "id": 277,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T21:55:35.090Z",
+        "id": 278,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:03.099Z",
+        "id": 406,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:03.106Z",
+        "id": 407,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:02.954Z",
+        "id": 404,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:02.961Z",
+        "id": 405,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:29.410Z",
+        "id": 1447,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:29.417Z",
+        "id": 1448,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:53.986Z",
+        "id": 614,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:53.996Z",
+        "id": 615,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:53.840Z",
+        "id": 612,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:53.848Z",
+        "id": 613,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:29.537Z",
+        "id": 1449,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:29.544Z",
+        "id": 1450,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:31.437Z",
+        "id": 823,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:31.444Z",
+        "id": 824,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:31.299Z",
+        "id": 821,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:31.307Z",
+        "id": 822,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:05:00.334Z",
+        "id": 1031,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:05:00.342Z",
+        "id": 1032,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:05:00.011Z",
+        "id": 1029,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:05:00.024Z",
+        "id": 1030,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:32.863Z",
+        "id": 1241,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:32.870Z",
+        "id": 1242,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:32.730Z",
+        "id": 1239,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:32.736Z",
+        "id": 1240,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:53.075Z",
+        "id": 2017,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:53.082Z",
+        "id": 2018,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:52.929Z",
+        "id": 2015,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:52.937Z",
+        "id": 2016,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:22.273Z",
+        "id": 1655,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:22.280Z",
+        "id": 1656,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:22.420Z",
+        "id": 1657,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:22.428Z",
+        "id": 1658,
+        "workflowId": "IKanqYBWFVv1P9HU",
+        "versionId": "e2eaa508-fa0f-4213-83c9-0c26c0ca318c",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "199_HEALTHCHECK_SOCIAL_DIARIO",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger",
+      "name": "Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    }
+  ],
+  "connections": {},
+  "active": false,
+  "settings": {}
+}

@@ -1,0 +1,35 @@
+<USER_REQUEST>
+faça uma politica de privacidade que integre os requisitos da meta da google e da dl 
+
+esta é a pagina da politica da dl
+Copie a politica de privacidade abaixo que é da dl no site da dl e informacoes da dl 
+Política de Privacidade e Proteção de Dados
+Seção 1: Introdução e Compromisso com a Privacidade
+Preâmbulo
+A presente Política de Privacidade e Proteção de Dados ("Política") estabelece os termos e as condições sob os quais a DL SOLUÇÕES CONDOMINIAIS LTDA., pessoa jurídica de direito privado, inscrita no CNPJ/ME sob o nº 36.354.697/0001-46, com sede em território brasileiro ("DL Soluções Condominiais", "Empresa"), realiza o tratamento de dados pessoais. O objetivo primordial deste documento é conferir máxima transparência e estabelecer as regras aplicáveis a todas as operações de tratamento de dados pessoais executadas no contexto da prestação de seus serviços, em estrita conformidade com o ordenamento jurídico vigente, notadamente a Lei Geral de Proteção de Dados Pessoais (LGPD), Lei nº 13.709, de 14 de agosto de 2018.
+
+Declaração de Compromisso
+A DL Soluções Condominiais reconhece a privacidade e a proteção de dados como pilares fundamentais de sua operação e como componentes essenciais para a construção de uma relação de confiança com seus clientes, parceiros e com os titulares de dados. A Empresa compromete-se a respeitar e a proteger os direitos fundamentais de liberdade e de privacidade, bem como o livre desenvolvimento da personalidade da pessoa natural, conforme preconiza o Artigo 1º da LGPD. Todas as atividades de tratamento de dados conduzidas pela Empresa são pautadas pelos mais elevados padrões éticos e legais.
+
+Abrangência da Política
+Esta Política aplica-se a todas as operações de tratamento de dados pessoais realizadas pela DL Soluções Condominiais, independentemente do meio, seja ele digital ou físico. Seu escopo abrange os dados de todos os titulares com os quais a Empresa interage no exercício de suas ativid
+<truncated 27548 bytes>
+ijuca, incluindo complexos com mais de 500 unidades, revelou uma necessidade latente no mercado: a falta de um parceiro que oferecesse uma solução completa, com responsabilidade técnica. Síndicos e administradores estavam cansados de lidar com múltiplos fornecedores e com a incerteza de serviços executados sem a devida garantia.
+
+Foi nesse cenário que, no início de 2025, a DL Soluções Condominiais nasceu oficialmente, consolidando anos de experiência em um novo modelo de negócio. A mudança foi solidificada com a conclusão da Pós-Graduação em Energia Solar pela Uninter, trazendo a última peça para o nosso portfólio, permitindo-nos oferecer projetos de energia solar RJ com a máxima eficiência e ajudando na redução de custos de energia em condomínio.
+
+Nossa Missão: A Sua Tranquilidade
+A missão da DL Soluções Condominiais é simples e poderosa: ser a parceira de engenharia que elimina a complexidade da gestão de infraestrutura, entregando tranquilidade, segurança e valorização para síndicos, administradores e condôminos. Nós entendemos que o seu foco é na gestão, não na procura de dezenas de orçamentos.
+
+Oferecemos um ecossistema completo, desde a segurança perimetral e controle de acesso na Barra da Tijuca e outras regiões, até a eficiência energética com energia solar e a prevenção de incêndio. Não trabalhamos com vigilância 24h, mas com sistemas de prevenção inteligentes e parcerias com as melhores empresas de monitoramento.
+
+Com registro no CREA-RJ 2022346653, associação à ABESE-SP e seguro de obra para todos os nossos serviços, garantimos não apenas a execução, mas a sua total tranquilidade jurídica e operacional. A DL Soluções Condominiais busca ser a empresa Top 1 no atendimento a condomínios de todos os portes no Rio de Janeiro, transformando tecnologia em paz de espírito.
+https://dlsolucoescondominiais.com.br/a-empresa/
+
+
+
+
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-06-09T17:55:42-03:00.
+</ADDITIONAL_METADATA>

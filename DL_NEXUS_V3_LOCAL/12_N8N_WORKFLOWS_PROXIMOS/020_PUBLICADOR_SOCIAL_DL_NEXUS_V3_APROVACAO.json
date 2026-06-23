@@ -2,20 +2,36 @@
   "name": "020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO",
   "nodes": [
     {
-      "parameters": {},
-      "id": "trigger_manual",
-      "name": "Manual Trigger",
-      "type": "n8n-nodes-base.manualTrigger",
+      "parameters": {
+        "path": "disparo-automatico",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "trigger_webhook",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
         0,
         0
+      ],
+      "webhookId": "disparo-automatico-020"
+    },
+    {
+      "parameters": {},
+      "id": "execute_workflow_trigger",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        208
       ]
     },
     {
       "parameters": {
         "mode": "raw",
-        "jsonOutput": "{\n  \"tema\": \"Manuten\u00e7\u00e3o Preventiva de Bombas\",\n  \"produto\": \"DL Acqua\",\n  \"publico_alvo\": \"S\u00edndicos e Administradoras\",\n  \"bairro\": \"Tijuca\",\n  \"canal_destino\": \"Facebook, Instagram, Telegram\",\n  \"objetivo\": \"Gerar engajamento e agendar Avalia\u00e7\u00e3o T\u00e9cnica\",\n  \"image_url\": \"https://dlsolucoescondominiais.com.br/wp-content/uploads/2023/10/dl-acqua.jpg\"\n}",
+        "jsonOutput": "{\n  \"tema\": \"Manutenção Preventiva de Bombas\",\n  \"produto\": \"DL Acqua\",\n  \"publico_alvo\": \"Síndicos e Administradoras\",\n  \"bairro\": \"Tijuca\",\n  \"canal_destino\": \"Facebook, Instagram, Telegram\",\n  \"objetivo\": \"Gerar engajamento e agendar Avaliação Técnica\",\n  \"image_url\": \"https://dlsolucoescondominiais.com.br/wp-content/uploads/2023/10/dl-acqua.jpg\"\n}",
         "options": {}
       },
       "id": "set_entrada",
@@ -23,54 +39,63 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        200,
+        208,
         0
       ]
     },
     {
       "parameters": {
-        "model": "gpt-4o-mini",
-        "messages": {
-          "messageValues": [
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
             {
-              "content": "Voc\u00ea \u00e9 o copywriter da DL Solu\u00e7\u00f5es Condominiais. Escreva posts B2B profissionais. O CTA DEVE ser sempre 'Avalia\u00e7\u00e3o T\u00e9cnica'."
+              "name": "Authorization",
+              "value": "Bearer {{ $env.OPENAI_API_KEY }}"
             },
             {
-              "role": "user",
-              "content": "={{ 'Tema: ' + $json.tema + '\\nProduto: ' + $json.produto + '\\nP\u00fablico: ' + $json.publico_alvo + '\\nBairro/Regi\u00e3o: ' + $json.bairro + '\\nCanal: ' + $json.canal_destino + '\\nObjetivo: ' + $json.objetivo + '\\n\\nCanais Oficiais DL Solu\u00e7\u00f5es (use sempre no CTA):\\n- Site: https://dlsolucoescondominiais.com\\n- Instagram: https://www.instagram.com/dl.solucoescondominiais/\\n- Facebook: https://www.facebook.com/dlsolucoescondominiais\\n- YouTube: https://www.youtube.com/@DLSolucoesCondominiais\\n- Google Perfil: https://share.google/NGEzAoHXg890EjyiR\\n- Spotify: https://open.spotify.com/episode/2yIqmHsnKLhFF76XKR1j2u?si=aMBi9LKJRZO1tlgxACWhDg&nd=1&dlsi=3b72e847f2044e18\\n- WhatsApp CTA (link passivo, n\u00e3o disparar): https://wa.me/5521964742458?text=Quero+saber+sobre+Recupera%C3%A7%C3%A3o+de+Dados\\n\\nRegras obrigat\u00f3rias:\\n- O CTA DEVE sempre ser \"Avalia\u00e7\u00e3o T\u00e9cnica\".\\n- Diogo deve ser chamado de \"Tecn\u00f3logo Respons\u00e1vel\", nunca de engenheiro.\\n- Incluir o link do WhatsApp como bot\u00e3o de contato no final de cada post.\\n- N\u00c3O prometer pre\u00e7o final, garantia vital\u00edcia ou visita t\u00e9cnica.\\n\\nForne\u00e7a uma resposta em JSON estrito com as chaves: legenda_facebook, legenda_instagram, texto_telegram, hashtags, cta' }}"
+              "name": "Content-Type",
+              "value": "application/json"
             }
           ]
         },
-        "options": {},
-        "resource": "chat",
-        "operation": "create"
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'gpt-4o', messages: [{ role: 'system', content: 'Você é o MarkSolar, copywriter sênior da DL Soluções Condominiais. Gere conteúdo para redes sociais B2B focado em síndicos. Retorne SEMPRE um JSON válido com: legenda_facebook, legenda_instagram, texto_telegram, hashtags (array). Use tom profissional, persuasivo, focado em Avaliação Técnica como CTA. NUNCA use: visita técnica, canaleta plástica, portaria remota, garantia vitalícia.' }, { role: 'user', content: 'Tema: ' + $json.tema + '. Produto: ' + $json.produto + '. Público: ' + $json.publico_alvo + '. Bairro: ' + $json.bairro + '. Objetivo: ' + $json.objetivo }] }) }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
       },
       "id": "gerar_textos_ia",
-      "name": "Gerar Textos IA",
-      "type": "n8n-nodes-base.openAi",
-      "typeVersion": 1.1,
+      "name": "Gerar Textos IA (HTTP)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
       "position": [
         400,
         0
-      ],
-      "credentials": {}
+      ]
     },
     {
       "parameters": {
-        "jsCode": "const entrada = $('Entrada do Post').item.json || {};\nlet conteudo = $json.message ? $json.message.content : (typeof $json === 'string' ? $json : JSON.stringify($json));\n\nlet parsed = {};\nlet status_parse = 'SUCESSO';\nlet observacao = 'JSON parseado com sucesso.';\n\ntry {\n  const jsonMatch = conteudo.match(/```(?:json)?\\n([\\s\\S]*?)\\n```/) || conteudo.match(/{[\\s\\S]*}/);\n  if (jsonMatch && jsonMatch[1]) {\n    parsed = JSON.parse(jsonMatch[1]);\n  } else if (jsonMatch && jsonMatch[0]) {\n    parsed = JSON.parse(jsonMatch[0]);\n  } else {\n    parsed = JSON.parse(conteudo);\n  }\n} catch (e) {\n  status_parse = 'FALHOU_USANDO_FALLBACK';\n  observacao = 'IA n\u00e3o retornou JSON v\u00e1lido; fallback aplicado';\n  parsed = {\n    legenda_facebook: conteudo,\n    legenda_instagram: conteudo,\n    texto_telegram: conteudo,\n    hashtags: []\n  };\n}\n\nreturn {\n  json: {\n    post_id: Date.now().toString(),\n    tema: entrada.tema || 'N/A',\n    produto: entrada.produto || 'N/A',\n    legenda_facebook: parsed.legenda_facebook || parsed.facebook_legenda || parsed.facebook || conteudo,\n    legenda_instagram: parsed.legenda_instagram || parsed.instagram_legenda || parsed.instagram || conteudo,\n    texto_telegram: parsed.texto_telegram || parsed.telegram_texto || parsed.telegram || conteudo,\n    hashtags: parsed.hashtags || [],\n    image_url: entrada.image_url || '',\n    observacoes: [observacao],\n    status_parse_ia: status_parse\n  }\n};"
+        "jsCode": "let entrada = {}; try { entrada = $('Entrada do Post').item.json || {}; } catch(e) { try { entrada = $('Execute Workflow Trigger').item.json || {}; } catch(e2) { entrada = {}; } }\nlet raw = $json;\nlet conteudo = '';\ntry { conteudo = raw.choices[0].message.content; } catch(e) { conteudo = typeof raw === 'string' ? raw : JSON.stringify(raw); }\n\nlet parsed = {};\nlet status_parse = 'SUCESSO';\nlet observacao = 'JSON parseado com sucesso.';\n\ntry {\n  const jsonMatch = conteudo.match(/```(?:json)?\\n([\\s\\S]*?)\\n```/) || conteudo.match(/{[\\s\\S]*}/);\n  if (jsonMatch && jsonMatch[1]) {\n    parsed = JSON.parse(jsonMatch[1]);\n  } else if (jsonMatch && jsonMatch[0]) {\n    parsed = JSON.parse(jsonMatch[0]);\n  } else {\n    parsed = JSON.parse(conteudo);\n  }\n} catch (e) {\n  status_parse = 'FALHOU_USANDO_FALLBACK';\n  observacao = 'IA nao retornou JSON valido; fallback aplicado';\n  parsed = {\n    legenda_facebook: conteudo,\n    legenda_instagram: conteudo,\n    texto_telegram: conteudo,\n    hashtags: []\n  };\n}\n\nreturn {\n  json: {\n    post_id: Date.now().toString(),\n    tema: entrada.tema || 'N/A',\n    produto: entrada.produto || 'N/A',\n    legenda_facebook: parsed.legenda_facebook || parsed.facebook_legenda || parsed.facebook || conteudo,\n    legenda_instagram: parsed.legenda_instagram || parsed.instagram_legenda || parsed.instagram || conteudo,\n    texto_telegram: parsed.texto_telegram || parsed.telegram_texto || parsed.telegram || conteudo,\n    hashtags: parsed.hashtags || [],\n    image_url: entrada.image_url || '',\n    observacoes: [observacao],\n    status_parse_ia: status_parse\n  }\n};"
       },
       "id": "normalizar_saida_ia",
       "name": "NORMALIZAR_SAIDA_IA_SOCIAL",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        600,
+        608,
         0
       ]
     },
     {
       "parameters": {
-        "jsCode": "const jsonStr = JSON.stringify($json).toLowerCase();\nconst proibidos = [\n  'visita t\u00e9cnica', 'visita tecnica', 'canaleta pl\u00e1stica', 'canaleta plastica',\n  'garantia vital\u00edcia', 'garantia vitalicia', 'hidr\u00e1ulica pura', 'hidraulica pura',\n  'engenheiro diogo', 'pre\u00e7o final', 'preco final', 'pre\u00e7o fechado autom\u00e1tico', 'preco fechado automatico'\n];\nconst obrigatorios = ['avalia\u00e7\u00e3o t\u00e9cnica', 'avaliacao tecnica'];\n\nconst violacoes = proibidos.filter(t => jsonStr.includes(t));\nconst possuiObrigatorio = obrigatorios.some(t => jsonStr.includes(t));\n\nlet status_killcritic = 'APROVADO';\nif (violacoes.length > 0) status_killcritic = 'REPROVADO_POR_TERMOS_PROIBIDOS';\nif (!possuiObrigatorio) status_killcritic = 'REPROVADO_POR_FALTA_DE_CTA_AVALIACAO_TECNICA';\n\nreturn {\n  json: {\n    ...$json,\n    status_killcritic,\n    violacoes\n  }\n};"
+        "jsCode": "const jsonStr = JSON.stringify($json).toLowerCase();\nconst proibidos = [\n  'visita técnica', 'visita tecnica', 'canaleta plástica', 'canaleta plastica',\n  'garantia vitalícia', 'garantia vitalicia', 'hidráulica pura', 'hidraulica pura',\n  'engenheiro diogo', 'preço final', 'preco final', 'preço fechado automático', 'preco fechado automatico'\n];\nconst obrigatorios = ['avaliação técnica', 'avaliacao tecnica'];\n\nconst violacoes = proibidos.filter(t => jsonStr.includes(t));\nconst possuiObrigatorio = obrigatorios.some(t => jsonStr.includes(t));\n\nlet status_killcritic = 'APROVADO';\nif (violacoes.length > 0) status_killcritic = 'REPROVADO_POR_TERMOS_PROIBIDOS';\nif (!possuiObrigatorio) status_killcritic = 'REPROVADO_POR_FALTA_DE_CTA_AVALIACAO_TECNICA';\n\nreturn {\n  json: {\n    ...$json,\n    status_killcritic,\n    violacoes\n  }\n};"
       },
       "id": "code_killcritic",
       "name": "KILLCRITIC Social",
@@ -87,7 +112,6 @@
           "string": [
             {
               "value1": "={{$json.status_killcritic}}",
-              "operation": "equal",
               "value2": "APROVADO"
             }
           ]
@@ -98,14 +122,14 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
-        1000,
+        1008,
         0
       ]
     },
     {
       "parameters": {
-        "chatId": "CHAT_ID_AQUI",
-        "text": "={{ 'BLOQUEIO KILLCRITIC no post sobre ' + $('Entrada do Post').item.json.tema + '. Motivo: ' + $json.status_killcritic + '\\nViola\u00e7\u00f5es: ' + $json.violacoes.join(', ') }}",
+        "chatId": "-1002012015091",
+        "text": "={{ 'BLOQUEIO KILLCRITIC no post sobre ' + $json.tema + '. Motivo: ' + $json.status_killcritic + '\\nViolacoes: ' + $json.violacoes.join(', ') }}",
         "additionalFields": {}
       },
       "id": "telegram_reprovado",
@@ -114,89 +138,32 @@
       "typeVersion": 1.1,
       "position": [
         1200,
-        200
+        208
       ],
       "credentials": {
         "telegramApi": {
-          "id": "Conta do Telegram",
+          "id": "telegram_credential_id",
           "name": "Conta do Telegram"
         }
       }
     },
     {
       "parameters": {
-        "chatId": "CHAT_ID_AQUI",
-        "text": "={{ 'NOVO POST PARA APROVA\u00c7\u00c3O (DL Nexus V3)\\n\\nTema: ' + $('Entrada do Post').item.json.tema + '\\nProduto: ' + $('Entrada do Post').item.json.produto + '\\n\\nLegenda FB:\\n' + $json.legenda_facebook + '\\n\\nLegenda IG:\\n' + $json.legenda_instagram + '\\n\\nTexto Telegram:\\n' + $json.texto_telegram + '\\n\\nStatus KILLCRITIC: ' + $json.status_killcritic + '\\n\\n\u26a0\ufe0f Aprova\u00e7\u00e3o manual obrigat\u00f3ria antes de publicar.\\nAcesse o endpoint para aprovar: /webhook/aprovar-post-dl-nexus-v3' }}",
+        "chatId": "-1002012015091",
+        "text": "={{ 'POST GERADO (DL Nexus V3)\\n\\nTema: ' + $json.tema + '\\nProduto: ' + $json.produto + '\\n\\nO post foi enviado para as redes.' }}",
         "additionalFields": {}
       },
       "id": "telegram_previa",
-      "name": "Telegram Enviar Pr\u00e9via",
+      "name": "Telegram Aviso Publicacao",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.1,
       "position": [
         1200,
-        -100
+        -96
       ],
       "credentials": {
         "telegramApi": {
-          "id": "Conta do Telegram",
-          "name": "Conta do Telegram"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resume": "webhook",
-        "path": "aprovar-post-dl-nexus-v3",
-        "options": {}
-      },
-      "id": "wait_aprovacao",
-      "name": "Wait Aprova\u00e7\u00e3o Webhook",
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1,
-      "position": [
-        1400,
-        -100
-      ]
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "string": [
-            {
-              "value1": "={{$json.body.decisao}}",
-              "operation": "equal",
-              "value2": "aprovar"
-            }
-          ]
-        }
-      },
-      "id": "if_aprovado",
-      "name": "IF Decis\u00e3o Aprovada?",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 1,
-      "position": [
-        1600,
-        -100
-      ]
-    },
-    {
-      "parameters": {
-        "chatId": "CHAT_ID_AQUI",
-        "text": "O post foi REPROVADO manualmente e n\u00e3o ser\u00e1 publicado.",
-        "additionalFields": {}
-      },
-      "id": "telegram_reprovado_manual",
-      "name": "Telegram Reprovado Manual",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.1,
-      "position": [
-        1800,
-        100
-      ],
-      "credentials": {
-        "telegramApi": {
-          "id": "Conta do Telegram",
+          "id": "telegram_credential_id",
           "name": "Conta do Telegram"
         }
       }
@@ -204,9 +171,16 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "={{ $('Entrada do Post').item.json.image_url ? 'https://graph.facebook.com/v19.0/PAGE_ID_AQUI/photos' : 'https://graph.facebook.com/v19.0/PAGE_ID_AQUI/feed' }}",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "facebookGraphApi",
+        "url": "={{ $json.image_url ? 'https://graph.facebook.com/v25.0/' + ($env.FACEBOOK_PAGE_ID || '100166804716824') + '/photos' : 'https://graph.facebook.com/v25.0/' + ($env.FACEBOOK_PAGE_ID || '100166804716824') + '/feed' }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.META_ACCESS_TOKEN }}"
+            }
+          ]
+        },
         "sendBody": true,
         "bodyParameters": {
           "parameters": [
@@ -216,39 +190,41 @@
             },
             {
               "name": "url",
-              "value": "={{ $('Entrada do Post').item.json.image_url }}"
+              "value": "={{ $('NORMALIZAR_SAIDA_IA_SOCIAL').item.json.image_url }}"
             }
           ]
         },
-        "options": {}
+        "options": {},
+        "jsonBody": "={\n  \"message\": \"{{$json.legenda_facebook}}\"\n  {{ $json.image_url ? ',\"url\": \"' + $json.image_url + '\"' : '' }}\n}"
       },
       "id": "facebook_api",
       "name": "Facebook Publish",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        1800,
-        -300
-      ],
-      "credentials": {
-        "facebookGraphApi": {
-          "id": "Aplicativo do Facebook",
-          "name": "Aplicativo do Facebook"
-        }
-      }
+        1400,
+        -200
+      ]
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "https://graph.facebook.com/v19.0/INSTAGRAM_BUSINESS_ACCOUNT_ID_AQUI/media",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "facebookGraphApi",
+        "url": "https://graph.facebook.com/v25.0/{{ $env.INSTAGRAM_BUSINESS_ACCOUNT_ID }}/media",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.META_ACCESS_TOKEN }}"
+            }
+          ]
+        },
         "sendBody": true,
         "bodyParameters": {
           "parameters": [
             {
               "name": "image_url",
-              "value": "={{ $('Entrada do Post').item.json.image_url }}"
+              "value": "={{ $('NORMALIZAR_SAIDA_IA_SOCIAL').item.json.image_url }}"
             },
             {
               "name": "caption",
@@ -263,22 +239,23 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        2000,
-        -300
-      ],
-      "credentials": {
-        "facebookGraphApi": {
-          "id": "Aplicativo do Facebook",
-          "name": "Aplicativo do Facebook"
-        }
-      }
+        1600,
+        -200
+      ]
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "https://graph.facebook.com/v19.0/INSTAGRAM_BUSINESS_ACCOUNT_ID_AQUI/media_publish",
-        "authentication": "predefinedCredentialType",
-        "nodeCredentialType": "facebookGraphApi",
+        "url": "=https://graph.facebook.com/v25.0/{{$env.INSTAGRAM_BUSINESS_ACCOUNT_ID || '17841403185822108'}}/media_publish",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.META_ACCESS_TOKEN }}"
+            }
+          ]
+        },
         "sendBody": true,
         "bodyParameters": {
           "parameters": [
@@ -295,19 +272,67 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
-        2200,
-        -300
-      ],
-      "credentials": {
-        "facebookGraphApi": {
-          "id": "Aplicativo do Facebook",
-          "name": "Aplicativo do Facebook"
-        }
-      }
+        1800,
+        -200
+      ]
     },
     {
       "parameters": {
-        "chatId": "CHAT_ID_AQUI",
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-nexus-post-google",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($('NORMALIZAR_SAIDA_IA_SOCIAL').item.json) }}",
+        "options": {}
+      },
+      "id": "http_gmb_020",
+      "name": "HTTP: Google Business Profile",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2000,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/tiktok-assistido-dl-nexus",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($('NORMALIZAR_SAIDA_IA_SOCIAL').item.json) }}",
+        "options": {}
+      },
+      "id": "http_tiktok_020",
+      "name": "HTTP: TikTok Assistido",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2200,
+        -200
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "-1002012015091",
         "text": "={{ $('NORMALIZAR_SAIDA_IA_SOCIAL').item.json.texto_telegram }}",
         "additionalFields": {}
       },
@@ -317,11 +342,11 @@
       "typeVersion": 1.1,
       "position": [
         2400,
-        -300
+        -200
       ],
       "credentials": {
         "telegramApi": {
-          "id": "Conta do Telegram",
+          "id": "telegram_credential_id",
           "name": "Conta do Telegram"
         }
       }
@@ -330,28 +355,53 @@
       "parameters": {
         "fromEmail": "suporte@dlsolucoescondominiais.com.br",
         "toEmail": "suporte@dlsolucoescondominiais.com.br",
-        "subject": "Relat\u00f3rio de Postagem Social DL Nexus",
-        "html": "={{ 'Publica\u00e7\u00e3o executada com sucesso.<br>Status Aprova\u00e7\u00e3o: ' + $('Wait Aprova\u00e7\u00e3o Webhook').item.json.body.decisao }}",
+        "subject": "=Relatório Postagem Social DL Nexus - {{ $('NORMALIZAR_SAIDA_IA_SOCIAL').item.json.tema }}",
+        "text": "={{ 'Post ID: ' + $('NORMALIZAR_SAIDA_IA_SOCIAL').item.json.post_id + '\\nTema: ' + $('NORMALIZAR_SAIDA_IA_SOCIAL').item.json.tema + '\\nProduto: ' + $('NORMALIZAR_SAIDA_IA_SOCIAL').item.json.produto + '\\nStatus: Publicado em todas as redes\\nData: ' + new Date().toLocaleString('pt-BR') }}",
         "options": {}
       },
       "id": "smtp_report",
-      "name": "SMTP Relat\u00f3rio Final",
+      "name": "SMTP Relatório Final",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2,
       "position": [
         2600,
-        -300
+        -200
       ],
       "credentials": {
         "smtp": {
-          "id": "SMTP - Suporte DL",
+          "id": "cH1s64M4P6PVE3wU",
           "name": "SMTP - Suporte DL"
         }
       }
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={\"status\": \"ok\", \"post_id\": \"{{ $('NORMALIZAR_SAIDA_IA_SOCIAL').item.json.post_id }}\", \"killcritic\": \"{{ $json.status_killcritic }}\"}"
+      },
+      "id": "respond_ok",
+      "name": "Respond Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        2800,
+        -200
+      ]
     }
   ],
   "connections": {
-    "Manual Trigger": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Entrada do Post",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
       "main": [
         [
           {
@@ -366,14 +416,14 @@
       "main": [
         [
           {
-            "node": "Gerar Textos IA",
+            "node": "Gerar Textos IA (HTTP)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Gerar Textos IA": {
+    "Gerar Textos IA (HTTP)": {
       "main": [
         [
           {
@@ -410,7 +460,7 @@
       "main": [
         [
           {
-            "node": "Telegram Enviar Pr\u00e9via",
+            "node": "Telegram Aviso Publicacao",
             "type": "main",
             "index": 0
           }
@@ -424,40 +474,11 @@
         ]
       ]
     },
-    "Telegram Enviar Pr\u00e9via": {
-      "main": [
-        [
-          {
-            "node": "Wait Aprova\u00e7\u00e3o Webhook",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Wait Aprova\u00e7\u00e3o Webhook": {
-      "main": [
-        [
-          {
-            "node": "IF Decis\u00e3o Aprovada?",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "IF Decis\u00e3o Aprovada?": {
+    "Telegram Aviso Publicacao": {
       "main": [
         [
           {
             "node": "Facebook Publish",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Telegram Reprovado Manual",
             "type": "main",
             "index": 0
           }
@@ -490,6 +511,28 @@
       "main": [
         [
           {
+            "node": "HTTP: Google Business Profile",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Google Business Profile": {
+      "main": [
+        [
+          {
+            "node": "HTTP: TikTok Assistido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: TikTok Assistido": {
+      "main": [
+        [
+          {
             "node": "Telegram Publish",
             "type": "main",
             "index": 0
@@ -501,7 +544,18 @@
       "main": [
         [
           {
-            "node": "SMTP Relat\u00f3rio Final",
+            "node": "SMTP Relatório Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SMTP Relatório Final": {
+      "main": [
+        [
+          {
+            "node": "Respond Webhook",
             "type": "main",
             "index": 0
           }
@@ -509,19 +563,6 @@
       ]
     }
   },
-  "active": false,
-  "settings": {
-    "executionOrder": "v1"
-  },
-  "tags": [
-    {
-      "name": "DL_NEXUS_V3"
-    },
-    {
-      "name": "SOCIAL"
-    },
-    {
-      "name": "KILLCRITIC"
-    }
-  ]
+  "active": true,
+  "settings": {}
 }

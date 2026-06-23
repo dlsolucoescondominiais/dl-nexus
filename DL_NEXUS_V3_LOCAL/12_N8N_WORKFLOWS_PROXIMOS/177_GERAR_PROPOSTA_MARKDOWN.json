@@ -37,7 +37,7 @@
         "options": {}
       },
       "name": "Webhook Response",
-      "type": "n8n-nodes-base.webhookResponse",
+      "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
       "position": [
         440,

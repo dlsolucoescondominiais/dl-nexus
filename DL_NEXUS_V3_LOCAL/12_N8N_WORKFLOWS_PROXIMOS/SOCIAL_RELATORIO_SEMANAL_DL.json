@@ -1,0 +1,145 @@
+{
+  "name": "SOCIAL_RELATORIO_SEMANAL_DL",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cron",
+              "expression": "0 8 * * 1"
+            }
+          ]
+        }
+      },
+      "id": "trigger_semanal_segunda",
+      "name": "Trigger Semanal (Segunda 8h)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM dl_social_publicacoes WHERE created_at >= NOW() - INTERVAL '7 days';"
+      },
+      "id": "query_last_7_days",
+      "name": "Buscar Publicacoes da Semana",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        300,
+        300
+      ],
+      "credentials": {
+        "database": {
+          "id": "supabase_postgres_cred_id",
+          "name": "Supabase Connection"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst total = items.length;\n\nlet publicadosTotais = 0;\nlet publicadosParciais = 0;\nlet bloqueadosKillcritic = 0;\nlet pendentesCredencial = 0;\nlet falhasTecnicas = 0;\n\nlet jornalisticasCount = 0;\nlet institucionaisCount = 0;\nlet educativosCount = 0;\n\nitems.forEach(item => {\n  const row = item.json;\n  \n  if (row.status_global === 'publicado_total') publicadosTotais++;\n  else if (row.status_global === 'publicado_parcial') publicadosParciais++;\n  else if (row.status_global === 'bloqueado_revisao') bloqueadosKillcritic++;\n  else if (row.status_global === 'pendente_credencial') pendentesCredencial++;\n  else if (row.status_global === 'falhou_total') falhasTecnicas++;\n\n  if (row.fonte_tipo === 'noticias') jornalisticasCount++;\n  else if (row.fonte_tipo === 'institucional') institucionaisCount++;\n  else educativosCount++;\n});\n\nconst reportHtml = `\n  <h2>Relatório Semanal de Publicações Sociais (DL Soluções)</h2>\n  <p><b>Período:</b> Últimos 7 dias</p>\n  <p><b>Total de Postagens Processadas:</b> ${total}</p>\n  <hr/>\n  <h3>Resumo de Publicações (Status Global):</h3>\n  <ul>\n    <li><b>Publicados Totais (Todos os canais ativos):</b> ${publicadosTotais}</li>\n    <li><b>Publicados Parciais (Alguns canais ativos):</b> ${publicadosParciais}</li>\n    <li><b>Bloqueados por KILLCRITIC:</b> ${bloqueadosKillcritic}</li>\n    <li><b>Pendentes por Credencial:</b> ${pendentesCredencial}</li>\n    <li><b>Falhas Técnicas Totais:</b> ${falhasTecnicas}</li>\n  </ul>\n  <hr/>\n  <h3>Estatísticas de Origem de Conteúdo:</h3>\n  <ul>\n    <li><b>Fontes Jornalísticas Usadas:</b> ${jornalisticasCount}</li>\n    <li><b>Fontes Institucionais Usadas:</b> ${institucionaisCount}</li>\n    <li><b>Posts Educativos Evergreen:</b> ${educativosCount}</li>\n  </ul>\n`;\n\nconst reportTelegram = `📊 *Relatório Semanal — Autopublicação Social DL*\n\n*Total Processado:* ${total}\n\n*Resumo de Status Global:*\n- ✅ Publicações Totais: ${publicadosTotais}\n- ⚠️ Publicações Parciais: ${publicadosParciais}\n- ⛔ Bloqueados por KILLCRITIC: ${bloqueadosKillcritic}\n- 🔑 Pendentes por Credencial: ${pendentesCredencial}\n- ❌ Falhas Técnicas Totais: ${falhasTecnicas}\n\n*Fontes de Conteúdo Utilizadas:*\n- 📰 Jornalísticas (G1, etc.): ${jornalisticasCount}\n- 🏛️ Institucionais (ABESE/CREA): ${institucionaisCount}\n- 💡 Educativos Evergreen: ${educativosCount}`;\n\nreturn [{\n  json: {\n    report_html: reportHtml,\n    report_telegram: reportTelegram\n  }\n}];"
+      },
+      "id": "code_generate_report",
+      "name": "Compilar Relatorio",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "YOUR_TELEGRAM_CHAT_ID",
+        "text": "={{$json.report_telegram}}"
+      },
+      "id": "telegram_send_report",
+      "name": "Enviar Relatorio Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        700,
+        220
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram_cred_id",
+          "name": "Telegram Bot Account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "sac@dlsolucoescondominiais.com.br",
+        "toEmail": "contato@dlsolucoescondominiais.com.br",
+        "subject": "Relatório Semanal de Mídias Sociais - DL Nexus",
+        "html": "={{$json.report_html}}",
+        "options": {}
+      },
+      "id": "email_send_report",
+      "name": "Enviar Relatorio E-mail",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1.1,
+      "position": [
+        700,
+        380
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "smtp_cred_id",
+          "name": "HostGator SMTP"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Trigger Semanal (Segunda 8h)": {
+      "main": [
+        [
+          {
+            "node": "Buscar Publicacoes da Semana",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Publicacoes da Semana": {
+      "main": [
+        [
+          {
+            "node": "Compilar Relatorio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Compilar Relatorio": {
+      "main": [
+        [
+          {
+            "node": "Enviar Relatorio Telegram",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Enviar Relatorio E-mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "updatedAt": "2026-05-30T05:33:51.107Z",
+  "createdAt": "2026-05-25T21:55:33.119Z",
+  "id": "Rxcidvldpe7NmLh4",
+  "name": "133_APROVACAO_PROSPECCAO_TELEGRAM",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "aprovar-prospeccao",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "webhook-133-id",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "=*Aprovação de Prospecção*=\n\n*Lead:* {{$json.body.lead}}\n*Detalhes:* {{$json.body.detalhes}}\n\nPor favor, escolha uma ação:",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Aprovar",
+                    "callbackData": "aprovar_{{$json.body.id}}"
+                  },
+                  {
+                    "text": "Editar",
+                    "callbackData": "editar_{{$json.body.id}}"
+                  },
+                  {
+                    "text": "Reprovar",
+                    "callbackData": "reprovar_{{$json.body.id}}"
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Agendar Avaliação Técnica",
+                    "callbackData": "agendar_{{$json.body.id}}"
+                  }
+                ]
+              }
+            },
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Enviar para Diego",
+                    "callbackData": "diego_{{$json.body.id}}"
+                  },
+                  {
+                    "text": "Enviar para Aninha",
+                    "callbackData": "aninha_{{$json.body.id}}"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-133-id",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        450,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "Conta do Telegram",
+          "name": "Conta do Telegram"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "6454bd8c-da19-4d0a-9190-7f19d4b3664a",
+  "activeVersionId": null,
+  "versionCounter": 121,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-25T21:55:33.119Z",
+      "createdAt": "2026-05-25T21:55:33.119Z",
+      "role": "workflow:owner",
+      "workflowId": "Rxcidvldpe7NmLh4",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

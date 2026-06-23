@@ -1,0 +1,19 @@
+{
+  "name": "193_AUTO_RETRY_PUBLICACAO_SOCIAL",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger",
+      "name": "Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    }
+  ],
+  "connections": {},
+  "active": false,
+  "settings": {}
+}

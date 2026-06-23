@@ -1,0 +1,130 @@
+{
+  "updatedAt": "2026-05-30T05:46:16.585Z",
+  "createdAt": "2026-05-25T21:51:12.260Z",
+  "id": "QCKF5HC3qNWAicpw",
+  "name": "092_MESA_APROVACAO_TELEGRAM_ANINHA",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "/* Receber comandos de aprovação: APROVAR 020, REVISAR 020, etc. */\nreturn items;"
+      },
+      "id": "2",
+      "name": "Processar Comando",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        450,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Processar Comando",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "6c857d4c-cf03-4980-8cee-d56e3191e764",
+  "activeVersionId": "6c857d4c-cf03-4980-8cee-d56e3191e764",
+  "versionCounter": 56,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-25T21:51:12.260Z",
+      "createdAt": "2026-05-25T21:51:12.260Z",
+      "role": "workflow:owner",
+      "workflowId": "QCKF5HC3qNWAicpw",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-30T05:46:16.586Z",
+    "createdAt": "2026-05-30T05:46:16.586Z",
+    "versionId": "6c857d4c-cf03-4980-8cee-d56e3191e764",
+    "workflowId": "QCKF5HC3qNWAicpw",
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "1",
+        "name": "Telegram Trigger",
+        "type": "n8n-nodes-base.telegramTrigger",
+        "typeVersion": 1,
+        "position": [
+          250,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "/* Receber comandos de aprovação: APROVAR 020, REVISAR 020, etc. */\nreturn items;"
+        },
+        "id": "2",
+        "name": "Processar Comando",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          450,
+          300
+        ]
+      }
+    ],
+    "connections": {
+      "Telegram Trigger": {
+        "main": [
+          [
+            {
+              "node": "Processar Comando",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": []
+  }
+}

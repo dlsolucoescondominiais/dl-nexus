@@ -1,0 +1,201 @@
+{
+  "updatedAt": "2026-05-18T05:26:10.648Z",
+  "createdAt": "2026-04-23T19:00:16.742Z",
+  "id": "1AJAjIDO0KhjGzMe",
+  "name": "008_mcp_server",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "mcp-server/http",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook MCP Server",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        0
+      ],
+      "webhookId": "mcp-server-http",
+      "id": "06832900-4903-46dc-854c-d899a289122e"
+    },
+    {
+      "parameters": {
+        "jsCode": "const payload = $input.item.json.body;\n\n// Process MCP instructions\nconst response = {\n  status: 'success',\n  message: 'Instruction received via MCP Server',\n  received_payload: payload\n};\n\nreturn response;"
+      },
+      "name": "Process Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        48,
+        0
+      ],
+      "id": "8940e6e4-02ca-4683-93f4-311cd9a880ea"
+    }
+  ],
+  "connections": {
+    "Webhook MCP Server": {
+      "main": [
+        [
+          {
+            "node": "Process Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": true
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "df291383-7166-4b6a-83c1-730eaf7e61a5",
+  "activeVersionId": "df291383-7166-4b6a-83c1-730eaf7e61a5",
+  "versionCounter": 45,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-04-23T19:00:16.742Z",
+      "createdAt": "2026-04-23T19:00:16.742Z",
+      "role": "workflow:owner",
+      "workflowId": "1AJAjIDO0KhjGzMe",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-04-23T19:00:24.191Z",
+    "createdAt": "2026-04-23T19:00:16.742Z",
+    "versionId": "df291383-7166-4b6a-83c1-730eaf7e61a5",
+    "workflowId": "1AJAjIDO0KhjGzMe",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "mcp-server/http",
+          "responseMode": "lastNode",
+          "options": {}
+        },
+        "name": "Webhook MCP Server",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 1,
+        "position": [
+          -176,
+          0
+        ],
+        "webhookId": "mcp-server-http",
+        "id": "06832900-4903-46dc-854c-d899a289122e"
+      },
+      {
+        "parameters": {
+          "jsCode": "const payload = $input.item.json.body;\n\n// Process MCP instructions\nconst response = {\n  status: 'success',\n  message: 'Instruction received via MCP Server',\n  received_payload: payload\n};\n\nreturn response;"
+        },
+        "name": "Process Payload",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          48,
+          0
+        ],
+        "id": "8940e6e4-02ca-4683-93f4-311cd9a880ea"
+      }
+    ],
+    "connections": {
+      "Webhook MCP Server": {
+        "main": [
+          [
+            {
+              "node": "Process Payload",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo  Oliveira",
+    "name": "Version df291383",
+    "description": "",
+    "autosaved": true,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-04-23T19:00:24.187Z",
+        "id": 144,
+        "workflowId": "1AJAjIDO0KhjGzMe",
+        "versionId": "df291383-7166-4b6a-83c1-730eaf7e61a5",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-04-23T19:00:32.967Z",
+        "id": 145,
+        "workflowId": "1AJAjIDO0KhjGzMe",
+        "versionId": "df291383-7166-4b6a-83c1-730eaf7e61a5",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-04-23T19:00:32.978Z",
+        "id": 146,
+        "workflowId": "1AJAjIDO0KhjGzMe",
+        "versionId": "df291383-7166-4b6a-83c1-730eaf7e61a5",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-04-24T00:00:20.961Z",
+        "id": 147,
+        "workflowId": "1AJAjIDO0KhjGzMe",
+        "versionId": "df291383-7166-4b6a-83c1-730eaf7e61a5",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-04-24T00:00:20.973Z",
+        "id": 148,
+        "workflowId": "1AJAjIDO0KhjGzMe",
+        "versionId": "df291383-7166-4b6a-83c1-730eaf7e61a5",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:15.984Z",
+        "id": 2385,
+        "workflowId": "1AJAjIDO0KhjGzMe",
+        "versionId": "df291383-7166-4b6a-83c1-730eaf7e61a5",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:15.995Z",
+        "id": 2386,
+        "workflowId": "1AJAjIDO0KhjGzMe",
+        "versionId": "df291383-7166-4b6a-83c1-730eaf7e61a5",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

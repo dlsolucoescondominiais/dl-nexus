@@ -1,0 +1,398 @@
+{
+  "updatedAt": "2026-05-31T16:23:56.088Z",
+  "createdAt": "2026-05-28T04:21:03.732Z",
+  "id": "UBH2RWc3CK2AyVR3",
+  "name": "070_CRON_MANUS_DIARIO",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "35 0 * * *"
+            }
+          ]
+        }
+      },
+      "id": "trigger_cron",
+      "name": "Schedule Trigger (00:35)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const date = new Date().toLocaleDateString('pt-BR'); return {json: {prompt: `Você é Manus AI, o Diretor de Marketing B2B da DL Soluções Condominiais.\\nHoje é dia ${date}. Vasculhe e pense em condomínios pequenos/médios, colégios e restaurantes na zona e região do Rio de Janeiro.\\nSua missão: Gerar a estratégia do dia de postagem para o Agente MarkSolar (Copywriter).\\nA estratégia DEVE focar em um ou mais de nossos produtos chave: DL Fortress, DL Guardião e DL Acqua.\\n\\nVocê DEVE retornar sua saída estritamente em um JSON válido com a seguinte estrutura:\\n{\\n  \"estrategia_texto\": \"Descreva o gancho, a dor do público e o tom que o MarkSolar deve usar no post.\",\\n  \"produto\": \"Nome do produto foco\",\\n  \"publico_alvo\": \"Ex: Síndicos de pequenos condomínios\",\\n  \"bairro\": \"Ex: Zona Sul, Barra ou Tijuca\",\\n  \"canal_destino\": \"Instagram, Facebook e TikTok\",\\n  \"objetivo\": \"Agendar Avaliação Técnica\"\\n}`}};"
+      },
+      "id": "prepare_prompt",
+      "name": "Preparar Prompt Diário",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.OPENAI_API_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "gpt-4-turbo-preview"
+            },
+            {
+              "name": "messages",
+              "value": "[{\"role\": \"user\", \"content\": \"{{ $json.prompt }}\"}]"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "api_manus",
+      "name": "HTTP Request Manus API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let content = $input.all()[0].json.choices[0].message.content; if(content.includes(\"```json\")){content = content.replace(/```json/g, \"\").replace(/```/g, \"\").trim();} try{return {json: JSON.parse(content)};}catch(e){return {json: {estrategia_texto: content, produto: \"DL Guardião\", publico_alvo: \"Síndicos\", bairro: \"Rio de Janeiro\"}};}"
+      },
+      "id": "parse_manus_json",
+      "name": "Limpar JSON do Manus",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        608,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "-1002012015091",
+        "text": "🎯 *DIRETRIZ B2B DO MANUS GERADA E ENVIADA AO MARKSOLAR*\n\n*Público:* {{ $json.publico_alvo }}\n*Produto:* {{ $json.produto }}\n*Região:* {{ $json.bairro }}\n\n*Estratégia:* {{ $json.estrategia_texto }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "send_telegram",
+      "name": "Telegram Entrega",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        816,
+        112
+      ],
+      "webhookId": "db58bee3-6bf3-4299-8f1f-d01ae7b2ac3a",
+      "credentials": {
+        "telegramApi": {
+          "id": "j1fpzPAZUa1A0i6r",
+          "name": "Telegram account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger (00:35)": {
+      "main": [
+        [
+          {
+            "node": "Preparar Prompt Diário",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Prompt Diário": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request Manus API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request Manus API": {
+      "main": [
+        [
+          {
+            "node": "Limpar JSON do Manus",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limpar JSON do Manus": {
+      "main": [
+        [
+          {
+            "node": "Telegram Entrega",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": {
+    "node:Schedule Trigger (00:35)": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "866bcd99-72b2-4ad2-b8f6-f973cb84dcf7",
+  "activeVersionId": "866bcd99-72b2-4ad2-b8f6-f973cb84dcf7",
+  "versionCounter": 41,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-28T04:21:03.732Z",
+      "createdAt": "2026-05-28T04:21:03.732Z",
+      "role": "workflow:owner",
+      "workflowId": "UBH2RWc3CK2AyVR3",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-31T16:23:56.089Z",
+    "createdAt": "2026-05-31T16:23:56.089Z",
+    "versionId": "866bcd99-72b2-4ad2-b8f6-f973cb84dcf7",
+    "workflowId": "UBH2RWc3CK2AyVR3",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "cronExpression",
+                "expression": "35 0 * * *"
+              }
+            ]
+          }
+        },
+        "id": "trigger_cron",
+        "name": "Schedule Trigger (00:35)",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const date = new Date().toLocaleDateString('pt-BR'); return {json: {prompt: `Você é Manus AI, o Diretor de Marketing B2B da DL Soluções Condominiais.\\nHoje é dia ${date}. Vasculhe e pense em condomínios pequenos/médios, colégios e restaurantes na zona e região do Rio de Janeiro.\\nSua missão: Gerar a estratégia do dia de postagem para o Agente MarkSolar (Copywriter).\\nA estratégia DEVE focar em um ou mais de nossos produtos chave: DL Fortress, DL Guardião e DL Acqua.\\n\\nVocê DEVE retornar sua saída estritamente em um JSON válido com a seguinte estrutura:\\n{\\n  \"estrategia_texto\": \"Descreva o gancho, a dor do público e o tom que o MarkSolar deve usar no post.\",\\n  \"produto\": \"Nome do produto foco\",\\n  \"publico_alvo\": \"Ex: Síndicos de pequenos condomínios\",\\n  \"bairro\": \"Ex: Zona Sul, Barra ou Tijuca\",\\n  \"canal_destino\": \"Instagram, Facebook e TikTok\",\\n  \"objetivo\": \"Agendar Avaliação Técnica\"\\n}`}};"
+        },
+        "id": "prepare_prompt",
+        "name": "Preparar Prompt Diário",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          208,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/chat/completions",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{ $env.OPENAI_API_KEY }}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "model",
+                "value": "gpt-4-turbo-preview"
+              },
+              {
+                "name": "messages",
+                "value": "[{\"role\": \"user\", \"content\": \"{{ $json.prompt }}\"}]"
+              }
+            ]
+          },
+          "options": {
+            "response": {
+              "response": {
+                "responseFormat": "json"
+              }
+            }
+          }
+        },
+        "id": "api_manus",
+        "name": "HTTP Request Manus API",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          400,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "let content = $input.all()[0].json.choices[0].message.content; if(content.includes(\"```json\")){content = content.replace(/```json/g, \"\").replace(/```/g, \"\").trim();} try{return {json: JSON.parse(content)};}catch(e){return {json: {estrategia_texto: content, produto: \"DL Guardião\", publico_alvo: \"Síndicos\", bairro: \"Rio de Janeiro\"}};}"
+        },
+        "id": "parse_manus_json",
+        "name": "Limpar JSON do Manus",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          608,
+          112
+        ]
+      },
+      {
+        "parameters": {
+          "chatId": "-1002012015091",
+          "text": "🎯 *DIRETRIZ B2B DO MANUS GERADA E ENVIADA AO MARKSOLAR*\n\n*Público:* {{ $json.publico_alvo }}\n*Produto:* {{ $json.produto }}\n*Região:* {{ $json.bairro }}\n\n*Estratégia:* {{ $json.estrategia_texto }}",
+          "additionalFields": {
+            "parse_mode": "Markdown"
+          }
+        },
+        "id": "send_telegram",
+        "name": "Telegram Entrega",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.1,
+        "position": [
+          816,
+          112
+        ],
+        "webhookId": "db58bee3-6bf3-4299-8f1f-d01ae7b2ac3a",
+        "credentials": {
+          "telegramApi": {
+            "id": "j1fpzPAZUa1A0i6r",
+            "name": "Telegram account 2"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Schedule Trigger (00:35)": {
+        "main": [
+          [
+            {
+              "node": "Preparar Prompt Diário",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar Prompt Diário": {
+        "main": [
+          [
+            {
+              "node": "HTTP Request Manus API",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP Request Manus API": {
+        "main": [
+          [
+            {
+              "node": "Limpar JSON do Manus",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Limpar JSON do Manus": {
+        "main": [
+          [
+            {
+              "node": "Telegram Entrega",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": null,
+    "description": null,
+    "autosaved": true,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-06-15T03:48:31.056Z",
+        "id": 2463,
+        "workflowId": "UBH2RWc3CK2AyVR3",
+        "versionId": "866bcd99-72b2-4ad2-b8f6-f973cb84dcf7",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

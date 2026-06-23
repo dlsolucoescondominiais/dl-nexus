@@ -1,0 +1,227 @@
+{
+  "updatedAt": "2026-05-31T16:30:29.752Z",
+  "createdAt": "2026-05-30T15:56:43.746Z",
+  "id": "UnsEWfw70m7FEY3S",
+  "name": "140_ORGANIZADOR_DRIVE_MIDIA",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours"
+            }
+          ]
+        }
+      },
+      "id": "trigger",
+      "name": "Schedule Trigger (Hourly)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst config = {\n  \"modo_execucao\": \"DRY_RUN\",\n  \"frequencia\": \"hourly\",\n  \"limite_por_execucao\": 50,\n  \"fontes_drive_ids\": [\n    \"1TR_gRh_JLODCyhf3SK4BWKunzA_h7Mo-\",\n    \"1-eoAjOVuGrjWAsQCslvUqH621Axt6zyq\",\n    \"1JTjnBxgErYaYqBEvY5XN7Akegj4lhSyy\",\n    \"1jl9cbwMWQCLhVTGYVL1E1EmV9_7rpQ9A\",\n    \"1gslPTBSSxYuUOvwQnVuhaOxhj88avrMO\",\n    \"19ccEKZikLNTmkXZxbux1huJfcAgI972m\",\n    \"18555srf9wDZWm7pHVwKsctROvwxTrXdG\",\n    \"1RwmPLgdb-bm5L0iv_dC546r7mlJpRUAB\",\n    \"1Dpljecl1Ha7PdEE6KHs9QI62biWpy0gl\",\n    \"1vE8OxBGipoQxTkPbrPS7HDzJI5YMqwwY\",\n    \"19mqLnrL4tvYtZX_3FGv6KdMG35s1nbJS\",\n    \"1HAap59IKZWmbLvtid7N4I0cz8w1nkYRm\",\n    \"1vfDw3tiJLq3ZjJckyV3k3l4ymqzaG27-\",\n    \"1ZWEH5J0g3wOZzvOBeXADlIy-caz01R4n\",\n    \"1FyQMdonurUurv5-kHog94V3Gjjy4bPnk\",\n    \"1XZInnjA67tjdAAlqlm4YzxOvaHng8o4m\",\n    \"1HDZ92bfzPBfKYhpCEMnGDBn-Huue-fj4\",\n    \"1VeWNHbPakao1xdQCKXaRXCzMK82HkDCm\",\n    \"1k42W4QsO02BJc8G2UeJLHwDU2Cnf4NT7\",\n    \"1duuFR1PjgreWmWCeBE8tWfbVqa4eMpp1\",\n    \"1m6N54JX48TZ3yrpejLrJsI8GzbQt7Hfi\",\n    \"1VmoiLB8gPTwUV9cKxgu4nFDPhOK2hJm9\",\n    \"1yCd_RZcTzUiQgi78yo1cDB1CVMO6eGby\",\n    \"1Go7gph7iK7OUMZvuKg556ClLy4K-odwM\",\n    \"1Ts396yVFPjFBcl_Q1w6qor9CfwbHtsAr\",\n    \"1mH0YjiR2A08aQY8vJMSnamiLbA9pFvME\",\n    \"15evs0qo00VjBTpUkVCtVLGrT_8Hz9hzI\",\n    \"13Jy_6QMMFc9waL_Uup0MD3qIurvtupyC\"\n  ]\n};\n\nreturn config.fontes_drive_ids.map(id => ({ json: { folderId: id, config: config } }));\n"
+      },
+      "id": "split_folders",
+      "name": "Preparar Lista de Pastas",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "options": {
+          "fields": [
+            "id",
+            "name",
+            "mimeType",
+            "parents",
+            "size",
+            "createdTime",
+            "modifiedTime",
+            "owners",
+            "webViewLink"
+          ]
+        }
+      },
+      "id": "list_drive",
+      "name": "Listar Arquivos da Pasta",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "position": [
+        416,
+        304
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "vDUp3ZKxazIKho51",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst arquivos = [];\n\nconst ID_PASTA_FOTOS = \"COLOQUE_AQUI_O_ID_DA_PASTA_DE_FOTOS\";\nconst ID_PASTA_VIDEOS = \"COLOQUE_AQUI_O_ID_DA_PASTA_DE_VIDEOS\";\nconst ID_PASTA_DOCS = \"COLOQUE_AQUI_O_ID_DA_PASTA_DE_DOCS\";\nconst ID_PASTA_SENSIVEIS = \"COLOQUE_AQUI_O_ID_DA_PASTA_DE_SENSIVEIS\";\n\nfor (const item of $input.all()) {\n  const f = item.json;\n  const original_name = f.name || \"\";\n  const ext = original_name.includes('.') ? original_name.split('.').pop().toLowerCase() : \"\";\n  const mime = f.mimeType || \"\";\n  \n  let tipo_midia = \"documento\";\n  let pasta_destino = ID_PASTA_DOCS;\n  \n  if (mime.includes(\"image\")) {\n      tipo_midia = \"imagem\";\n      pasta_destino = ID_PASTA_FOTOS;\n  }\n  else if (mime.includes(\"video\")) {\n      tipo_midia = \"video\";\n      pasta_destino = ID_PASTA_VIDEOS;\n  }\n  else if (mime.includes(\"audio\") || mime.includes(\"pdf\") || mime.includes(\"document\") || mime.includes(\"text\")) {\n      tipo_midia = \"documento\";\n      pasta_destino = ID_PASTA_DOCS;\n  }\n  \n  const nomes_risco = [\"placa\", \"cnh\", \"rg\", \"cpf\", \"boleto\", \"contrato\", \"rosto\", \"cliente\", \"email\"];\n  if (nomes_risco.some(r => original_name.toLowerCase().includes(r))) {\n    pasta_destino = ID_PASTA_SENSIVEIS;\n  }\n  \n  const tema = tipo_midia === \"imagem\" ? \"foto_campo\" : (tipo_midia === \"video\" ? \"video_campo\" : \"duvidoso\");\n  const produto = \"DL_NEXUS\"; \n  \n  arquivos.push({ json: {\n    file_id: f.id,\n    link_drive: f.webViewLink || \"\",\n    file_name_original: original_name,\n    file_name_sugerido: `2026_${produto}_${tema}_${original_name}`,\n    pasta_origem_id: f.parents ? f.parents[0] : \"\",\n    pasta_destino_id: pasta_destino,\n    tipo_midia: tipo_midia\n  }});\n}\n\nreturn arquivos;\n"
+      },
+      "id": "classificar",
+      "name": "Classificar Midias",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        624,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.pasta_destino_id }}",
+        "rules": {
+          "rules": [
+            {
+              "operation": "notEqual",
+              "value2": "COLOQUE_AQUI_O_ID_DA_PASTA_DE_FOTOS"
+            }
+          ]
+        },
+        "fallbackOutput": 1
+      },
+      "id": "switch_configured",
+      "name": "Check Configured",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        832,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": "={{ $json.file_id }}",
+        "updateFields": {},
+        "options": {}
+      },
+      "id": "move_drive",
+      "name": "Mover Arquivo Fisicamente",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        208
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "vDUp3ZKxazIKho51",
+          "name": "Google Drive account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger (Hourly)": {
+      "main": [
+        [
+          {
+            "node": "Preparar Lista de Pastas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Lista de Pastas": {
+      "main": [
+        [
+          {
+            "node": "Listar Arquivos da Pasta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Listar Arquivos da Pasta": {
+      "main": [
+        [
+          {
+            "node": "Classificar Midias",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classificar Midias": {
+      "main": [
+        [
+          {
+            "node": "Check Configured",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Configured": {
+      "main": [
+        [
+          {
+            "node": "Mover Arquivo Fisicamente",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Schedule Trigger (Hourly)": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": null,
+  "versionId": "c04e3776-3829-4422-8638-86f8543feecb",
+  "activeVersionId": null,
+  "versionCounter": 26,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-30T15:56:43.746Z",
+      "createdAt": "2026-05-30T15:56:43.746Z",
+      "role": "workflow:owner",
+      "workflowId": "UnsEWfw70m7FEY3S",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

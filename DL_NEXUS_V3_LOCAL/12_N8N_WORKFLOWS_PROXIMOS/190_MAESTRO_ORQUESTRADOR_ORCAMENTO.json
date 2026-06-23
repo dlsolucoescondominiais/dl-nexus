@@ -1,0 +1,71 @@
+{
+  "name": "190_MAESTRO_ORQUESTRADOR_ORCAMENTO",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "maestro-orcamento"
+      },
+      "id": "trigger",
+      "name": "Webhook Maestro",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return {json: { orcamento_id: $json.payload_normalizado.orcamento_id, payload_normalizado: $json.payload_normalizado, contexto_dl: {}, resultado_anterior: {} }};"
+      },
+      "id": "init_contract",
+      "name": "Inicializa Contrato",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "ID_201"
+      },
+      "id": "exec_201",
+      "name": "Executa 201_CLASSIFICADOR",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        400,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Maestro": {
+      "main": [
+        [
+          {
+            "node": "Inicializa Contrato",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inicializa Contrato": {
+      "main": [
+        [
+          {
+            "node": "Executa 201_CLASSIFICADOR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

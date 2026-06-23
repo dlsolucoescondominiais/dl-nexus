@@ -1,0 +1,116 @@
+{
+  "updatedAt": "2026-05-31T16:30:29.430Z",
+  "createdAt": "2026-05-30T05:42:12.727Z",
+  "id": "qplxOUqyQ5ne8t14",
+  "name": "092_MESA_APROVACAO_TELEGRAM_ANINHA",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message",
+          "callback_query"
+        ],
+        "additionalFields": {}
+      },
+      "id": "1",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        256,
+        304
+      ],
+      "webhookId": "750a41dd-5944-40fd-a864-6971b5014d1c"
+    },
+    {
+      "parameters": {
+        "jsCode": "/* ═══════════════════════════════════════════════════════════\n   MESA DE APROVAÇÃO — ANINHA / DIOGO\n   Recebe comandos do Telegram e processa aprovações.\n   Comandos aceitos:\n     APROVAR <ID>   → Aprova e libera workflow\n     REVISAR <ID>   → Marca para revisão\n     REJEITAR <ID>  → Bloqueia execução\n     STATUS         → Lista pendências\n   ═══════════════════════════════════════════════════════════ */\n\nconst msg = $input.item.json;\nconst text = (msg.message?.text || msg.callback_query?.data || '').trim().toUpperCase();\nconst chatId = msg.message?.chat?.id || msg.callback_query?.message?.chat?.id || '';\nconst userName = msg.message?.from?.first_name || msg.callback_query?.from?.first_name || 'Operador';\n\nlet resposta = '';\nlet acao = 'desconhecido';\nlet targetId = '';\n\nif (text.startsWith('APROVAR')) {\n  targetId = text.replace('APROVAR', '').trim();\n  acao = 'aprovar';\n  resposta = `✅ *APROVADO* por ${userName}\\nWorkflow/Item: ${targetId || 'geral'}\\nData: ${new Date().toLocaleString('pt-BR')}`;\n} else if (text.startsWith('REVISAR')) {\n  targetId = text.replace('REVISAR', '').trim();\n  acao = 'revisar';\n  resposta = `🔄 *MARCADO PARA REVISÃO* por ${userName}\\nWorkflow/Item: ${targetId || 'geral'}\\nData: ${new Date().toLocaleString('pt-BR')}`;\n} else if (text.startsWith('REJEITAR')) {\n  targetId = text.replace('REJEITAR', '').trim();\n  acao = 'rejeitar';\n  resposta = `❌ *REJEITADO* por ${userName}\\nWorkflow/Item: ${targetId || 'geral'}\\nData: ${new Date().toLocaleString('pt-BR')}`;\n} else if (text === 'STATUS') {\n  acao = 'status';\n  resposta = `📊 *STATUS DA MESA DE APROVAÇÃO*\\nOperador: ${userName}\\nConsulta: ${new Date().toLocaleString('pt-BR')}\\n\\n_Nenhuma pendência no momento._`;\n} else {\n  resposta = `⚠️ Comando não reconhecido: \"${text}\"\\n\\nComandos válidos:\\n• APROVAR <ID>\\n• REVISAR <ID>\\n• REJEITAR <ID>\\n• STATUS`;\n}\n\nreturn [{\n  json: {\n    acao,\n    target: targetId,\n    operador: userName,\n    chat_id: chatId,\n    resposta,\n    timestamp: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "2",
+      "name": "Processar Comando",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ $json.resposta }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "3",
+      "name": "Telegram Resposta",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        304
+      ]
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Processar Comando",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Processar Comando": {
+      "main": [
+        [
+          {
+            "node": "Telegram Resposta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "1c9388c4-c9c3-4142-b0bd-fcb8b33bc156",
+  "activeVersionId": null,
+  "versionCounter": 6,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-30T05:42:12.727Z",
+      "createdAt": "2026-05-30T05:42:12.727Z",
+      "role": "workflow:owner",
+      "workflowId": "qplxOUqyQ5ne8t14",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

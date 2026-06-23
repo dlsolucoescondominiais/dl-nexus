@@ -1,0 +1,375 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "35 0 * * *"
+            }
+          ]
+        }
+      },
+      "id": "20084bf8-ec26-46cd-8968-b4ab34b82765",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        -976,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return {json: {attempt: 0, max_attempts: 20, wait_seconds: 30}};"
+      },
+      "id": "76cf9e53-6a5d-4366-a11d-131112ec396c",
+      "name": "Init Loop Variables",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -784,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = new Date().toLocaleDateString(\"pt-BR\"); return {json: {prompt: `Você é Manus AI, o Diretor de Marketing B2B da DL Soluções Condominiais.\\nHoje é dia ${d}. Pense em condomínios pequenos/médios, colégios e restaurantes no Rio de Janeiro.\\nUse os seguintes produtos: DL Guardião (segurança eletrônica/CFTV), Fortress (portaria autônoma/gestão de acesso), Gatekeeper (automação de portões), DL Acqua (água/bombas/cisternas), DL Volt (elétrica condominial), DL EcoVolt (solar), DL Alerta (prevenção de incêndio), DL Partner (manutenção continuada), Mult•Grill Express (chapas/fritadeiras/gastronomia comercial).\\nNão use \"visita técnica\", use \"Avaliação Técnica\". Não cite Condfy. Não chame o Diogo de engenheiro, use \"Tecnólogo Responsável\" se necessário.\\nRetorne JSON:\\n{\\n  \"estrategia_texto\": \"...\",\\n  \"produto\": \"...\",\\n  \"publico_alvo\": \"...\",\\n  \"bairro\": \"...\",\\n  \"canal_destino\": \"...\",\\n  \"objetivo\": \"...\"\\n}`}};"
+      },
+      "id": "cf4759b2-08d0-453d-9b4b-19ea4f0321a0",
+      "name": "Prepare Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -576,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.manus.ai/v2/task.create",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-manus-api-key",
+              "value": "{{$env.MANUS_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{$json.prompt}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "079909fc-aa67-43e1-8de2-3c0c4e28a5c0",
+      "name": "HTTP Request Manus Task",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        -384,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const task_id = $json.task_id || $json.id || ($json.data && ($json.data.task_id || $json.data.id )); if (!task_id) { throw new Error(\"Manus não retornou task_id. Verificar payload ou endpoint task.create.\"); } return {json: {task_id: task_id, attempt: $node[\"Init Loop Variables\"].json.attempt, max_attempts: $node[\"Init Loop Variables\"].json.max_attempts}};"
+      },
+      "id": "fea75a1e-67d2-4342-80ad-29715b17e378",
+      "name": "Extract Task ID",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -176,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=\"https://api.manus.ai/v2/task.listMessages?task_id=\" + $json.task_id",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-manus-api-key",
+              "value": "{{$env.MANUS_API_KEY}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7bc92056-7bc8-486d-98d9-27a445827041",
+      "name": "Check Task Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        32,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let latestStatusUpdate = $json.find(msg => msg.type === 'status_update' ); let s = (latestStatusUpdate && latestStatusUpdate.status_update && latestStatusUpdate.status_update.agent_status || \"\").toLowerCase(); let is_done = [\"stopped\", \"completed\", \"succeeded\", \"success\", \"finished\"].includes(s); let is_error = [\"failed\", \"error\", \"cancelled\", \"timeout\"].includes(s); let is_running = [\"running\", \"pending\", \"queued\", \"processing\", \"created\"].includes(s); return {json: {status: s, is_done, is_error, is_running, attempt: $node[\"Check Loop/Wait\"] ? $node[\"Check Loop/Wait\"].json.attempt + 1 : 0, max_attempts: 20}};"
+      },
+      "id": "2d36e204-bde9-4e0a-b401-7c39577979d7",
+      "name": "Normalize Status",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.is_done}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "321d81f7-b71a-4eda-9bac-3526a8422d1b",
+      "name": "IF Manus concluído?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        432,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "if ($json.attempt >= $json.max_attempts) { throw new Error(\"Timeout Manus: tarefa não concluiu em 10 minutos\"); } return {json: {attempt: $json.attempt, task_id: $node[\"Extract Task ID\"].json.task_id}};"
+      },
+      "id": "07ca826b-0ce5-441c-8f4e-2baac961cffa",
+      "name": "Check Loop/Wait",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        224
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 30,
+        "unit": "seconds"
+      },
+      "id": "dbc51ae4-2217-4281-b518-1efde6cbddd6",
+      "name": "Wait 30s",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        224,
+        224
+      ],
+      "webhookId": "bfc74c12-a557-4b9c-99a4-1c45027b2211"
+    },
+    {
+      "parameters": {
+        "jsCode": "let structuredOutputEvent = $json.find(msg => msg.type === 'structured_output_result'); if (!structuredOutputEvent || !structuredOutputEvent.structured_output_result || !structuredOutputEvent.structured_output_result.success) { throw new Error(\"Manus não retornou structured_output_result com sucesso.\"); } let parsed = structuredOutputEvent.structured_output_result.value; if(!parsed || !parsed.estrategia_texto || !parsed.produto) { throw new Error(\"JSON do Manus incompleto ou inválido.\"); } return {json: parsed};"
+      },
+      "id": "53e8ba94-fbe0-42ff-83cb-9287b9ec0cab",
+      "name": "Limpar JSON do Manus",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        624,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "-1002012015091",
+        "text": "={{ \"🎯 DIRETRIZ MANUS B2B \\n\\nPúblico: \" + $json.publico_alvo + \"\\nProduto: \" + $json.produto + \"\\nEstratégia: \" + $json.estrategia_texto }}",
+        "additionalFields": {}
+      },
+      "id": "e45a20b1-05b9-4b7f-9809-f66b018391aa",
+      "name": "Telegram Entrega",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        832,
+        16
+      ],
+      "webhookId": "9e740772-3c2c-47ba-b7b1-56d5ee5424e1",
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "workflowId": "020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO",
+        "options": {}
+      },
+      "id": "d4491887-d19a-4e5c-8ac8-34efd68c7746",
+      "name": "Chamar MarkSolar (020)",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1024,
+        16
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Init Loop Variables",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Init Loop Variables": {
+      "main": [
+        [
+          {
+            "node": "Prepare Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Prompt": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request Manus Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request Manus Task": {
+      "main": [
+        [
+          {
+            "node": "Extract Task ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Task ID": {
+      "main": [
+        [
+          {
+            "node": "Check Task Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Task Status": {
+      "main": [
+        [
+          {
+            "node": "Normalize Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Status": {
+      "main": [
+        [
+          {
+            "node": "IF Manus concluído?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Manus concluído?": {
+      "main": [
+        [
+          {
+            "node": "Limpar JSON do Manus",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check Loop/Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Loop/Wait": {
+      "main": [
+        [
+          {
+            "node": "Wait 30s",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 30s": {
+      "main": [
+        [
+          {
+            "node": "Check Task Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limpar JSON do Manus": {
+      "main": [
+        [
+          {
+            "node": "Telegram Entrega",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Entrega": {
+      "main": [
+        [
+          {
+            "node": "Chamar MarkSolar (020)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "824b30e9dd5b4de2e0751d58c32084e6728f4773ae8ea4ca84318c5bc6ba2207"
+  }
+}
+                                                                                

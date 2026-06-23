@@ -1,0 +1,976 @@
+{
+  "updatedAt": "2026-05-30T05:33:55.852Z",
+  "createdAt": "2026-05-27T00:07:01.153Z",
+  "id": "vN68oWZcZftEm7lG",
+  "name": "150_MAQUINA_CONTEUDO_DIARIA_DL",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * *"
+            },
+            {
+              "field": "cronExpression",
+              "expression": "0 14 * * *"
+            },
+            {
+              "field": "cronExpression",
+              "expression": "0 19 * * *"
+            }
+          ]
+        }
+      },
+      "id": "e8e2fa51-e374-4b47-bc82-019623dc1001",
+      "name": "Triggers Diarios (9h, 14h, 19h)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const random = Math.random();\nlet path = 0;\nif (random > 0.5) {\n  path = 0; // News-Jacking (G1/ABESE)\n} else {\n  path = 1; // Obras (Google Drive)\n}\nreturn [{ json: { path: path } }];"
+      },
+      "id": "switch_logic_1",
+      "name": "Roteador de Postagem",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "routing-rules",
+        "rules": {
+          "rules": [
+            {
+              "conditions": {
+                "number": [
+                  {
+                    "value1": "={{$json.path}}",
+                    "operation": "equal"
+                  }
+                ]
+              },
+              "output": 0
+            },
+            {
+              "conditions": {
+                "number": [
+                  {
+                    "value1": "={{$json.path}}",
+                    "operation": "equal",
+                    "value2": 1
+                  }
+                ]
+              },
+              "output": 1
+            }
+          ]
+        }
+      },
+      "id": "router_1",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        400,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://g1.globo.com/rss/g1/"
+      },
+      "id": "rss_g1",
+      "name": "Ler RSS G1",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [
+        600,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://abese.org.br/feed/"
+      },
+      "id": "rss_abese",
+      "name": "Ler RSS ABESE",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [
+        600,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nif (items.length === 0) return [];\n// Sorteia uma noticia aleatoria\nconst randomIndex = Math.floor(Math.random() * items.length);\nconst noticia = items[randomIndex].json;\nreturn [{ json: { title: noticia.title, content: noticia.contentSnippet || noticia.content, link: noticia.link } }];"
+      },
+      "id": "extract_news",
+      "name": "Extrair Manchete Aleatoria",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://integrate.api.nvidia.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"nvidia/nemotron-3-nano-omni-30b-a3b-reasoning\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Atue como Social Media e Designer especialista em Marketing Digital B2B. A empresa é a DL Soluções Condominiais (Especialista em automação, segurança eletrônica e elétrica. NUNCA hidráulica. Associada ABESE/CREA-RJ). Relacione a notícia fornecida com nossas atividades: Energia Solar, Recarga de Carros Elétricos, Portaria Autônoma, Manutenção Recorrente, AVCB, Prevenção de Incêndio, DL Guardião (assaltos), DL EcoVolt (valor de energia), DL Fortress (gestão de síndicos). Explique o significado e o impacto para o condomínio de forma técnica e comercial.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Notícia: {{$('Extrair Manchete Aleatoria').item.json.title}} - {{$('Extrair Manchete Aleatoria').item.json.content}}\"\n    }\n  ],\n  \"max_tokens\": 1024\n}",
+        "options": {}
+      },
+      "id": "nvidia_news",
+      "name": "Gerar Post (NVIDIA Nemotron)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1000,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "limit": 10,
+        "options": {
+          "query": "mimeType='image/jpeg' or mimeType='image/png'"
+        }
+      },
+      "id": "drive_search",
+      "name": "Buscar Obras (Google Drive)",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "position": [
+        600,
+        450
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "vDUp3ZKxazIKho51",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nif (items.length === 0) return [];\nconst randomIndex = Math.floor(Math.random() * items.length);\nreturn [items[randomIndex]];"
+      },
+      "id": "extract_image",
+      "name": "Sortear Foto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://integrate.api.nvidia.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"nvidia/nemotron-3-nano-omni-30b-a3b-reasoning\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Atue como Social Media especialista em engenharia condominial. Escreva um post de bastidores de obra ressaltando a excelência técnica da DL Soluções Condominiais nas áreas de energia solar, infraestrutura elétrica ou segurança eletrônica. Foco em síndicos profissionais.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Crie uma postagem inspiradora e corporativa para acompanhar uma foto real de instalação de infraestrutura em um condomínio.\"\n    }\n  ],\n  \"max_tokens\": 1024\n}",
+        "options": {}
+      },
+      "id": "nvidia_drive",
+      "name": "Gerar Legenda Obra (NVIDIA)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1000,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $node[\"Gerar Post (NVIDIA Nemotron)\"] ? $node[\"Gerar Post (NVIDIA Nemotron)\"].json.choices[0].message.content : $node[\"Gerar Legenda Obra (NVIDIA)\"].json.choices[0].message.content;\nreturn [{ json: { post_text: text } }];"
+      },
+      "id": "merge_texts",
+      "name": "Consolidar Texto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v19.0/me/feed",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer EAAUo98TBYE8BRYfOhZAkrZB3CEd34JVWNCrosfxgqT1H7sUMT8cxAtlWP4p9gVju5jtCcFwtVHZC0QpU1OH10yn5ncfSTgdxF4fVI4WipvzcCK5VRGCcTa4fInRCmTqLD80dY3fRyUtBEYZCCNy4Y0wjir9169Nw1SPDMZBn8U6mq2JsuPsOfiym0r990HZAfZAKAZDZD"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": \"{{$json.post_text}}\"\n}",
+        "options": {}
+      },
+      "id": "post_facebook",
+      "name": "Postar Facebook (Texto)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1400,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://mybusiness.googleapis.com/v4/accounts/YOUR_ACCOUNT_ID/locations/YOUR_LOCATION_ID/localPosts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleBusinessProfileOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"languageCode\": \"pt-BR\",\n  \"summary\": \"{{$json.post_text}}\"\n}",
+        "options": {}
+      },
+      "id": "post_gmb",
+      "name": "Postar Google Business",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1400,
+        450
+      ],
+      "credentials": {
+        "googleBusinessProfileOAuth2Api": {
+          "id": "ApF0g3GlEGbD6cAy",
+          "name": "Google Business Profile account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Triggers Diarios (9h, 14h, 19h)": {
+      "main": [
+        [
+          {
+            "node": "Roteador de Postagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Roteador de Postagem": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Ler RSS G1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Ler RSS ABESE",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Buscar Obras (Google Drive)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler RSS G1": {
+      "main": [
+        [
+          {
+            "node": "Extrair Manchete Aleatoria",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler RSS ABESE": {
+      "main": [
+        [
+          {
+            "node": "Extrair Manchete Aleatoria",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair Manchete Aleatoria": {
+      "main": [
+        [
+          {
+            "node": "Gerar Post (NVIDIA Nemotron)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Obras (Google Drive)": {
+      "main": [
+        [
+          {
+            "node": "Sortear Foto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sortear Foto": {
+      "main": [
+        [
+          {
+            "node": "Gerar Legenda Obra (NVIDIA)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gerar Post (NVIDIA Nemotron)": {
+      "main": [
+        [
+          {
+            "node": "Consolidar Texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gerar Legenda Obra (NVIDIA)": {
+      "main": [
+        [
+          {
+            "node": "Consolidar Texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidar Texto": {
+      "main": [
+        [
+          {
+            "node": "Postar Facebook (Texto)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Postar Google Business",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed"
+  },
+  "staticData": {
+    "node:Schedule (Diário 8am)": {
+      "recurrenceRules": []
+    },
+    "node:Triggers Diarios (9h, 14h, 19h)": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "60195dfa-612b-4a46-902e-d9c9f66f2e46",
+  "activeVersionId": "60195dfa-612b-4a46-902e-d9c9f66f2e46",
+  "versionCounter": 46,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-27T00:07:01.153Z",
+      "createdAt": "2026-05-27T00:07:01.153Z",
+      "role": "workflow:owner",
+      "workflowId": "vN68oWZcZftEm7lG",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-27T04:57:00.490Z",
+    "createdAt": "2026-05-27T04:57:00.490Z",
+    "versionId": "60195dfa-612b-4a46-902e-d9c9f66f2e46",
+    "workflowId": "vN68oWZcZftEm7lG",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "field": "cronExpression",
+                "expression": "0 9 * * *"
+              },
+              {
+                "field": "cronExpression",
+                "expression": "0 14 * * *"
+              },
+              {
+                "field": "cronExpression",
+                "expression": "0 19 * * *"
+              }
+            ]
+          }
+        },
+        "id": "e8e2fa51-e374-4b47-bc82-019623dc1001",
+        "name": "Triggers Diarios (9h, 14h, 19h)",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.1,
+        "position": [
+          0,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const random = Math.random();\nlet path = 0;\nif (random > 0.5) {\n  path = 0; // News-Jacking (G1/ABESE)\n} else {\n  path = 1; // Obras (Google Drive)\n}\nreturn [{ json: { path: path } }];"
+        },
+        "id": "switch_logic_1",
+        "name": "Roteador de Postagem",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          200,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "mode": "routing-rules",
+          "rules": {
+            "rules": [
+              {
+                "conditions": {
+                  "number": [
+                    {
+                      "value1": "={{$json.path}}",
+                      "operation": "equal"
+                    }
+                  ]
+                },
+                "output": 0
+              },
+              {
+                "conditions": {
+                  "number": [
+                    {
+                      "value1": "={{$json.path}}",
+                      "operation": "equal",
+                      "value2": 1
+                    }
+                  ]
+                },
+                "output": 1
+              }
+            ]
+          }
+        },
+        "id": "router_1",
+        "name": "Switch",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 1,
+        "position": [
+          400,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "url": "https://g1.globo.com/rss/g1/"
+        },
+        "id": "rss_g1",
+        "name": "Ler RSS G1",
+        "type": "n8n-nodes-base.rssFeedRead",
+        "typeVersion": 1,
+        "position": [
+          600,
+          150
+        ]
+      },
+      {
+        "parameters": {
+          "url": "https://abese.org.br/feed/"
+        },
+        "id": "rss_abese",
+        "name": "Ler RSS ABESE",
+        "type": "n8n-nodes-base.rssFeedRead",
+        "typeVersion": 1,
+        "position": [
+          600,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\nif (items.length === 0) return [];\n// Sorteia uma noticia aleatoria\nconst randomIndex = Math.floor(Math.random() * items.length);\nconst noticia = items[randomIndex].json;\nreturn [{ json: { title: noticia.title, content: noticia.contentSnippet || noticia.content, link: noticia.link } }];"
+        },
+        "id": "extract_news",
+        "name": "Extrair Manchete Aleatoria",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          800,
+          150
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://integrate.api.nvidia.com/v1/chat/completions",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer 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"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"model\": \"nvidia/nemotron-3-nano-omni-30b-a3b-reasoning\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Atue como Social Media e Designer especialista em Marketing Digital B2B. A empresa é a DL Soluções Condominiais (Especialista em automação, segurança eletrônica e elétrica. NUNCA hidráulica. Associada ABESE/CREA-RJ). Relacione a notícia fornecida com nossas atividades: Energia Solar, Recarga de Carros Elétricos, Portaria Autônoma, Manutenção Recorrente, AVCB, Prevenção de Incêndio, DL Guardião (assaltos), DL EcoVolt (valor de energia), DL Fortress (gestão de síndicos). Explique o significado e o impacto para o condomínio de forma técnica e comercial.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Notícia: {{$('Extrair Manchete Aleatoria').item.json.title}} - {{$('Extrair Manchete Aleatoria').item.json.content}}\"\n    }\n  ],\n  \"max_tokens\": 1024\n}",
+          "options": {}
+        },
+        "id": "nvidia_news",
+        "name": "Gerar Post (NVIDIA Nemotron)",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1000,
+          150
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "list",
+          "limit": 10,
+          "options": {
+            "query": "mimeType='image/jpeg' or mimeType='image/png'"
+          }
+        },
+        "id": "drive_search",
+        "name": "Buscar Obras (Google Drive)",
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 2,
+        "position": [
+          600,
+          450
+        ],
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "vDUp3ZKxazIKho51",
+            "name": "Google Drive account 2"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\nif (items.length === 0) return [];\nconst randomIndex = Math.floor(Math.random() * items.length);\nreturn [items[randomIndex]];"
+        },
+        "id": "extract_image",
+        "name": "Sortear Foto",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          800,
+          450
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://integrate.api.nvidia.com/v1/chat/completions",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer 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"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"model\": \"nvidia/nemotron-3-nano-omni-30b-a3b-reasoning\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Atue como Social Media especialista em engenharia condominial. Escreva um post de bastidores de obra ressaltando a excelência técnica da DL Soluções Condominiais nas áreas de energia solar, infraestrutura elétrica ou segurança eletrônica. Foco em síndicos profissionais.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Crie uma postagem inspiradora e corporativa para acompanhar uma foto real de instalação de infraestrutura em um condomínio.\"\n    }\n  ],\n  \"max_tokens\": 1024\n}",
+          "options": {}
+        },
+        "id": "nvidia_drive",
+        "name": "Gerar Legenda Obra (NVIDIA)",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1000,
+          450
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const text = $node[\"Gerar Post (NVIDIA Nemotron)\"] ? $node[\"Gerar Post (NVIDIA Nemotron)\"].json.choices[0].message.content : $node[\"Gerar Legenda Obra (NVIDIA)\"].json.choices[0].message.content;\nreturn [{ json: { post_text: text } }];"
+        },
+        "id": "merge_texts",
+        "name": "Consolidar Texto",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1200,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "url": "https://graph.facebook.com/v19.0/me/feed",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer EAAUo98TBYE8BRYfOhZAkrZB3CEd34JVWNCrosfxgqT1H7sUMT8cxAtlWP4p9gVju5jtCcFwtVHZC0QpU1OH10yn5ncfSTgdxF4fVI4WipvzcCK5VRGCcTa4fInRCmTqLD80dY3fRyUtBEYZCCNy4Y0wjir9169Nw1SPDMZBn8U6mq2JsuPsOfiym0r990HZAfZAKAZDZD"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"message\": \"{{$json.post_text}}\"\n}",
+          "options": {}
+        },
+        "id": "post_facebook",
+        "name": "Postar Facebook (Texto)",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1400,
+          150
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://mybusiness.googleapis.com/v4/accounts/YOUR_ACCOUNT_ID/locations/YOUR_LOCATION_ID/localPosts",
+          "authentication": "predefinedCredentialType",
+          "nodeCredentialType": "googleBusinessProfileOAuth2Api",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"languageCode\": \"pt-BR\",\n  \"summary\": \"{{$json.post_text}}\"\n}",
+          "options": {}
+        },
+        "id": "post_gmb",
+        "name": "Postar Google Business",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1400,
+          450
+        ],
+        "credentials": {
+          "googleBusinessProfileOAuth2Api": {
+            "id": "ApF0g3GlEGbD6cAy",
+            "name": "Google Business Profile account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Triggers Diarios (9h, 14h, 19h)": {
+        "main": [
+          [
+            {
+              "node": "Roteador de Postagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Roteador de Postagem": {
+        "main": [
+          [
+            {
+              "node": "Switch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch": {
+        "main": [
+          [
+            {
+              "node": "Ler RSS G1",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Ler RSS ABESE",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Buscar Obras (Google Drive)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ler RSS G1": {
+        "main": [
+          [
+            {
+              "node": "Extrair Manchete Aleatoria",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Ler RSS ABESE": {
+        "main": [
+          [
+            {
+              "node": "Extrair Manchete Aleatoria",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extrair Manchete Aleatoria": {
+        "main": [
+          [
+            {
+              "node": "Gerar Post (NVIDIA Nemotron)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Buscar Obras (Google Drive)": {
+        "main": [
+          [
+            {
+              "node": "Sortear Foto",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sortear Foto": {
+        "main": [
+          [
+            {
+              "node": "Gerar Legenda Obra (NVIDIA)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gerar Post (NVIDIA Nemotron)": {
+        "main": [
+          [
+            {
+              "node": "Consolidar Texto",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gerar Legenda Obra (NVIDIA)": {
+        "main": [
+          [
+            {
+              "node": "Consolidar Texto",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Consolidar Texto": {
+        "main": [
+          [
+            {
+              "node": "Postar Facebook (Texto)",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Postar Google Business",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-06-15T03:48:16.216Z",
+        "id": 2387,
+        "workflowId": "vN68oWZcZftEm7lG",
+        "versionId": "60195dfa-612b-4a46-902e-d9c9f66f2e46",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:16.228Z",
+        "id": 2388,
+        "workflowId": "vN68oWZcZftEm7lG",
+        "versionId": "60195dfa-612b-4a46-902e-d9c9f66f2e46",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-27T04:57:00.521Z",
+        "id": 1809,
+        "workflowId": "vN68oWZcZftEm7lG",
+        "versionId": "60195dfa-612b-4a46-902e-d9c9f66f2e46",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-27T04:57:00.539Z",
+        "id": 1810,
+        "workflowId": "vN68oWZcZftEm7lG",
+        "versionId": "60195dfa-612b-4a46-902e-d9c9f66f2e46",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-27T04:57:00.671Z",
+        "id": 1811,
+        "workflowId": "vN68oWZcZftEm7lG",
+        "versionId": "60195dfa-612b-4a46-902e-d9c9f66f2e46",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-27T04:57:00.682Z",
+        "id": 1812,
+        "workflowId": "vN68oWZcZftEm7lG",
+        "versionId": "60195dfa-612b-4a46-902e-d9c9f66f2e46",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:56.013Z",
+        "id": 2049,
+        "workflowId": "vN68oWZcZftEm7lG",
+        "versionId": "60195dfa-612b-4a46-902e-d9c9f66f2e46",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:56.024Z",
+        "id": 2050,
+        "workflowId": "vN68oWZcZftEm7lG",
+        "versionId": "60195dfa-612b-4a46-902e-d9c9f66f2e46",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:55.873Z",
+        "id": 2047,
+        "workflowId": "vN68oWZcZftEm7lG",
+        "versionId": "60195dfa-612b-4a46-902e-d9c9f66f2e46",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:55.883Z",
+        "id": 2048,
+        "workflowId": "vN68oWZcZftEm7lG",
+        "versionId": "60195dfa-612b-4a46-902e-d9c9f66f2e46",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

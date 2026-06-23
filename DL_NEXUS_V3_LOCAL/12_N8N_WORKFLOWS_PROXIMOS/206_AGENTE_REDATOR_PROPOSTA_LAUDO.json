@@ -1,0 +1,119 @@
+{
+  "name": "206_AGENTE_REDATOR_PROPOSTA_LAUDO",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "agente-redator-proposta-laudo",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook",
+      "name": "Webhook Call",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Tenta extrair dados do body\nlet inputData = $json.body || $json;\nreturn { json: inputData };\n"
+      },
+      "id": "parse_input",
+      "name": "Parse Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.deepseek.com/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.DEEPSEEK_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendQuery": false,
+        "queryParameters": {
+          "parameters": []
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"model\": \"deepseek-chat\", \"response_format\": {\"type\": \"json_object\"}, \"messages\": [{\"role\": \"system\", \"content\": \"Você é o Agente Redator. Receba todos os resultados anteriores. Escreva dois textos em Markdown: 1. Proposta Cliente (sem custos internos, com logomarcas DL/ABESE/CREA-RJ). 2. Laudo Interno (com todos os custos e riscos).\\n\\nSiga EXATAMENTE a estrutura abaixo na sua redação da Proposta Cliente:\\n\\n**TEMPLATE DE ESTRUTURA PARA A PROPOSTA CLIENTE:**\\n(Substitua os dados entre colchetes pelos reais do orçamento)\\n\\nPROPOSTA COMERCIAL DE MANUTENÇÃO TÉCNICA\\nCONTRATADA:\\nDL Soluções Condominiais\\nCNPJ: 36.354.697/0001-46\\nResponsável Técnico: Diogo Luiz de Oliveira (Tecnólogo em Infraestrutura / CREA-RJ: 2022106230)\\nCONTRATANTE:\\n[Nome do Cliente]\\n[CNPJ do Cliente]\\n[Endereço do Cliente]\\n\\n1. OBJETIVO\\nPrestação de serviço de mão de obra especializada para retrofit e manutenção corretiva em [X] equipamentos industriais, utilizando peças de reposição fornecidas previamente pela contratante.\\n\\n2. ESCOPO TÉCNICO E INVESTIMENTO (MÃO DE OBRA)\\n● Equipamento 01 ([Modelo]): [Descrição exata da manutenção: Desmontagem, substituição de peças, calibração]. Valor: R$ [X]\\n● Equipamento 02 ([Modelo]): [Descrição exata da manutenção]. Valor: R$ [X]\\n\\n3. CONDIÇÕES COMERCIAIS\\n● Investimento Total do Projeto: R$ [Soma]\\n● Inclusos: Mão de obra técnica especializada, todos os custos logísticos operacionais (deslocamento e estacionamento rotativo para os dias de imersão técnica no Centro do RJ) e emissão de Nota Fiscal.\\n● Isenções: A taxa de Avaliação Técnica foi integralmente abonada na composição deste pacote.\\n● Condição de Pagamento: A combinar.\\n\\n4. GARANTIA TÉCNICA\\nServiço executado com rigor técnico, garantindo a integridade da montagem, instalação e segurança do circuito elétrico refeito. A garantia contra defeitos de fabricação dos componentes eletrônicos e mecânicos instalados permanece sob total responsabilidade do fabricante/fornecedor das peças.\\n\"}, {\"role\": \"user\", \"content\": \"PAYLOAD DO AGENTE:\\n={{JSON.stringify($json)}}\"}]}",
+        "options": {}
+      },
+      "id": "api_llm",
+      "name": "API LLM",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nlet orc_id = $('Parse Input').item.json.orcamento_id || \"ID_NAO_INFORMADO\";\nlet api_response = {};\n\ntry {\n  api_response = JSON.parse($('API LLM').item.json.choices[0].message.content);\n} catch(e) {\n  api_response = { erro: \"Falha ao parsear JSON da LLM\" };\n}\n\nreturn {\n  json: {\n    orcamento_id: orc_id,\n    agente: \"206_AGENTE_REDATOR_PROPOSTA_LAUDO\",\n    status: api_response.erro ? \"erro\" : \"ok\",\n    score_confianca: api_response.score_confianca || 85,\n    dados: api_response,\n    pendencias: []\n  }\n};\n"
+      },
+      "id": "format_output",
+      "name": "Format Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        600,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Call": {
+      "main": [
+        [
+          {
+            "node": "Parse Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Input": {
+      "main": [
+        [
+          {
+            "node": "API LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "API LLM": {
+      "main": [
+        [
+          {
+            "node": "Format Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

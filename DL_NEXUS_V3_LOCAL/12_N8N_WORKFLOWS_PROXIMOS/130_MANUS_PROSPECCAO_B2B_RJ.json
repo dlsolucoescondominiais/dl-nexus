@@ -12,8 +12,12 @@
       "name": "Webhook Inicia Prospecção",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [ 250, 300 ],
-      "webhookId": "2bc0a4de-1234-4567-8901-234567890abc"
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "2bc0a4de-1234-4567-8901-234567890abc",
+      "notes": "Manus.IA removido da operação. Mantido apenas para histórico."
     },
     {
       "parameters": {
@@ -23,7 +27,11 @@
       "name": "Simulador de Scraping (Google Places/Bases DL)",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [ 450, 300 ]
+      "position": [
+        450,
+        300
+      ],
+      "notes": "Manus.IA removido da operação. Mantido apenas para histórico."
     }
   ],
   "pinData": {},

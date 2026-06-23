@@ -1,0 +1,665 @@
+{
+  "updatedAt": "2026-05-30T05:33:39.223Z",
+  "createdAt": "2026-05-05T10:59:21.098Z",
+  "id": "d3uRFrWKUwdTKCef",
+  "name": "003_roteador_diego_v3_tecnico_suporte",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-diego-suporte",
+        "responseMode": "responseNode",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "b25df7a3-a52a-4c22-8039-f4c309700bf4",
+      "name": "Entrada Diego Suporte",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ],
+      "webhookId": "diego-suporte-webhook-001"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Normalizar payload de entrada\nconst body = $input.first().json.body || $input.first().json;\n\nconst nome = body.nome || body.name || 'Lead Desconhecido';\nconst telefone = body.telefone || body.phone || body.whatsapp || '';\nconst email = body.email || '';\nconst mensagem = body.mensagem || body.message || body.texto || '';\nconst origem = body.origem || body.source || 'webhook-direto';\nconst condominio = body.condominio || body.condo || '';\nconst servico = body.servico || body.service || body.tipo || '';\nconst urgencia = body.urgencia || body.priority || 'normal';\nconst timestamp = new Date().toISOString();\n\n// Classificar tipo de suporte\nlet tipo_suporte = 'geral';\nconst msg = mensagem.toLowerCase();\n\nif (msg.includes('solar') || msg.includes('energia') || msg.includes('fotovoltaic')) {\n  tipo_suporte = 'energia_solar';\n} else if (msg.includes('cftv') || msg.includes('câmera') || msg.includes('camera') || msg.includes('segurança')) {\n  tipo_suporte = 'cftv_seguranca';\n} else if (msg.includes('elétric') || msg.includes('eletric') || msg.includes('disjuntor') || msg.includes('curto')) {\n  tipo_suporte = 'eletrica';\n} else if (msg.includes('automação') || msg.includes('automacao') || msg.includes('portão') || msg.includes('portao')) {\n  tipo_suporte = 'automacao';\n} else if (msg.includes('incêndio') || msg.includes('incendio') || msg.includes('extint') || msg.includes('bombeiro')) {\n  tipo_suporte = 'prevencao_incendio';\n}\n\n// KILLCRITIC — Termos proibidos na mensagem (auditoria)\nconst termosProibidos = ['visita técnica', 'visita tecnica', 'canaleta plástica', 'canaleta plastica', 'engenheiro'];\nconst infracoes = termosProibidos.filter(t => msg.includes(t));\nconst killcritic_aprovado = infracoes.length === 0;\n\nreturn [{\n  json: {\n    nome,\n    telefone,\n    email,\n    mensagem,\n    origem,\n    condominio,\n    servico,\n    tipo_suporte,\n    urgencia,\n    timestamp,\n    killcritic_aprovado,\n    killcritic_infracoes: infracoes,\n    lead_id: `diego-sup-${Date.now()}`\n  }\n}];"
+      },
+      "id": "norm-001",
+      "name": "Normalizar Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        340,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.killcritic_aprovado }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "kc-check-001",
+      "name": "KILLCRITIC Check",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        580,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "tableId": "leads",
+        "fieldsToSend": {
+          "fieldValues": [
+            {
+              "fieldName": "nome",
+              "fieldValue": "={{ $json.nome }}"
+            },
+            {
+              "fieldName": "telefone",
+              "fieldValue": "={{ $json.telefone }}"
+            },
+            {
+              "fieldName": "email",
+              "fieldValue": "={{ $json.email }}"
+            },
+            {
+              "fieldName": "mensagem",
+              "fieldValue": "={{ $json.mensagem }}"
+            },
+            {
+              "fieldName": "origem",
+              "fieldValue": "diego-suporte"
+            },
+            {
+              "fieldName": "condominio",
+              "fieldValue": "={{ $json.condominio }}"
+            },
+            {
+              "fieldName": "servico",
+              "fieldValue": "={{ $json.servico }}"
+            },
+            {
+              "fieldName": "tipo_suporte",
+              "fieldValue": "={{ $json.tipo_suporte }}"
+            },
+            {
+              "fieldName": "urgencia",
+              "fieldValue": "={{ $json.urgencia }}"
+            },
+            {
+              "fieldName": "status",
+              "fieldValue": "novo_suporte"
+            },
+            {
+              "fieldName": "criado_em",
+              "fieldValue": "={{ $json.timestamp }}"
+            }
+          ]
+        }
+      },
+      "id": "supa-create-001",
+      "name": "Registrar Lead Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        820,
+        200
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "Oz1k9Fk3QD5tOU8E",
+          "name": "Supabase account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-especialistas",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"origem\": \"diego-suporte-tecnico\",\n  \"lead_id\": \"{{ $json.lead_id }}\",\n  \"nome\": \"{{ $json.nome }}\",\n  \"telefone\": \"{{ $json.telefone }}\",\n  \"email\": \"{{ $json.email }}\",\n  \"condominio\": \"{{ $json.condominio }}\",\n  \"tipo_suporte\": \"{{ $json.tipo_suporte }}\",\n  \"servico\": \"{{ $json.servico }}\",\n  \"urgencia\": \"{{ $json.urgencia }}\",\n  \"mensagem\": \"{{ $json.mensagem }}\",\n  \"timestamp\": \"{{ $json.timestamp }}\",\n  \"acao_solicitada\": \"avaliacao_tecnica\"\n}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "http-especialistas-001",
+      "name": "Chamar Técnicos (004)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1060,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"sucesso\",\n  \"mensagem\": \"Suporte técnico DL acionado com sucesso.\",\n  \"lead_id\": \"{{ $json.lead_id || 'registrado' }}\",\n  \"tipo_suporte\": \"{{ $json.tipo_suporte || 'geral' }}\",\n  \"proximo_passo\": \"Avaliação Técnica será agendada. O Tecnólogo responsável entrará em contato.\"\n}",
+        "options": {}
+      },
+      "id": "resp-ok-001",
+      "name": "Resposta Sucesso",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"bloqueado\",\n  \"mensagem\": \"KILLCRITIC: Termos proibidos detectados na mensagem.\",\n  \"infracoes\": {{ JSON.stringify($json.killcritic_infracoes) }},\n  \"acao\": \"Mensagem bloqueada. Reformule sem usar termos restritos.\"\n}",
+        "options": {
+          "responseCode": 422
+        }
+      },
+      "id": "resp-block-001",
+      "name": "Resposta KILLCRITIC Bloqueio",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        820,
+        480
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "error-trigger-001",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        100,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Log de erro para auditoria\nconst error = $input.first().json;\nconst timestamp = new Date().toISOString();\n\nconsole.log(`[ERRO DIEGO SUPORTE] ${timestamp}:`, JSON.stringify(error));\n\nreturn [{\n  json: {\n    alerta: 'ERRO no workflow Diego Suporte Técnico',\n    timestamp,\n    erro: error.message || JSON.stringify(error),\n    workflow: '003_roteador_diego_v3_tecnico_suporte',\n    acao: 'Verificar logs do n8n e corrigir'\n  }\n}];"
+      },
+      "id": "error-handler-001",
+      "name": "Error Handler",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        340,
+        560
+      ]
+    }
+  ],
+  "connections": {
+    "Entrada Diego Suporte": {
+      "main": [
+        [
+          {
+            "node": "Normalizar Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizar Payload": {
+      "main": [
+        [
+          {
+            "node": "KILLCRITIC Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KILLCRITIC Check": {
+      "main": [
+        [
+          {
+            "node": "Registrar Lead Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Resposta KILLCRITIC Bloqueio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Registrar Lead Supabase": {
+      "main": [
+        [
+          {
+            "node": "Chamar Técnicos (004)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chamar Técnicos (004)": {
+      "main": [
+        [
+          {
+            "node": "Resposta Sucesso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "versionId": "d86ba580-e8f8-406e-a625-0353708d411d",
+  "activeVersionId": "d86ba580-e8f8-406e-a625-0353708d411d",
+  "versionCounter": 20,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-05T10:59:21.098Z",
+      "createdAt": "2026-05-05T10:59:21.098Z",
+      "role": "workflow:owner",
+      "workflowId": "d3uRFrWKUwdTKCef",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-30T05:33:39.224Z",
+    "createdAt": "2026-05-30T05:33:39.224Z",
+    "versionId": "d86ba580-e8f8-406e-a625-0353708d411d",
+    "workflowId": "d3uRFrWKUwdTKCef",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "dl-diego-suporte",
+          "responseMode": "responseNode",
+          "options": {
+            "responseHeaders": {
+              "entries": [
+                {
+                  "name": "Content-Type",
+                  "value": "application/json"
+                }
+              ]
+            }
+          }
+        },
+        "id": "b25df7a3-a52a-4c22-8039-f4c309700bf4",
+        "name": "Entrada Diego Suporte",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 1,
+        "position": [
+          100,
+          300
+        ],
+        "webhookId": "diego-suporte-webhook-001"
+      },
+      {
+        "parameters": {
+          "jsCode": "// Normalizar payload de entrada\nconst body = $input.first().json.body || $input.first().json;\n\nconst nome = body.nome || body.name || 'Lead Desconhecido';\nconst telefone = body.telefone || body.phone || body.whatsapp || '';\nconst email = body.email || '';\nconst mensagem = body.mensagem || body.message || body.texto || '';\nconst origem = body.origem || body.source || 'webhook-direto';\nconst condominio = body.condominio || body.condo || '';\nconst servico = body.servico || body.service || body.tipo || '';\nconst urgencia = body.urgencia || body.priority || 'normal';\nconst timestamp = new Date().toISOString();\n\n// Classificar tipo de suporte\nlet tipo_suporte = 'geral';\nconst msg = mensagem.toLowerCase();\n\nif (msg.includes('solar') || msg.includes('energia') || msg.includes('fotovoltaic')) {\n  tipo_suporte = 'energia_solar';\n} else if (msg.includes('cftv') || msg.includes('câmera') || msg.includes('camera') || msg.includes('segurança')) {\n  tipo_suporte = 'cftv_seguranca';\n} else if (msg.includes('elétric') || msg.includes('eletric') || msg.includes('disjuntor') || msg.includes('curto')) {\n  tipo_suporte = 'eletrica';\n} else if (msg.includes('automação') || msg.includes('automacao') || msg.includes('portão') || msg.includes('portao')) {\n  tipo_suporte = 'automacao';\n} else if (msg.includes('incêndio') || msg.includes('incendio') || msg.includes('extint') || msg.includes('bombeiro')) {\n  tipo_suporte = 'prevencao_incendio';\n}\n\n// KILLCRITIC — Termos proibidos na mensagem (auditoria)\nconst termosProibidos = ['visita técnica', 'visita tecnica', 'canaleta plástica', 'canaleta plastica', 'engenheiro'];\nconst infracoes = termosProibidos.filter(t => msg.includes(t));\nconst killcritic_aprovado = infracoes.length === 0;\n\nreturn [{\n  json: {\n    nome,\n    telefone,\n    email,\n    mensagem,\n    origem,\n    condominio,\n    servico,\n    tipo_suporte,\n    urgencia,\n    timestamp,\n    killcritic_aprovado,\n    killcritic_infracoes: infracoes,\n    lead_id: `diego-sup-${Date.now()}`\n  }\n}];"
+        },
+        "id": "norm-001",
+        "name": "Normalizar Payload",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          340,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "boolean": [
+              {
+                "value1": "={{ $json.killcritic_aprovado }}",
+                "value2": true
+              }
+            ]
+          }
+        },
+        "id": "kc-check-001",
+        "name": "KILLCRITIC Check",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 1,
+        "position": [
+          580,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "create",
+          "tableId": "leads",
+          "fieldsToSend": {
+            "fieldValues": [
+              {
+                "fieldName": "nome",
+                "fieldValue": "={{ $json.nome }}"
+              },
+              {
+                "fieldName": "telefone",
+                "fieldValue": "={{ $json.telefone }}"
+              },
+              {
+                "fieldName": "email",
+                "fieldValue": "={{ $json.email }}"
+              },
+              {
+                "fieldName": "mensagem",
+                "fieldValue": "={{ $json.mensagem }}"
+              },
+              {
+                "fieldName": "origem",
+                "fieldValue": "diego-suporte"
+              },
+              {
+                "fieldName": "condominio",
+                "fieldValue": "={{ $json.condominio }}"
+              },
+              {
+                "fieldName": "servico",
+                "fieldValue": "={{ $json.servico }}"
+              },
+              {
+                "fieldName": "tipo_suporte",
+                "fieldValue": "={{ $json.tipo_suporte }}"
+              },
+              {
+                "fieldName": "urgencia",
+                "fieldValue": "={{ $json.urgencia }}"
+              },
+              {
+                "fieldName": "status",
+                "fieldValue": "novo_suporte"
+              },
+              {
+                "fieldName": "criado_em",
+                "fieldValue": "={{ $json.timestamp }}"
+              }
+            ]
+          }
+        },
+        "id": "supa-create-001",
+        "name": "Registrar Lead Supabase",
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          820,
+          200
+        ],
+        "credentials": {
+          "supabaseApi": {
+            "id": "Oz1k9Fk3QD5tOU8E",
+            "name": "Supabase account 2"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-especialistas",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"origem\": \"diego-suporte-tecnico\",\n  \"lead_id\": \"{{ $json.lead_id }}\",\n  \"nome\": \"{{ $json.nome }}\",\n  \"telefone\": \"{{ $json.telefone }}\",\n  \"email\": \"{{ $json.email }}\",\n  \"condominio\": \"{{ $json.condominio }}\",\n  \"tipo_suporte\": \"{{ $json.tipo_suporte }}\",\n  \"servico\": \"{{ $json.servico }}\",\n  \"urgencia\": \"{{ $json.urgencia }}\",\n  \"mensagem\": \"{{ $json.mensagem }}\",\n  \"timestamp\": \"{{ $json.timestamp }}\",\n  \"acao_solicitada\": \"avaliacao_tecnica\"\n}",
+          "options": {
+            "timeout": 15000
+          }
+        },
+        "id": "http-especialistas-001",
+        "name": "Chamar Técnicos (004)",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          1060,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={\n  \"status\": \"sucesso\",\n  \"mensagem\": \"Suporte técnico DL acionado com sucesso.\",\n  \"lead_id\": \"{{ $json.lead_id || 'registrado' }}\",\n  \"tipo_suporte\": \"{{ $json.tipo_suporte || 'geral' }}\",\n  \"proximo_passo\": \"Avaliação Técnica será agendada. O Tecnólogo responsável entrará em contato.\"\n}",
+          "options": {}
+        },
+        "id": "resp-ok-001",
+        "name": "Resposta Sucesso",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1,
+        "position": [
+          1300,
+          200
+        ]
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={\n  \"status\": \"bloqueado\",\n  \"mensagem\": \"KILLCRITIC: Termos proibidos detectados na mensagem.\",\n  \"infracoes\": {{ JSON.stringify($json.killcritic_infracoes) }},\n  \"acao\": \"Mensagem bloqueada. Reformule sem usar termos restritos.\"\n}",
+          "options": {
+            "responseCode": 422
+          }
+        },
+        "id": "resp-block-001",
+        "name": "Resposta KILLCRITIC Bloqueio",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1,
+        "position": [
+          820,
+          480
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "error-trigger-001",
+        "name": "Error Trigger",
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          100,
+          560
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Log de erro para auditoria\nconst error = $input.first().json;\nconst timestamp = new Date().toISOString();\n\nconsole.log(`[ERRO DIEGO SUPORTE] ${timestamp}:`, JSON.stringify(error));\n\nreturn [{\n  json: {\n    alerta: 'ERRO no workflow Diego Suporte Técnico',\n    timestamp,\n    erro: error.message || JSON.stringify(error),\n    workflow: '003_roteador_diego_v3_tecnico_suporte',\n    acao: 'Verificar logs do n8n e corrigir'\n  }\n}];"
+        },
+        "id": "error-handler-001",
+        "name": "Error Handler",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          340,
+          560
+        ]
+      }
+    ],
+    "connections": {
+      "Entrada Diego Suporte": {
+        "main": [
+          [
+            {
+              "node": "Normalizar Payload",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Normalizar Payload": {
+        "main": [
+          [
+            {
+              "node": "KILLCRITIC Check",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "KILLCRITIC Check": {
+        "main": [
+          [
+            {
+              "node": "Registrar Lead Supabase",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Resposta KILLCRITIC Bloqueio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Registrar Lead Supabase": {
+        "main": [
+          [
+            {
+              "node": "Chamar Técnicos (004)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Chamar Técnicos (004)": {
+        "main": [
+          [
+            {
+              "node": "Resposta Sucesso",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Error Handler",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-06-15T03:48:24.862Z",
+        "id": 2435,
+        "workflowId": "d3uRFrWKUwdTKCef",
+        "versionId": "d86ba580-e8f8-406e-a625-0353708d411d",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:24.871Z",
+        "id": 2436,
+        "workflowId": "d3uRFrWKUwdTKCef",
+        "versionId": "d86ba580-e8f8-406e-a625-0353708d411d",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:39.414Z",
+        "id": 1954,
+        "workflowId": "d3uRFrWKUwdTKCef",
+        "versionId": "d86ba580-e8f8-406e-a625-0353708d411d",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:39.423Z",
+        "id": 1955,
+        "workflowId": "d3uRFrWKUwdTKCef",
+        "versionId": "d86ba580-e8f8-406e-a625-0353708d411d",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:39.245Z",
+        "id": 1952,
+        "workflowId": "d3uRFrWKUwdTKCef",
+        "versionId": "d86ba580-e8f8-406e-a625-0353708d411d",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:39.256Z",
+        "id": 1953,
+        "workflowId": "d3uRFrWKUwdTKCef",
+        "versionId": "d86ba580-e8f8-406e-a625-0353708d411d",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

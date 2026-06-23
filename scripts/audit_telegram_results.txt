@@ -1,0 +1,355 @@
+====================================================================
+AUDITORIA DE WORKFLOWS TELEGRAM (21 encontrados)
+====================================================================
+
+1. Workflow: '020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO' (ID: publicadorSocialDlNexusV320260518)
+   Ativo: True
+   Nos Telegram encontrados:
+     - Nome: 'Telegram Alerta Bloqueio' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=pZ4U8h7vBEM3q2N4, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: ={{ 'BLOQUEIO KILLCRITIC no post sobre ' + (typeof $('Entrada do Post') !== 'undefined' ? $('Entrada do Post').item.json.tema : 'B2B Manus') + '. Motivo: ' + $json.status_killcritic + '\nViolações: ' + $json.violacoes.join(', ') }}
+     - Nome: 'Telegram Aviso Publicacao' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=pZ4U8h7vBEM3q2N4, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: ={{ 'POST GERADO AUTOMATICAMENTE (DL Nexus V3)\n\nTema: ' + (typeof $('Entrada do Post') !== 'undefined' ? $('Entrada do Post').item.json.tema : 'B2B Manus') + '\n\nO post foi enviado diretamente para as redes.' }}
+     - Nome: 'Telegram Publish' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=pZ4U8h7vBEM3q2N4, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: ={{ $('NORMALIZAR_SAIDA_IA_SOCIAL').item.json.texto_telegram }}
+--------------------------------------------------------------------
+2. Workflow: '090_GUARDIAO_N8N_DL_NEXUS_V3' (ID: n8KRGJ4JU6pksXPX)
+   Ativo: True
+   Nos Telegram encontrados:
+     - Nome: 'Alerta Diogo/Raphael' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=sUl1HnDTJ1eOyU4S, Name=Telegram account
+       chatId: 8451974631
+       text: =🚨 <b>Guardião n8n DL Nexus detectou falha!</b>
+
+<b>Status:</b> {{ $json.status_geral }}
+<b>Workflows afetados:</b> {{ $json.total_workflows }}
+<b>Ações recomendadas:</b> {{ $json.acoes_recomendadas.join(', ') }}
+
+⚠️ <i>Aprovação humana necessária para qualquer alteração de produção.</i>
+--------------------------------------------------------------------
+3. Workflow: '084_PUBLICADOR_TIKTOK_ASSISTIDO' (ID: HafnpJDL0AsP5fNh)
+   Ativo: True
+   Nos Telegram encontrados:
+     - Nome: 'Telegram: Não Aprovado' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=Conta do Telegram, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: ={{ '⛔ [084] Requisição bloqueada: campo approved não é true.\nPayload recebido: ' + JSON.stringify($json.body) }}
+     - Nome: 'Telegram: KILLCRITIC Bloqueado' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=Conta do Telegram, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: ={{ '🚫 [KILLCRITIC 084] Pacote TikTok BLOQUEADO.\n\nMotivo: ' + $json.killcritic_motivo + '\nViolações: ' + ($json.killcritic_violacoes.length > 0 ? $json.killcritic_violacoes.join(', ') : 'Nenhuma') + '\nTimestamp: ' + $json.killcritic_timestamp }}
+     - Nome: 'Telegram: Enviar Pacote TikTok' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=Conta do Telegram, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: ={{ '📦 [084] PACOTE TIKTOK GERADO - DL SOLUÇÕES\n\n📌 Tema: ' + $json['tiktok_pacote.tema'] + '\n🛠️ Produto: ' + $json['tiktok_pacote.produto'] + '\n\n🎬 ROTEIRO:\n' + $json['tiktok_pacote.roteiro'] + '\n\n✍️ LEGENDA SUGERIDA:\n' + $json['tiktok_pacote.legenda_sugerida'] + '\n\n🏷️ HASHTAGS:\n' + $json['tiktok_pacote.hashtags'] + '\n\n📋 INSTRUÇÃO:\n' + $json['tiktok_pacote.instrucao'] + '\n\n⏰ Gerado em: ' + $json['tiktok_pacote.pacote_gerado_em'] + '\n\n⚠️ Este workflow NÃO publica automaticamente. Siga o roteiro e poste manualmente no TikTok.' }}
+--------------------------------------------------------------------
+4. Workflow: '151_ANALISTA_METRICAS_WINDSOR' (ID: FqGTd2xyxuKgyuny)
+   Ativo: True
+   Nos Telegram encontrados:
+     - Nome: 'Telegram: Enviar Relatório' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=4sGUaygxQklSMa3Z, Name=Aninha Telegram Bot (DL Nexus)
+       chatId: ={{$env.TELEGRAM_DIOGO_CHAT_ID}}
+       text: =📊 *Relatório Semanal de Inteligência Comercial (DL Nexus)*
+
+{{$('Analista NVIDIA (Llama 3)').item.json.choices[0].message.content}}
+--------------------------------------------------------------------
+5. Workflow: '135 Relatorio Comercial Diario DL Nexus' (ID: 9qBhQBhuJNke2L83)
+   Ativo: True
+   Nos Telegram encontrados:
+     - Nome: 'Enviar Resumo (Telegram)' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=TELEGRAM_CRED_ID_AQUI, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: ={{ $json.mensagem }}
+--------------------------------------------------------------------
+6. Workflow: '082_PUBLICADOR_FACEBOOK_META_API' (ID: l7oOmPyRJVsdz7r0)
+   Ativo: True
+   Nos Telegram encontrados:
+     - Nome: 'Telegram: Confirmação de Publicação' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=cred_telegram_api, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: ={{ '✅ *FACEBOOK PUBLICADO COM SUCESSO*\n\n' + '📄 *Post ID:* ' + ($json.id || 'N/A') + '\n' + '📝 *Mensagem:* ' + ($json.body?.message?.substring(0, 100) || 'N/A') + '...\n' + '🕐 *Horário:* ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\n' + '🤖 *Workflow:* 082_PUBLICADOR_FACEBOOK_META_API\n' + '🛡️ *KILLCRITIC:* ' + ($json.killcritic_status || 'N/A') }}
+     - Nome: 'Telegram: Alerta de Bloqueio KILLCRITIC' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=cred_telegram_api, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: ={{ '🚫 *PUBLICAÇÃO BLOQUEADA - KILLCRITIC*\n\n' + '❌ *Status:* ' + ($json.killcritic_status || 'NÃO APROVADO') + '\n' + '📌 *Motivo:* ' + ($json.killcritic_motivo || 'approved=false ou validação reprovada') + '\n' + '🕐 *Horário:* ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\n' + '🤖 *Workflow:* 082_PUBLICADOR_FACEBOOK_META_API\n' + '⚠️ *Ação necessária:* Revisar o payload e reenviar com approved=true e conteúdo validado.' }}
+     - Nome: 'Telegram: Alerta de Erro Crítico' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=cred_telegram_api, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: ={{ '🔴 *ERRO CRÍTICO - 082_PUBLICADOR_FACEBOOK_META_API*\n\n' + '💥 *Erro:* ' + ($json.error?.message || 'Erro desconhecido') + '\n' + '📍 *Nó:* ' + ($json.execution?.lastNodeExecuted || 'N/A') + '\n' + '🔗 *Execution ID:* ' + ($json.execution?.id || 'N/A') + '\n' + '🕐 *Horário:* ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\n' + '⚠️ *Verificar:* Credenciais Meta API / payload enviado.' }}
+--------------------------------------------------------------------
+7. Workflow: '133_APROVACAO_PROSPECCAO_TELEGRAM' (ID: Rxcidvldpe7NmLh4)
+   Ativo: True
+   Nos Telegram encontrados:
+     - Nome: 'Telegram' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=Conta do Telegram, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: =*Aprovação de Prospecção*=
+
+*Lead:* {{$json.body.lead}}
+*Detalhes:* {{$json.body.detalhes}}
+
+Por favor, escolha uma ação:
+--------------------------------------------------------------------
+8. Workflow: '002_roteador_aninha_v3_atendimento' (ID: NgXUbJ96dXJqxGGX)
+   Ativo: True
+   Nos Telegram encontrados:
+     - Nome: 'Notificar Diogo' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=qR8V5bXwZ2yN9cT1, Name=Telegram Bot
+       chatId: ={{$env.TELEGRAM_DIOGO_CHAT_ID}}
+       text: =🔥 NOVO LEAD QUALIFICADO — Aninha DL Nexus\n\n📋 Produto: {{ $json.produto_identificado }}\n👤 Nome: {{ $json.nome }}\n📍 Bairro: {{ $json.bairro || 'Não informado' }}\n📞 Telefone: {{ $json.telefone }}\n\n💬 Mensagem Original: \n{{ $json.mensagem_cliente }}\n\n🎯 Próximo passo: Entrar em contato e agendar Avaliação Técnica.\n⚡ Escalonamento automático via n8n.
+--------------------------------------------------------------------
+9. Workflow: '081_PUBLICADOR_INSTAGRAM_META_API' (ID: BDDwxmsqExwIfawW)
+   Ativo: True
+   Nos Telegram encontrados:
+     - Nome: 'Telegram: Confirmação de Publicação' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=cred-telegram, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: ={{ '✅ *DL Nexus V3 | Instagram Publicado com Sucesso!*\n\n📸 *Post ID:* ' + $json.id + '\n🕒 *Horário:* ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\n\n🔗 *Caption (início):* ' + ($node["Code KILLCRITIC"].json.caption || '').substring(0, 100) + '...' + '\n\n🏢 _DL Soluções Condominiais | Workflow 081_' }}
+     - Nome: 'Telegram: Alerta KILLCRITIC Bloqueado' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=cred-telegram, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: ={{ '🚫 *DL Nexus V3 | Post BLOQUEADO pelo KILLCRITIC*\n\n⚠️ *Motivos de Reprovação:*\n' + ($json.motivos_reprovacao || []).map(m => '• ' + m).join('\n') + '\n\n🔍 *Termos Proibidos:* ' + (($json.termos_proibidos_encontrados || []).length > 0 ? ($json.termos_proibidos_encontrados || []).join(', ') : 'Nenhum') + '\n✅ *Termo Obrigatório:* ' + ($json.termo_obrigatorio_presente ? 'PRESENTE' : 'AUSENTE') + '\n\n🕒 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\n🏢 _DL Soluções Condominiais | Workflow 081_' }}
+     - Nome: 'Telegram: Alerta Não Aprovado' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=cred-telegram, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: ={{ '🚫 *DL Nexus V3 | Post NÃO APROVADO*\n\n❌ O campo *approved* não está definido como *true*.\nNenhuma publicação foi realizada.\n\n🕒 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\n🏢 _DL Soluções Condominiais | Workflow 081_' }}
+     - Nome: 'Telegram: Alerta Sem Imagem' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=cred-telegram, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: ={{ '⚠️ *DL Nexus V3 | image_url ausente*\n\nO payload recebido não contém uma URL de imagem válida.\nPublicação cancelada.\n\n🕒 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\n🏢 _DL Soluções Condominiais | Workflow 081_' }}
+     - Nome: 'Telegram: Erro Crítico' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=cred-telegram, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: ={{ '🔴 *DL Nexus V3 | ERRO CRÍTICO - Workflow 081*\n\n💥 *Erro:* ' + ($json.error?.message || 'Erro desconhecido') + '\n📍 *Nó:* ' + ($json.execution?.lastNodeExecuted || 'N/A') + '\n🆔 *Execução:* ' + ($json.execution?.id || 'N/A') + '\n\n🕒 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\n🏢 _DL Soluções Condominiais | Workflow 081_' }}
+--------------------------------------------------------------------
+10. Workflow: '085_SOCIAL_DISPATCHER_DL_NEXUS' (ID: 6EJLIiVCZ56J9yLx)
+   Ativo: True
+   Nos Telegram encontrados:
+     - Nome: 'Telegram: Confirmação Dispatch' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=cred-telegram-dl, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: =✅ *DL NEXUS V3 — DISPATCH SOCIAL CONCLUÍDO*
+
+📣 *Workflow:* 085_SOCIAL_DISPATCHER_DL_NEXUS
+⏱ *Timestamp:* {{ $json.timestamp_conclusao }}
+
+📡 *Canais disparados ({{ $json.total_canais }}):*
+{{ $json.canais_disparados.map(c => '• ' + c).join('\n') }}
+
+📌 *Status:* {{ $json.status }}
+
+_DL Soluções Condominiais — Automação Social Ativa_
+     - Nome: 'Telegram: Alerta Não Aprovado' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=cred-telegram-dl, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: =⚠️ *DL NEXUS V3 — DISPATCH BLOQUEADO*
+
+🚫 *Workflow:* 085_SOCIAL_DISPATCHER_DL_NEXUS
+⏱ *Timestamp:* {{ new Date().toISOString() }}
+
+❌ *Motivo:* Post NÃO aprovado (approved ≠ true)
+
+📦 *Payload recebido:*
+```
+{{ JSON.stringify($json.body || $json, null, 2).substring(0, 500) }}
+```
+
+_Ação requerida: Revisar aprovação no workflow 020 antes de reenviar._
+     - Nome: 'Telegram: Alerta Erro Crítico' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=cred-telegram-dl, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: =🔴 *DL NEXUS V3 — ERRO CRÍTICO NO DISPATCHER*
+
+⚙️ *Workflow:* 085_SOCIAL_DISPATCHER_DL_NEXUS
+⏱ *Timestamp:* {{ new Date().toISOString() }}
+
+❌ *Erro:* {{ $json.error.message }}
+🔗 *Nó:* {{ $json.error.node.name }}
+
+```
+{{ $json.error.stack ? $json.error.stack.substring(0, 400) : 'Stack não disponível' }}
+```
+
+🔧 *Ação:* Verificar logs no n8n e reenviar o payload após correção.
+--------------------------------------------------------------------
+11. Workflow: '021_DESCOBRIR_IDS_SOCIAIS_DL_NEXUS' (ID: CTnwKmyHCA79wRb5)
+   Ativo: True
+   Nos Telegram encontrados:
+     - Nome: 'Telegram Resumo IDs' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=Conta do Telegram, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: ={{ '✅ IDs descobertos pelo 021_DESCOBRIR_IDS_SOCIAIS:\n\n📘 PAGE_ID: ' + $('Montar Relatorio de IDs').item.json.page_id + '\n📸 INSTAGRAM_BUSINESS_ID: ' + $('Montar Relatorio de IDs').item.json.instagram_business_account_id + '\n\n📧 Relatorio completo enviado para suporte@dlsolucoescondominiais.com.br\n\n💬 Para CHAT_ID: envie msg ao bot e acesse /getUpdates' }}
+--------------------------------------------------------------------
+12. Workflow: '083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE' (ID: vegyIzy95FoftjZE)
+   Ativo: True
+   Nos Telegram encontrados:
+     - Nome: 'Telegram: Confirmação Publicação' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=CREDENCIAL_TELEGRAM, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: =✅ *Google Business Profile — Publicação Realizada!*
+
+📢 *Workflow:* 083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE
+🕐 *Horário:* {{ $now.format('DD/MM/YYYY HH:mm') }}
+
+📝 *Conteúdo Publicado:*
+{{ $('Code KILLCRITIC').item.json.texto_validado }}
+
+🔗 *CTA:* {{ $('Code KILLCRITIC').item.json.url_cta }}
+
+🤖 *DL Nexus V3 — Automação Ativa*
+     - Nome: 'Telegram: Alerta Bloqueio' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=CREDENCIAL_TELEGRAM, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: =⛔ *Google Business Profile — Publicação BLOQUEADA!*
+
+📋 *Workflow:* 083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE
+🕐 *Horário:* {{ $now.format('DD/MM/YYYY HH:mm') }}
+
+🚫 *Motivo do Bloqueio:*
+{{ $json.motivo }}
+
+⚠️ Verifique o payload e corrija antes de reenviar.
+
+🤖 *DL Nexus V3 — KILLCRITIC Ativo*
+     - Nome: 'Telegram: Aviso Não Aprovado' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=CREDENCIAL_TELEGRAM, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: =🔴 *Google Business Profile — Aprovação Negada!*
+
+📋 *Workflow:* 083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE
+🕐 *Horário:* {{ $now.format('DD/MM/YYYY HH:mm') }}
+
+❌ *Status:* Payload recebido sem `approved=true`.
+
+O campo `approved` deve ser `true` para autorizar a publicação.
+
+🤖 *DL Nexus V3 — Segurança Ativa*
+     - Nome: 'Telegram: Alerta Erro Crítico' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=CREDENCIAL_TELEGRAM, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: =🆘 *ERRO CRÍTICO — Google Business Profile*
+
+📋 *Workflow:* 083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE
+🕐 *Horário:* {{ $now.format('DD/MM/YYYY HH:mm') }}
+
+⚠️ *Erro:* {{ $json.error.message }}
+📍 *Nó:* {{ $json.execution.lastNodeExecuted }}
+
+Verifique as credenciais OAuth2 e os IDs de conta/localização.
+
+🤖 *DL Nexus V3 — Monitor de Erros*
+--------------------------------------------------------------------
+13. Workflow: '134_POST_GOOGLE_BUSINESS_DL_NEXUS' (ID: SyLsnJiBryk7woo4)
+   Ativo: True
+   Nos Telegram encontrados:
+     - Nome: 'Telegram Confirmacao' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=Conta do Telegram, Name=Conta do Telegram
+       chatId: CHAT_ID_AQUI
+       text: =Postagem no Google Business realizada com sucesso!
+
+Conteúdo:
+{{ $json.postContent }}
+--------------------------------------------------------------------
+14. Workflow: '153_ANINHA_RELATORIO_SEMANAL' (ID: YnO6n0aOSjDrJ5NN)
+   Ativo: True
+   Nos Telegram encontrados:
+     - Nome: 'Enviar Relatório (Telegram)' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=4sGUaygxQklSMa3Z, Name=Aninha Telegram Bot (DL Nexus)
+       chatId: ={{$env.TELEGRAM_DIOGO_CHAT_ID}}
+       text: =📊 *RELATÓRIO DE DESLOCAMENTO DA SEMANA* 📊
+
+{{$('Gerar Relatório (NVIDIA)').item.json.choices[0].message.content}}
+--------------------------------------------------------------------
+15. Workflow: '092_MESA_APROVACAO_TELEGRAM_ANINHA' (ID: QCKF5HC3qNWAicpw)
+   Ativo: True
+   Nos Telegram encontrados:
+     - Nome: 'Telegram Trigger' (Tipo: n8n-nodes-base.telegramTrigger)
+       Credencial: ID=None, Name=None
+       Updates: []
+       Webhook ID: None
+--------------------------------------------------------------------
+16. Workflow: '181_ORCAMENTO_INTERNO_WEBHOOK' (ID: pm8TQq7ytQXCL1hQ)
+   Ativo: False
+   Nos Telegram encontrados:
+     - Nome: 'Telegram Diogo' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=None, Name=None
+       chatId: CHAT_ID_AQUI
+       text: ={{ $json.orcamento_cliente_md }}
+--------------------------------------------------------------------
+17. Workflow: '152_ANINHA_VOZ_AGENDA' (ID: ZJ9F3OIfw9k8psJw)
+   Ativo: False
+   Nos Telegram encontrados:
+     - Nome: 'Telegram Trigger' (Tipo: n8n-nodes-base.telegramTrigger)
+       Credencial: ID=None, Name=None
+       Updates: ['message']
+       Webhook ID: 152_aninha_voice
+     - Nome: 'Baixar Áudio' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=None, Name=None
+       chatId: 
+       text: 
+     - Nome: 'Telegram Resposta' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=None, Name=None
+       chatId: ={{$node["Telegram Trigger"].json.message.chat.id}}
+       text: =Anotado chefe! 📝
+
+🗓️ *Quando:* {{$node["Parser JSON"].json.date}} às {{$node["Parser JSON"].json.time}}
+📍 *Onde:* {{$node["Parser JSON"].json.location}}
+🛠️ *O que:* {{$node["Parser JSON"].json.task}}
+
+Já coloquei na sua Agenda do Google. Bom trabalho e dirija com segurança!
+--------------------------------------------------------------------
+18. Workflow: '070_CRON_MANUS_DIARIO' (ID: UBH2RWc3CK2AyVR3)
+   Ativo: False
+   Nos Telegram encontrados:
+     - Nome: 'Telegram Entrega' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=j1fpzPAZUa1A0i6r, Name=Telegram account 2
+       chatId: -1002012015091
+       text: 🎯 *DIRETRIZ B2B DO MANUS GERADA E ENVIADA AO MARKSOLAR*
+
+*Público:* {{ $json.publico_alvo }}
+*Produto:* {{ $json.produto }}
+*Região:* {{ $json.bairro }}
+
+*Estratégia:* {{ $json.estrategia_texto }}
+--------------------------------------------------------------------
+19. Workflow: '070_CRON_MARKETING_INSTITUCIONAL_DL_OPENAI' (ID: rP1oaUomnwc10ihy)
+   Ativo: False
+   Nos Telegram encontrados:
+     - Nome: 'Telegram Entrega1' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=j1fpzPAZUa1A0i6r, Name=Telegram account 2
+       chatId: -1002012015091
+       text: ={{ '🎯 DIRETRIZ DE MARKETING DL\n\nPúblico: ' + $json.publico_alvo + '\nProduto: ' + $json.produto + '\nRegião: ' + $json.bairro + '\nCanal: ' + $json.canal_destino + '\nObjetivo: ' + $json.objetivo + '\n\nEstratégia:\n' + $json.estrategia_texto }}
+--------------------------------------------------------------------
+20. Workflow: '092_MESA_APROVACAO_TELEGRAM_ANINHA' (ID: qplxOUqyQ5ne8t14)
+   Ativo: False
+   Nos Telegram encontrados:
+     - Nome: 'Telegram Trigger' (Tipo: n8n-nodes-base.telegramTrigger)
+       Credencial: ID=None, Name=None
+       Updates: ['message', 'callback_query']
+       Webhook ID: 750a41dd-5944-40fd-a864-6971b5014d1c
+     - Nome: 'Telegram Resposta' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=None, Name=None
+       chatId: ={{ $json.chat_id }}
+       text: ={{ $json.resposta }}
+--------------------------------------------------------------------
+21. Workflow: '020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO' (ID: gS8s50b5UI4HZ6SO)
+   Ativo: False
+   Nos Telegram encontrados:
+     - Nome: 'Telegram Alerta Bloqueio' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=None, Name=None
+       chatId: -1002012015091
+       text: ={{ 'BLOQUEIO KILLCRITIC no post sobre ' + $json.tema + '. Motivo: ' + $json.status_killcritic + '\nViolacoes: ' + $json.violacoes.join(', ') }}
+     - Nome: 'Telegram Aviso Publicacao' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=None, Name=None
+       chatId: -1002012015091
+       text: ={{ 'POST GERADO (DL Nexus V3)\n\nTema: ' + $json.tema + '\nProduto: ' + $json.produto + '\n\nO post foi enviado para as redes.' }}
+     - Nome: 'Telegram Publish' (Tipo: n8n-nodes-base.telegram)
+       Credencial: ID=None, Name=None
+       chatId: -1002012015091
+       text: ={{ $('NORMALIZAR_SAIDA_IA_SOCIAL').item.json.texto_telegram }}
+--------------------------------------------------------------------

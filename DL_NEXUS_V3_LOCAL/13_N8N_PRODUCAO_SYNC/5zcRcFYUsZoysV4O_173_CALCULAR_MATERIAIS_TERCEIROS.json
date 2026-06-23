@@ -1,0 +1,165 @@
+{
+  "updatedAt": "2026-05-30T05:33:58.606Z",
+  "createdAt": "2026-05-27T23:36:51.279Z",
+  "id": "5zcRcFYUsZoysV4O",
+  "name": "173_CALCULAR_MATERIAIS_TERCEIROS",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "173-calcular-materiais",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-calcularMateriais173DlNexus20260527",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nfor (let i = 0; i < items.length; i++) {\n  const payload = items[i].json;\n  \n  if (!payload.materiais || !Array.isArray(payload.materiais) || payload.materiais.length === 0) {\n    items[i].json.materiais_a_parte = true;\n    items[i].json.mensagem_materiais = \"Materiais a serem faturados à parte mediante Avaliação Técnica ou repassados ao condomínio.\";\n    items[i].json.custo_materiais_total = 0;\n  } else {\n    items[i].json.materiais_a_parte = false;\n    let totalMaterial = 0;\n    for (let mat of payload.materiais) {\n       totalMaterial += (mat.quantidade || 0) * (mat.preco_unitario || 0);\n    }\n    items[i].json.custo_materiais_total = totalMaterial;\n  }\n}\nreturn items;"
+      },
+      "id": "code-calcularMateriais173DlNexus20260527",
+      "name": "Calcular Materiais ou Flag",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Calcular Materiais ou Flag",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "37c755f6-b624-4175-bbc9-483b1f477b64",
+  "activeVersionId": "37c755f6-b624-4175-bbc9-483b1f477b64",
+  "versionCounter": 9,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-27T23:36:51.279Z",
+      "createdAt": "2026-05-27T23:36:51.279Z",
+      "role": "workflow:owner",
+      "workflowId": "5zcRcFYUsZoysV4O",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-27T23:36:51.282Z",
+    "createdAt": "2026-05-27T23:36:51.282Z",
+    "versionId": "37c755f6-b624-4175-bbc9-483b1f477b64",
+    "workflowId": "5zcRcFYUsZoysV4O",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "173-calcular-materiais",
+          "responseMode": "lastNode",
+          "options": {}
+        },
+        "id": "webhook-calcularMateriais173DlNexus20260527",
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const items = $input.all();\nfor (let i = 0; i < items.length; i++) {\n  const payload = items[i].json;\n  \n  if (!payload.materiais || !Array.isArray(payload.materiais) || payload.materiais.length === 0) {\n    items[i].json.materiais_a_parte = true;\n    items[i].json.mensagem_materiais = \"Materiais a serem faturados à parte mediante Avaliação Técnica ou repassados ao condomínio.\";\n    items[i].json.custo_materiais_total = 0;\n  } else {\n    items[i].json.materiais_a_parte = false;\n    let totalMaterial = 0;\n    for (let mat of payload.materiais) {\n       totalMaterial += (mat.quantidade || 0) * (mat.preco_unitario || 0);\n    }\n    items[i].json.custo_materiais_total = totalMaterial;\n  }\n}\nreturn items;"
+        },
+        "id": "code-calcularMateriais173DlNexus20260527",
+        "name": "Calcular Materiais ou Flag",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          200,
+          0
+        ]
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Calcular Materiais ou Flag",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-06-15T03:48:17.140Z",
+        "id": 2395,
+        "workflowId": "5zcRcFYUsZoysV4O",
+        "versionId": "37c755f6-b624-4175-bbc9-483b1f477b64",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:17.150Z",
+        "id": 2396,
+        "workflowId": "5zcRcFYUsZoysV4O",
+        "versionId": "37c755f6-b624-4175-bbc9-483b1f477b64",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:58.762Z",
+        "id": 2062,
+        "workflowId": "5zcRcFYUsZoysV4O",
+        "versionId": "37c755f6-b624-4175-bbc9-483b1f477b64",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

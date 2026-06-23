@@ -1,0 +1,87 @@
+import os
+from pathlib import Path
+
+BASE_DIR = Path("DL_NEXUS_V3_LOCAL/05_RELATORIOS")
+BASE_DIR.mkdir(parents=True, exist_ok=True)
+
+texto_relatorio = """# Relatório Técnico: Arquitetura Operacional DL Nexus V3
+
+**Empresa:** DL Soluções Condominiais
+**Responsável Técnico:** Diogo Luiz de Oliveira (Tecnólogo em Infraestrutura e Pós-graduado em Energia Solar)
+**Core Engine:** n8n (Auto-hospedado via Docker na HostGator)
+**Diretriz Estratégica:** Crescimento B2B, automação de processos e solidez empresarial.
+
+## 1. Objetivo do Ecossistema
+O DL Nexus não é apenas um software, é a espinha dorsal operacional da empresa. Ele serve para centralizar o omnichannel, automatizar a triagem de leads, gerenciar a prospecção ativa e garantir que a entrega técnica (Avaliação Técnica) seja padronizada e livre de erros humanos. O sistema foi desenhado para escalar o faturamento através de contratos de recorrência (DL Partner).
+
+## 2. Pilares de Governança (Protocolo KILLCRITIC)
+* **Terminologia:** O termo obrigatório é Avaliação Técnica.
+* **Identidade:** Diogo é o Responsável Técnico ou Tecnólogo.
+* **Infraestrutura:** Padrão DL exige eletrodutos industriais, aço galvanizado e acabamento técnico de alta performance.
+* **Escopo:** A DL não executa manutenção hidráulica pura. O foco é elétrica, comando, automação e monitoramento (DL Acqua).
+
+## 3. Matriz de Conectividade e Sistemas
+* **Orquestração:** n8n, Antigravity
+* **Inteligência:** GPT-4o, Claude 3.5, Gemini, DeepSeek
+* **Agentes Especializados:** Aninha, Diego, Manus
+* **Dados e Armazenamento:** Supabase, Google Drive
+* **Canais de Entrada:** WhatsApp (Meta API), Email (HostGator/Titan), Facebook, Instagram
+
+## 4. Próximos Passos Operacionais
+* **Sincronização:** Finalizar o merge do PR do Jules no GitHub.
+* **Produção:** Importar o 060_AGENT_MANUS e o 019_GERADOR_ORCAMENTO para o n8n-main.
+
+**Status do Sistema:** Operacional e em fase de expansão V3.
+"""
+
+html_relatorio = f"""
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório Técnico - DL Nexus V3</title>
+    <style>
+        body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.6; margin: 40px auto; max-width: 800px; padding: 20px; }}
+        h1 {{ color: #0056b3; border-bottom: 2px solid #0056b3; padding-bottom: 10px; }}
+        h2 {{ color: #2c3e50; margin-top: 30px; }}
+        ul {{ background: #f8f9fa; padding: 20px 40px; border-radius: 5px; border-left: 4px solid #0056b3; }}
+        li {{ margin-bottom: 10px; }}
+        .header-info {{ background: #e9ecef; padding: 15px; border-radius: 5px; margin-bottom: 30px; font-weight: bold; }}
+    </style>
+</head>
+<body>
+    <h1>Relatório Técnico: Arquitetura Operacional DL Nexus V3</h1>
+    <div class="header-info">
+        <p>Empresa: DL Soluções Condominiais<br>
+        Responsável Técnico: Diogo Luiz de Oliveira (Tecnólogo em Infraestrutura e Pós-graduado em Energia Solar)<br>
+        Core Engine: n8n (Auto-hospedado via Docker na HostGator)<br>
+        Diretriz Estratégica: Crescimento B2B, automação de processos e solidez empresarial.</p>
+    </div>
+    <h2>1. Objetivo do Ecossistema</h2>
+    <p>O DL Nexus não é apenas um software, é a espinha dorsal operacional da empresa. Ele serve para centralizar o omnichannel, automatizar a triagem de leads, gerenciar a prospecção ativa e garantir que a entrega técnica (Avaliação Técnica) seja padronizada e livre de erros humanos. O sistema foi desenhado para escalar o faturamento através de contratos de recorrência (DL Partner).</p>
+    <h2>2. Pilares de Governança (Protocolo KILLCRITIC)</h2>
+    <ul>
+        <li><strong>Terminologia:</strong> O termo obrigatório é Avaliação Técnica.</li>
+        <li><strong>Identidade:</strong> Diogo é o Responsável Técnico ou Tecnólogo.</li>
+        <li><strong>Infraestrutura:</strong> Padrão DL exige eletrodutos industriais, aço galvanizado e acabamento técnico.</li>
+        <li><strong>Escopo:</strong> A DL não executa manutenção hidráulica pura. O foco é elétrica, comando, automação e monitoramento.</li>
+    </ul>
+    <h2>3. Matriz de Conectividade</h2>
+    <p><strong>Agentes:</strong> Aninha, Diego, Manus | <strong>Dados:</strong> Supabase, Google Drive | <strong>Core:</strong> n8n</p>
+    <h2>4. Status</h2>
+    <p>Operacional e em fase de expansão V3. Sincronização de PRs em andamento.</p>
+</body>
+</html>
+"""
+
+caminho_md = BASE_DIR / "RELATORIO_TECNICO_DL_NEXUS_V3.md"
+caminho_html = BASE_DIR / "RELATORIO_TECNICO_DL_NEXUS_V3.html"
+
+with open(caminho_md, "w", encoding="utf-8") as f:
+    f.write(texto_relatorio)
+
+with open(caminho_html, "w", encoding="utf-8") as f:
+    f.write(html_relatorio)
+
+print(f"✔️ Relatórios gerados com sucesso na pasta: {BASE_DIR}")
+print("Para gerar o PDF: Dê um duplo clique no arquivo .html gerado e aperte Ctrl+P no navegador para 'Salvar como PDF'.")

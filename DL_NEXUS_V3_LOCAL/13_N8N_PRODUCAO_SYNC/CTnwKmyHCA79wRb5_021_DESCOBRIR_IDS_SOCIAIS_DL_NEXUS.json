@@ -1,0 +1,281 @@
+{
+  "updatedAt": "2026-05-30T05:33:40.522Z",
+  "createdAt": "2026-05-25T21:54:21.237Z",
+  "id": "CTnwKmyHCA79wRb5",
+  "name": "021_DESCOBRIR_IDS_SOCIAIS_DL_NEXUS",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger_manual",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://graph.facebook.com/v19.0/me/accounts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "fields",
+              "value": "id,name,category,instagram_business_account"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "get_fb_pages",
+      "name": "GET Facebook Pages",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        200,
+        0
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "Aplicativo do Facebook",
+          "name": "Aplicativo do Facebook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json.data || [];\nconst paginas = data.map(p => ({\n  page_id: p.id,\n  page_name: p.name,\n  category: p.category || 'N/A',\n  instagram_business_account_id: p.instagram_business_account\n    ? p.instagram_business_account.id\n    : 'NAO_ENCONTRADO'\n}));\n\nif (paginas.length === 0) {\n  return { json: {\n    erro: 'Nenhuma pagina encontrada. Verifique a credencial Aplicativo do Facebook.',\n    paginas: [],\n    page_id_principal: 'NAO_ENCONTRADO',\n    page_name_principal: 'NAO_ENCONTRADO',\n    instagram_business_account_id: 'NAO_ENCONTRADO',\n    total_paginas: 0\n  }};\n}\n\nreturn {\n  json: {\n    total_paginas: paginas.length,\n    paginas,\n    page_id_principal: paginas[0].page_id,\n    page_name_principal: paginas[0].page_name,\n    instagram_business_account_id: paginas[0].instagram_business_account_id\n  }\n};"
+      },
+      "id": "extrair_page_ids",
+      "name": "Extrair Page IDs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://graph.facebook.com/v19.0/' + $json.page_id_principal + '?fields=id,name,instagram_business_account,fan_count' }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "options": {}
+      },
+      "id": "get_ig_account",
+      "name": "GET Instagram Business Account",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        600,
+        -100
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "Aplicativo do Facebook",
+          "name": "Aplicativo do Facebook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://graph.facebook.com/v19.0/' + $('Extrair Page IDs').item.json.page_id_principal + '/instagram_accounts?fields=id,username,name' }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "options": {}
+      },
+      "id": "get_ig_accounts_list",
+      "name": "GET Instagram Accounts List",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        600,
+        100
+      ],
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "Aplicativo do Facebook",
+          "name": "Aplicativo do Facebook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const extraidos = $('Extrair Page IDs').item.json;\nconst igData = $('GET Instagram Business Account').item.json || {};\nconst igAccounts = $('GET Instagram Accounts List').item.json || {};\n\nconst igIdViaPage = igData.instagram_business_account\n  ? igData.instagram_business_account.id\n  : null;\nconst igIdViaList = igAccounts.data && igAccounts.data[0]\n  ? igAccounts.data[0].id\n  : null;\nconst igId = igIdViaPage || igIdViaList || 'NAO_ENCONTRADO';\n\nconst igUser = igAccounts.data && igAccounts.data[0]\n  ? igAccounts.data[0].username\n  : 'N/A';\n\nconst relatorio = [\n  '=== RELATORIO DE IDs SOCIAIS — DL NEXUS V3 ===',\n  '',\n  '📘 FACEBOOK',\n  'PAGE_ID_AQUI → substitua por: ' + extraidos.page_id_principal,\n  'Nome da Pagina: ' + extraidos.page_name_principal,\n  'Total de paginas encontradas: ' + extraidos.total_paginas,\n  '',\n  '📸 INSTAGRAM',\n  'INSTAGRAM_BUSINESS_ACCOUNT_ID_AQUI → substitua por: ' + igId,\n  'Username Instagram: @' + igUser,\n  '',\n  '💬 TELEGRAM',\n  'CHAT_ID_AQUI → para descobrir:',\n  '  1. Envie qualquer mensagem para o seu bot no Telegram.',\n  '  2. Acesse: https://api.telegram.org/bot{SEU_TOKEN}/getUpdates',\n  '  3. Copie o valor de result[0].message.chat.id',\n  '',\n  '=== PROXIMO PASSO ===',\n  'Substitua os placeholders acima nos nos do workflow',\n  '020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO.',\n  'Apos substituir, ative o workflow SOMENTE com certeza.',\n  '',\n  'Gerado por: 021_DESCOBRIR_IDS_SOCIAIS_DL_NEXUS'\n].join('\\n');\n\nreturn {\n  json: {\n    page_id: extraidos.page_id_principal,\n    page_name: extraidos.page_name_principal,\n    instagram_business_account_id: igId,\n    instagram_username: igUser,\n    chat_id_instrucao: 'Envie msg ao bot, acesse api.telegram.org/bot{TOKEN}/getUpdates, copie chat.id',\n    relatorio_completo: relatorio\n  }\n};"
+      },
+      "id": "montar_relatorio_ids",
+      "name": "Montar Relatorio de IDs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "suporte@dlsolucoescondominiais.com.br",
+        "toEmail": "suporte@dlsolucoescondominiais.com.br",
+        "subject": "[DL Nexus] IDs Sociais Descobertos — 021_DESCOBRIR_IDS_SOCIAIS",
+        "text": "={{ $json.relatorio_completo }}",
+        "options": {}
+      },
+      "id": "smtp_ids",
+      "name": "Email com IDs Descobertos",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        1000,
+        -100
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "cH1s64M4P6PVE3wU",
+          "name": "SMTP - Suporte DL"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "CHAT_ID_AQUI",
+        "text": "={{ '✅ IDs descobertos pelo 021_DESCOBRIR_IDS_SOCIAIS:\\n\\n📘 PAGE_ID: ' + $('Montar Relatorio de IDs').item.json.page_id + '\\n📸 INSTAGRAM_BUSINESS_ID: ' + $('Montar Relatorio de IDs').item.json.instagram_business_account_id + '\\n\\n📧 Relatorio completo enviado para suporte@dlsolucoescondominiais.com.br\\n\\n💬 Para CHAT_ID: envie msg ao bot e acesse /getUpdates' }}",
+        "additionalFields": {}
+      },
+      "id": "telegram_ids",
+      "name": "Telegram Resumo IDs",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1000,
+        100
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "Conta do Telegram",
+          "name": "Conta do Telegram"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "GET Facebook Pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Facebook Pages": {
+      "main": [
+        [
+          {
+            "node": "Extrair Page IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair Page IDs": {
+      "main": [
+        [
+          {
+            "node": "GET Instagram Business Account",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "GET Instagram Accounts List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Instagram Business Account": {
+      "main": [
+        [
+          {
+            "node": "Montar Relatorio de IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET Instagram Accounts List": {
+      "main": [
+        [
+          {
+            "node": "Montar Relatorio de IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Montar Relatorio de IDs": {
+      "main": [
+        [
+          {
+            "node": "Email com IDs Descobertos",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Telegram Resumo IDs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "17ec4559-c91b-4935-a5c7-8f4e86ccf91b",
+  "activeVersionId": null,
+  "versionCounter": 85,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-25T21:54:21.237Z",
+      "createdAt": "2026-05-25T21:54:21.237Z",
+      "role": "workflow:owner",
+      "workflowId": "CTnwKmyHCA79wRb5",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

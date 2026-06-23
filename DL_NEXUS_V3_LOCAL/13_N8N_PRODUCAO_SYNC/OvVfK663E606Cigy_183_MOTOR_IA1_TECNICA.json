@@ -1,0 +1,386 @@
+{
+  "updatedAt": "2026-05-31T16:30:31.686Z",
+  "createdAt": "2026-05-31T01:33:13.432Z",
+  "id": "OvVfK663E606Cigy",
+  "name": "183_MOTOR_IA1_TECNICA",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.deepseek.com/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.DEEPSEEK_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Você é o Analista Técnico IA da DL Soluções Condominiais. Receba o JSON de escopo e retorne um JSON técnico estrito com: diagnostico_tecnico (resumo do problema e solução), riscos (array), dados_faltantes (array), validacoes (array). Regras: não invente dados. Se elétrico e sem potência, não conclua corrente. Se circuito geral incompatível, aponte risco de desarme.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"{{JSON.stringify($json.payload_json || $json)}}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "deepseek_analista",
+      "name": "DeepSeek: Analista Técnico",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        200,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.deepseek.com/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.DEEPSEEK_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Você é o Agente Conferente (QA) Técnico da DL. Analise a saída do Analista Técnico e os dados de entrada. Se a análise do colega estiver perigosa, excessivamente otimista ou ignorando regras da engenharia, reescreva-a e retorne o JSON final corrigido. Caso contrário, mantenha igual. Retorne JSON: { \\\"diagnostico_tecnico\\\": \\\"...\\\", \\\"riscos\\\": [], \\\"dados_faltantes\\\": [], \\\"validacoes\\\": [] }.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"DADOS ORIGINAIS: {{JSON.stringify($('Execute Workflow Trigger').item.json)}} \\n\\nANÁLISE INICIAL: {{JSON.stringify($json.choices[0].message.content)}}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "deepseek_qa",
+      "name": "DeepSeek: Conferente (QA)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let raw = $json.choices[0].message.content;\nlet parsed = {};\ntry {\n  parsed = JSON.parse(raw);\n} catch(e) {\n  parsed = { erro: \"Falha ao parsear JSON do DeepSeek\" };\n}\n\n// Montar o payload fundindo a entrada com o resultado da IA 1\nconst input = $('Execute Workflow Trigger').item.json.payload_json || $('Execute Workflow Trigger').item.json;\ninput.diagnostico = parsed;\n\nreturn { json: input };"
+      },
+      "id": "merge_ia1",
+      "name": "Merge IA 1 Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        600,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "DeepSeek: Analista Técnico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek: Analista Técnico": {
+      "main": [
+        [
+          {
+            "node": "DeepSeek: Conferente (QA)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek: Conferente (QA)": {
+      "main": [
+        [
+          {
+            "node": "Merge IA 1 Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "022ca8e1-deec-4e16-99d1-3498515a3d22",
+  "activeVersionId": "022ca8e1-deec-4e16-99d1-3498515a3d22",
+  "versionCounter": 17,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-31T01:33:13.432Z",
+      "createdAt": "2026-05-31T01:33:13.432Z",
+      "role": "workflow:owner",
+      "workflowId": "OvVfK663E606Cigy",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-31T01:33:13.436Z",
+    "createdAt": "2026-05-31T01:33:13.436Z",
+    "versionId": "022ca8e1-deec-4e16-99d1-3498515a3d22",
+    "workflowId": "OvVfK663E606Cigy",
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "trigger",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.deepseek.com/chat/completions",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{$env.DEEPSEEK_API_KEY}}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Você é o Analista Técnico IA da DL Soluções Condominiais. Receba o JSON de escopo e retorne um JSON técnico estrito com: diagnostico_tecnico (resumo do problema e solução), riscos (array), dados_faltantes (array), validacoes (array). Regras: não invente dados. Se elétrico e sem potência, não conclua corrente. Se circuito geral incompatível, aponte risco de desarme.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"{{JSON.stringify($json.payload_json || $json)}}\"\n    }\n  ]\n}",
+          "options": {}
+        },
+        "id": "deepseek_analista",
+        "name": "DeepSeek: Analista Técnico",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          200,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.deepseek.com/chat/completions",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{$env.DEEPSEEK_API_KEY}}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Você é o Agente Conferente (QA) Técnico da DL. Analise a saída do Analista Técnico e os dados de entrada. Se a análise do colega estiver perigosa, excessivamente otimista ou ignorando regras da engenharia, reescreva-a e retorne o JSON final corrigido. Caso contrário, mantenha igual. Retorne JSON: { \\\"diagnostico_tecnico\\\": \\\"...\\\", \\\"riscos\\\": [], \\\"dados_faltantes\\\": [], \\\"validacoes\\\": [] }.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"DADOS ORIGINAIS: {{JSON.stringify($('Execute Workflow Trigger').item.json)}} \\n\\nANÁLISE INICIAL: {{JSON.stringify($json.choices[0].message.content)}}\"\n    }\n  ]\n}",
+          "options": {}
+        },
+        "id": "deepseek_qa",
+        "name": "DeepSeek: Conferente (QA)",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          400,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "let raw = $json.choices[0].message.content;\nlet parsed = {};\ntry {\n  parsed = JSON.parse(raw);\n} catch(e) {\n  parsed = { erro: \"Falha ao parsear JSON do DeepSeek\" };\n}\n\n// Montar o payload fundindo a entrada com o resultado da IA 1\nconst input = $('Execute Workflow Trigger').item.json.payload_json || $('Execute Workflow Trigger').item.json;\ninput.diagnostico = parsed;\n\nreturn { json: input };"
+        },
+        "id": "merge_ia1",
+        "name": "Merge IA 1 Data",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          600,
+          0
+        ]
+      }
+    ],
+    "connections": {
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "DeepSeek: Analista Técnico",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "DeepSeek: Analista Técnico": {
+        "main": [
+          [
+            {
+              "node": "DeepSeek: Conferente (QA)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "DeepSeek: Conferente (QA)": {
+        "main": [
+          [
+            {
+              "node": "Merge IA 1 Data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-05-31T01:33:20.380Z",
+        "id": 2092,
+        "workflowId": "OvVfK663E606Cigy",
+        "versionId": "022ca8e1-deec-4e16-99d1-3498515a3d22",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-31T15:55:32.870Z",
+        "id": 2097,
+        "workflowId": "OvVfK663E606Cigy",
+        "versionId": "022ca8e1-deec-4e16-99d1-3498515a3d22",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-31T15:55:32.878Z",
+        "id": 2098,
+        "workflowId": "OvVfK663E606Cigy",
+        "versionId": "022ca8e1-deec-4e16-99d1-3498515a3d22",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-31T15:55:44.983Z",
+        "id": 2105,
+        "workflowId": "OvVfK663E606Cigy",
+        "versionId": "022ca8e1-deec-4e16-99d1-3498515a3d22",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-31T15:55:44.992Z",
+        "id": 2106,
+        "workflowId": "OvVfK663E606Cigy",
+        "versionId": "022ca8e1-deec-4e16-99d1-3498515a3d22",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-31T16:30:44.294Z",
+        "id": 2124,
+        "workflowId": "OvVfK663E606Cigy",
+        "versionId": "022ca8e1-deec-4e16-99d1-3498515a3d22",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-31T16:30:44.301Z",
+        "id": 2125,
+        "workflowId": "OvVfK663E606Cigy",
+        "versionId": "022ca8e1-deec-4e16-99d1-3498515a3d22",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-31T16:30:31.733Z",
+        "id": 2114,
+        "workflowId": "OvVfK663E606Cigy",
+        "versionId": "022ca8e1-deec-4e16-99d1-3498515a3d22",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-31T16:30:31.774Z",
+        "id": 2115,
+        "workflowId": "OvVfK663E606Cigy",
+        "versionId": "022ca8e1-deec-4e16-99d1-3498515a3d22",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:28.010Z",
+        "id": 2455,
+        "workflowId": "OvVfK663E606Cigy",
+        "versionId": "022ca8e1-deec-4e16-99d1-3498515a3d22",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:28.018Z",
+        "id": 2456,
+        "workflowId": "OvVfK663E606Cigy",
+        "versionId": "022ca8e1-deec-4e16-99d1-3498515a3d22",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

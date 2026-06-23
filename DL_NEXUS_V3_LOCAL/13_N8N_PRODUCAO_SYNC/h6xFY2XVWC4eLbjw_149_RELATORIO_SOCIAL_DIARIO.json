@@ -1,0 +1,87 @@
+{
+  "updatedAt": "2026-05-30T05:33:55.452Z",
+  "createdAt": "2026-05-25T09:46:56.917Z",
+  "id": "h6xFY2XVWC4eLbjw",
+  "name": "149_RELATORIO_SOCIAL_DIARIO",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Gerar relatório diário\nreturn items;"
+      },
+      "id": "2",
+      "name": "Gerar Relatório",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        450,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Gerar Relatório",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": null,
+  "versionId": "5af8e67b-ef5e-4e10-b1e5-b6ca97ded98b",
+  "activeVersionId": null,
+  "versionCounter": 61,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-25T09:46:56.917Z",
+      "createdAt": "2026-05-25T09:46:56.917Z",
+      "role": "workflow:owner",
+      "workflowId": "h6xFY2XVWC4eLbjw",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

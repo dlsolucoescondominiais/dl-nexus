@@ -15,7 +15,8 @@
       "position": [
         200,
         300
-      ]
+      ],
+      "notes": "Manus.IA removido da operação. Mantido apenas para histórico."
     },
     {
       "parameters": {
@@ -28,7 +29,8 @@
       "position": [
         460,
         300
-      ]
+      ],
+      "notes": "Manus.IA removido da operação. Mantido apenas para histórico."
     },
     {
       "parameters": {
@@ -69,7 +71,8 @@
       "position": [
         720,
         300
-      ]
+      ],
+      "notes": "Manus.IA removido da operação. Mantido apenas para histórico."
     },
     {
       "parameters": {
@@ -122,7 +125,8 @@
       "position": [
         980,
         300
-      ]
+      ],
+      "notes": "Manus.IA removido da operação. Mantido apenas para histórico."
     }
   ],
   "connections": {

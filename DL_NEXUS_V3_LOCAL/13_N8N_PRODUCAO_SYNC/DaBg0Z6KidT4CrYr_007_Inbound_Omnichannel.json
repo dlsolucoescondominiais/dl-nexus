@@ -1,0 +1,311 @@
+{
+  "updatedAt": "2026-04-23T01:50:39.798Z",
+  "createdAt": "2026-04-10T03:43:09.143Z",
+  "id": "DaBg0Z6KidT4CrYr",
+  "name": "007_Inbound_Omnichannel",
+  "description": null,
+  "active": false,
+  "isArchived": true,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "meta-omnichannel-hub",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-meta-validation",
+      "name": "Meta Hub Validation (GET)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        100,
+        100
+      ],
+      "webhookId": "meta-omnichannel-hub-get"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.query['hub.challenge'] }}",
+        "options": {}
+      },
+      "id": "respond-to-webhook",
+      "name": "Respond to Meta",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        350,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "meta-omnichannel-hub",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook-meta-receive",
+      "name": "Meta Messages (POST)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        100,
+        300
+      ],
+      "webhookId": "meta-omnichannel-hub-post"
+    },
+    {
+      "parameters": {
+        "mode": "rules",
+        "rules": {
+          "rules": [
+            {
+              "conditions": {
+                "main": [
+                  {
+                    "conditions": [
+                      {
+                        "operator": "exists",
+                        "value1": "={{ $json.body.entry[0].changes[0].value.messages }}"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "WhatsApp"
+            },
+            {
+              "conditions": {
+                "main": [
+                  {
+                    "conditions": [
+                      {
+                        "operator": "exists",
+                        "value1": "={{ $json.body.entry[0].messaging }}"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "Instagram/Messenger"
+            }
+          ]
+        },
+        "fallbackOutput": 2
+      },
+      "id": "router-omnichannel",
+      "name": "Switch Roteador",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        350,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "plataforma",
+              "value": "whatsapp"
+            },
+            {
+              "name": "id_remetente",
+              "value": "={{ $json.body.entry[0].changes[0].value.messages[0].from }}"
+            },
+            {
+              "name": "mensagem_texto",
+              "value": "={{ $json.body.entry[0].changes[0].value.messages[0].text.body }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-whatsapp",
+      "name": "Normalize WhatsApp",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        600,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "plataforma",
+              "value": "={{ $json.body.entry[0].messaging[0].message.is_echo ? 'messenger' : 'instagram' }}"
+            },
+            {
+              "name": "id_remetente",
+              "value": "={{ $json.body.entry[0].messaging[0].sender.id }}"
+            },
+            {
+              "name": "mensagem_texto",
+              "value": "={{ $json.body.entry[0].messaging[0].message.text }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-ig-messenger",
+      "name": "Normalize IG/Messenger",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.2,
+      "position": [
+        600,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://api:8000/api/aninha/triagem",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "origem",
+              "value": "={{ $json.plataforma }}"
+            },
+            {
+              "name": "telefone",
+              "value": "={{ $json.id_remetente }}"
+            },
+            {
+              "name": "mensagem_original",
+              "value": "={{ $json.mensagem_texto }}"
+            },
+            {
+              "name": "nome_condominio",
+              "value": "N/D (Lead via Social/Meta)"
+            },
+            {
+              "name": "email",
+              "value": "sem-email@redessociais.com"
+            },
+            {
+              "name": "diretriz_aninha",
+              "value": "Processar lead com foco imperativo em fechamento de Avaliação Técnica presencial para serviços de recorrência/implantação (elétrica, CFTV, portaria autônoma)."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http-aninha-omnichannel",
+      "name": "Enviar para Aninha",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        850,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Meta Hub Validation (GET)": {
+      "main": [
+        [
+          {
+            "node": "Respond to Meta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Meta Messages (POST)": {
+      "main": [
+        [
+          {
+            "node": "Switch Roteador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Roteador": {
+      "main": [
+        [
+          {
+            "node": "Normalize WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Normalize IG/Messenger",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize WhatsApp": {
+      "main": [
+        [
+          {
+            "node": "Enviar para Aninha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize IG/Messenger": {
+      "main": [
+        [
+          {
+            "node": "Enviar para Aninha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "f7266824-6a06-45f5-a7cd-5e5339dddfe6",
+  "activeVersionId": null,
+  "versionCounter": 3,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-04-10T03:43:09.143Z",
+      "createdAt": "2026-04-10T03:43:09.143Z",
+      "role": "workflow:owner",
+      "workflowId": "DaBg0Z6KidT4CrYr",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

@@ -1,0 +1,289 @@
+{
+  "updatedAt": "2026-05-30T05:33:57.187Z",
+  "createdAt": "2026-05-30T05:33:57.187Z",
+  "id": "Gq6pS1KuzHWunMEN",
+  "name": "154_ANINHA_GESTORA_EMAILS",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {
+          "q": "is:unread"
+        }
+      },
+      "id": "gmail_trigger",
+      "name": "Novo E-mail (Gmail)",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "placeholder_gmail",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://integrate.api.nvidia.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"meta/llama3-70b-instruct\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Atue como Aninha, Assistente Executiva da DL Soluções Condominiais. Leia o e-mail recebido e escreva uma sugestão de resposta profissional e vendedora. Foco em soluções B2B (energia solar, CFTV, elétrica, prevenção de incêndios). Nunca fale de hidráulica.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Assunto: {{$json.subject}}\\n\\nMensagem:\\n{{$json.textPlain}}\"\n    }\n  ],\n  \"max_tokens\": 1024\n}",
+        "options": {}
+      },
+      "id": "nvidia_email",
+      "name": "Escrever Resposta (NVIDIA)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "operation": "create",
+        "subject": "=Re: {{$node[\"Novo E-mail (Gmail)\"].json.subject}}",
+        "message": "={{$('Escrever Resposta (NVIDIA)').item.json.choices[0].message.content}}",
+        "toEmail": "={{$node[\"Novo E-mail (Gmail)\"].json.from}}"
+      },
+      "id": "gmail_draft",
+      "name": "Salvar Rascunho",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        400,
+        300
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "placeholder_gmail",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Novo E-mail (Gmail)": {
+      "main": [
+        [
+          {
+            "node": "Escrever Resposta (NVIDIA)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Escrever Resposta (NVIDIA)": {
+      "main": [
+        [
+          {
+            "node": "Salvar Rascunho",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": {
+    "node:Novo E-mail (Gmail)": {
+      "lastTimeChecked": 1780119237
+    }
+  },
+  "meta": null,
+  "pinData": null,
+  "versionId": "f63ad47d-f37c-4c17-891b-d1f6e9a27563",
+  "activeVersionId": "f63ad47d-f37c-4c17-891b-d1f6e9a27563",
+  "versionCounter": 8,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-30T05:33:57.187Z",
+      "createdAt": "2026-05-30T05:33:57.187Z",
+      "role": "workflow:owner",
+      "workflowId": "Gq6pS1KuzHWunMEN",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-30T05:33:57.191Z",
+    "createdAt": "2026-05-30T05:33:57.191Z",
+    "versionId": "f63ad47d-f37c-4c17-891b-d1f6e9a27563",
+    "workflowId": "Gq6pS1KuzHWunMEN",
+    "nodes": [
+      {
+        "parameters": {
+          "pollTimes": {
+            "item": [
+              {
+                "mode": "everyMinute"
+              }
+            ]
+          },
+          "filters": {
+            "q": "is:unread"
+          }
+        },
+        "id": "gmail_trigger",
+        "name": "Novo E-mail (Gmail)",
+        "type": "n8n-nodes-base.gmailTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          300
+        ],
+        "credentials": {
+          "gmailOAuth2": {
+            "id": "placeholder_gmail",
+            "name": "Gmail account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://integrate.api.nvidia.com/v1/chat/completions",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer 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"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"model\": \"meta/llama3-70b-instruct\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Atue como Aninha, Assistente Executiva da DL Soluções Condominiais. Leia o e-mail recebido e escreva uma sugestão de resposta profissional e vendedora. Foco em soluções B2B (energia solar, CFTV, elétrica, prevenção de incêndios). Nunca fale de hidráulica.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Assunto: {{$json.subject}}\\n\\nMensagem:\\n{{$json.textPlain}}\"\n    }\n  ],\n  \"max_tokens\": 1024\n}",
+          "options": {}
+        },
+        "id": "nvidia_email",
+        "name": "Escrever Resposta (NVIDIA)",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          200,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "draft",
+          "operation": "create",
+          "subject": "=Re: {{$node[\"Novo E-mail (Gmail)\"].json.subject}}",
+          "message": "={{$('Escrever Resposta (NVIDIA)').item.json.choices[0].message.content}}",
+          "toEmail": "={{$node[\"Novo E-mail (Gmail)\"].json.from}}"
+        },
+        "id": "gmail_draft",
+        "name": "Salvar Rascunho",
+        "type": "n8n-nodes-base.gmail",
+        "typeVersion": 2.1,
+        "position": [
+          400,
+          300
+        ],
+        "credentials": {
+          "gmailOAuth2": {
+            "id": "placeholder_gmail",
+            "name": "Gmail account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Novo E-mail (Gmail)": {
+        "main": [
+          [
+            {
+              "node": "Escrever Resposta (NVIDIA)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Escrever Resposta (NVIDIA)": {
+        "main": [
+          [
+            {
+              "node": "Salvar Rascunho",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-05-30T05:33:57.389Z",
+        "id": 2056,
+        "workflowId": "Gq6pS1KuzHWunMEN",
+        "versionId": "f63ad47d-f37c-4c17-891b-d1f6e9a27563",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:26.669Z",
+        "id": 2446,
+        "workflowId": "Gq6pS1KuzHWunMEN",
+        "versionId": "f63ad47d-f37c-4c17-891b-d1f6e9a27563",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:26.687Z",
+        "id": 2447,
+        "workflowId": "Gq6pS1KuzHWunMEN",
+        "versionId": "f63ad47d-f37c-4c17-891b-d1f6e9a27563",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

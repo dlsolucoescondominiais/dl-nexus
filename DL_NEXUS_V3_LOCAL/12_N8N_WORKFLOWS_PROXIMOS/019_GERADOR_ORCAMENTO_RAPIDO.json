@@ -54,6 +54,17 @@
         960,
         300
       ]
+    },
+    {
+      "parameters": {},
+      "id": "execute_workflow_trigger",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        200,
+        100
+      ]
     }
   ],
   "connections": {
@@ -89,9 +100,20 @@
           }
         ]
       ]
+    },
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set: Dados da Proposta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },

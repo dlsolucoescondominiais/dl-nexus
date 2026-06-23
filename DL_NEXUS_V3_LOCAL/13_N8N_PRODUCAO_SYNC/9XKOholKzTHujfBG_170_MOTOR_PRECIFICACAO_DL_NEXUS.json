@@ -1,0 +1,481 @@
+{
+  "updatedAt": "2026-05-30T05:33:57.653Z",
+  "createdAt": "2026-05-27T23:36:48.684Z",
+  "id": "9XKOholKzTHujfBG",
+  "name": "170_MOTOR_PRECIFICACAO_DL_NEXUS",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "precificacao-dl-nexus",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "c830db9b-648b-4981-9b16-52bb6c245781",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "precificacao-dl-nexus-170"
+    },
+    {
+      "parameters": {
+        "jsCode": "const payload = $input.item.json.body || $input.item.json;\n\n// Verificacao de dados criticos\nconst dadosCriticosPresentes = payload.escopo && payload.local && payload.clienteId;\n\nif (!dadosCriticosPresentes) {\n  return [{\n    json: {\n      status: \"Sob Avaliação Técnica\",\n      mensagem: \"Faltam dados críticos para precificação automática.\",\n      payloadOriginal: payload\n    }\n  }];\n}\n\n// Verifica se há gastronomia para urgência\nlet fatorUrgencia = 1.0;\nconst escopoStr = JSON.stringify(payload.escopo).toLowerCase();\nif (escopoStr.includes('chapa') || escopoStr.includes('fritadeira') || escopoStr.includes('gastronomia')) {\n  fatorUrgencia = 1.35; // Alta urgência\n}\n\nreturn [{\n  json: {\n    status: \"Processando\",\n    payload: payload,\n    fatorUrgencia: fatorUrgencia\n  }\n}];"
+      },
+      "id": "e03be180-8772-4d04-bf7e-f83141fdebe2",
+      "name": "Valida Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.status }}",
+              "value2": "Sob Avaliação Técnica"
+            }
+          ]
+        }
+      },
+      "id": "3dc6e5d8-3ab9-4ff3-af64-16d47b715694",
+      "name": "IF Faltam Dados",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const custoMateriais = 1500; // Chamaria o WF 171_CALCULO_MATERIAIS\nreturn [{ json: { custoMateriais, ...$input.item.json } }];"
+      },
+      "id": "fbc6d9d1-8173-4fdb-a388-c7e638848d70",
+      "name": "Sub-workflow: Calculo de Materiais (Mock)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        850,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const custoMaoDeObra = 2000; // Chamaria o WF 172_CALCULO_MAO_DE_OBRA\nreturn [{ json: { custoMaoDeObra, ...$input.item.json } }];"
+      },
+      "id": "97bcaefc-20cd-41e7-bc18-2c35848bb01b",
+      "name": "Sub-workflow: Calculo de Mao de Obra (Mock)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1050,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.item.json;\nconst fatorUrgencia = data.fatorUrgencia || 1.0;\nconst imposto_estimado_percentual = 0.15;\nconst margem = 0.40;\n\n// O custo interno (data.custoMateriais + data.custoMaoDeObra) NUNCA deve ser exposto\nconst custoBase = data.custoMateriais + data.custoMaoDeObra;\nconst precoVendaBase = custoBase / (1 - margem - imposto_estimado_percentual);\nconst precoRecomendado = precoVendaBase * fatorUrgencia;\n\nconst faixaComercialMin = precoRecomendado * 0.90;\nconst faixaComercialMax = precoRecomendado * 1.15;\n\nreturn [{\n  json: {\n    status: \"Sucesso\",\n    faixaComercial: {\n      min: faixaComercialMin,\n      max: faixaComercialMax\n    },\n    precoRecomendado: precoRecomendado,\n    imposto: \"imposto_estimado_percentual (Pendente de validação contábil)\",\n    observacao: \"Valores não incluem eventuais custos de Avaliação Técnica presencial.\"\n  }\n}];"
+      },
+      "id": "b18b449b-7e4a-4e2a-a953-f72bcfb19902",
+      "name": "Agrupa e Precifica",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1250,
+        500
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "a3b90901-b847-4cf0-8809-548d795b5c73",
+      "name": "Merge Saídas",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2,
+      "position": [
+        1450,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Valida Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valida Payload": {
+      "main": [
+        [
+          {
+            "node": "IF Faltam Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF Faltam Dados": {
+      "main": [
+        [
+          {
+            "node": "Merge Saídas",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Sub-workflow: Calculo de Materiais (Mock)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sub-workflow: Calculo de Materiais (Mock)": {
+      "main": [
+        [
+          {
+            "node": "Sub-workflow: Calculo de Mao de Obra (Mock)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sub-workflow: Calculo de Mao de Obra (Mock)": {
+      "main": [
+        [
+          {
+            "node": "Agrupa e Precifica",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agrupa e Precifica": {
+      "main": [
+        [
+          {
+            "node": "Merge Saídas",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "2ae00d7e-f3ca-4cc6-a2b1-38bf847576cc",
+  "activeVersionId": "2ae00d7e-f3ca-4cc6-a2b1-38bf847576cc",
+  "versionCounter": 16,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-27T23:36:48.684Z",
+      "createdAt": "2026-05-27T23:36:48.684Z",
+      "role": "workflow:owner",
+      "workflowId": "9XKOholKzTHujfBG",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-29T06:24:53.656Z",
+    "createdAt": "2026-05-27T23:36:48.689Z",
+    "versionId": "2ae00d7e-f3ca-4cc6-a2b1-38bf847576cc",
+    "workflowId": "9XKOholKzTHujfBG",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "precificacao-dl-nexus",
+          "responseMode": "lastNode",
+          "options": {}
+        },
+        "id": "c830db9b-648b-4981-9b16-52bb6c245781",
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 1,
+        "position": [
+          250,
+          300
+        ],
+        "webhookId": "precificacao-dl-nexus-170"
+      },
+      {
+        "parameters": {
+          "jsCode": "const payload = $input.item.json.body || $input.item.json;\n\n// Verificacao de dados criticos\nconst dadosCriticosPresentes = payload.escopo && payload.local && payload.clienteId;\n\nif (!dadosCriticosPresentes) {\n  return [{\n    json: {\n      status: \"Sob Avaliação Técnica\",\n      mensagem: \"Faltam dados críticos para precificação automática.\",\n      payloadOriginal: payload\n    }\n  }];\n}\n\n// Verifica se há gastronomia para urgência\nlet fatorUrgencia = 1.0;\nconst escopoStr = JSON.stringify(payload.escopo).toLowerCase();\nif (escopoStr.includes('chapa') || escopoStr.includes('fritadeira') || escopoStr.includes('gastronomia')) {\n  fatorUrgencia = 1.35; // Alta urgência\n}\n\nreturn [{\n  json: {\n    status: \"Processando\",\n    payload: payload,\n    fatorUrgencia: fatorUrgencia\n  }\n}];"
+        },
+        "id": "e03be180-8772-4d04-bf7e-f83141fdebe2",
+        "name": "Valida Payload",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          450,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "string": [
+              {
+                "value1": "={{ $json.status }}",
+                "value2": "Sob Avaliação Técnica"
+              }
+            ]
+          }
+        },
+        "id": "3dc6e5d8-3ab9-4ff3-af64-16d47b715694",
+        "name": "IF Faltam Dados",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 1,
+        "position": [
+          650,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const custoMateriais = 1500; // Chamaria o WF 171_CALCULO_MATERIAIS\nreturn [{ json: { custoMateriais, ...$input.item.json } }];"
+        },
+        "id": "fbc6d9d1-8173-4fdb-a388-c7e638848d70",
+        "name": "Sub-workflow: Calculo de Materiais (Mock)",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          850,
+          500
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const custoMaoDeObra = 2000; // Chamaria o WF 172_CALCULO_MAO_DE_OBRA\nreturn [{ json: { custoMaoDeObra, ...$input.item.json } }];"
+        },
+        "id": "97bcaefc-20cd-41e7-bc18-2c35848bb01b",
+        "name": "Sub-workflow: Calculo de Mao de Obra (Mock)",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1050,
+          500
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const data = $input.item.json;\nconst fatorUrgencia = data.fatorUrgencia || 1.0;\nconst imposto_estimado_percentual = 0.15;\nconst margem = 0.40;\n\n// O custo interno (data.custoMateriais + data.custoMaoDeObra) NUNCA deve ser exposto\nconst custoBase = data.custoMateriais + data.custoMaoDeObra;\nconst precoVendaBase = custoBase / (1 - margem - imposto_estimado_percentual);\nconst precoRecomendado = precoVendaBase * fatorUrgencia;\n\nconst faixaComercialMin = precoRecomendado * 0.90;\nconst faixaComercialMax = precoRecomendado * 1.15;\n\nreturn [{\n  json: {\n    status: \"Sucesso\",\n    faixaComercial: {\n      min: faixaComercialMin,\n      max: faixaComercialMax\n    },\n    precoRecomendado: precoRecomendado,\n    imposto: \"imposto_estimado_percentual (Pendente de validação contábil)\",\n    observacao: \"Valores não incluem eventuais custos de Avaliação Técnica presencial.\"\n  }\n}];"
+        },
+        "id": "b18b449b-7e4a-4e2a-a953-f72bcfb19902",
+        "name": "Agrupa e Precifica",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1250,
+          500
+        ]
+      },
+      {
+        "parameters": {},
+        "id": "a3b90901-b847-4cf0-8809-548d795b5c73",
+        "name": "Merge Saídas",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 2,
+        "position": [
+          1450,
+          300
+        ]
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Valida Payload",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Valida Payload": {
+        "main": [
+          [
+            {
+              "node": "IF Faltam Dados",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF Faltam Dados": {
+        "main": [
+          [
+            {
+              "node": "Merge Saídas",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Sub-workflow: Calculo de Materiais (Mock)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sub-workflow: Calculo de Materiais (Mock)": {
+        "main": [
+          [
+            {
+              "node": "Sub-workflow: Calculo de Mao de Obra (Mock)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sub-workflow: Calculo de Mao de Obra (Mock)": {
+        "main": [
+          [
+            {
+              "node": "Agrupa e Precifica",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Agrupa e Precifica": {
+        "main": [
+          [
+            {
+              "node": "Merge Saídas",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": "Version 2ae00d7e",
+    "description": "",
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-06-15T03:48:16.692Z",
+        "id": 2391,
+        "workflowId": "9XKOholKzTHujfBG",
+        "versionId": "2ae00d7e-f3ca-4cc6-a2b1-38bf847576cc",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:16.702Z",
+        "id": 2392,
+        "workflowId": "9XKOholKzTHujfBG",
+        "versionId": "2ae00d7e-f3ca-4cc6-a2b1-38bf847576cc",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-29T06:24:53.653Z",
+        "id": 1919,
+        "workflowId": "9XKOholKzTHujfBG",
+        "versionId": "2ae00d7e-f3ca-4cc6-a2b1-38bf847576cc",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-29T06:25:11.525Z",
+        "id": 1920,
+        "workflowId": "9XKOholKzTHujfBG",
+        "versionId": "2ae00d7e-f3ca-4cc6-a2b1-38bf847576cc",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-29T06:25:11.534Z",
+        "id": 1921,
+        "workflowId": "9XKOholKzTHujfBG",
+        "versionId": "2ae00d7e-f3ca-4cc6-a2b1-38bf847576cc",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:57.833Z",
+        "id": 2059,
+        "workflowId": "9XKOholKzTHujfBG",
+        "versionId": "2ae00d7e-f3ca-4cc6-a2b1-38bf847576cc",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:57.842Z",
+        "id": 2060,
+        "workflowId": "9XKOholKzTHujfBG",
+        "versionId": "2ae00d7e-f3ca-4cc6-a2b1-38bf847576cc",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:57.673Z",
+        "id": 2057,
+        "workflowId": "9XKOholKzTHujfBG",
+        "versionId": "2ae00d7e-f3ca-4cc6-a2b1-38bf847576cc",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:33:57.686Z",
+        "id": 2058,
+        "workflowId": "9XKOholKzTHujfBG",
+        "versionId": "2ae00d7e-f3ca-4cc6-a2b1-38bf847576cc",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

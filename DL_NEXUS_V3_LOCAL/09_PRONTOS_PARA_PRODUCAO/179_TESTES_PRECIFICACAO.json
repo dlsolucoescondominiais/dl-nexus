@@ -7,7 +7,15 @@
       "name": "Manual Trigger",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [250, 300]
+      "position": [256, 304]
+    },
+    {
+      "parameters": {},
+      "id": "execute_workflow_trigger",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [208, 112]
     },
     {
       "parameters": {
@@ -17,21 +25,33 @@
       "name": "Gerar Mock Payloads",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [450, 300]
+      "position": [464, 304]
     },
     {
       "parameters": {
-        "workflowId": "motorPrecificacao170DlNexus20260527"
+        "workflowId": "motorPrecificacao170DlNexus20260527",
+        "options": {}
       },
       "id": "node-exec-motor",
       "name": "Executar Motor 170",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
-      "position": [650, 300]
+      "position": [656, 304]
     }
   ],
   "connections": {
     "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Gerar Mock Payloads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute Workflow Trigger": {
       "main": [
         [
           {
@@ -54,14 +74,6 @@
       ]
     }
   },
-  "settings": {
-    "executionOrder": "v1"
-  },
-  "staticData": null,
-  "meta": {
-    "templateCredsSetupCompleted": true
-  },
-  "id": "testesPrecificacao179DlNexus20260527",
-  "tags": [],
-  "active": false
+  "active": false,
+  "settings": {}
 }

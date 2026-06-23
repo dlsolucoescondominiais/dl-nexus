@@ -1,0 +1,526 @@
+d:\AntiGravity\projeto_01\LP_ORCAMENTO_INTERNO\index.html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DL Nexus — Orçamento Interno</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --card: #13131a;
+            --card-hover: #1a1a24;
+            --border: #2a2a3a;
+            --accent: #00c853;
+            --accent-glow: rgba(0, 200, 83, 0.15);
+            --accent-dark: #009624;
+            --danger: #ff5252;
+            --warn: #ffc107;
+            --text: #e8e8f0;
+            --text-muted: #8888a0;
+            --text-label: #c0c0d0;
+            --radius: 10px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 16px;
+        }
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding-bottom: 60px;
+        }
+        /* ─── HEADER ─── */
+        .header {
+            text-align: center;
+            padding: 32px 0 24px;
+        }
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent), #69f0ae);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .header p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 6px;
+        }
+        .badge-interno {
+            display: inline-block;
+            background: rgba(255, 82, 82, 0.15);
+            color: var(--danger);
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-top: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: 1px solid rgba(255, 82, 82, 0.3);
+        }
+        /* ─── SECTIONS ─── */
+        .section {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent);
+            margin-bottom: 18px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        /* ─── FORM ELEMENTS ─── */
+        label.field-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-label);
+            margin-bottom: 5px;
+            margin-top: 14px;
+        }
+        label.field-label:first-of-type { margin-top: 0; }
+        label.field-label .req {
+            color: var(--danger);
+            font-weight: 700;
+        }
+        label.field-label .opt {
+            color: var(--text-muted);
+            font-weight: 400;
+            font-size: 0.7rem;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.85rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        textarea { resize: vertical; min-height: 60px; }
+        select { cursor: pointer; }
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px dashed var(--border);
+            background: var(--bg);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        /* ─── INLINE GRID ─── */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+        @media (max-width: 500px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+        }
+        /* ─── CHECKBOXES ─── */
+        .check-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+            font-size: 0.8rem;
+        }
+        .check-item:hover { border-color: var(--accent); background: var(--card-hover); }
+        .check-item input[type="checkbox"] {
+            accent-color: var(--accent);
+            width: 16px;
+            height: 16px;
+        }
+        /* ─── RADIO GROUP ─── */
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: border-color 0.2s;
+        }
+        .radio-item:hover { border-color: var(--accent); }
+        .radio-item input[type="radio"] { accent-color: var(--accent); }
+        /* ─── SUBMIT ─── */
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: #000;
+            border: none;
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.3s;
+            letter-spacing: 0.5px;
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px var(--accent-glow);
+        }
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: wait;
+            transform: none;
+        }
+        #statusMsg {
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 14px;
+            min-height: 24px;
+        }
+        .info-box {
+            background: rgba(0, 200, 83, 0.08);
+            border: 1px solid rgba(0, 200, 83, 0.2);
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-top: 12px;
+        }
+        .info-box strong { color: var(--accent); }
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 14px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- HEADER -->
+    <div class="header">
+        <h1>⚡ DL Nexus — Gerador de Orçamento</h1>
+        <p>Sistema interno de orçamentação inteligente</p>
+        <span class="badge-interno">🔒 USO INTERNO — NÃO PÚBLICO</span>
+    </div>
+    <form id="orcForm" enctype="multipart/form-data">
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- SEÇÃO 1: DADOS DO CLIENTE                  -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div class="section">
+            <div class="section-title">👤 1. Dados do Cliente</div>
+            <label class="field-label">Nome do Cliente <span class="req">*</span></label>
+            <input type="text" name="nome_cliente" required placeholder="Ex: Síndico João Carlos">
+            <label class="field-label">Endereço Completo <span class="req">*</span></label>
+            <input type="text" name="endereco" required placeholder="Rua, nº, bloco, bairro, cidade">
+            <label class="field-label">Tipo de Cliente <span class="req">*</span></label>
+            <select name="tipo_cliente" id="tipoCliente" required>
+                <option value="">Selecione...</option>
+                <option value="Pessoa Física">Pessoa Física</option>
+                <option value="Pessoa Jurídica - Condomínio">Condomínio</option>
+                <option value="Pessoa Jurídica - Restaurante">Restaurante</option>
+                <option value="Pessoa Jurídica - Loja Comercial">Loja Comercial</option>
+                <option value="Pessoa Jurídica - Lanchonete">Lanchonete</option>
+                <option value="Pessoa Jurídica - Faculdade">Faculdade</option>
+                <option value="Pessoa Jurídica - Colégio/Escola">Colégio / Escola</option>
+                <option value="Pessoa Jurídica - Outro">Outro (Descreva)</option>
+            </select>
+            <input type="text" name="tipo_cliente_outro" placeholder="Se 'Outro', descreva..." style="margin-top:6px;">
+            <div class="grid-2">
+                <div>
+                    <label class="field-label">CPF ou CNPJ <span class="opt">(opcional)</span></label>
+                    <input type="text" name="documento" placeholder="000.000.000-00">
+                </div>
+                <div>
+                    <label class="field-label">Telefone / WhatsApp <span class="req">*</span></label>
+                    <input type="tel" name="telefone" required placeholder="(21) 99999-0000">
+                </div>
+            </div>
+            <label class="field-label">E-mail do Cliente <span class="opt">(opcional)</span></label>
+            <input type="email" name="email_cliente" placeholder="cliente@email.com">
+        </div>
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- SEÇÃO 2: DESCRIÇÃO DO LOCAL / AMBIENTE      -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div class="section">
+            <div class="section-title">📍 2. Análise do Local e Ambiente</div>
+            <label class="field-label">Descrição do Local / Ambiente <span class="req">*</span></label>
+            <textarea name="descricao_local" rows="3" required placeholder="Descreva o ambiente: tipo de construção, pavimentos, áreas comuns, observações visuais..."></textarea>
+            <div class="grid-2">
+                <div>
+                    <label class="field-label">Estacionamento no Local?</label>
+                    <select name="estacionamento">
+                        <option value="Sim - Livre">Sim — Estacionamento livre</option>
+                        <option value="Sim - Pago">Sim — Estacionamento pago</option>
+                        <option value="Não - Rua">Não — Estacionar na rua</option>
+                        <option value="Não - Difícil">Não — Difícil acesso</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="field-label">Escada necessária?</label>
+                    <select name="escada">
+                        <option value="Não">Não</option>
+                        <option value="Sim - Escada simples">Sim — Escada simples</option>
+                        <option value="Sim - Escada extensível">Sim — Escada extensível</option>
+                        <option value="Sim - Andaime">Sim — Andaime necessário</option>
+                        <option value="Sim - Plataforma elevatória">Sim — Plataforma elevatória</option>
+                    </select>
+                </div>
+            </div>
+            <label class="field-label">Fotos e Vídeos do Local <span class="opt">(recomendado)</span></label>
+            <input type="file" name="midia_local" multiple accept="image/*,video/*">
+            <div class="info-box">
+                <strong>📸 Dica:</strong> Envie fotos e vídeos do local. O sistema analisará automaticamente o ambiente,
+                infraestrutura existente, pontos de atenção e gerar dados complementares para o orçamento.
+            </div>
+        </div>
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- SEÇÃO 3: DADOS TÉCNICOS ELÉTRICOS           -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div class="section">
+            <div class="section-title">⚡ 3. Dados Técnicos Elétricos</div>
+            <div class="grid-3">
+                <div>
+                    <label class="field-label">Voltagem</label>
+                    <select name="voltagem">
+                        <option value="Não medido">Não medido</option>
+                        <option value="127/220V">127/220V</option>
+                        <option value="220/380V">220/380V</option>
+                        <option value="220/440V">220/440V</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="field-label">Frequência (Hz)</label>
+                    <select name="frequencia_hz">
+                        <option value="60Hz">60 Hz</option>
+                        <option value="50Hz">50 Hz</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="field-label">Amperagem (A)</label>
+                    <input type="text" name="amperagem" placeholder="Ex: 40A, 63A...">
+                </div>
+            </div>
+            <div class="grid-3">
+                <div>
+                    <label class="field-label">Rede Elétrica</label>
+                    <select name="rede_eletrica">
+                        <option value="Não identificado">Não identificado</option>
+                        <option value="Monofásica">Monofásica</option>
+                        <option value="Bifásica">Bifásica</option>
+                        <option value="Trifásica">Trifásica</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="field-label">Concessionária</label>
+                    <select name="concessionaria">
+                        <option value="Light">Light</option>
+                        <option value="Enel">Enel</option>
+                        <option value="Anel (interno)">Anel (rede interna)</option>
+                        <option value="Outra">Outra</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="field-label">Voltagem Outro</label>
+                    <input type="text" name="voltagem_outro" placeholder="Se 'Outro'...">
+                </div>
+            </div>
+        </div>
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- SEÇÃO 4: SERVIÇOS DESEJADOS                 -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div class="section">
+            <div class="section-title">🔧 4. Serviços Desejados</div>
+            <div class="check-grid">
+                <label class="check-item"><input type="checkbox" name="servicos" value="CFTV"> CFTV</label>
+                <label class="check-item"><input type="checkbox" name="servicos" value="Controle de Acesso"> Controle de Acesso</label>
+                <label class="check-item"><input type="checkbox" name="servicos" value="Automação"> Automação</label>
+                <label class="check-item"><input type="checkbox" name="servicos" value="Reforma"> Reforma</label>
+                <label class="check-item"><input type="checkbox" name="servicos" value="Retrofit"> Retrofit</label>
+                <label class="check-item"><input type="checkbox" name="servicos" value="Elétrica"> Elétrica</label>
+                <label class="check-item"><input type="checkbox" name="servicos" value="Prevenção de Incêndio"> Prevenção de Incêndio</label>
+                <label class="check-item"><input type="checkbox" name="servicos" value="Solar"> Energia Solar</label>
+                <label class="check-item"><input type="checkbox" name="servicos" value="Infraestrutura Completa"> Infra Completa</label>
+                <label class="check-item"><input type="checkbox" name="servicos" value="Portfólio Completo"> Portfólio Completo DL</label>
+            </div>
+            <hr class="divider">
+            <label class="field-label">Detalhes — Chapa (se aplicável)</label>
+            <div class="check-grid">
+                <label class="check-item"><input type="checkbox" name="chapa_detalhes" value="Resistência 1"> Resistência 1</label>
+                <label class="check-item"><input type="checkbox" name="chapa_detalhes" value="Resistência 2"> Resistência 2</label>
+                <label class="check-item"><input type="checkbox" name="chapa_detalhes" value="Ambas Resistências"> Ambas</label>
+                <label class="check-item"><input type="checkbox" name="chapa_detalhes" value="Painel Frontal"> Painel Frontal</label>
+                <label class="check-item"><input type="checkbox" name="chapa_detalhes" value="Botão I/O"> Botão Liga/Desliga I/O</label>
+                <label class="check-item"><input type="checkbox" name="chapa_detalhes" value="Placa"> Placa</label>
+                <label class="check-item"><input type="checkbox" name="chapa_detalhes" value="Contatora"> Contatora</label>
+            </div>
+            <input type="text" name="chapa_outros" placeholder="Outros componentes da chapa..." style="margin-top:8px;">
+            <hr class="divider">
+            <label class="field-label">Detalhes — Infraestrutura (se aplicável)</label>
+            <textarea name="detalhe_infra" rows="2" placeholder="Descreva: elétrica, CFTV, segurança eletrônica, iluminação, automação..."></textarea>
+        </div>
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- SEÇÃO 5: LOGÍSTICA E EXECUÇÃO               -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div class="section">
+            <div class="section-title">🚛 5. Logística e Execução</div>
+            <label class="field-label">Urgência / Prioridade <span class="req">*</span></label>
+            <div class="radio-group">
+                <label class="radio-item"><input type="radio" name="urgencia" value="Normal" checked> Normal</label>
+                <label class="radio-item"><input type="radio" name="urgencia" value="Urgência"> Urgência</label>
+                <label class="radio-item"><input type="radio" name="urgencia" value="Emergência"> Emergência</label>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <label class="field-label">Tempo estimado de execução</label>
+                    <input type="text" name="tempo_execucao" placeholder="Ex: 2 dias, 8 horas...">
+                </div>
+                <div>
+                    <label class="field-label">Tempo de deslocamento</label>
+                    <input type="text" name="tempo_deslocamento" placeholder="Ex: 45 min (ida)">
+                </div>
+            </div>
+            <div class="grid-2">
+                <div>
+                    <label class="field-label">Qtd. de Profissionais</label>
+                    <input type="number" name="qtd_profissionais" min="1" value="1">
+                </div>
+                <div>
+                    <label class="field-label">Tempo de Entrega</label>
+                    <select name="tempo_entrega">
+                        <option value="Imediato">Imediato</option>
+                        <option value="1-3 dias">1–3 dias úteis</option>
+                        <option value="3-7 dias" selected>3–7 dias úteis</option>
+                        <option value="7-15 dias">7–15 dias úteis</option>
+                        <option value="15-30 dias">15–30 dias</option>
+                        <option value="Sob consulta">Sob consulta</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- SEÇÃO 6: TIPO DE ORÇAMENTO (SÓ SERVIÇO,     -->
+        <!--          SÓ MATERIAL, CONTRATO)              -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div class="section">
+            <div class="section-title">📋 6. Tipo de Orçamento</div>
+            <label class="field-label">Modalidade <span class="req">*</span></label>
+            <div class="check-grid">
+                <label class="check-item"><input type="checkbox" name="modalidade" value="Só Serviço"> Só Serviço</label>
+                <label class="check-item"><input type="checkbox" name="modalidade" value="Só Material"> Só Material</label>
+                <label class="check-item"><input type="checkbox" name="modalidade" value="Serviço + Material"> Serviço + Material</label>
+                <label class="check-item"><input type="checkbox" name="modalidade" value="Contrato Recorrente"> Contrato Recorrente (MRR)</label>
+            </div>
+            <label class="field-label">Observações Adicionais</label>
+            <textarea name="observacoes" rows="3" placeholder="Qualquer informação extra relevante para o orçamento..."></textarea>
+        </div>
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- SEÇÃO 7: CONTROLE INTERNO (NÃO VAI PRO CLIENTE) -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div class="section" style="border-color: rgba(255,193,7,0.3); background: rgbaa(255,193,7,0.03);">
+            <div class="section-title" style="color: var(--warn);">🔐 7. Controle Interno DL (Não vai para o cliente)</div>
+            <div class="info-box" style="background: rgba(255,82,82,0.08); border-color: rgba(255,82,82,0.2);">
+                <strong style="color: var(--danger);">⚠️ REGRA DE SIGILO:</strong>
+                O orçamento entregue ao cliente <strong>NÃO</strong> conterá detalhes de fabricante, modelo ou hardware dos equipamentos.
+                Apenas o nome comercial do produto/serviço DL será exibido.
+                A versão completa (com fabricante, modelo, part number) será enviada apenas para
+                <strong>orcamento@dlsolucoescondominiais.com.br</strong>.
+            </div>
+            <label class="field-label">Materiais — Fabricante / Modelo / Hardware <span class="opt">(interno)</span></label>
+            <textarea name="material_interno" rows="4" placeholder="Ex: Intelbras VHD 1220 D Full HD, DVR MHDX 3108, Cabo CFTV Megatron 4mm...&#10;Estes dados NÃO serão enviados ao cliente."></textarea>
+            <label class="field-label">Custo Interno Estimado (R$) <span class="opt">(interno)</span></label>
+            <input type="text" name="custo_interno" placeholder="Ex: R$ 2.350,00">
+            <label class="field-label">Notas Internas (só Diego / equipe)</label>
+            <textarea name="notas_internas" rows="2" placeholder="Anotações internas que não devem aparecer em nenhum documento do cliente..."></textarea>
+        </div>
+        <!-- SUBMIT -->
+        <button type="submit" class="btn-submit" id="submitBtn">
+            🚀 GERAR ORÇAMENTO E ENVIAR PARA N8N
+        </button>
+        <div id="statusMsg"></div>
+    </form>
+</div>
+<script>
+document.getElementById('orcForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    const msg = document.getElementById('statusMsg');
+    btn.disabled = true;
+    btn.innerText = '⏳ Processando...';
+    msg.innerText = '';
+    const fd = new FormData(this);
+    // Coletar checkboxes agrupados
+    const servicos = [...document.querySelectorAll('input[name="servicos"]:checked')].map(c => c.value);
+    const chapa = [...document.querySelectorAll('input[name="chapa_detalhes"]:checked')].map(c => c.value);
+    const modalidade = [...document.querySelectorAll('input[name="modalidade"]:checked')].map(c => c.value);
+    fd.set('servicos_lista', JSON.stringify(servicos));
+    fd.set('chapa_lista', JSON.stringify(chapa));
+    fd.set('modalidade_lista', JSON.stringify(modalidade));
+    const WEBHOOK_URL = 'https://n8n.dlsolucoescondominiais.com.br/webhook/orcamento-interno-dl';
+    try {
+        const res = await fetch(WEBHOOK_URL, { method: 'POST', body: fd });
+        if (res.ok) {
+            msg.style.color = '#00c853';
+            msg.innerText = '✅ Orçamento enviado com sucesso! Aguarde o retorno via Telegram.';
+            this.reset();
+        } else {
+            msg.style.color = '#ff5252';
+            msg.innerText = '❌ Erro ao enviar. Verifique se o n8n está online.';
+        }
+    } catch (err) {
+        msg.style.color = '#ff5252';
+        msg.innerText = '❌ Falha na conexão com o servidor n8n.';
+    } finally {
+        btn.disabled = false;
+        btn.innerText = '🚀 GERAR ORÇAMENTO E ENVIAR PARA N8N';
+    }
+});
+</script>
+</body>
+</html>

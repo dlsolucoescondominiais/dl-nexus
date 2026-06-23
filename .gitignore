@@ -5,15 +5,55 @@
 
 # Credenciais e Segredos (O COFRE FORTE)
 .env
+.env.*
 execution/.env
 *.json
 !package.json
 !package-lock.json
 !tsconfig.json
 
-# Tokens de autenticação
+# Permissões específicas de workflows e recursos DL Nexus
+!DL_NEXUS_V3_LOCAL/11_N8N_AGENTES_V3/**/*.json
+!DL_NEXUS_V3_LOCAL/11_N8N_AGENTES_V3/*.json
+!DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/**/*.json
+!DL_NEXUS_V3_LOCAL/12_N8N_WORKFLOWS_PROXIMOS/*.json
+!DL_NEXUS_V3_LOCAL/13_N8N_PRODUCAO_SYNC/**/*.json
+!DL_NEXUS_V3_LOCAL/13_N8N_PRODUCAO_SYNC/*.json
+!DL_NEXUS_V3_LOCAL/04_PAYLOADS_TESTE/**/*.json
+!DL_NEXUS_V3_LOCAL/04_PAYLOADS_TESTE/*.json
+!DL_NEXUS_V3_LOCAL/07_SUPABASE_SCHEMA/**/*.sql
+!DL_NEXUS_V3_LOCAL/07_SUPABASE_SCHEMA/*.sql
+!DL_NEXUS_V3_LOCAL/**/*.md
+!DL_NEXUS_V3_LOCAL/**/*.csv
+
+# Bloqueio de tokens de autenticação
 token_*.json
 credentials_*.json
+
+# Bloqueios rígidos adicionais de segredos
+token
+secret
+credential
+credentials
+credenciais
+credentials.json
+service-account*.json
+*_PRIVATE.json
+*_SECRETS.json
+*.key
+*.pem
+*.p12
+*.sqlite
+*.db
+*.sql
+# Backups e backups de deploy
+[Bb]ackup-*/
+[Bb]ackup_*
+*BACKUP*
+*backup*
+pycache/
+.DS_Store
+
 
 # Cache Python
 __pycache__/
@@ -176,3 +216,5 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
+
+CREDENCIAIS_LOCAIS_SECURE.txt

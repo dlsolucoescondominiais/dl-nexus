@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avaliação Técnica V2 | DL Soluções Condominiais</title>
+  <meta name="description" content="Solicite uma Avaliação Técnica completa para seu condomínio ou empresa. DL Soluções Condominiais — proteção patrimonial, CFTV, elétrica, automação e energia solar no Rio de Janeiro.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="assets/Soluções Condominiais favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* ============================================
+       DESIGN SYSTEM — Fortress Theme v1 (Herdado)
+       ============================================ */
+    :root {
+      --dl-bg: #f7f9fb;
+      --dl-bg-alt: #eef2f6;
+      --dl-text: #1a2b3c;
+      --dl-text-muted: #5b6b7c;
+      --dl-surface: #ffffff;
+      --dl-border: #dde4ec;
+      --dl-blue-dark: #0b1f33;
+      --dl-blue: #123a5f;
+      --dl-blue-light: #1d5d8f;
+      --dl-gold: #c8962e;
+      --dl-gold-light: #e8b84a;
+      --dl-danger: #b42318;
+      --dl-success: #087443;
+      --dl-white: #ffffff;
+      --dl-heading: #0b1f33;
+      --shadow-soft: 0 8px 32px rgba(11,31,51,0.08);
+      --shadow-card: 0 4px 20px rgba(11,31,51,0.06);
+      --shadow-hover: 0 12px 40px rgba(11,31,51,0.14);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --max-width: 1200px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="dark"] {
+      --dl-bg: #071422;
+      --dl-bg-alt: #0c1e30;
+      --dl-text: #e8edf2;
+      --dl-text-muted: #94a3b8;
+      --dl-surface: #0f2640;
+      --dl-border: #1e3a56;
+      --dl-heading: #f1f5f9;
+      --shadow-soft: 0 8px 32px rgba(0,0,0,0.3);
+      --shadow-card: 0 4px 20px rgba(0,0,0,0.25);
+      --shadow-hover: 0 12px 40px rgba(0,0,0,0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--dl-text);
+      background: var(--dl-bg);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============================================
+       TOPBAR — Protótipo (Homologação)
+       ============================================ */
+    .topbar-warning {
+      background: linear-gradient(135deg, var(--dl-gold), var(--dl-gold-light));
+      color: var(--dl-blue-dark);
+      text-align: center;
+      padding: 10px 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+    }
+
+    .topbar-warning i { margin-right: 6px; }
+
+    /* ============================================
+       PAGE LAYOUT
+       ============================================ */
+    .page-wrapper {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 80px;
+    }
+
+    .form-hero {
+      text-align: center;
+      max-width: 720px;
+      margin-bottom: 40px;
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .form-hero h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800;
+      color: var(--dl-heading);
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .form-hero h1 .accent { color: var(--dl-gold); }
+
+    .form-hero p {
+      color: var(--dl-text-muted);
+      font-size: 1.05rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .badge-env {
+      display: inline-block;
+      background: var(--dl-blue-dark);
+      color: var(--dl-gold-light);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 14px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    /* ============================================
+       FORM CARD
+       ============================================ */
+    .form-card {
+      width: 100%;
+      max-width: 820px;
+      background: var(--dl-surface);
+      border: 1px solid var(--dl-border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      animation: fadeInUp 0.7s ease-out 0.1s both;
+    }
+
+    /* ---- Progress Steps ---- */
+    .progress-bar {
+      display: flex;
+      background: var(--dl-bg-alt);
+      border-bottom: 1px solid var(--dl-border);
+      overflow-x: auto;
+    }
+
+    .progress-step {
+      flex: 1;
+      text-align: center;
+      padding: 14px 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--dl-text-muted);
+      cursor: pointer;
+      position: relative;
+      transition: color var(--transition), background var(--transition);
+      white-space: nowrap;
+    }
+
+    .progress-step.active {
+      color: var(--dl-blue);
+      background: var(--dl-surface);
+    }
+
+    .progress-step.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 20%;
+      right: 20%;
+      height: 3px;
+      background: var(--dl-gold);
+      border-radius: 3px 3px 0 0;
+    }
+
+    .progress-step.completed {
+      color: var(--dl-success);
+    }
+
+    .progress-step .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--dl-border);
+      color: var(--dl-text-muted);
+      font-size: 0.7rem;
+      margin-right: 5px;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    .progress-step.active .step-num {
+      background: var(--dl-blue);
+      color: white;
+    }
+
+    .progress-step.completed .step-num {
+      background: var(--dl-success);
+      color: white;
+    }
+
+    /* ---- Sections (Steps) ---- */
+    .form-body { padding: 32px 36px 40px; }
+
+    .form-section {
+      display: none;
+      animation: fadeInUp 0.35s ease-out;
+    }
+
+    .form-section.active { display: block; }
+
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--dl-heading);
+      margin-bottom: 6px;
+    }
+
+    .section-subtitle {
+      color: var(--dl-text-muted);
+      font-size: 0.88rem;
+      margin-bottom: 24px;
+    }
+
+    /* ---- Fields ---- */
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .field-grid .full { grid-column: 1 / -1; }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .field-group label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--dl-text);
+    }
+
+    .field-group label .req {
+      color: var(--dl-danger);
+      margin-left: 2px;
+    }
+
+    .field-group label .opt {
+      color: var(--dl-text-muted);
+      font-weight: 400;
+      font-size: 0.75rem;
+    }
+
+    .field-group input,
+    .field-group select,
+    .field-group textarea {
+      padding: 11px 14px;
+      border: 1.5px solid var(--dl-border);
+      border-radius: var(--radius-sm);
+      background: var(--dl-bg);
+      color: var(--dl-text);
+      font-family: inherit;
+      font-size: 0.92rem;
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+    }
+
+    .field-group input:focus,
+    .field-group select:focus,
+    .field-group textarea:focus {
+      border-color: var(--dl-blue-light);
+      box-shadow: 0 0 0 3px rgba(29,93,143,0.12);
+    }
+
+    .field-group input.error,
+    .field-group select.error,
+    .field-group textarea.error {
+      border-color: var(--dl-danger);
+      box-shadow: 0 0 0 3px rgba(180,35,24,0.1);
+    }
+
+    .field-group textarea { resize: vertical; min-height: 100px; }
+
+    .field-hint {
+      font-size: 0.75rem;
+      color: var(--dl-text-muted);
+      margin-top: 2px;
+    }
+
+    .field-warning {
+      font-size: 0.78rem;
+      color: var(--dl-gold);
+      background: rgba(200,150,46,0.08);
+      border: 1px solid rgba(200,150,46,0.2);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .field-warning.visible { display: flex; align-items: center; gap: 6px; }
+
+    /* ---- Checkboxes ---- */
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      margin-top: 3px;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--dl-blue);
+      flex-shrink: 0;
+    }
+
+    .checkbox-group label {
+      font-size: 0.82rem;
+      color: var(--dl-text);
+      line-height: 1.5;
+    }
+
+    .checkbox-group label a {
+      color: var(--dl-blue-light);
+      text-decoration: underline;
+    }
+
+    /* ---- Upload Zone ---- */
+    .upload-zone {
+      border: 2px dashed var(--dl-border);
+      border-radius: var(--radius-md);
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color var(--transition), background var(--transition);
+      position: relative;
+    }
+
+    .upload-zone:hover {
+      border-color: var(--dl-blue-light);
+      background: rgba(29,93,143,0.03);
+    }
+
+    .upload-zone.disabled {
+      opacity: 0.45;
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+
+    .upload-zone i {
+      font-size: 1.6rem;
+      color: var(--dl-blue-light);
+      margin-bottom: 6px;
+    }
+
+    .upload-zone p {
+      font-size: 0.85rem;
+      color: var(--dl-text-muted);
+    }
+
+    .upload-zone small {
+      font-size: 0.72rem;
+      color: var(--dl-text-muted);
+      display: block;
+      margin-top: 4px;
+    }
+
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .upload-file-list {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .upload-file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--dl-bg-alt);
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      color: var(--dl-text);
+    }
+
+    .upload-file-item button {
+      background: none;
+      border: none;
+      color: var(--dl-danger);
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    /* ---- Buttons ---- */
+    .form-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 32px;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 12px 28px;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-secondary {
+      background: var(--dl-bg-alt);
+      color: var(--dl-text);
+      border: 1px solid var(--dl-border);
+    }
+
+    .btn-secondary:hover { background: var(--dl-border); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--dl-blue), var(--dl-blue-light));
+      color: white;
+      box-shadow: 0 4px 14px rgba(18,58,95,0.3);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 20px rgba(18,58,95,0.45);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-submit {
+      background: linear-gradient(135deg, var(--dl-gold), var(--dl-gold-light));
+      color: var(--dl-blue-dark);
+      box-shadow: 0 4px 14px rgba(200,150,46,0.35);
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 14px 36px;
+    }
+
+    .btn-submit:hover {
+      box-shadow: 0 6px 20px rgba(200,150,46,0.5);
+      transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* ---- Alert ---- */
+    .alert-box {
+      padding: 14px 18px;
+      border-radius: var(--radius-sm);
+      font-size: 0.88rem;
+      margin-top: 20px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .alert-box.success {
+      display: flex;
+      background: rgba(8,116,67,0.08);
+      color: var(--dl-success);
+      border: 1px solid rgba(8,116,67,0.2);
+    }
+
+    .alert-box.error {
+      display: flex;
+      background: rgba(180,35,24,0.06);
+      color: var(--dl-danger);
+      border: 1px solid rgba(180,35,24,0.15);
+    }
+
+    /* ---- Payload Preview (Dev) ---- */
+    .payload-preview {
+      margin-top: 28px;
+      max-width: 820px;
+      width: 100%;
+    }
+
+    .payload-toggle {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--dl-text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 0;
+      user-select: none;
+    }
+
+    .payload-code {
+      display: none;
+      background: var(--dl-blue-dark);
+      color: #a8d8a8;
+      padding: 20px;
+      border-radius: var(--radius-md);
+      font-family: 'Courier New', monospace;
+      font-size: 0.78rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .payload-code.visible { display: block; }
+
+    /* ---- Animations ---- */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 640px) {
+      .field-grid { grid-template-columns: 1fr; }
+      .form-body { padding: 24px 20px 32px; }
+      .progress-step { font-size: 0.7rem; padding: 10px 4px; }
+      .form-nav { flex-direction: column-reverse; }
+      .form-nav .btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================
+       TOPBAR — Ambiente de Homologação
+       ============================================ -->
+  <div class="topbar-warning">
+    <i class="fas fa-flask"></i>
+    AMBIENTE DE HOMOLOGAÇÃO — Este formulário não está em produção. Dados enviados para /webhook-test/orcamento-v2.
+  </div>
+
+  <!-- ============================================
+       PAGE
+       ============================================ -->
+  <div class="page-wrapper">
+    <div class="form-hero">
+      <span class="badge-env">⚙️ Protótipo V2 — Teste Interno</span>
+      <h1>Solicitar <span class="accent">Avaliação Técnica</span></h1>
+      <p>Preencha os dados abaixo para receber um diagnóstico completo da infraestrutura do seu condomínio ou empresa.</p>
+    </div>
+
+    <div class="form-card">
+      <!-- ---- Progress Bar ---- -->
+      <div class="progress-bar" id="progress-bar">
+        <div class="progress-step active" data-step="0">
+          <span class="step-num">1</span> Identificação
+        </div>
+        <div class="progress-step" data-step="1">
+          <span class="step-num">2</span> Localização
+        </div>
+        <div class="progress-step" data-step="2">
+          <span class="step-num">3</span> Infraestrutura
+        </div>
+        <div class="progress-step" data-step="3">
+          <span class="step-num">4</span> Demanda
+        </div>
+        <div class="progress-step" data-step="4">
+          <span class="step-num">5</span> Mídia
+        </div>
+        <div class="progress-step" data-step="5">
+          <span class="step-num">6</span> Consentimento
+        </div>
+      </div>
+
+      <form id="dl-avaliacao-tecnica-v2" novalidate>
+        <div class="form-body">
+
+          <!-- ============================================
+               STEP 0 — Identificação do Lead
+               ============================================ -->
+          <div class="form-section active" data-section="0">
+            <h2 class="section-title">Identificação</h2>
+            <p class="section-subtitle">Seus dados e os dados da empresa ou condomínio.</p>
+
+            <div class="field-grid">
+              <div class="field-group">
+                <label for="v2-nome">Nome Completo <span class="req">*</span></label>
+                <input type="text" id="v2-nome" name="nome" required placeholder="Ex: Maria Silva">
+              </div>
+              <div class="field-group">
+                <label for="v2-whatsapp">WhatsApp <span class="req">*</span></label>
+                <input type="tel" id="v2-whatsapp" name="whatsapp" required placeholder="(21) 99999-0000">
+              </div>
+              <div class="field-group">
+                <label for="v2-email">E-mail <span class="req">*</span></label>
+                <input type="email" id="v2-email" name="email" required placeholder="contato@condominio.com.br">
+              </div>
+              <div class="field-group">
+                <label for="v2-nome_empresa_ou_condominio">Condomínio / Empresa <span class="req">*</span></label>
+                <input type="text" id="v2-nome_empresa_ou_condominio" name="nome_empresa_ou_condominio" required placeholder="Ex: Edifício Solar da Tijuca">
+              </div>
+              <div class="field-group">
+                <label for="v2-tipo_cliente">Tipo de Empreendimento <span class="req">*</span></label>
+                <select id="v2-tipo_cliente" name="tipo_cliente" required>
+                  <option value="" disabled selected>Selecione</option>
+                  <option value="condominio">Condomínio Residencial</option>
+                  <option value="administradora">Administradora</option>
+                  <option value="escola">Escola / Colégio</option>
+                  <option value="comercio">Comércio / Restaurante</option>
+                  <option value="empresa">Empresa / Escritório</option>
+                  <option value="outro">Outro</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="v2-cliente_ativo">Já é cliente DL? <span class="req">*</span></label>
+                <select id="v2-cliente_ativo" name="cliente_ativo" required>
+                  <option value="false" selected>Não, desejo atendimento comercial</option>
+                  <option value="true">Sim, necessito de suporte</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="v2-cnpj">CNPJ <span class="opt">(recomendado)</span></label>
+                <input type="text" id="v2-cnpj" name="cnpj" placeholder="00.000.000/0001-00" maxlength="18">
+                <span class="field-hint">Recomendado para condomínios, empresas e administradoras.</span>
+              </div>
+              <div class="field-group">
+                <label for="v2-cpf">CPF <span class="opt">(opcional)</span></label>
+                <input type="text" id="v2-cpf" name="cpf" placeholder="000.000.000-00" maxlength="14">
+                <span class="field-hint">Opcional. Usado apenas para cadastro ou contrato futuro.</span>
+              </div>
+              <div class="field-group full">
+                <label for="v2-responsavel_aprovacao">Responsável pela Aprovação <span class="opt">(opcional)</span></label>
+                <input type="text" id="v2-responsavel_aprovacao" name="responsavel_aprovacao" placeholder="Nome do síndico, gerente ou responsável técnico">
+              </div>
+            </div>
+
+            <div class="form-nav">
+              <span></span>
+              <button type="button" class="btn btn-primary" onclick="goToStep(1)">Próximo <i class="fas fa-arrow-right"></i></button>
+            </div>
+          </div>
+
+          <!-- ============================================
+               STEP 1 — Localização
+               ============================================ -->
+          <div class="form-section" data-section="1">
+            <h2 class="section-title">Localização</h2>
+            <p class="section-subtitle">Endereço do empreendimento para cálculo e logística.</p>
+
+            <div class="field-grid">
+              <div class="field-group">
+                <label for="v2-cep">CEP <span class="opt">(opcional)</span></label>
+                <input type="text" id="v2-cep" name="cep" placeholder="00000-000" maxlength="9">
+              </div>
+              <div class="field-group full">
+                <label for="v2-endereco_completo">Endereço Completo <span class="req">*</span></label>
+                <input type="text" id="v2-endereco_completo" name="endereco_completo" required placeholder="Rua, número, complemento">
+              </div>
+              <div class="field-group">
+                <label for="v2-bairro">Bairro <span class="req">*</span></label>
+                <input type="text" id="v2-bairro" name="bairro" required placeholder="Ex: Barra da Tijuca">
+              </div>
+              <div class="field-group">
+                <label for="v2-cidade">Cidade <span class="req">*</span></label>
+                <input type="text" id="v2-cidade" name="cidade" required value="Rio de Janeiro" placeholder="Ex: Rio de Janeiro">
+              </div>
+            </div>
+
+            <div class="form-nav">
+              <button type="button" class="btn btn-secondary" onclick="goToStep(0)"><i class="fas fa-arrow-left"></i> Voltar</button>
+              <button type="button" class="btn btn-primary" onclick="goToStep(2)">Próximo <i class="fas fa-arrow-right"></i></button>
+            </div>
+          </div>
+
+          <!-- ============================================
+               STEP 2 — Infraestrutura
+               ============================================ -->
+          <div class="form-section" data-section="2">
+            <h2 class="section-title">Infraestrutura</h2>
+            <p class="section-subtitle">Dados sobre a estrutura do condomínio ou empresa.</p>
+
+            <div class="field-grid">
+              <div class="field-group">
+                <label for="v2-numero_unidades">Número de Unidades <span class="opt">(opcional)</span></label>
+                <input type="number" id="v2-numero_unidades" name="numero_unidades" min="1" placeholder="Ex: 120">
+                <div class="field-warning" id="warning-unidades">
+                  <i class="fas fa-exclamation-triangle"></i>
+                  O número de unidades será necessário para calcular rateio por unidade.
+                </div>
+              </div>
+              <div class="field-group">
+                <label for="v2-numero_blocos">Número de Blocos <span class="opt">(opcional)</span></label>
+                <input type="number" id="v2-numero_blocos" name="numero_blocos" min="1" placeholder="Ex: 3">
+              </div>
+            </div>
+
+            <div class="form-nav">
+              <button type="button" class="btn btn-secondary" onclick="goToStep(1)"><i class="fas fa-arrow-left"></i> Voltar</button>
+              <button type="button" class="btn btn-primary" onclick="goToStep(3)">Próximo <i class="fas fa-arrow-right"></i></button>
+            </div>
+          </div>
+
+          <!-- ============================================
+               STEP 3 — Demanda Técnica
+               ============================================ -->
+          <div class="form-section" data-section="3">
+            <h2 class="section-title">Demanda Técnica</h2>
+            <p class="section-subtitle">Descreva o serviço desejado e a urgência do atendimento.</p>
+
+            <div class="field-grid">
+              <div class="field-group">
+                <label for="v2-servico_interesse">Serviço de Interesse <span class="req">*</span></label>
+                <select id="v2-servico_interesse" name="servico_interesse" required>
+                  <option value="" disabled selected>Selecione o serviço</option>
+                  <option value="DL Guardião">DL Guardião (CFTV e Segurança)</option>
+                  <option value="DL Fortress">DL Fortress (Controle de Acesso)</option>
+                  <option value="DL Acqua">DL Acqua (Automação de Bombas)</option>
+                  <option value="DL Gatekeeper">DL Gatekeeper (Automação de Portões)</option>
+                  <option value="DL Volt">DL Volt (Elétrica Predial)</option>
+                  <option value="DL VoltCharge">DL VoltCharge (Carregadores EV)</option>
+                  <option value="DL EcoVolt">DL EcoVolt (Energia Solar)</option>
+                  <option value="DL Alerta">DL Alerta (Prevenção de Incêndio)</option>
+                  <option value="DL Partner">DL Partner (Contrato de Manutenção)</option>
+                  <option value="DL Express">DL Express (Suporte Rápido)</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="v2-urgencia">Urgência <span class="req">*</span></label>
+                <select id="v2-urgencia" name="urgencia" required>
+                  <option value="baixa">Baixa (Planejamento / Cotação)</option>
+                  <option value="media" selected>Média (Instalação em breve)</option>
+                  <option value="alta">Alta (Emergência / Equipamento parado)</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="v2-tipo_orcamento">Tipo de Orçamento <span class="opt">(opcional)</span></label>
+                <select id="v2-tipo_orcamento" name="tipo_orcamento">
+                  <option value="">Não definido</option>
+                  <option value="Projeto Novo">Projeto Novo</option>
+                  <option value="Adequação">Adequação / Modernização</option>
+                  <option value="Manutenção">Manutenção</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label for="v2-melhor_horario">Melhor Horário <span class="req">*</span></label>
+                <input type="text" id="v2-melhor_horario" name="melhor_horario" required placeholder="Ex: Manhã (9h–12h)">
+              </div>
+              <div class="field-group full">
+                <label for="v2-descricao">Descrição da Necessidade <span class="req">*</span></label>
+                <textarea id="v2-descricao" name="descricao" rows="4" required placeholder="Descreva brevemente o problema ou projeto que necessita de suporte técnico..."></textarea>
+              </div>
+            </div>
+
+            <div class="form-nav">
+              <button type="button" class="btn btn-secondary" onclick="goToStep(2)"><i class="fas fa-arrow-left"></i> Voltar</button>
+              <button type="button" class="btn btn-primary" onclick="goToStep(4)">Próximo <i class="fas fa-arrow-right"></i></button>
+            </div>
+          </div>
+
+          <!-- ============================================
+               STEP 4 — Mídia / Evidências Visuais
+               ============================================ -->
+          <div class="form-section" data-section="4">
+            <h2 class="section-title">Evidências Visuais</h2>
+            <p class="section-subtitle">Anexe fotos ou vídeos do local. <strong>São evidências visuais, não confirmação técnica definitiva.</strong></p>
+
+            <div class="field-grid">
+              <div class="field-group">
+                <label>Imagens <span class="opt">(opcional)</span></label>
+                <div class="upload-zone disabled" id="zone-imagem">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                  <p>Arraste ou clique para anexar imagens</p>
+                  <small>PNG, JPG ou WEBP — máx. 10 MB por arquivo</small>
+                  <input type="file" id="v2-upload_imagem" name="upload_imagem" accept="image/png,image/jpeg,image/webp" multiple disabled>
+                </div>
+                <div class="upload-file-list" id="list-imagem"></div>
+              </div>
+              <div class="field-group">
+                <label>Vídeos <span class="opt">(opcional)</span></label>
+                <div class="upload-zone disabled" id="zone-video">
+                  <i class="fas fa-video"></i>
+                  <p>Arraste ou clique para anexar vídeos</p>
+                  <small>MP4 ou MOV — máx. 50 MB por arquivo</small>
+                  <input type="file" id="v2-upload_video" name="upload_video" accept="video/mp4,video/quicktime" multiple disabled>
+                </div>
+                <div class="upload-file-list" id="list-video"></div>
+              </div>
+            </div>
+
+            <div class="field-warning visible" style="margin-top:16px;">
+              <i class="fas fa-info-circle"></i>
+              O upload só é habilitado após aceitar a Política de Privacidade (LGPD) na próxima etapa.
+            </div>
+
+            <div class="form-nav">
+              <button type="button" class="btn btn-secondary" onclick="goToStep(3)"><i class="fas fa-arrow-left"></i> Voltar</button>
+              <button type="button" class="btn btn-primary" onclick="goToStep(5)">Próximo <i class="fas fa-arrow-right"></i></button>
+            </div>
+          </div>
+
+          <!-- ============================================
+               STEP 5 — Consentimento e Envio
+               ============================================ -->
+          <div class="form-section" data-section="5">
+            <h2 class="section-title">Consentimento e Envio</h2>
+            <p class="section-subtitle">Confirme os aceites obrigatórios para enviar sua solicitação.</p>
+
+            <div class="checkbox-group">
+              <input type="checkbox" id="v2-aceite_contato" name="aceite_contato" required>
+              <label for="v2-aceite_contato">Concordo em receber contatos comerciais e técnicos da equipe DL Soluções Condominiais. <span class="req">*</span></label>
+            </div>
+
+            <div class="checkbox-group" style="margin-top: 14px;">
+              <input type="checkbox" id="v2-aceite_lgpd" name="aceite_lgpd" required>
+              <label for="v2-aceite_lgpd">Aceito o tratamento dos meus dados conforme a LGPD para fins de atendimento e proposta comercial. Consulte nossa <a href="politica-privacidade.html" target="_blank">Política de Privacidade</a>. <span class="req">*</span></label>
+            </div>
+
+            <div id="alert-msg" class="alert-box"></div>
+
+            <div class="form-nav">
+              <button type="button" class="btn btn-secondary" onclick="goToStep(4)"><i class="fas fa-arrow-left"></i> Voltar</button>
+              <button type="submit" class="btn btn-submit" id="btn-submit-v2">
+                <i class="fas fa-bolt"></i> Enviar Avaliação Técnica
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- ============================================
+         DEV: Payload Preview
+         ============================================ -->
+    <div class="payload-preview">
+      <div class="payload-toggle" id="toggle-payload">
+        <i class="fas fa-code"></i> Visualizar Payload JSON (Dev)
+      </div>
+      <pre class="payload-code" id="payload-code"></pre>
+    </div>
+  </div>
+
+  <!-- ============================================
+       JAVASCRIPT — Lógica do Formulário V2
+       ============================================ -->
+  <script>
+    (function() {
+      'use strict';
+
+      /* ============================================
+         CONFIG
+         ============================================ */
+      var WEBHOOK_URL = 'https://n8n.dlsolucoescondominiais.com.br/webhook-test/orcamento-v2';
+      var MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10 MB
+      var MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50 MB
+      var currentStep = 0;
+      var totalSteps = 6;
+      var selectedImages = [];
+      var selectedVideos = [];
+
+      /* ============================================
+         STEP NAVIGATION
+         ============================================ */
+      window.goToStep = function(targetStep) {
+        // Validate current step before advancing
+        if (targetStep > currentStep && !validateStep(currentStep)) return;
+
+        // Check conditional warnings when leaving step 2
+        if (currentStep === 2) checkUnidadesWarning();
+
+        // Update sections
+        var sections = document.querySelectorAll('.form-section');
+        sections.forEach(function(s) { s.classList.remove('active'); });
+        sections[targetStep].classList.add('active');
+
+        // Update progress bar
+        var steps = document.querySelectorAll('.progress-step');
+        steps.forEach(function(s, i) {
+          s.classList.remove('active');
+          if (i < targetStep) {
+            s.classList.add('completed');
+          } else {
+            s.classList.remove('completed');
+          }
+        });
+        steps[targetStep].classList.add('active');
+
+        currentStep = targetStep;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // Update upload zones when landing on step 4
+        if (currentStep === 4) toggleUploadZones();
+
+        updatePayloadPreview();
+      };
+
+      /* ============================================
+         STEP VALIDATION
+         ============================================ */
+      function validateStep(step) {
+        clearErrors();
+        var valid = true;
+
+        if (step === 0) {
+          valid = requireField('v2-nome') && valid;
+          valid = requireField('v2-whatsapp') && valid;
+          valid = requireField('v2-email') && valid;
+          valid = requireField('v2-nome_empresa_ou_condominio') && valid;
+          valid = requireSelect('v2-tipo_cliente') && valid;
+        }
+
+        if (step === 1) {
+          valid = requireField('v2-endereco_completo') && valid;
+          valid = requireField('v2-bairro') && valid;
+          valid = requireField('v2-cidade') && valid;
+        }
+
+        if (step === 3) {
+          valid = requireSelect('v2-servico_interesse') && valid;
+          valid = requireField('v2-melhor_horario') && valid;
+          valid = requireField('v2-descricao') && valid;
+        }
+
+        if (step === 5) {
+          var ac = document.getElementById('v2-aceite_contato');
+          var al = document.getElementById('v2-aceite_lgpd');
+          if (!ac.checked) { ac.classList.add('error'); valid = false; }
+          if (!al.checked) { al.classList.add('error'); valid = false; }
+        }
+
+        return valid;
+      }
+
+      function requireField(id) {
+        var el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
+          if (el) el.classList.add('error');
+          return false;
+        }
+        return true;
+      }
+
+      function requireSelect(id) {
+        var el = document.getElementById(id);
+        if (!el || !el.value) {
+          if (el) el.classList.add('error');
+          return false;
+        }
+        return true;
+      }
+
+      function clearErrors() {
+        document.querySelectorAll('.error').forEach(function(el) {
+          el.classList.remove('error');
+        });
+      }
+
+      /* ============================================
+         CONDITIONAL: numero_unidades warning
+         ============================================ */
+      function checkUnidadesWarning() {
+        var tipo = document.getElementById('v2-tipo_cliente').value;
+        var unidades = document.getElementById('v2-numero_unidades').value;
+        var warning = document.getElementById('warning-unidades');
+
+        if (tipo === 'condominio' && !unidades) {
+          warning.classList.add('visible');
+        } else {
+          warning.classList.remove('visible');
+        }
+      }
+
+      /* ============================================
+         UPLOAD: Toggle based on LGPD consent
+         ============================================ */
+      function toggleUploadZones() {
+        var lgpd = document.getElementById('v2-aceite_lgpd');
+        var zoneImg = document.getElementById('zone-imagem');
+        var zoneVid = document.getElementById('zone-video');
+        var inputImg = document.getElementById('v2-upload_imagem');
+        var inputVid = document.getElementById('v2-upload_video');
+
+        if (lgpd && lgpd.checked) {
+          zoneImg.classList.remove('disabled');
+          zoneVid.classList.remove('disabled');
+          inputImg.disabled = false;
+          inputVid.disabled = false;
+        } else {
+          zoneImg.classList.add('disabled');
+          zoneVid.classList.add('disabled');
+          inputImg.disabled = true;
+          inputVid.disabled = true;
+        }
+      }
+
+      // Also listen to LGPD checkbox changes
+      document.getElementById('v2-aceite_lgpd').addEventListener('change', function() {
+        if (currentStep === 4) toggleUploadZones();
+      });
+
+      /* ============================================
+         UPLOAD: File selection & list rendering
+         ============================================ */
+      document.getElementById('v2-upload_imagem').addEventListener('change', function(e) {
+        handleFileSelect(e.target.files, 'imagem', MAX_IMAGE_SIZE);
+      });
+
+      document.getElementById('v2-upload_video').addEventListener('change', function(e) {
+        handleFileSelect(e.target.files, 'video', MAX_VIDEO_SIZE);
+      });
+
+      function handleFileSelect(files, type, maxSize) {
+        var arr = type === 'imagem' ? selectedImages : selectedVideos;
+
+        for (var i = 0; i < files.length; i++) {
+          if (files[i].size > maxSize) {
+            alert('Arquivo "' + files[i].name + '" excede o limite de ' + (maxSize / 1024 / 1024) + ' MB.');
+            continue;
+          }
+          arr.push({ name: files[i].name, size: files[i].size });
+        }
+
+        renderFileList(type);
+        updatePayloadPreview();
+      }
+
+      function renderFileList(type) {
+        var arr = type === 'imagem' ? selectedImages : selectedVideos;
+        var listEl = document.getElementById('list-' + type);
+        listEl.innerHTML = '';
+
+        arr.forEach(function(f, idx) {
+          var item = document.createElement('div');
+          item.className = 'upload-file-item';
+          item.innerHTML = '<span><i class="fas fa-file"></i> ' + f.name + ' (' + (f.size / 1024 / 1024).toFixed(1) + ' MB)</span>' +
+            '<button type="button" onclick="removeFile(\'' + type + '\',' + idx + ')"><i class="fas fa-times"></i></button>';
+          listEl.appendChild(item);
+        });
+      }
+
+      window.removeFile = function(type, idx) {
+        if (type === 'imagem') selectedImages.splice(idx, 1);
+        else selectedVideos.splice(idx, 1);
+        renderFileList(type);
+        updatePayloadPreview();
+      };
+
+      /* ============================================
+         PAYLOAD: Build JSON per Schema
+         ============================================ */
+      function buildPayload() {
+        var val = function(id) { return (document.getElementById(id) || {}).value || ''; };
+        var intVal = function(id) {
+          var v = parseInt((document.getElementById(id) || {}).value, 10);
+          return isNaN(v) ? undefined : v;
+        };
+
+        var payload = {
+          lead: {
+            nome: val('v2-nome'),
+            whatsapp: val('v2-whatsapp'),
+            email: val('v2-email'),
+            nome_empresa_ou_condominio: val('v2-nome_empresa_ou_condominio'),
+            tipo_cliente: val('v2-tipo_cliente'),
+            cliente_ativo: val('v2-cliente_ativo') === 'true'
+          },
+          localizacao: {
+            bairro: val('v2-bairro'),
+            cidade: val('v2-cidade'),
+            endereco_completo: val('v2-endereco_completo')
+          },
+          demanda: {
+            servico_interesse: val('v2-servico_interesse'),
+            urgencia: val('v2-urgencia'),
+            descricao: val('v2-descricao')
+          },
+          consentimento: {
+            aceite_contato: document.getElementById('v2-aceite_contato').checked,
+            aceite_lgpd: document.getElementById('v2-aceite_lgpd').checked
+          },
+          origem_lead: {
+            canal: 'site',
+            versao_form: 'V2',
+            pagina: 'avaliacao-tecnica-v2.html'
+          }
+        };
+
+        // Optional lead fields
+        var cnpj = val('v2-cnpj');
+        var cpf = val('v2-cpf');
+        var resp = val('v2-responsavel_aprovacao');
+        if (cnpj) payload.lead.cnpj = cnpj;
+        if (cpf) payload.lead.cpf = cpf;
+        if (resp) payload.lead.responsavel_aprovacao = resp;
+
+        // Optional localizacao
+        var cep = val('v2-cep');
+        if (cep) payload.localizacao.cep = cep;
+
+        // Infraestrutura (only include if there's data)
+        var numUn = intVal('v2-numero_unidades');
+        var numBl = intVal('v2-numero_blocos');
+        if (numUn !== undefined || numBl !== undefined) {
+          payload.infraestrutura = {};
+          if (numUn !== undefined) payload.infraestrutura.numero_unidades = numUn;
+          if (numBl !== undefined) payload.infraestrutura.numero_blocos = numBl;
+        }
+
+        // Optional demanda fields
+        var melhor = val('v2-melhor_horario');
+        var tipoOrc = val('v2-tipo_orcamento');
+        if (melhor) payload.demanda.melhor_horario = melhor;
+        if (tipoOrc) payload.demanda.tipo_orcamento = tipoOrc;
+
+        // Midia: In this prototype, use placeholder URIs from file names
+        var imgUrls = selectedImages.map(function(f) { return 'pending://storage/' + f.name; });
+        var vidUrls = selectedVideos.map(function(f) { return 'pending://storage/' + f.name; });
+        if (imgUrls.length || vidUrls.length) {
+          payload.midia = {};
+          if (imgUrls.length) payload.midia.upload_imagem = imgUrls;
+          if (vidUrls.length) payload.midia.upload_video = vidUrls;
+        }
+
+        return payload;
+      }
+
+      /* ============================================
+         PAYLOAD PREVIEW (Dev Tool)
+         ============================================ */
+      var togglePayload = document.getElementById('toggle-payload');
+      var payloadCode = document.getElementById('payload-code');
+      var payloadVisible = false;
+
+      togglePayload.addEventListener('click', function() {
+        payloadVisible = !payloadVisible;
+        payloadCode.classList.toggle('visible', payloadVisible);
+        updatePayloadPreview();
+      });
+
+      function updatePayloadPreview() {
+        if (!payloadVisible) return;
+        try {
+          payloadCode.textContent = JSON.stringify(buildPayload(), null, 2);
+        } catch(e) {
+          payloadCode.textContent = 'Erro ao gerar payload: ' + e.message;
+        }
+      }
+
+      // Listen to all inputs for live preview
+      document.querySelectorAll('input, select, textarea').forEach(function(el) {
+        el.addEventListener('input', function() { updatePayloadPreview(); });
+        el.addEventListener('change', function() { updatePayloadPreview(); });
+      });
+
+      /* ============================================
+         FORM SUBMIT
+         ============================================ */
+      document.getElementById('dl-avaliacao-tecnica-v2').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (!validateStep(5)) return;
+
+        var alertBox = document.getElementById('alert-msg');
+        var submitBtn = document.getElementById('btn-submit-v2');
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+
+        var payload = buildPayload();
+
+        fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+        .then(function(res) {
+          if (res.ok || res.status === 200) {
+            alertBox.className = 'alert-box success';
+            alertBox.innerHTML = '<i class="fas fa-check-circle"></i> Avaliação Técnica enviada com sucesso! Nossa equipe entrará em contato em breve.';
+            submitBtn.innerHTML = '<i class="fas fa-check"></i> Enviado';
+          } else {
+            throw new Error('HTTP ' + res.status);
+          }
+        })
+        .catch(function(err) {
+          alertBox.className = 'alert-box error';
+          alertBox.innerHTML = '<i class="fas fa-exclamation-circle"></i> Erro ao enviar: ' + err.message + '. Tente novamente.';
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fas fa-bolt"></i> Enviar Avaliação Técnica';
+        });
+      });
+
+      /* ============================================
+         PROGRESS BAR: Click navigation
+         ============================================ */
+      document.querySelectorAll('.progress-step').forEach(function(step) {
+        step.addEventListener('click', function() {
+          var target = parseInt(this.getAttribute('data-step'), 10);
+          // Only allow going back or going to completed steps
+          if (target <= currentStep) {
+            goToStep(target);
+          }
+        });
+      });
+
+    })();
+  </script>
+</body>
+</html>

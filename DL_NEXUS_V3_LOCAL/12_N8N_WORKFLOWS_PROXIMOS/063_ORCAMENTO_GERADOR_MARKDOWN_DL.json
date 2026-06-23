@@ -1,0 +1,145 @@
+{
+  "name": "063_ORCAMENTO_GERADOR_MARKDOWN_DL",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "id": "trigger_063",
+      "name": "Schedule (15m)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [0, 300]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "schema": "public",
+        "table": "dl_orcamentos_site_v2",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "status_orcamento",
+              "condition": "eq",
+              "keyValue": "enviado_para_planilha"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "supa_063_get",
+      "name": "Supabase Get Planilha",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase DL Nexus"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "if (!$input.all().length || !$input.all()[0].json.id) {\n  return [];\n}\nreturn $input.all();"
+      },
+      "id": "code_063_check",
+      "name": "Check Empty",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.item.json;\nconst prompt = `\nVocê é o Gerador de Orçamentos da DL Soluções Condominiais.\nGere um RASCUNHO de orçamento em formato Markdown.\nRegras:\n- Não use a palavra \"visita técnica\", use \"Avaliação Técnica\".\n- Não use \"B2B\", use \"corporativo e condominial\".\n- Se faltar dado técnico importante, inclua na análise: \"Dados insuficientes para confirmação definitiva.\"\n\nCrie as seguintes seções:\n# Orçamento DL: ${d.protocolo}\n## Perfil do Cliente: ${d.perfil_classificado}\n## Dados do Solicitante\n## Dados do Local\n## Serviço Solicitado e Linha Provável\n## Análise Inicial\n## Pendências\n## Próximos Passos\n\nLEAD:\nNome: ${d.nome}\nEmpresa: ${d.nome_empresa_ou_condominio}\nTipo: ${d.tipo_cliente}\nEndereco: ${d.endereco_completo}, ${d.bairro}, ${d.cidade}\nServiço: ${d.servico_interesse}\nLinha DL: ${d.linha_dl}\nDescrição: ${d.descricao}\nPendências: ${d.pendencias}\n`;\n\nreturn [{ json: { ...d, ai_prompt: prompt } }];"
+      },
+      "id": "code_063_prep_prompt",
+      "name": "Prep Prompt Markdown",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.deepseek.com/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "deepseek-chat"
+            },
+            {
+              "name": "messages",
+              "value": "=[{\"role\":\"user\", \"content\": {{$json.ai_prompt}} }]"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http_063_deepseek",
+      "name": "DeepSeek Generate MD",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [960, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "DEEPSEEK_CREDENTIAL_ID",
+          "name": "DeepSeek API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const original = $input.item.json;\nconst md = original.choices[0].message.content;\n\nreturn [{\n  json: {\n    id: original.id,\n    markdown_orcamento: md,\n    status_orcamento: 'markdown_gerado'\n  }\n}];"
+      },
+      "id": "code_063_parse",
+      "name": "Parse Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 300]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "dl_orcamentos_site_v2",
+        "matchColumns": "id",
+        "columns": "markdown_orcamento,status_orcamento",
+        "options": {}
+      },
+      "id": "supa_063_update",
+      "name": "Supabase Update",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1440, 300],
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase DL Nexus"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule (15m)": { "main": [ [ { "node": "Supabase Get Planilha", "type": "main", "index": 0 } ] ] },
+    "Supabase Get Planilha": { "main": [ [ { "node": "Check Empty", "type": "main", "index": 0 } ] ] },
+    "Check Empty": { "main": [ [ { "node": "Prep Prompt Markdown", "type": "main", "index": 0 } ] ] },
+    "Prep Prompt Markdown": { "main": [ [ { "node": "DeepSeek Generate MD", "type": "main", "index": 0 } ] ] },
+    "DeepSeek Generate MD": { "main": [ [ { "node": "Parse Result", "type": "main", "index": 0 } ] ] },
+    "Parse Result": { "main": [ [ { "node": "Supabase Update", "type": "main", "index": 0 } ] ] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

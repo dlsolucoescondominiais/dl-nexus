@@ -1,0 +1,754 @@
+{
+  "updatedAt": "2026-06-15T20:26:42.082Z",
+  "createdAt": "2026-06-15T20:26:42.082Z",
+  "id": "Z5dAI5gjb5PpUSie",
+  "name": "051_ANINHA_SOCIAL_MEMORIA_SUPABASE",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_social_conversas?canal_origem=eq.{{ $json.canal_origem }}&sender_id=eq.{{ $json.sender_id }}&limit=1",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env['SUPABASE_ANON_KEY'] }}"
+            }
+          ]
+        }
+      },
+      "id": "p6",
+      "name": "BUSCAR_CONVERSA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        200,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "supabase_anon_key",
+          "name": "Supabase Anon Key"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const evento = $('Execute Workflow Trigger').first().json;\nconst buscaResult = $input.item.json;\nlet conversa = null;\nlet isNova = true;\nlet historico_resumido = 'Primeira mensagem da conversa.';\nlet dados_coletados = {};\nlet etapa_funil = 'recepcao';\nif (Array.isArray(buscaResult) && buscaResult.length > 0) {\n  conversa = buscaResult[0];\n  isNova = false;\n  etapa_funil = conversa.etapa_funil || 'recepcao';\n  dados_coletados = conversa.dados_coletados || {};\n} else if (buscaResult && buscaResult.id) {\n  conversa = buscaResult;\n  isNova = false;\n  etapa_funil = conversa.etapa_funil || 'recepcao';\n  dados_coletados = conversa.dados_coletados || {};\n}\nreturn [{ json: {\n  ...evento,\n  conversa_id: conversa ? conversa.id : null,\n  conversa_existente: !isNova,\n  etapa_funil,\n  dados_coletados,\n  historico_resumido,\n  ultimo_resumo: conversa ? conversa.ultimo_resumo : null\n}}];"
+      },
+      "id": "p7",
+      "name": "PROCESSAR_CONVERSA",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.conversa_existente === false }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "p8",
+      "name": "IF_CONVERSA_NOVA",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        600,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_social_conversas",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env['SUPABASE_ANON_KEY'] }}"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "canal_origem",
+              "value": "={{ $json.canal_origem }}"
+            },
+            {
+              "name": "sender_id",
+              "value": "={{ $json.sender_id }}"
+            },
+            {
+              "name": "status_conversa",
+              "value": "ativa"
+            },
+            {
+              "name": "dry_run",
+              "value": "={{ $json.dry_run }}"
+            }
+          ]
+        }
+      },
+      "id": "p9",
+      "name": "CRIAR_CONVERSA_SUPABASE",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        800,
+        -100
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "supabase_anon_key",
+          "name": "Supabase Anon Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const evento = $node['PROCESSAR_CONVERSA'].json;\nconst novaConversa = $input.item.json;\nconst conversaId = Array.isArray(novaConversa) ? novaConversa[0]?.id : novaConversa?.id;\nreturn [{ json: { ...evento, conversa_id: conversaId || null, conversa_existente: true } }];"
+      },
+      "id": "p10",
+      "name": "ATRIBUIR_CONVERSA_ID",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1000,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_social_mensagens",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env['SUPABASE_ANON_KEY'] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "conversa_id",
+              "value": "={{ $json.conversa_id }}"
+            },
+            {
+              "name": "canal_origem",
+              "value": "={{ $json.canal_origem }}"
+            },
+            {
+              "name": "message_id",
+              "value": "={{ $json.message_id }}"
+            },
+            {
+              "name": "direction",
+              "value": "inbound"
+            },
+            {
+              "name": "texto",
+              "value": "={{ $json.texto_mensagem }}"
+            },
+            {
+              "name": "dry_run",
+              "value": "={{ $json.dry_run }}"
+            }
+          ]
+        }
+      },
+      "id": "p15",
+      "name": "REGISTRAR_INBOUND",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1200,
+        100
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "supabase_anon_key",
+          "name": "Supabase Anon Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_social_mensagens?conversa_id=eq.{{ $json.conversa_id }}&order=created_at.desc&limit=10",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env['SUPABASE_ANON_KEY'] }}"
+            }
+          ]
+        }
+      },
+      "id": "p11",
+      "name": "CARREGAR_HISTORICO",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        1400,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "supabase_anon_key",
+          "name": "Supabase Anon Key"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const hist = $input.item.json;\nconst ev = $('PROCESSAR_CONVERSA').first().json;\nlet h_texto = '';\nif (Array.isArray(hist) && hist.length > 0) {\n  h_texto = hist.map(m => (m.direction==='inbound'?'Lead: ':'Aninha: ') + (m.texto||'')).reverse().join('\\n');\n}\nreturn [{json: { ...ev, historico: h_texto }}];"
+      },
+      "id": "p_hist",
+      "name": "CONSOLIDAR_OUTPUT",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1600,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "BUSCAR_CONVERSA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BUSCAR_CONVERSA": {
+      "main": [
+        [
+          {
+            "node": "PROCESSAR_CONVERSA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PROCESSAR_CONVERSA": {
+      "main": [
+        [
+          {
+            "node": "IF_CONVERSA_NOVA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF_CONVERSA_NOVA": {
+      "main": [
+        [
+          {
+            "node": "CRIAR_CONVERSA_SUPABASE",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "REGISTRAR_INBOUND",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CRIAR_CONVERSA_SUPABASE": {
+      "main": [
+        [
+          {
+            "node": "ATRIBUIR_CONVERSA_ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ATRIBUIR_CONVERSA_ID": {
+      "main": [
+        [
+          {
+            "node": "REGISTRAR_INBOUND",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "REGISTRAR_INBOUND": {
+      "main": [
+        [
+          {
+            "node": "CARREGAR_HISTORICO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CARREGAR_HISTORICO": {
+      "main": [
+        [
+          {
+            "node": "CONSOLIDAR_OUTPUT",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "28198952-6f43-4199-a32e-1f4c62c8419e",
+  "activeVersionId": "28198952-6f43-4199-a32e-1f4c62c8419e",
+  "versionCounter": 4,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-15T20:26:42.082Z",
+      "createdAt": "2026-06-15T20:26:42.082Z",
+      "role": "workflow:owner",
+      "workflowId": "Z5dAI5gjb5PpUSie",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-06-15T20:26:42.087Z",
+    "createdAt": "2026-06-15T20:26:42.087Z",
+    "versionId": "28198952-6f43-4199-a32e-1f4c62c8419e",
+    "workflowId": "Z5dAI5gjb5PpUSie",
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "trigger",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "url": "=https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_social_conversas?canal_origem=eq.{{ $json.canal_origem }}&sender_id=eq.{{ $json.sender_id }}&limit=1",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "apikey",
+                "value": "={{ $env['SUPABASE_ANON_KEY'] }}"
+              }
+            ]
+          }
+        },
+        "id": "p6",
+        "name": "BUSCAR_CONVERSA",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4,
+        "position": [
+          200,
+          0
+        ],
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "supabase_anon_key",
+            "name": "Supabase Anon Key"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "const evento = $('Execute Workflow Trigger').first().json;\nconst buscaResult = $input.item.json;\nlet conversa = null;\nlet isNova = true;\nlet historico_resumido = 'Primeira mensagem da conversa.';\nlet dados_coletados = {};\nlet etapa_funil = 'recepcao';\nif (Array.isArray(buscaResult) && buscaResult.length > 0) {\n  conversa = buscaResult[0];\n  isNova = false;\n  etapa_funil = conversa.etapa_funil || 'recepcao';\n  dados_coletados = conversa.dados_coletados || {};\n} else if (buscaResult && buscaResult.id) {\n  conversa = buscaResult;\n  isNova = false;\n  etapa_funil = conversa.etapa_funil || 'recepcao';\n  dados_coletados = conversa.dados_coletados || {};\n}\nreturn [{ json: {\n  ...evento,\n  conversa_id: conversa ? conversa.id : null,\n  conversa_existente: !isNova,\n  etapa_funil,\n  dados_coletados,\n  historico_resumido,\n  ultimo_resumo: conversa ? conversa.ultimo_resumo : null\n}}];"
+        },
+        "id": "p7",
+        "name": "PROCESSAR_CONVERSA",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          400,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "boolean": [
+              {
+                "value1": "={{ $json.conversa_existente === false }}",
+                "value2": true
+              }
+            ]
+          }
+        },
+        "id": "p8",
+        "name": "IF_CONVERSA_NOVA",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 1,
+        "position": [
+          600,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_social_conversas",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "apikey",
+                "value": "={{ $env['SUPABASE_ANON_KEY'] }}"
+              },
+              {
+                "name": "Prefer",
+                "value": "return=representation"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "canal_origem",
+                "value": "={{ $json.canal_origem }}"
+              },
+              {
+                "name": "sender_id",
+                "value": "={{ $json.sender_id }}"
+              },
+              {
+                "name": "status_conversa",
+                "value": "ativa"
+              },
+              {
+                "name": "dry_run",
+                "value": "={{ $json.dry_run }}"
+              }
+            ]
+          }
+        },
+        "id": "p9",
+        "name": "CRIAR_CONVERSA_SUPABASE",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4,
+        "position": [
+          800,
+          -100
+        ],
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "supabase_anon_key",
+            "name": "Supabase Anon Key"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const evento = $node['PROCESSAR_CONVERSA'].json;\nconst novaConversa = $input.item.json;\nconst conversaId = Array.isArray(novaConversa) ? novaConversa[0]?.id : novaConversa?.id;\nreturn [{ json: { ...evento, conversa_id: conversaId || null, conversa_existente: true } }];"
+        },
+        "id": "p10",
+        "name": "ATRIBUIR_CONVERSA_ID",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1000,
+          -100
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_social_mensagens",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "apikey",
+                "value": "={{ $env['SUPABASE_ANON_KEY'] }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "conversa_id",
+                "value": "={{ $json.conversa_id }}"
+              },
+              {
+                "name": "canal_origem",
+                "value": "={{ $json.canal_origem }}"
+              },
+              {
+                "name": "message_id",
+                "value": "={{ $json.message_id }}"
+              },
+              {
+                "name": "direction",
+                "value": "inbound"
+              },
+              {
+                "name": "texto",
+                "value": "={{ $json.texto_mensagem }}"
+              },
+              {
+                "name": "dry_run",
+                "value": "={{ $json.dry_run }}"
+              }
+            ]
+          }
+        },
+        "id": "p15",
+        "name": "REGISTRAR_INBOUND",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4,
+        "position": [
+          1200,
+          100
+        ],
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "supabase_anon_key",
+            "name": "Supabase Anon Key"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "url": "=https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_social_mensagens?conversa_id=eq.{{ $json.conversa_id }}&order=created_at.desc&limit=10",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "apikey",
+                "value": "={{ $env['SUPABASE_ANON_KEY'] }}"
+              }
+            ]
+          }
+        },
+        "id": "p11",
+        "name": "CARREGAR_HISTORICO",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4,
+        "position": [
+          1400,
+          0
+        ],
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "supabase_anon_key",
+            "name": "Supabase Anon Key"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "const hist = $input.item.json;\nconst ev = $('PROCESSAR_CONVERSA').first().json;\nlet h_texto = '';\nif (Array.isArray(hist) && hist.length > 0) {\n  h_texto = hist.map(m => (m.direction==='inbound'?'Lead: ':'Aninha: ') + (m.texto||'')).reverse().join('\\n');\n}\nreturn [{json: { ...ev, historico: h_texto }}];"
+        },
+        "id": "p_hist",
+        "name": "CONSOLIDAR_OUTPUT",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1600,
+          0
+        ]
+      }
+    ],
+    "connections": {
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "BUSCAR_CONVERSA",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "BUSCAR_CONVERSA": {
+        "main": [
+          [
+            {
+              "node": "PROCESSAR_CONVERSA",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "PROCESSAR_CONVERSA": {
+        "main": [
+          [
+            {
+              "node": "IF_CONVERSA_NOVA",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF_CONVERSA_NOVA": {
+        "main": [
+          [
+            {
+              "node": "CRIAR_CONVERSA_SUPABASE",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "REGISTRAR_INBOUND",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "CRIAR_CONVERSA_SUPABASE": {
+        "main": [
+          [
+            {
+              "node": "ATRIBUIR_CONVERSA_ID",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "ATRIBUIR_CONVERSA_ID": {
+        "main": [
+          [
+            {
+              "node": "REGISTRAR_INBOUND",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "REGISTRAR_INBOUND": {
+        "main": [
+          [
+            {
+              "node": "CARREGAR_HISTORICO",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "CARREGAR_HISTORICO": {
+        "main": [
+          [
+            {
+              "node": "CONSOLIDAR_OUTPUT",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-06-15T20:28:13.257Z",
+        "id": 2466,
+        "workflowId": "Z5dAI5gjb5PpUSie",
+        "versionId": "28198952-6f43-4199-a32e-1f4c62c8419e",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "canal": "ambos",
+  "linha_dl": "DL Fortress",
+  "publico": "síndicos profissionais no Rio de Janeiro",
+  "formato": "carrossel",
+  "tema": "5 sinais de que o controle de acesso do condomínio precisa de atualização",
+  "objetivo": "Educar síndicos sobre sinais de obsolescência em controle de acesso",
+  "legenda_facebook": "O controle de acesso do seu condomínio está acompanhando a evolução das ameaças e da tecnologia?\n\nMuitos sistemas de controle de acesso foram instalados há anos e, com o tempo, deixam de oferecer o nível de segurança que o condomínio exige. Equipamentos obsoletos, falhas recorrentes e a falta de integração com tecnologias modernas são sinais claros de que uma atualização é necessária.\n\nPreparamos este guia com 5 sinais que indicam que chegou a hora de reavaliar o controle de acesso do seu condomínio. Deslize para conferir cada um deles.\n\n🔐 Solicite uma Avaliação Técnica com a DL Fortress para modernizar o controle de acesso do seu condomínio.\n\nNossa equipe de engenharia analisa a infraestrutura existente, identifica vulnerabilidades e apresenta um plano de modernização sob medida — sem compromisso.\n\n📞 Entre em contato pelo link na bio ou envie uma mensagem.\n\n#DLFortress #ControleDeAcesso #SegurancaCondominial #SindicoProfissional #ModernizacaoCondominial #SindicosRJ #DLSolucoes",
+  "legenda_instagram": "O controle de acesso do seu condomínio ainda atende às necessidades atuais?\n\nEquipamentos antigos, falhas constantes e falta de integração tecnológica podem comprometer a segurança do patrimônio e dos moradores.\n\nDeslize para conferir 5 sinais de que o sistema precisa de atualização 👉\n\n🔐 Solicite uma Avaliação Técnica com a DL Fortress para modernizar o controle de acesso.\n\nNossa equipe analisa a infraestrutura, identifica vulnerabilidades e apresenta um plano de modernização personalizado.\n\n#DLFortress #ControleDeAcesso #SegurancaCondominial #SindicoProfissional #ModernizacaoCondominial #SindicosRJ #DLSolucoes",
+  "cta": "Solicite uma Avaliação Técnica com a DL Fortress para modernizar o controle de acesso do seu condomínio.",
+  "hashtags": [
+    "#DLFortress",
+    "#ControleDeAcesso",
+    "#SegurancaCondominial",
+    "#SindicoProfissional",
+    "#ModernizacaoCondominial",
+    "#SindicosRJ",
+    "#DLSolucoes"
+  ],
+  "image_prompt_en": "Photorealistic 1:1 cover image for a carousel post about condominium access control systems, modern turnstile gate at a residential building entrance with card reader panel, clean architectural lines, warm sunset lighting, professional real estate photography, no visible faces, no readable text, Sony A7III, 28mm lens, commercial photography style",
+  "alt_text": "Portão de acesso moderno com leitor de cartão na entrada de condomínio residencial, representando sistemas de controle de acesso.",
+  "risco_meta": "baixo",
+  "precisa_aprovacao_humana": false,
+  "motivo_aprovacao_humana": "",
+  "aprovado_pre_killcritic": true,
+  "aprovado_killcritic": true,
+  "status_killcritic": "APROVADO",
+  "motivos_bloqueio": [],
+  "ajustes_recomendados": [],
+  "image_url_publica_meta": "",
+  "google_drive_file_id": "",
+  "google_drive_web_view_link": "",
+  "tem_direito_uso_midia": true,
+  "status_publicacao": "pendente",
+  "post_id": "",
+  "media_id": "",
+  "permalink": "",
+  "erro_meta": "",
+  "id_execucao_n8n": "",
+  "fonte_noticia": "",
+  "carrossel_slides": [
+    {
+      "legenda": "Slide 1: Interfone com ruído ou falha constante — Se o sistema de comunicação entre portaria e unidades apresenta chiados, cortes ou falhas frequentes, é um sinal de que os componentes estão no fim da vida útil.",
+      "image_prompt_en": "Photorealistic close-up image of an aged intercom panel at a condominium entrance with visible wear, slightly faded buttons, mounted on a concrete wall, soft natural daylight, documentary photography style, no visible faces, no readable apartment numbers, Canon R5, 50mm macro lens, shallow depth of field",
+      "image_url": "",
+      "alt_text": "Painel de interfone desgastado na entrada de condomínio, ilustrando sinais de obsolescência no sistema de comunicação."
+    },
+    {
+      "legenda": "Slide 2: Tags ou cartões que param de funcionar sem motivo — Quando moradores relatam frequentemente que seus dispositivos de acesso deixam de ser reconhecidos, o problema geralmente está no leitor ou no controlador, não no cartão.",
+      "image_prompt_en": "Photorealistic image of a hand holding an RFID access card near a modern card reader panel at a building entrance, the reader showing a red LED indicating denied access, clean modern architecture background, soft indoor lighting, no visible face or identifiable features on the hand, Nikon Z9, 35mm lens, sharp focus",
+      "image_url": "",
+      "alt_text": "Mão apresentando cartão RFID em leitor de acesso com LED vermelho indicando falha na leitura, ilustrando problemas de reconhecimento de dispositivos."
+    },
+    {
+      "legenda": "Slide 3: Portão ou cancela com tempo de resposta lento — Atrasos na abertura de portões e cancelas geram filas, insatisfação dos moradores e podem comprometer a segurança em horários de pico.",
+      "image_prompt_en": "Photorealistic image of a residential condominium vehicle gate partially open with a car waiting to enter, modern building facade in background, evening lighting with gate lights on, professional architectural photography, no visible license plates, no visible faces, Sony A7IV, 24mm wide angle, clean composition",
+      "image_url": "",
+      "alt_text": "Portão veicular de condomínio parcialmente aberto com veículo aguardando entrada, ilustrando lentidão no tempo de resposta do sistema."
+    },
+    {
+      "legenda": "Slide 4: Sistema sem registro ou histórico de acessos — Sistemas modernos registram cada entrada e saída com data, hora e identificação. Se o seu controle de acesso não oferece esse recurso, a gestão de segurança fica comprometida.",
+      "image_prompt_en": "Photorealistic image of a modern access control management screen on a desktop monitor showing an organized log table with timestamps, located in a condominium administration office, clean desk setup, professional office lighting, no readable personal data on screen, no visible faces, Canon R5, 35mm lens, sharp focus on monitor",
+      "image_url": "",
+      "alt_text": "Tela de gerenciamento de controle de acesso em monitor de escritório de administração condominial, exibindo registros organizados de entradas e saídas."
+    },
+    {
+      "legenda": "Slide 5: Ausência de integração com câmeras e alarmes — O controle de acesso moderno trabalha integrado com CFTV e sistemas de alarme. Se os seus sistemas operam de forma isolada, há lacunas de segurança que podem ser exploradas.",
+      "image_prompt_en": "Photorealistic image of a modern integrated security system setup in a condominium control room showing a split view with access control panel, CCTV monitors, and alarm system panel all connected, organized cable management, professional blue-toned ambient lighting, no visible faces, no readable text, Sony A7RV, 28mm lens, wide angle professional photography",
+      "image_url": "",
+      "alt_text": "Sistema de segurança integrado em sala de controle condominial com painel de controle de acesso, monitores de CFTV e painel de alarme conectados."
+    }
+  ]
+}

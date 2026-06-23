@@ -1,0 +1,192 @@
+{
+  "name": "SOCIAL_PLANEJADOR_DIARIO_DL",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cron",
+              "expression": "0 9 * * *"
+            }
+          ]
+        }
+      },
+      "id": "trigger_diario",
+      "name": "Trigger Diario (9h)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const random = Math.random();\nlet path = 'noticias';\nif (random > 0.7) {\n  path = 'obras';\n} else if (random > 0.4) {\n  path = 'educativo';\n}\nreturn [{ json: { path: path } }];"
+      },
+      "id": "code_decisao_fonte",
+      "name": "Decidir Fonte de Conteudo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://g1.globo.com/rss/g1/"
+      },
+      "id": "rss_g1",
+      "name": "Ler RSS G1",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [
+        500,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://abese.org.br/feed/"
+      },
+      "id": "rss_abese",
+      "name": "Ler RSS ABESE",
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1,
+      "position": [
+        500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nif (items.length === 0) {\n  return [{ json: { tema: \"Manutenção Preventiva de Portaria\", tipo: \"educativo\", produto_dl: \"DL Fortress\", comentario_tecnico: \"Comentário da DL: Manter a infraestrutura de controle de acesso ativa sob contrato recorrente.\" } }];\n}\nconst randomIndex = Math.floor(Math.random() * items.length);\nconst item = items[randomIndex].json;\n\n// Mapeia produto baseado no titulo\nconst text = (item.title + \" \" + (item.contentSnippet || \"\")).toLowerCase();\nlet produto = \"DL Partner\";\nif (text.includes(\"solar\") || text.includes(\"energia\")) produto = \"DL EcoVolt\";\nelse if (text.includes(\"câmera\") || text.includes(\"segurança\") || text.includes(\"roubo\")) produto = \"DL Guardião\";\nelse if (text.includes(\"fogo\") || text.includes(\"incêndio\")) produto = \"DL Alerta\";\nelse if (text.includes(\"bomba\") || text.includes(\"caixa d\")) produto = \"DL Acqua\";\nelse if (text.includes(\"portão\") || text.includes(\"acesso\")) produto = \"DL Gatekeeper\";\n\nreturn [{\n  json: {\n    tema: item.title,\n    tipo: \"noticias\",\n    fonte_nome: \"RSS Feed\",\n    fonte_url: item.link,\n    resumo: item.contentSnippet || item.content,\n    produto_dl: produto,\n    comentario_tecnico: \"Comentário da DL: A tecnologia aplicada ao condomínio reduz perdas de segurança. Recomenda-se Avaliação Técnica de \" + produto\n  }\n}];"
+      },
+      "id": "code_parse_news",
+      "name": "Processar Noticias",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        220
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const temas = [\n  { tema: \"Importância da Manutenção Elétrica Predial no Inverno\", produto: \"DL Volt\", comentario: \"Avaliação periódica em quadros elétricos previne sobrecargas no inverno.\" },\n  { tema: \"Como a Portaria Autônoma reduz custos operacionais\", produto: \"DL Fortress\", comentario: \"A tecnologia Fortress reduz custos com portarias físicas mantendo rastreabilidade.\" },\n  { tema: \"Vantagens do Backup de Energia Híbrido em Condomínios\", produto: \"DL EcoVolt\", comentario: \"Economia com economia de ponta e continuidade para portões e CFTV.\" }\n];\nconst selected = temas[Math.floor(Math.random() * temas.length)];\nreturn [{\n  json: {\n    tema: selected.tema,\n    tipo: \"educativo\",\n    fonte_nome: \"DL Educativo\",\n    produto_dl: selected.produto,\n    comentario_tecnico: selected.comentario\n  }\n}];"
+      },
+      "id": "code_educativo",
+      "name": "Gerar Tema Educativo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "=INSERT INTO dl_social_publicacoes (semana_ref, data_planejada, origem_conteudo, fonte_tipo, fonte_nome, fonte_url, fonte_data_consulta, produto_dl, tema, resumo_fonte, comentario_tecnico_dl, status_revisao, status_global) VALUES ('{{ new Date().toISOString().slice(0, 10) }}', '{{ new Date().toISOString().slice(0, 10) }}', 'SOCIAL_PLANEJADOR', '{{ $json.tipo }}', '{{ $json.fonte_nome || \"\" }}', '{{ $json.fonte_url || \"\" }}', NOW(), '{{ $json.produto_dl }}', '{{ $json.tema.replace(/'/g, \"''\") }}', '{{ ($json.resumo || \"\").replace(/'/g, \"''\") }}', '{{ ($json.comentario_tecnico || \"\").replace(/'/g, \"''\") }}', 'rascunho_planejado', 'rascunho_planejado') RETURNING id;"
+      },
+      "id": "insert_supabase",
+      "name": "Registrar no Supabase",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        960,
+        300
+      ],
+      "credentials": {
+        "database": {
+          "id": "supabase_postgres_cred_id",
+          "name": "Supabase Connection"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Trigger Diario (9h)": {
+      "main": [
+        [
+          {
+            "node": "Decidir Fonte de Conteudo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decidir Fonte de Conteudo": {
+      "main": [
+        [
+          {
+            "node": "Ler RSS G1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Ler RSS ABESE",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Gerar Tema Educativo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler RSS G1": {
+      "main": [
+        [
+          {
+            "node": "Processar Noticias",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler RSS ABESE": {
+      "main": [
+        [
+          {
+            "node": "Processar Noticias",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Processar Noticias": {
+      "main": [
+        [
+          {
+            "node": "Registrar no Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gerar Tema Educativo": {
+      "main": [
+        [
+          {
+            "node": "Registrar no Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "lead": {
+    "nome": "Carlos Mendes",
+    "whatsapp": "(21) 99887-6543",
+    "email": "carlos@condominioresidencialrj.com.br",
+    "nome_empresa_ou_condominio": "Condomínio Edifício Panorama",
+    "tipo_cliente": "condominio",
+    "cliente_ativo": false,
+    "cnpj": "",
+    "cpf": "123.456.789-00",
+    "responsavel_aprovacao": "José Silva (Síndico)"
+  },
+  "localizacao": {
+    "cep": "22041-080",
+    "endereco_completo": "Rua Barata Ribeiro, 200, Copacabana",
+    "bairro": "Copacabana",
+    "cidade": "Rio de Janeiro"
+  },
+  "infraestrutura": {
+    "numero_unidades": 84,
+    "numero_blocos": 2
+  },
+  "demanda": {
+    "servico_interesse": "DL Guardião",
+    "urgencia": "media",
+    "melhor_horario": "Manhã (9h-12h)",
+    "descricao": "Atualização completa do sistema de CFTV. As câmeras atuais (analógicas) estão com falhas recorrentes e sem gravação noturna. Desejamos migrar para IP com NVR centralizado.",
+    "tipo_orcamento": "Adequação"
+  },
+  "midia": {
+    "upload_imagem": ["pending://storage/quadro_cftv_atual.jpg", "pending://storage/corredor_bloco_a.jpg"],
+    "upload_video": []
+  },
+  "consentimento": {
+    "aceite_contato": true,
+    "aceite_lgpd": true
+  },
+  "origem_lead": {
+    "canal": "site",
+    "versao_form": "V2",
+    "pagina": "avaliacao-tecnica-v2.html"
+  }
+}

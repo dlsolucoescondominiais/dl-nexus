@@ -1,0 +1,702 @@
+{
+  "updatedAt": "2026-05-26T03:55:25.799Z",
+  "createdAt": "2026-05-10T21:10:04.271Z",
+  "id": "skillRouterV3Config20260510",
+  "name": "004_skill_router_dl_nexus_v3",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "skill-router-dl-nexus-v3",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook_skill_router",
+      "name": "Webhook Entrada Router",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || $json;\n\nfunction normalizeText(value) {\n  return String(value || '')\n    .toLowerCase()\n    .normalize('NFD')\n    .replace(/[\\u0300-\\u036f]/g, '')\n    .trim();\n}\n\nconst rawMessage = body.mensagem || body.message || body.text || '';\nconst msg = normalizeText(rawMessage);\n\nlet status = 'roteado';\nlet agente = 'Aninha';\nlet skill = 'vendas_condominios';\nlet produto = 'nao_classificado';\nlet prioridade = body.prioridade || 'media';\nlet proxima_acao = 'coletar_dados';\nlet precisa_avaliacao_tecnica = true;\nlet encaminhar_para = 'Humano';\nlet observacoes = [];\n\nfunction hasAny(list) {\n  return list.some(term => msg.includes(normalizeText(term)));\n}\n\nif (hasAny(['cisterna', 'caixa dagua', 'bomba', 'boia', 'nivel', 'recalque', 'painel'])) {\n  agente = 'Diego';\n  skill = hasAny(['painel', 'comando']) ? 'comandos_eletricos' : 'automacao_condominio';\n  produto = 'DL Acqua / DL Commander';\n  proxima_acao = 'agendar_avaliacao_tecnica';\n  encaminhar_para = 'Orcamento';\n} else if (hasAny(['portao', 'bluetooth', 'wireless', 'mobgate', 'abertura de acesso', 'porta de rolagem', 'controle remoto'])) {\n  agente = 'Diego';\n  skill = 'controle_acesso';\n  produto = 'Gatekeeper';\n  proxima_acao = 'agendar_avaliacao_tecnica';\n  encaminhar_para = 'Orcamento';\n} else if (hasAny(['condominio', 'sindico', 'portaria', 'morador', 'visitante', 'prestador', 'controle de acesso', 'condfy'])) {\n  agente = 'Aninha';\n  skill = 'vendas_condominios';\n  produto = 'Fortress';\n  proxima_acao = 'qualificar_lead';\n  encaminhar_para = 'Orcamento';\n} else if (hasAny(['camera', 'cftv', 'dvr', 'nvr', 'gravacao', 'camera offline', 'intelbras', 'hikvision'])) {\n  agente = 'Diego';\n  skill = 'suporte_cftv';\n  produto = 'DL Guardião';\n  proxima_acao = 'agendar_avaliacao_tecnica';\n  encaminhar_para = 'Suporte';\n} else if (hasAny(['eletrica', 'quadro', 'disjuntor', 'dr', 'dps', 'curto', 'circuito', 'iluminacao', 'energia'])) {\n  agente = 'Diego';\n  skill = 'suporte_eletrico';\n  produto = 'DL Volt';\n  proxima_acao = 'agendar_avaliacao_tecnica';\n  encaminhar_para = 'Suporte';\n} else if (hasAny(['rede', 'ip', 'vlan', 'switch', 'rack', 'wifi', 'fibra', 'cabeamento estruturado', 'internet'])) {\n  agente = 'Diego';\n  skill = 'infra_redes';\n  produto = 'Infraestrutura de Redes';\n  proxima_acao = 'agendar_avaliacao_tecnica';\n  encaminhar_para = 'Suporte';\n} else if (hasAny(['solar', 'inversor', 'placa', 'string', 'microinversor', 'bateria', 'on-grid', 'on grid', 'off-grid', 'off grid', 'hibrido'])) {\n  agente = 'Diego';\n  if (hasAny(['bateria', 'off-grid', 'off grid'])) {\n    skill = 'solar_baterias';\n  } else if (hasAny(['hibrido'])) {\n    skill = 'solar_hibrida';\n  } else {\n    skill = 'solar_conexao_placas';\n  }\n  produto = 'DL EcoVolt';\n  proxima_acao = 'agendar_avaliacao_tecnica';\n  encaminhar_para = 'Orcamento';\n} else if (hasAny(['post', 'postagem', 'instagram', 'facebook', 'tiktok', 'google meu negocio', 'legenda', 'conteudo', 'midia'])) {\n  agente = 'SocialPilot';\n  skill = 'postagem_social';\n  produto = 'Marketing DL';\n  proxima_acao = 'gerar_conteudo_pendente_aprovacao';\n  precisa_avaliacao_tecnica = false;\n  encaminhar_para = 'Marketing';\n} else if (hasAny(['orcamento', 'proposta', 'valor', 'preco', 'material', 'compra', 'cotacao', 'suprimentos'])) {\n  agente = 'Procurement';\n  skill = 'orcamentacao_suprimentos';\n  produto = 'Orçamento';\n  proxima_acao = 'gerar_orcamento_pendente_aprovacao';\n  encaminhar_para = 'Orcamento';\n} else if (hasAny(['agenda', 'campo', 'equipe', 'execucao', 'material', 'rota', 'os', 'ordem de servico'])) {\n  agente = 'Dispatcher';\n  skill = 'field_ops_dispatcher';\n  produto = 'Operação de Campo';\n  proxima_acao = 'agendar_servico_campo';\n  encaminhar_para = 'Operacional';\n} else if (hasAny(['pos-venda', 'manutencao mensal', 'contrato', 'sla', 'recorrencia', 'acompanhamento', 'renovacao'])) {\n  agente = 'Customer Success';\n  skill = 'customer_success';\n  produto = 'DL Partner';\n  proxima_acao = 'revisar_sla_contrato';\n  encaminhar_para = 'Atendimento';\n} else if (hasAny(['banco', 'log', 'supabase', 'dados', 'duplicidade', 'crm', 'historico'])) {\n  agente = 'DBA';\n  skill = 'dba_supabase';\n  produto = 'Dados / Supabase';\n  proxima_acao = 'consultar_banco';\n  precisa_avaliacao_tecnica = false;\n  encaminhar_para = 'TI';\n}\n\nconst termosProibidos = [\n  'visita técnica',\n  'visita tecnica',\n  'diogo engenheiro',\n  'engenheiro diogo',\n  'canaleta plástica',\n  'canaleta plastica',\n  'hidráulica pura',\n  'hidraulica pura'\n];\n\nconst infracoes = termosProibidos.filter(t => msg.includes(normalizeText(t)));\n\nif (infracoes.length > 0) {\n  observacoes.push(`Bloqueio KILLCRITIC: Termos proibidos ignorados (${infracoes.join(', ')}).`);\n}\n\nobservacoes.push('KILLCRITIC Activo: Usar Avaliação Técnica. Tecnólogo responsável em vez de Engenheiro. Sem hidráulica pura. Sem canaleta plástica. Separar escopo comercial (setup, SLA, peças, equipamentos). Priorizar DL Partner. Tudo requer aprovação humana.');\n\nreturn [{\n  json: {\n    status,\n    agente,\n    skill,\n    produto,\n    prioridade,\n    proxima_acao,\n    precisa_avaliacao_tecnica,\n    encaminhar_para,\n    observacoes\n  }\n}];"
+      },
+      "id": "code_skill_router_logic",
+      "name": "Motor de Roteamento de Skills",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "id": "respond_skill_router",
+      "name": "Responder Diagnóstico",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        720,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Entrada Router": {
+      "main": [
+        [
+          {
+            "node": "Motor de Roteamento de Skills",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Motor de Roteamento de Skills": {
+      "main": [
+        [
+          {
+            "node": "Responder Diagnóstico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+  "activeVersionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+  "versionCounter": 92,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-10T21:10:04.271Z",
+      "createdAt": "2026-05-10T21:10:04.271Z",
+      "role": "workflow:owner",
+      "workflowId": "skillRouterV3Config20260510",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [
+    {
+      "updatedAt": "2026-05-10T04:58:25.194Z",
+      "createdAt": "2026-05-10T04:58:25.194Z",
+      "id": "kYw9Ezibncc9kh0K",
+      "name": "DL_NEXUS_V3"
+    },
+    {
+      "updatedAt": "2026-05-10T04:58:25.194Z",
+      "createdAt": "2026-05-10T04:58:25.194Z",
+      "id": "6af55EqqejXF4ljN",
+      "name": "KILLCRITIC"
+    },
+    {
+      "updatedAt": "2026-05-10T21:10:04.271Z",
+      "createdAt": "2026-05-10T21:10:04.271Z",
+      "id": "mkCeoPxHM2gKAtaB",
+      "name": "SKILL_ROUTER"
+    }
+  ],
+  "activeVersion": {
+    "updatedAt": "2026-05-11T02:52:28.870Z",
+    "createdAt": "2026-05-10T21:10:04.271Z",
+    "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+    "workflowId": "skillRouterV3Config20260510",
+    "nodes": [
+      {
+        "parameters": {
+          "path": "skill-router-dl-nexus-v3",
+          "httpMethod": "POST",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "id": "webhook_skill_router",
+        "name": "Webhook Entrada Router",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          200,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const body = $json.body || $json;\n\nfunction normalizeText(value) {\n  return String(value || '')\n    .toLowerCase()\n    .normalize('NFD')\n    .replace(/[\\u0300-\\u036f]/g, '')\n    .trim();\n}\n\nconst rawMessage = body.mensagem || body.message || body.text || '';\nconst msg = normalizeText(rawMessage);\n\nlet status = 'roteado';\nlet agente = 'Aninha';\nlet skill = 'vendas_condominios';\nlet produto = 'nao_classificado';\nlet prioridade = body.prioridade || 'media';\nlet proxima_acao = 'coletar_dados';\nlet precisa_avaliacao_tecnica = true;\nlet encaminhar_para = 'Humano';\nlet observacoes = [];\n\nfunction hasAny(list) {\n  return list.some(term => msg.includes(normalizeText(term)));\n}\n\nif (hasAny(['cisterna', 'caixa dagua', 'bomba', 'boia', 'nivel', 'recalque', 'painel'])) {\n  agente = 'Diego';\n  skill = hasAny(['painel', 'comando']) ? 'comandos_eletricos' : 'automacao_condominio';\n  produto = 'DL Acqua / DL Commander';\n  proxima_acao = 'agendar_avaliacao_tecnica';\n  encaminhar_para = 'Orcamento';\n} else if (hasAny(['portao', 'bluetooth', 'wireless', 'mobgate', 'abertura de acesso', 'porta de rolagem', 'controle remoto'])) {\n  agente = 'Diego';\n  skill = 'controle_acesso';\n  produto = 'Gatekeeper';\n  proxima_acao = 'agendar_avaliacao_tecnica';\n  encaminhar_para = 'Orcamento';\n} else if (hasAny(['condominio', 'sindico', 'portaria', 'morador', 'visitante', 'prestador', 'controle de acesso', 'condfy'])) {\n  agente = 'Aninha';\n  skill = 'vendas_condominios';\n  produto = 'Fortress';\n  proxima_acao = 'qualificar_lead';\n  encaminhar_para = 'Orcamento';\n} else if (hasAny(['camera', 'cftv', 'dvr', 'nvr', 'gravacao', 'camera offline', 'intelbras', 'hikvision'])) {\n  agente = 'Diego';\n  skill = 'suporte_cftv';\n  produto = 'DL Guardião';\n  proxima_acao = 'agendar_avaliacao_tecnica';\n  encaminhar_para = 'Suporte';\n} else if (hasAny(['eletrica', 'quadro', 'disjuntor', 'dr', 'dps', 'curto', 'circuito', 'iluminacao', 'energia'])) {\n  agente = 'Diego';\n  skill = 'suporte_eletrico';\n  produto = 'DL Volt';\n  proxima_acao = 'agendar_avaliacao_tecnica';\n  encaminhar_para = 'Suporte';\n} else if (hasAny(['rede', 'ip', 'vlan', 'switch', 'rack', 'wifi', 'fibra', 'cabeamento estruturado', 'internet'])) {\n  agente = 'Diego';\n  skill = 'infra_redes';\n  produto = 'Infraestrutura de Redes';\n  proxima_acao = 'agendar_avaliacao_tecnica';\n  encaminhar_para = 'Suporte';\n} else if (hasAny(['solar', 'inversor', 'placa', 'string', 'microinversor', 'bateria', 'on-grid', 'on grid', 'off-grid', 'off grid', 'hibrido'])) {\n  agente = 'Diego';\n  if (hasAny(['bateria', 'off-grid', 'off grid'])) {\n    skill = 'solar_baterias';\n  } else if (hasAny(['hibrido'])) {\n    skill = 'solar_hibrida';\n  } else {\n    skill = 'solar_conexao_placas';\n  }\n  produto = 'DL EcoVolt';\n  proxima_acao = 'agendar_avaliacao_tecnica';\n  encaminhar_para = 'Orcamento';\n} else if (hasAny(['post', 'postagem', 'instagram', 'facebook', 'tiktok', 'google meu negocio', 'legenda', 'conteudo', 'midia'])) {\n  agente = 'SocialPilot';\n  skill = 'postagem_social';\n  produto = 'Marketing DL';\n  proxima_acao = 'gerar_conteudo_pendente_aprovacao';\n  precisa_avaliacao_tecnica = false;\n  encaminhar_para = 'Marketing';\n} else if (hasAny(['orcamento', 'proposta', 'valor', 'preco', 'material', 'compra', 'cotacao', 'suprimentos'])) {\n  agente = 'Procurement';\n  skill = 'orcamentacao_suprimentos';\n  produto = 'Orçamento';\n  proxima_acao = 'gerar_orcamento_pendente_aprovacao';\n  encaminhar_para = 'Orcamento';\n} else if (hasAny(['agenda', 'campo', 'equipe', 'execucao', 'material', 'rota', 'os', 'ordem de servico'])) {\n  agente = 'Dispatcher';\n  skill = 'field_ops_dispatcher';\n  produto = 'Operação de Campo';\n  proxima_acao = 'agendar_servico_campo';\n  encaminhar_para = 'Operacional';\n} else if (hasAny(['pos-venda', 'manutencao mensal', 'contrato', 'sla', 'recorrencia', 'acompanhamento', 'renovacao'])) {\n  agente = 'Customer Success';\n  skill = 'customer_success';\n  produto = 'DL Partner';\n  proxima_acao = 'revisar_sla_contrato';\n  encaminhar_para = 'Atendimento';\n} else if (hasAny(['banco', 'log', 'supabase', 'dados', 'duplicidade', 'crm', 'historico'])) {\n  agente = 'DBA';\n  skill = 'dba_supabase';\n  produto = 'Dados / Supabase';\n  proxima_acao = 'consultar_banco';\n  precisa_avaliacao_tecnica = false;\n  encaminhar_para = 'TI';\n}\n\nconst termosProibidos = [\n  'visita técnica',\n  'visita tecnica',\n  'diogo engenheiro',\n  'engenheiro diogo',\n  'canaleta plástica',\n  'canaleta plastica',\n  'hidráulica pura',\n  'hidraulica pura'\n];\n\nconst infracoes = termosProibidos.filter(t => msg.includes(normalizeText(t)));\n\nif (infracoes.length > 0) {\n  observacoes.push(`Bloqueio KILLCRITIC: Termos proibidos ignorados (${infracoes.join(', ')}).`);\n}\n\nobservacoes.push('KILLCRITIC Activo: Usar Avaliação Técnica. Tecnólogo responsável em vez de Engenheiro. Sem hidráulica pura. Sem canaleta plástica. Separar escopo comercial (setup, SLA, peças, equipamentos). Priorizar DL Partner. Tudo requer aprovação humana.');\n\nreturn [{\n  json: {\n    status,\n    agente,\n    skill,\n    produto,\n    prioridade,\n    proxima_acao,\n    precisa_avaliacao_tecnica,\n    encaminhar_para,\n    observacoes\n  }\n}];"
+        },
+        "id": "code_skill_router_logic",
+        "name": "Motor de Roteamento de Skills",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          460,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={{$json}}",
+          "options": {}
+        },
+        "id": "respond_skill_router",
+        "name": "Responder Diagnóstico",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1,
+        "position": [
+          720,
+          300
+        ]
+      }
+    ],
+    "connections": {
+      "Webhook Entrada Router": {
+        "main": [
+          [
+            {
+              "node": "Motor de Roteamento de Skills",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Motor de Roteamento de Skills": {
+        "main": [
+          [
+            {
+              "node": "Responder Diagnóstico",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "import",
+    "name": "Version 054d2b14",
+    "description": "",
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-05-11T02:52:28.867Z",
+        "id": 160,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-11T02:52:39.221Z",
+        "id": 161,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-11T02:52:39.232Z",
+        "id": 162,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:15.416Z",
+        "id": 1357,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:15.428Z",
+        "id": 1358,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:15.263Z",
+        "id": 1355,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:15.272Z",
+        "id": 1356,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:02:51.919Z",
+        "id": 315,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:02:51.929Z",
+        "id": 316,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:02:52.073Z",
+        "id": 317,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:02:52.084Z",
+        "id": 318,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:07.009Z",
+        "id": 446,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:07.017Z",
+        "id": 447,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:06.856Z",
+        "id": 444,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-25T22:03:06.866Z",
+        "id": 445,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:42.135Z",
+        "id": 520,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:42.148Z",
+        "id": 521,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:42.293Z",
+        "id": 522,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:42.305Z",
+        "id": 523,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:57.708Z",
+        "id": 652,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:57.717Z",
+        "id": 653,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:57.946Z",
+        "id": 654,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:49:57.957Z",
+        "id": 655,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:33.039Z",
+        "id": 1489,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:33.048Z",
+        "id": 1490,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:20.290Z",
+        "id": 728,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:20.298Z",
+        "id": 729,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:20.434Z",
+        "id": 730,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:20.448Z",
+        "id": 731,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:34.239Z",
+        "id": 861,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:34.248Z",
+        "id": 862,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:34.495Z",
+        "id": 863,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T01:51:34.504Z",
+        "id": 864,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:32.875Z",
+        "id": 1487,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:54:32.884Z",
+        "id": 1488,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:04:44.563Z",
+        "id": 937,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:04:44.573Z",
+        "id": 938,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:04:44.725Z",
+        "id": 939,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:04:44.736Z",
+        "id": 940,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:05:03.614Z",
+        "id": 1071,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:05:03.623Z",
+        "id": 1072,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:05:03.412Z",
+        "id": 1069,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:05:03.422Z",
+        "id": 1070,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:08.824Z",
+        "id": 1565,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:08.833Z",
+        "id": 1566,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:18.823Z",
+        "id": 1147,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:18.836Z",
+        "id": 1148,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:18.993Z",
+        "id": 1149,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:19.004Z",
+        "id": 1150,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:35.979Z",
+        "id": 1281,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:35.989Z",
+        "id": 1282,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:35.842Z",
+        "id": 1279,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T02:24:35.851Z",
+        "id": 1280,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:08.681Z",
+        "id": 1563,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:08.693Z",
+        "id": 1564,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:25.817Z",
+        "id": 1695,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:25.829Z",
+        "id": 1696,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:25.973Z",
+        "id": 1697,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:25.981Z",
+        "id": 1698,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:15.508Z",
+        "id": 2381,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:15.517Z",
+        "id": 2382,
+        "workflowId": "skillRouterV3Config20260510",
+        "versionId": "054d2b14-8d76-4ac8-95f6-241e46ca4b52",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

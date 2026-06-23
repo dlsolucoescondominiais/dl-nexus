@@ -1,0 +1,397 @@
+{
+  "updatedAt": "2026-05-30T05:34:00.332Z",
+  "createdAt": "2026-05-27T23:36:55.767Z",
+  "id": "b6G219TAI8QUnCfE",
+  "name": "178_LOG_PRECIFICACAO",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "log-precificacao",
+        "options": {}
+      },
+      "id": "8b23c21a-4d7a-4428-bb7e-f4fc348f98aa",
+      "name": "Webhook In",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ],
+      "webhookId": "9b1c2b53-61e3-4d43-851c-eb1d46b8a8b1"
+    },
+    {
+      "parameters": {
+        "jsCode": "let data = $input.item.json.body || {};\n\n// Rule: Se faltar dados críticos, o motor deve retornar \"Sob Avaliação Técnica\"\nif (!data.preco_recomendado && !data.faixa_comercial) {\n  data.status_avaliacao = \"Sob Avaliação Técnica\";\n} else {\n  data.status_avaliacao = \"Precificado\";\n}\n\n// Rule: Não expor custo interno ao cliente. Mostrar apenas a faixa comercial e o preço recomendado.\nlet clientPayload = Object.assign({}, data);\ndelete clientPayload.custo_interno;\ndelete clientPayload.margem_lucro;\n\n// Rule: A gastronomia tem alta urgência.\nlet priority = (data.urgency_gastronomy) ? 'HIGH' : 'NORMAL';\n\n// Rule: Imposto sempre \"imposto_estimado_percentual\" com pendência de validação contábil.\nlet imposto = data.imposto_estimado_percentual || \"Pendente de validação contábil\";\n\nreturn {\n  proposta_id: data.proposta_id || 'UNKNOWN',\n  faixa_comercial: data.faixa_comercial || 'N/A',\n  preco_recomendado: data.preco_recomendado || 0,\n  imposto_estimado_percentual: imposto,\n  status_avaliacao: data.status_avaliacao,\n  priority: priority,\n  payload_completo: clientPayload\n};"
+      },
+      "id": "e45db6e1-95bc-42b7-814d-b6ebc453e9a7",
+      "name": "Validate & Format Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "tableId": "precificacao_logs",
+        "columns": "proposta_id, faixa_comercial, preco_recomendado, imposto_estimado_percentual, status_avaliacao, priority, payload_completo",
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "name": "proposta_id",
+              "value": "={{ $json.proposta_id }}"
+            },
+            {
+              "name": "faixa_comercial",
+              "value": "={{ $json.faixa_comercial }}"
+            },
+            {
+              "name": "preco_recomendado",
+              "value": "={{ $json.preco_recomendado }}"
+            },
+            {
+              "name": "imposto_estimado_percentual",
+              "value": "={{ $json.imposto_estimado_percentual }}"
+            },
+            {
+              "name": "status_avaliacao",
+              "value": "={{ $json.status_avaliacao }}"
+            },
+            {
+              "name": "priority",
+              "value": "={{ $json.priority }}"
+            },
+            {
+              "name": "payload_completo",
+              "value": "={{ JSON.stringify($json.payload_completo) }}"
+            }
+          ]
+        }
+      },
+      "id": "a933f2e1-4564-4e4b-944a-d621edb01534",
+      "name": "Supabase - Insert Log",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        500,
+        300
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "supabase-cred",
+          "name": "Supabase API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"success\",\n  \"message\": \"Log salvo\",\n  \"proposta_id\": \"{{ $json.proposta_id }}\",\n  \"status_avaliacao\": \"{{ $json.status_avaliacao }}\"\n}",
+        "options": {}
+      },
+      "id": "cf6dc1fc-d2e8-466d-ad09-2f2b9687e148",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        700,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook In": {
+      "main": [
+        [
+          {
+            "node": "Validate & Format Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate & Format Payload": {
+      "main": [
+        [
+          {
+            "node": "Supabase - Insert Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase - Insert Log": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "4bd8bca5-6e8d-43ec-8bc5-83a971aebf13",
+  "activeVersionId": "4bd8bca5-6e8d-43ec-8bc5-83a971aebf13",
+  "versionCounter": 16,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-27T23:36:55.767Z",
+      "createdAt": "2026-05-27T23:36:55.767Z",
+      "role": "workflow:owner",
+      "workflowId": "b6G219TAI8QUnCfE",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-29T06:25:58.265Z",
+    "createdAt": "2026-05-27T23:36:55.771Z",
+    "versionId": "4bd8bca5-6e8d-43ec-8bc5-83a971aebf13",
+    "workflowId": "b6G219TAI8QUnCfE",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "log-precificacao",
+          "options": {}
+        },
+        "id": "8b23c21a-4d7a-4428-bb7e-f4fc348f98aa",
+        "name": "Webhook In",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 1,
+        "position": [
+          100,
+          300
+        ],
+        "webhookId": "9b1c2b53-61e3-4d43-851c-eb1d46b8a8b1"
+      },
+      {
+        "parameters": {
+          "jsCode": "let data = $input.item.json.body || {};\n\n// Rule: Se faltar dados críticos, o motor deve retornar \"Sob Avaliação Técnica\"\nif (!data.preco_recomendado && !data.faixa_comercial) {\n  data.status_avaliacao = \"Sob Avaliação Técnica\";\n} else {\n  data.status_avaliacao = \"Precificado\";\n}\n\n// Rule: Não expor custo interno ao cliente. Mostrar apenas a faixa comercial e o preço recomendado.\nlet clientPayload = Object.assign({}, data);\ndelete clientPayload.custo_interno;\ndelete clientPayload.margem_lucro;\n\n// Rule: A gastronomia tem alta urgência.\nlet priority = (data.urgency_gastronomy) ? 'HIGH' : 'NORMAL';\n\n// Rule: Imposto sempre \"imposto_estimado_percentual\" com pendência de validação contábil.\nlet imposto = data.imposto_estimado_percentual || \"Pendente de validação contábil\";\n\nreturn {\n  proposta_id: data.proposta_id || 'UNKNOWN',\n  faixa_comercial: data.faixa_comercial || 'N/A',\n  preco_recomendado: data.preco_recomendado || 0,\n  imposto_estimado_percentual: imposto,\n  status_avaliacao: data.status_avaliacao,\n  priority: priority,\n  payload_completo: clientPayload\n};"
+        },
+        "id": "e45db6e1-95bc-42b7-814d-b6ebc453e9a7",
+        "name": "Validate & Format Payload",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          300,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "tableId": "precificacao_logs",
+          "columns": "proposta_id, faixa_comercial, preco_recomendado, imposto_estimado_percentual, status_avaliacao, priority, payload_completo",
+          "dataMode": "defineBelow",
+          "valuesToSend": {
+            "values": [
+              {
+                "name": "proposta_id",
+                "value": "={{ $json.proposta_id }}"
+              },
+              {
+                "name": "faixa_comercial",
+                "value": "={{ $json.faixa_comercial }}"
+              },
+              {
+                "name": "preco_recomendado",
+                "value": "={{ $json.preco_recomendado }}"
+              },
+              {
+                "name": "imposto_estimado_percentual",
+                "value": "={{ $json.imposto_estimado_percentual }}"
+              },
+              {
+                "name": "status_avaliacao",
+                "value": "={{ $json.status_avaliacao }}"
+              },
+              {
+                "name": "priority",
+                "value": "={{ $json.priority }}"
+              },
+              {
+                "name": "payload_completo",
+                "value": "={{ JSON.stringify($json.payload_completo) }}"
+              }
+            ]
+          }
+        },
+        "id": "a933f2e1-4564-4e4b-944a-d621edb01534",
+        "name": "Supabase - Insert Log",
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          500,
+          300
+        ],
+        "credentials": {
+          "supabaseApi": {
+            "id": "supabase-cred",
+            "name": "Supabase API"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={\n  \"status\": \"success\",\n  \"message\": \"Log salvo\",\n  \"proposta_id\": \"{{ $json.proposta_id }}\",\n  \"status_avaliacao\": \"{{ $json.status_avaliacao }}\"\n}",
+          "options": {}
+        },
+        "id": "cf6dc1fc-d2e8-466d-ad09-2f2b9687e148",
+        "name": "Respond to Webhook",
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1,
+        "position": [
+          700,
+          300
+        ]
+      }
+    ],
+    "connections": {
+      "Webhook In": {
+        "main": [
+          [
+            {
+              "node": "Validate & Format Payload",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validate & Format Payload": {
+        "main": [
+          [
+            {
+              "node": "Supabase - Insert Log",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Supabase - Insert Log": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": "Version 4bd8bca5",
+    "description": "",
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-06-15T03:48:17.604Z",
+        "id": 2399,
+        "workflowId": "b6G219TAI8QUnCfE",
+        "versionId": "4bd8bca5-6e8d-43ec-8bc5-83a971aebf13",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:17.613Z",
+        "id": 2400,
+        "workflowId": "b6G219TAI8QUnCfE",
+        "versionId": "4bd8bca5-6e8d-43ec-8bc5-83a971aebf13",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-29T06:26:11.231Z",
+        "id": 1923,
+        "workflowId": "b6G219TAI8QUnCfE",
+        "versionId": "4bd8bca5-6e8d-43ec-8bc5-83a971aebf13",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-29T06:26:11.241Z",
+        "id": 1924,
+        "workflowId": "b6G219TAI8QUnCfE",
+        "versionId": "4bd8bca5-6e8d-43ec-8bc5-83a971aebf13",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-29T06:25:58.263Z",
+        "id": 1922,
+        "workflowId": "b6G219TAI8QUnCfE",
+        "versionId": "4bd8bca5-6e8d-43ec-8bc5-83a971aebf13",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:34:00.505Z",
+        "id": 2074,
+        "workflowId": "b6G219TAI8QUnCfE",
+        "versionId": "4bd8bca5-6e8d-43ec-8bc5-83a971aebf13",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:34:00.521Z",
+        "id": 2075,
+        "workflowId": "b6G219TAI8QUnCfE",
+        "versionId": "4bd8bca5-6e8d-43ec-8bc5-83a971aebf13",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:34:00.351Z",
+        "id": 2072,
+        "workflowId": "b6G219TAI8QUnCfE",
+        "versionId": "4bd8bca5-6e8d-43ec-8bc5-83a971aebf13",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-30T05:34:00.359Z",
+        "id": 2073,
+        "workflowId": "b6G219TAI8QUnCfE",
+        "versionId": "4bd8bca5-6e8d-43ec-8bc5-83a971aebf13",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

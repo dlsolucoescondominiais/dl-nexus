@@ -1,0 +1,230 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://dlsolucoes.com.br/schemas/payload-publicacao-meta-dl-v3.json",
+  "title": "Payload de Publicação Meta — DL Nexus V3",
+  "description": "Schema canônico para payloads de publicação no Facebook e Instagram da DL Soluções Condominiais. Utilizado pelos workflows n8n de geração, revisão (KillCritic) e publicação automatizada.",
+  "type": "object",
+  "required": [
+    "canal",
+    "linha_dl",
+    "publico",
+    "formato",
+    "tema",
+    "objetivo",
+    "legenda_facebook",
+    "legenda_instagram",
+    "cta",
+    "hashtags",
+    "image_prompt_en",
+    "alt_text",
+    "risco_meta",
+    "precisa_aprovacao_humana",
+    "motivo_aprovacao_humana",
+    "aprovado_pre_killcritic",
+    "aprovado_killcritic",
+    "status_killcritic",
+    "motivos_bloqueio",
+    "ajustes_recomendados",
+    "image_url_publica_meta",
+    "google_drive_file_id",
+    "google_drive_web_view_link",
+    "tem_direito_uso_midia",
+    "status_publicacao",
+    "post_id",
+    "media_id",
+    "permalink",
+    "erro_meta",
+    "id_execucao_n8n",
+    "fonte_noticia",
+    "carrossel_slides"
+  ],
+  "properties": {
+    "canal": {
+      "type": "string",
+      "enum": ["facebook", "instagram", "ambos"],
+      "description": "Canal de destino da publicação."
+    },
+    "linha_dl": {
+      "type": "string",
+      "enum": [
+        "DL Guardião",
+        "DL Fortress",
+        "DL Volt",
+        "DL Acqua",
+        "DL Alerta",
+        "DL EcoVolt",
+        "DL VoltCharge",
+        "DL Partner",
+        "DL Express"
+      ],
+      "description": "Linha de serviço da DL Soluções associada ao conteúdo."
+    },
+    "publico": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Descrição do público-alvo da publicação (ex: síndicos de condomínios médios no RJ)."
+    },
+    "formato": {
+      "type": "string",
+      "enum": ["feed", "stories", "reels", "carrossel"],
+      "description": "Formato da publicação na plataforma Meta."
+    },
+    "tema": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Tema central do conteúdo em Português Brasileiro."
+    },
+    "objetivo": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Objetivo de negócio da publicação (ex: gerar demanda para Avaliação Técnica)."
+    },
+    "legenda_facebook": {
+      "type": "string",
+      "maxLength": 63206,
+      "description": "Texto da legenda para o Facebook. Limite de 63.206 caracteres conforme API do Meta."
+    },
+    "legenda_instagram": {
+      "type": "string",
+      "maxLength": 2200,
+      "description": "Texto da legenda para o Instagram. Limite de 2.200 caracteres conforme API do Meta."
+    },
+    "cta": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Call-to-action principal da publicação em Português Brasileiro."
+    },
+    "hashtags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^#\\S+"
+      },
+      "minItems": 1,
+      "description": "Lista de hashtags da publicação. Cada item deve iniciar com #."
+    },
+    "image_prompt_en": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Prompt de geração de imagem em inglês para ferramentas de IA generativa."
+    },
+    "alt_text": {
+      "type": "string",
+      "description": "Texto alternativo de acessibilidade para a imagem principal."
+    },
+    "risco_meta": {
+      "type": "string",
+      "enum": ["baixo", "medio", "alto"],
+      "description": "Nível de risco de violação das políticas de publicidade do Meta."
+    },
+    "precisa_aprovacao_humana": {
+      "type": "boolean",
+      "description": "Indica se o conteúdo requer revisão humana antes da publicação."
+    },
+    "motivo_aprovacao_humana": {
+      "type": "string",
+      "description": "Justificativa para a necessidade de aprovação humana, se aplicável."
+    },
+    "aprovado_pre_killcritic": {
+      "type": "boolean",
+      "description": "Flag de pré-aprovação antes da passagem pelo agente KillCritic."
+    },
+    "aprovado_killcritic": {
+      "type": "boolean",
+      "description": "Flag de aprovação final pelo agente KillCritic."
+    },
+    "status_killcritic": {
+      "type": "string",
+      "enum": ["APROVADO", "APROVADO_COM_RESSALVAS", "BLOQUEADO"],
+      "description": "Status de revisão retornado pelo agente KillCritic."
+    },
+    "motivos_bloqueio": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Lista de motivos de bloqueio identificados pelo KillCritic."
+    },
+    "ajustes_recomendados": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Lista de ajustes recomendados pelo KillCritic para aprovação condicional."
+    },
+    "image_url_publica_meta": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL pública da imagem hospedada, acessível pela API do Meta para publicação."
+    },
+    "google_drive_file_id": {
+      "type": "string",
+      "description": "ID do arquivo de imagem armazenado no Google Drive da DL."
+    },
+    "google_drive_web_view_link": {
+      "type": "string",
+      "description": "Link de visualização web do arquivo no Google Drive."
+    },
+    "tem_direito_uso_midia": {
+      "type": "boolean",
+      "description": "Confirmação de que a DL possui direito de uso da mídia (imagem gerada por IA ou banco próprio)."
+    },
+    "status_publicacao": {
+      "type": "string",
+      "enum": ["pendente", "publicado", "falha", "bloqueado"],
+      "description": "Status atual da publicação no pipeline de publicação."
+    },
+    "post_id": {
+      "type": "string",
+      "description": "ID do post retornado pela API do Meta após publicação bem-sucedida."
+    },
+    "media_id": {
+      "type": "string",
+      "description": "ID da mídia retornado pela API do Meta (container de imagem/vídeo)."
+    },
+    "permalink": {
+      "type": "string",
+      "description": "Link permanente do post publicado na plataforma Meta."
+    },
+    "erro_meta": {
+      "type": "string",
+      "description": "Mensagem de erro retornada pela API do Meta em caso de falha na publicação."
+    },
+    "id_execucao_n8n": {
+      "type": "string",
+      "description": "ID da execução do workflow n8n que processou este payload."
+    },
+    "fonte_noticia": {
+      "type": "string",
+      "description": "Fonte da notícia ou referência utilizada para gerar o conteúdo, se aplicável."
+    },
+    "carrossel_slides": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["legenda", "image_prompt_en", "image_url", "alt_text"],
+        "properties": {
+          "legenda": {
+            "type": "string",
+            "description": "Legenda individual do slide do carrossel."
+          },
+          "image_prompt_en": {
+            "type": "string",
+            "description": "Prompt de geração de imagem em inglês para o slide."
+          },
+          "image_url": {
+            "type": "string",
+            "description": "URL pública da imagem do slide para publicação via API."
+          },
+          "alt_text": {
+            "type": "string",
+            "description": "Texto alternativo de acessibilidade para a imagem do slide."
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "Array de slides para publicações no formato carrossel. Vazio para formatos não-carrossel."
+    }
+  },
+  "additionalProperties": false
+}

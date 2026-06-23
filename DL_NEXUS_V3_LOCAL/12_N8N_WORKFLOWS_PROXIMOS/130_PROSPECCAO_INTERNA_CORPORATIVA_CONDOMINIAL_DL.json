@@ -1,0 +1,61 @@
+{
+  "name": "130_PROSPECCAO_INTERNA_CORPORATIVA_CONDOMINIAL_DL",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "prospeccao-b2b-rj",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "2bc0a4de-1234-4567-8901-234567890abc",
+      "name": "Webhook Inicia Prospecção",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "2bc0a4de-1234-4567-8901-234567890abc",
+      "notes": ""
+    },
+    {
+      "parameters": {
+        "jsCode": "const targets = [\n  {\n    \"nome\": \"Condomínio Residencial Vista Mar\",\n    \"tipo\": \"Condomínio\",\n    \"bairro\": \"Copacabana\",\n    \"cidade\": \"Rio de Janeiro\",\n    \"endereco_publico\": \"Rua Barata Ribeiro, 100 - Copacabana\",\n    \"telefone_publico\": \"(21) 99999-0001\",\n    \"email_institucional\": \"sindico@vistamar.com.br\",\n    \"site\": \"www.vistamar.com.br\",\n    \"instagram\": \"@condominiovistamar\",\n    \"facebook\": \"CondominioVistaMar\",\n    \"google_business_link\": \"https://maps.google.com/?cid=123456\",\n    \"dor_provavel\": \"Falta de segurança no acesso de moradores e conta de energia alta\",\n    \"produto_recomendado\": \"CFTV IP, Controle de Acesso e Energia Solar\",\n    \"score_oportunidade\": 0,\n    \"acao_recomendada\": \"Agendar Avaliação Técnica com o Responsável Técnico\",\n    \"status\": \"novo\",\n    \"observacoes\": \"Captado via simulação de busca no Google Places.\"\n  },\n  {\n    \"nome\": \"Colégio Saber e Crescer\",\n    \"tipo\": \"Colégio\",\n    \"bairro\": \"Tijuca\",\n    \"cidade\": \"Rio de Janeiro\",\n    \"endereco_publico\": \"Rua Conde de Bonfim, 500 - Tijuca\",\n    \"telefone_publico\": \"(21) 98888-0002\",\n    \"email_institucional\": \"diretoria@saberecrescer.edu.br\",\n    \"site\": \"www.saberecrescer.edu.br\",\n    \"instagram\": \"@colegiosaberecrescer\",\n    \"facebook\": \"ColegioSaberECrescer\",\n    \"google_business_link\": \"https://maps.google.com/?cid=654321\",\n    \"dor_provavel\": \"Alto consumo de energia devido a ar-condicionado nas salas de aula\",\n    \"produto_recomendado\": \"Sistema de Energia Solar Fotovoltaica (Lei 14.300)\",\n    \"score_oportunidade\": 0,\n    \"acao_recomendada\": \"Apresentar estudo de economia de energia. Agendar Avaliação Técnica.\",\n    \"status\": \"novo\",\n    \"observacoes\": \"Identificado na base de escolas privadas.\"\n  },\n  {\n    \"nome\": \"Restaurante Sabor Carioca\",\n    \"tipo\": \"Restaurante\",\n    \"bairro\": \"Botafogo\",\n    \"cidade\": \"Rio de Janeiro\",\n    \"endereco_publico\": \"Rua Voluntários da Pátria, 300 - Botafogo\",\n    \"telefone_publico\": \"(21) 97777-0003\",\n    \"email_institucional\": \"contato@saborcarioca.com.br\",\n    \"site\": \"www.saborcarioca.com.br\",\n    \"instagram\": \"@saborcariocarj\",\n    \"facebook\": \"RestauranteSaborCarioca\",\n    \"google_business_link\": \"https://maps.google.com/?cid=987654\",\n    \"dor_provavel\": \"Quedas de energia prejudicando refrigeração e segurança\",\n    \"produto_recomendado\": \"Revisão elétrica, Nobreak para CFTV e Automação de iluminação\",\n    \"score_oportunidade\": 0,\n    \"acao_recomendada\": \"Contato telefônico para oferecer Avaliação Técnica de elétrica.\",\n    \"status\": \"novo\",\n    \"observacoes\": \"Alto volume de clientes, precisa de estabilidade.\"\n  }\n];\n\nreturn targets.map(item => ({ json: item }));"
+      },
+      "id": "e2f07ab9-5432-4e89-bdc1-42353ef82bc1",
+      "name": "Simulador de Scraping (Google Places/Bases DL)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        450,
+        300
+      ],
+      "notes": ""
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Inicia Prospecção": {
+      "main": [
+        [
+          {
+            "node": "Simulador de Scraping (Google Places/Bases DL)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c4d0a13c-7b44-4861-a477-742a223fbc01",
+  "id": "manusProspeccao130DlNexus20260523",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}

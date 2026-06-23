@@ -29,26 +29,40 @@
     },
     {
       "parameters": {
-        "operation": "getDistance",
-        "origin": "={{ $('Webhook Recebe Rota').item.json.body.origem }}",
-        "destination": "={{ $('Webhook Recebe Rota').item.json.body.destino }}",
-        "mode": "driving"
+        "method": "GET",
+        "url": "https://maps.googleapis.com/maps/api/distancematrix/json",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "origins",
+              "value": "={{ $('Webhook Recebe Rota').item.json.body.origem }}"
+            },
+            {
+              "name": "destinations",
+              "value": "={{ $('Webhook Recebe Rota').item.json.body.destino }}"
+            },
+            {
+              "name": "mode",
+              "value": "driving"
+            },
+            {
+              "name": "key",
+              "value": "={{ $env.GOOGLE_MAPS_API_KEY || 'SUA_CHAVE_AQUI' }}"
+            }
+          ]
+        },
+        "options": {}
       },
       "id": "maps171DlNexus20260527",
       "name": "Google Maps Routes",
-      "type": "n8n-nodes-base.googleMaps",
-      "typeVersion": 1,
-      "position": [400, 0],
-      "credentials": {
-        "googleMapsApi": {
-          "id": "googleMaps",
-          "name": "Google Maps API"
-        }
-      }
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [400, 0]
     },
     {
       "parameters": {
-        "jsCode": "const webhookData = $('Webhook Recebe Rota').item.json.body || {};\nconst configData = $('Ler Configuração DL Nexus').item.json || {};\nconst mapsData = $input.all()[0].json || {};\n\nif (!webhookData.origem || !webhookData.destino) {\n    return { json: {\n        status: \"Sob Avaliação Técnica\",\n        mensagem: \"Origem ou destino não fornecidos. Aguardando Avaliação Técnica.\"\n    }};\n}\n\nconst precoCombustivel = configData.preco_combustivel || 7.80;\nconst consumoVeiculo = configData.km_por_litro || 16;\n\nlet distanciaMeters = 0;\nlet durationText = 'N/A';\n\nif (mapsData.distance && mapsData.distance.value) {\n    distanciaMeters = mapsData.distance.value;\n}\nif (mapsData.duration && mapsData.duration.text) {\n    durationText = mapsData.duration.text;\n}\n\nlet distanciaKm = distanciaMeters / 1000;\nif (distanciaKm === 0) {\n    return { json: {\n        status: \"Sob Avaliação Técnica\",\n        mensagem: \"Não foi possível calcular a rota via Maps. Aguardando Avaliação Técnica.\"\n    }};\n}\n\nlet zona = (webhookData.zona || '').toLowerCase();\nlet custoEstacionamento = 0;\n\nif (zona.includes('zona sul')) {\n    custoEstacionamento = 45;\n} else if (zona.includes('barra')) {\n    custoEstacionamento = 30;\n} else if (zona.includes('centro')) {\n    custoEstacionamento = 40;\n} else {\n    custoEstacionamento = 20;\n}\n\nlet fatorUrgencia = 1.0;\nlet escopo = (webhookData.escopo || '').toLowerCase();\nif (escopo.includes('chapa') || escopo.includes('fritadeira') || escopo.includes('gastronomia')) {\n    fatorUrgencia = 1.5;\n}\n\nlet custoDeslocamentoBruto = (distanciaKm / consumoVeiculo) * precoCombustivel;\nlet custoTotalInterno = (custoDeslocamentoBruto + custoEstacionamento) * fatorUrgencia;\n\nlet precoRecomendado = custoTotalInterno * 2.5;\n\nreturn { json: {\n    status: \"Sucesso\",\n    faixa_comercial: {\n        minimo: parseFloat((precoRecomendado * 0.9).toFixed(2)),\n        maximo: parseFloat((precoRecomendado * 1.1).toFixed(2))\n    },\n    preco_recomendado: parseFloat(precoRecomendado.toFixed(2)),\n    imposto_estimado_percentual: \"pendência de validação contábil\",\n    detalhes_operacionais: {\n        distancia_km: parseFloat(distanciaKm.toFixed(2)),\n        tempo_estimado: durationText,\n        fator_multiplicador_aplicado: fatorUrgencia,\n        sistema_gestao: \"Fortress\",\n        responsavel: \"Tecnólogo Responsável - Diogo\"\n    }\n}};\n"
+        "jsCode": "const webhookData = $('Webhook Recebe Rota').item.json.body || {};\nconst configData = $('Ler Configuração DL Nexus').item.json || {};\nconst mapsData = $input.all()[0].json || {};\n\nif (!webhookData.origem || !webhookData.destino) {\n    return { json: {\n        status: \"Sob Avaliação Técnica\",\n        mensagem: \"Origem ou destino não fornecidos. Aguardando Avaliação Técnica.\"\n    }};\n}\n\nconst precoCombustivel = configData.preco_combustivel || 7.80;\nconst consumoVeiculo = configData.km_por_litro || 16;\n\nlet distanciaMeters = 0;\nlet durationText = 'N/A';\n\nlet element = {};\nif (mapsData.rows && mapsData.rows[0] && mapsData.rows[0].elements && mapsData.rows[0].elements[0]) {\n    element = mapsData.rows[0].elements[0];\n} else {\n    element = mapsData;\n}\n\nif (element.distance && element.distance.value) {\n    distanciaMeters = element.distance.value;\n}\nif (element.duration && element.duration.text) {\n    durationText = element.duration.text;\n}\n\nlet distanciaKm = distanciaMeters / 1000;\nif (distanciaKm === 0) {\n    return { json: {\n        status: \"Sob Avaliação Técnica\",\n        mensagem: \"Não foi possível calcular a rota via Maps. Aguardando Avaliação Técnica.\"\n    }};\n}\n\nlet zona = (webhookData.zona || '').toLowerCase();\nlet custoEstacionamento = 0;\n\nif (zona.includes('zona sul')) {\n    custoEstacionamento = 45;\n} else if (zona.includes('barra')) {\n    custoEstacionamento = 30;\n} else if (zona.includes('centro')) {\n    custoEstacionamento = 40;\n} else {\n    custoEstacionamento = 20;\n}\n\nlet fatorUrgencia = 1.0;\nlet escopo = (webhookData.escopo || '').toLowerCase();\nif (escopo.includes('chapa') || escopo.includes('fritadeira') || escopo.includes('gastronomia')) {\n    fatorUrgencia = 1.5;\n}\n\nlet custoDeslocamentoBruto = (distanciaKm / consumoVeiculo) * precoCombustivel;\nlet custoTotalInterno = (custoDeslocamentoBruto + custoEstacionamento) * fatorUrgencia;\n\nlet precoRecomendado = custoTotalInterno * 2.5;\n\nreturn { json: {\n    status: \"Sucesso\",\n    faixa_comercial: {\n        minimo: parseFloat((precoRecomendado * 0.9).toFixed(2)),\n        maximo: parseFloat((precoRecomendado * 1.1).toFixed(2))\n    },\n    preco_recomendado: parseFloat(precoRecomendado.toFixed(2)),\n    imposto_estimado_percentual: \"pendência de validação contábil\",\n    detalhes_operacionais: {\n        distancia_km: parseFloat(distanciaKm.toFixed(2)),\n        tempo_estimado: durationText,\n        fator_multiplicador_aplicado: fatorUrgencia,\n        sistema_gestao: \"Fortress\",\n        responsavel: \"Tecnólogo Responsável - Diogo\"\n    }\n}};\n"
       },
       "id": "code171DlNexus20260527",
       "name": "Regras de Precificação Motor (170-179)",

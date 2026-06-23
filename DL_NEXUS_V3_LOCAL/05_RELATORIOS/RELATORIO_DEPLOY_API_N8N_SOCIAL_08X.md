@@ -1,6 +1,6 @@
 # Relatório de Deploy Autônomo - n8n API
 
-**Data:** 2026-05-23T01:40:59.088499
+**Data:** 2026-05-27T20:34:22.333345
 
 ## Status da Execução
 - ❌ Erro ao criar 084: HTTP 400: {"message":"request/body must NOT have additional properties"}

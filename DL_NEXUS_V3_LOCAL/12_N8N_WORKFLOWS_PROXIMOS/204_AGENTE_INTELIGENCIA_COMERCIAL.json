@@ -1,0 +1,120 @@
+{
+  "name": "204_AGENTE_INTELIGENCIA_COMERCIAL",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "agente-inteligencia-comercial",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook",
+      "name": "Webhook Call",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\n// Tenta extrair dados do body\nlet inputData = $json.body || $json;\nreturn { json: inputData };\n"
+      },
+      "id": "parse_input",
+      "name": "Parse Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "={{$env.GEMINI_API_KEY}}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"contents\": [{\"parts\": [{\"text\": \"SISTEMA:\\nVocê é o Agente de Inteligência Comercial. Com base no serviço, pesquise no mercado do Rio de Janeiro a faixa de preço praticada. Posicione o orçamento da DL com base nos diferenciais (garantia, contrato DL Partner).\\n\\nPAYLOAD DO AGENTE:\\n={{JSON.stringify($json)}}\"}]}], \"generationConfig\": {\"response_mime_type\": \"application/json\"}}",
+        "options": {}
+      },
+      "id": "api_llm",
+      "name": "API LLM",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nlet orc_id = $('Parse Input').item.json.orcamento_id || \"ID_NAO_INFORMADO\";\nlet api_response = {};\n\ntry {\n  api_response = JSON.parse($('API LLM').item.json.candidates[0].content.parts[0].text);\n} catch(e) {\n  api_response = { erro: \"Falha ao parsear JSON da LLM\" };\n}\n\nreturn {\n  json: {\n    orcamento_id: orc_id,\n    agente: \"204_AGENTE_INTELIGENCIA_COMERCIAL\",\n    status: api_response.erro ? \"erro\" : \"ok\",\n    score_confianca: api_response.score_confianca || 85,\n    dados: api_response,\n    pendencias: []\n  }\n};\n"
+      },
+      "id": "format_output",
+      "name": "Format Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        600,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Call": {
+      "main": [
+        [
+          {
+            "node": "Parse Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Input": {
+      "main": [
+        [
+          {
+            "node": "API LLM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "API LLM": {
+      "main": [
+        [
+          {
+            "node": "Format Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

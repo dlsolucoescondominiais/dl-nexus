@@ -1,0 +1,454 @@
+{
+  "updatedAt": "2026-05-31T16:30:32.674Z",
+  "createdAt": "2026-05-31T01:33:13.734Z",
+  "id": "drfXzfO4XooJkBRN",
+  "name": "184_MOTOR_IA2_COMERCIAL",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $('Execute Workflow Trigger').item.json;\nconst loc = input.cliente.endereco || '';\nconst bairro = loc.includes('-') ? loc.split('-')[1].trim() : loc;\nreturn { json: { ...input, bairro_referencia: bairro } };"
+      },
+      "id": "parse_local",
+      "name": "Extracao de Localidade",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "={{$env.GEMINI_API_KEY}}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"Você é o Orçamentista Comercial IA da DL Soluções Condominiais. Receba o escopo e o diagnóstico (já avaliado pela IA Técnica). Seu objetivo é: 1) Pesquisar e estimar prestadores/mão de obra baseados na localidade ('\" + $json.bairro_referencia + \"'). 2) Estimar materiais divididos em grupos. 3) Calcular deslocamento. 4) Aplicar margem de lucro (0.35 a 0.45). 5) Retornar um JSON ESTRITO contendo: { \\\"mao_obra\\\": [], \\\"materiais\\\": [], \\\"deslocamento\\\": 0, \\\"totais\\\": { \\\"total_servico\\\": 0, \\\"total_material\\\": 0, \\\"total_geral\\\": 0, \\\"valor_pix\\\": 0, \\\"valor_cartao\\\": 0 }, \\\"condicoes_comerciais\\\": {} }.\\n\\nDADOS DE ENTRADA:\\n\" + JSON.stringify($json) + \"\\n\\nRetorne APENAS o JSON válido sem formatação markdown extra.\"\n        }\n      ]\n    }\n  ],\n  \"generationConfig\": {\n    \"response_mime_type\": \"application/json\"\n  }\n}",
+        "options": {}
+      },
+      "id": "gemini_orcamentista",
+      "name": "Gemini: Orçamentista Comercial",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "={{$env.GEMINI_API_KEY}}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"Você é o Diretor Comercial (QA) da DL. Avalie o orçamento montado pelo Orçamentista Comercial. Regras: 1) O piso mínimo de visita/emergência não pode ser inferior a R$ 450. 2) O valor do Cartão deve ter +9% sobre o PIX. 3) O custo dos materiais deve estar coerente com mercado. Se houver falha matemática ou margem predatória, corrija os totais. Retorne O MESMO ESQUELETO DE JSON (com correções se necessário): { \\\"mao_obra\\\": [], \\\"materiais\\\": [], \\\"deslocamento\\\": 0, \\\"totais\\\": {}, \\\"condicoes_comerciais\\\": {} }.\\n\\nORÇAMENTO INICIAL:\\n\" + $json.candidates[0].content.parts[0].text + \"\\n\\nRetorne APENAS o JSON válido.\"\n        }\n      ]\n    }\n  ],\n  \"generationConfig\": {\n    \"response_mime_type\": \"application/json\"\n  }\n}",
+        "options": {}
+      },
+      "id": "gemini_qa",
+      "name": "Gemini: Conferente Comercial",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        600,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let raw = $json.candidates[0].content.parts[0].text;\nlet parsed = {};\ntry {\n  parsed = JSON.parse(raw);\n} catch(e) {\n  parsed = { erro: \"Falha ao parsear JSON Comercial do Gemini\" };\n}\n\n// Fundir entrada IA1 + IA2\nconst input = $('Extracao de Localidade').item.json;\ninput.comercial = parsed;\n\nreturn { json: input };"
+      },
+      "id": "merge_ia2",
+      "name": "Merge IA 2 Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Extracao de Localidade",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extracao de Localidade": {
+      "main": [
+        [
+          {
+            "node": "Gemini: Orçamentista Comercial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini: Orçamentista Comercial": {
+      "main": [
+        [
+          {
+            "node": "Gemini: Conferente Comercial",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini: Conferente Comercial": {
+      "main": [
+        [
+          {
+            "node": "Merge IA 2 Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "28c1d607-cd97-4eed-b435-c3b1f3be9fd0",
+  "activeVersionId": "28c1d607-cd97-4eed-b435-c3b1f3be9fd0",
+  "versionCounter": 17,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-31T01:33:13.734Z",
+      "createdAt": "2026-05-31T01:33:13.734Z",
+      "role": "workflow:owner",
+      "workflowId": "drfXzfO4XooJkBRN",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-31T01:33:13.742Z",
+    "createdAt": "2026-05-31T01:33:13.742Z",
+    "versionId": "28c1d607-cd97-4eed-b435-c3b1f3be9fd0",
+    "workflowId": "drfXzfO4XooJkBRN",
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "trigger",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const input = $('Execute Workflow Trigger').item.json;\nconst loc = input.cliente.endereco || '';\nconst bairro = loc.includes('-') ? loc.split('-')[1].trim() : loc;\nreturn { json: { ...input, bairro_referencia: bairro } };"
+        },
+        "id": "parse_local",
+        "name": "Extracao de Localidade",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          200,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "key",
+                "value": "={{$env.GEMINI_API_KEY}}"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"Você é o Orçamentista Comercial IA da DL Soluções Condominiais. Receba o escopo e o diagnóstico (já avaliado pela IA Técnica). Seu objetivo é: 1) Pesquisar e estimar prestadores/mão de obra baseados na localidade ('\" + $json.bairro_referencia + \"'). 2) Estimar materiais divididos em grupos. 3) Calcular deslocamento. 4) Aplicar margem de lucro (0.35 a 0.45). 5) Retornar um JSON ESTRITO contendo: { \\\"mao_obra\\\": [], \\\"materiais\\\": [], \\\"deslocamento\\\": 0, \\\"totais\\\": { \\\"total_servico\\\": 0, \\\"total_material\\\": 0, \\\"total_geral\\\": 0, \\\"valor_pix\\\": 0, \\\"valor_cartao\\\": 0 }, \\\"condicoes_comerciais\\\": {} }.\\n\\nDADOS DE ENTRADA:\\n\" + JSON.stringify($json) + \"\\n\\nRetorne APENAS o JSON válido sem formatação markdown extra.\"\n        }\n      ]\n    }\n  ],\n  \"generationConfig\": {\n    \"response_mime_type\": \"application/json\"\n  }\n}",
+          "options": {}
+        },
+        "id": "gemini_orcamentista",
+        "name": "Gemini: Orçamentista Comercial",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          400,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent",
+          "sendQuery": true,
+          "queryParameters": {
+            "parameters": [
+              {
+                "name": "key",
+                "value": "={{$env.GEMINI_API_KEY}}"
+              }
+            ]
+          },
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"Você é o Diretor Comercial (QA) da DL. Avalie o orçamento montado pelo Orçamentista Comercial. Regras: 1) O piso mínimo de visita/emergência não pode ser inferior a R$ 450. 2) O valor do Cartão deve ter +9% sobre o PIX. 3) O custo dos materiais deve estar coerente com mercado. Se houver falha matemática ou margem predatória, corrija os totais. Retorne O MESMO ESQUELETO DE JSON (com correções se necessário): { \\\"mao_obra\\\": [], \\\"materiais\\\": [], \\\"deslocamento\\\": 0, \\\"totais\\\": {}, \\\"condicoes_comerciais\\\": {} }.\\n\\nORÇAMENTO INICIAL:\\n\" + $json.candidates[0].content.parts[0].text + \"\\n\\nRetorne APENAS o JSON válido.\"\n        }\n      ]\n    }\n  ],\n  \"generationConfig\": {\n    \"response_mime_type\": \"application/json\"\n  }\n}",
+          "options": {}
+        },
+        "id": "gemini_qa",
+        "name": "Gemini: Conferente Comercial",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          600,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "let raw = $json.candidates[0].content.parts[0].text;\nlet parsed = {};\ntry {\n  parsed = JSON.parse(raw);\n} catch(e) {\n  parsed = { erro: \"Falha ao parsear JSON Comercial do Gemini\" };\n}\n\n// Fundir entrada IA1 + IA2\nconst input = $('Extracao de Localidade').item.json;\ninput.comercial = parsed;\n\nreturn { json: input };"
+        },
+        "id": "merge_ia2",
+        "name": "Merge IA 2 Data",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          800,
+          0
+        ]
+      }
+    ],
+    "connections": {
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "Extracao de Localidade",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extracao de Localidade": {
+        "main": [
+          [
+            {
+              "node": "Gemini: Orçamentista Comercial",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gemini: Orçamentista Comercial": {
+        "main": [
+          [
+            {
+              "node": "Gemini: Conferente Comercial",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gemini: Conferente Comercial": {
+        "main": [
+          [
+            {
+              "node": "Merge IA 2 Data",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-06-15T03:48:28.229Z",
+        "id": 2457,
+        "workflowId": "drfXzfO4XooJkBRN",
+        "versionId": "28c1d607-cd97-4eed-b435-c3b1f3be9fd0",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:28.236Z",
+        "id": 2458,
+        "workflowId": "drfXzfO4XooJkBRN",
+        "versionId": "28c1d607-cd97-4eed-b435-c3b1f3be9fd0",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-31T01:33:20.867Z",
+        "id": 2093,
+        "workflowId": "drfXzfO4XooJkBRN",
+        "versionId": "28c1d607-cd97-4eed-b435-c3b1f3be9fd0",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-31T15:55:33.481Z",
+        "id": 2099,
+        "workflowId": "drfXzfO4XooJkBRN",
+        "versionId": "28c1d607-cd97-4eed-b435-c3b1f3be9fd0",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-31T15:55:33.491Z",
+        "id": 2100,
+        "workflowId": "drfXzfO4XooJkBRN",
+        "versionId": "28c1d607-cd97-4eed-b435-c3b1f3be9fd0",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-31T15:55:45.818Z",
+        "id": 2107,
+        "workflowId": "drfXzfO4XooJkBRN",
+        "versionId": "28c1d607-cd97-4eed-b435-c3b1f3be9fd0",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-31T15:55:45.827Z",
+        "id": 2108,
+        "workflowId": "drfXzfO4XooJkBRN",
+        "versionId": "28c1d607-cd97-4eed-b435-c3b1f3be9fd0",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-31T16:30:32.696Z",
+        "id": 2116,
+        "workflowId": "drfXzfO4XooJkBRN",
+        "versionId": "28c1d607-cd97-4eed-b435-c3b1f3be9fd0",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-31T16:30:32.705Z",
+        "id": 2117,
+        "workflowId": "drfXzfO4XooJkBRN",
+        "versionId": "28c1d607-cd97-4eed-b435-c3b1f3be9fd0",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-31T16:30:44.719Z",
+        "id": 2126,
+        "workflowId": "drfXzfO4XooJkBRN",
+        "versionId": "28c1d607-cd97-4eed-b435-c3b1f3be9fd0",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-31T16:30:44.728Z",
+        "id": 2127,
+        "workflowId": "drfXzfO4XooJkBRN",
+        "versionId": "28c1d607-cd97-4eed-b435-c3b1f3be9fd0",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

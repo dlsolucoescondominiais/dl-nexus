@@ -1,0 +1,233 @@
+{
+  "updatedAt": "2026-05-30T05:33:58.256Z",
+  "createdAt": "2026-05-27T23:36:50.487Z",
+  "id": "afoSLtd5loytvNV9",
+  "name": "172_CALCULAR_MAO_DE_OBRA",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "calcular-mao-obra-172",
+        "options": {}
+      },
+      "id": "22ff06cd-0f5a-472e-8360-15bd8fc10001",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "calcularMaoObra172DlNexus20260527"
+    },
+    {
+      "parameters": {
+        "resource": "event",
+        "operation": "getAll",
+        "calendar": "primary",
+        "limit": 10,
+        "options": {}
+      },
+      "id": "9ca9f0bc-c309-42b7-8db2-dfd9e3b40002",
+      "name": "Google Calendar",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "placeholder_google_calendar_oauth2",
+          "name": "Google Calendar OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const webhookItems = $('Webhook').all();\nconst result = [];\n\nfor (let i = 0; i < webhookItems.length; i++) {\n  const data = webhookItems[i].json.body || webhookItems[i].json || {};\n  \n  // Extrair dados críticos\n  const complexidade = data.complexidade;\n  const dataServicoStr = data.data_servico || new Date().toISOString();\n  const dataServico = new Date(dataServicoStr);\n  const horaServico = dataServico.getHours();\n  const diaSemana = dataServico.getDay();\n  \n  const temGastronomia = data.equipamentos && (data.equipamentos.includes('chapa') || data.equipamentos.includes('fritadeira') || data.gastronomia === true);\n  \n  // Validar dados críticos\n  if (!complexidade) {\n    result.push({\n      json: {\n        status: \"Sob Avaliação Técnica\",\n        motivo: \"Faltam dados críticos (complexidade) para calcular a mão de obra.\"\n      }\n    });\n    continue;\n  }\n  \n  // Hora técnica base\n  let horaTecnica = 120;\n  if (complexidade === 'critica') horaTecnica = 220;\n  \n  // Urgência / Multiplicadores de Tempo\n  let multiplicadorUrgencia = 1.0;\n  if (diaSemana === 0) {\n    multiplicadorUrgencia = 2.5; // Domingo\n  } else if (horaServico >= 18 || horaServico < 6) {\n    multiplicadorUrgencia = 2.0; // Noite\n  }\n  \n  // Risco\n  let multiplicadorRisco = 1.0;\n  if (temGastronomia) {\n    multiplicadorRisco = 1.2;\n  }\n  \n  // Cálculo final\n  const horasEstimadas = data.horas_estimadas || 1;\n  const custoInterno = horaTecnica * multiplicadorUrgencia * multiplicadorRisco * horasEstimadas;\n  \n  // Formatação da saída - não expor custo interno\n  const margemLucro = 1.4;\n  const precoRecomendado = Math.round(custoInterno * margemLucro * 100) / 100;\n  const faixaMin = Math.round(precoRecomendado * 0.9 * 100) / 100;\n  const faixaMax = Math.round(precoRecomendado * 1.15 * 100) / 100;\n  \n  result.push({\n    json: {\n      status: \"Sucesso\",\n      preco_recomendado: precoRecomendado,\n      faixa_comercial: {\n        min: faixaMin,\n        max: faixaMax\n      },\n      imposto_estimado_percentual: \"imposto_estimado_percentual\", // Pendente de validação contábil\n      detalhes_ocultos: \"Custo interno ocultado conforme diretriz.\",\n      multiplicadores_aplicados: {\n        urgencia: multiplicadorUrgencia,\n        risco: multiplicadorRisco,\n        domingo: diaSemana === 0,\n        noturno: (horaServico >= 18 || horaServico < 6),\n        gastronomia: temGastronomia\n      }\n    }\n  });\n}\n\nreturn result;"
+      },
+      "id": "e44d3ba0-25bc-48d6-8488-82db3b720003",
+      "name": "Calcular Mão de Obra",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar": {
+      "main": [
+        [
+          {
+            "node": "Calcular Mão de Obra",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "aee8f0a0-13e9-4782-a556-b54f32eac4df",
+  "activeVersionId": "aee8f0a0-13e9-4782-a556-b54f32eac4df",
+  "versionCounter": 9,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-27T23:36:50.487Z",
+      "createdAt": "2026-05-27T23:36:50.487Z",
+      "role": "workflow:owner",
+      "workflowId": "afoSLtd5loytvNV9",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-27T23:36:50.491Z",
+    "createdAt": "2026-05-27T23:36:50.491Z",
+    "versionId": "aee8f0a0-13e9-4782-a556-b54f32eac4df",
+    "workflowId": "afoSLtd5loytvNV9",
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "calcular-mao-obra-172",
+          "options": {}
+        },
+        "id": "22ff06cd-0f5a-472e-8360-15bd8fc10001",
+        "name": "Webhook",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 1.1,
+        "position": [
+          0,
+          0
+        ],
+        "webhookId": "calcularMaoObra172DlNexus20260527"
+      },
+      {
+        "parameters": {
+          "resource": "event",
+          "operation": "getAll",
+          "calendar": "primary",
+          "limit": 10,
+          "options": {}
+        },
+        "id": "9ca9f0bc-c309-42b7-8db2-dfd9e3b40002",
+        "name": "Google Calendar",
+        "type": "n8n-nodes-base.googleCalendar",
+        "typeVersion": 1,
+        "position": [
+          220,
+          0
+        ],
+        "credentials": {
+          "googleCalendarOAuth2Api": {
+            "id": "placeholder_google_calendar_oauth2",
+            "name": "Google Calendar OAuth2"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const webhookItems = $('Webhook').all();\nconst result = [];\n\nfor (let i = 0; i < webhookItems.length; i++) {\n  const data = webhookItems[i].json.body || webhookItems[i].json || {};\n  \n  // Extrair dados críticos\n  const complexidade = data.complexidade;\n  const dataServicoStr = data.data_servico || new Date().toISOString();\n  const dataServico = new Date(dataServicoStr);\n  const horaServico = dataServico.getHours();\n  const diaSemana = dataServico.getDay();\n  \n  const temGastronomia = data.equipamentos && (data.equipamentos.includes('chapa') || data.equipamentos.includes('fritadeira') || data.gastronomia === true);\n  \n  // Validar dados críticos\n  if (!complexidade) {\n    result.push({\n      json: {\n        status: \"Sob Avaliação Técnica\",\n        motivo: \"Faltam dados críticos (complexidade) para calcular a mão de obra.\"\n      }\n    });\n    continue;\n  }\n  \n  // Hora técnica base\n  let horaTecnica = 120;\n  if (complexidade === 'critica') horaTecnica = 220;\n  \n  // Urgência / Multiplicadores de Tempo\n  let multiplicadorUrgencia = 1.0;\n  if (diaSemana === 0) {\n    multiplicadorUrgencia = 2.5; // Domingo\n  } else if (horaServico >= 18 || horaServico < 6) {\n    multiplicadorUrgencia = 2.0; // Noite\n  }\n  \n  // Risco\n  let multiplicadorRisco = 1.0;\n  if (temGastronomia) {\n    multiplicadorRisco = 1.2;\n  }\n  \n  // Cálculo final\n  const horasEstimadas = data.horas_estimadas || 1;\n  const custoInterno = horaTecnica * multiplicadorUrgencia * multiplicadorRisco * horasEstimadas;\n  \n  // Formatação da saída - não expor custo interno\n  const margemLucro = 1.4;\n  const precoRecomendado = Math.round(custoInterno * margemLucro * 100) / 100;\n  const faixaMin = Math.round(precoRecomendado * 0.9 * 100) / 100;\n  const faixaMax = Math.round(precoRecomendado * 1.15 * 100) / 100;\n  \n  result.push({\n    json: {\n      status: \"Sucesso\",\n      preco_recomendado: precoRecomendado,\n      faixa_comercial: {\n        min: faixaMin,\n        max: faixaMax\n      },\n      imposto_estimado_percentual: \"imposto_estimado_percentual\", // Pendente de validação contábil\n      detalhes_ocultos: \"Custo interno ocultado conforme diretriz.\",\n      multiplicadores_aplicados: {\n        urgencia: multiplicadorUrgencia,\n        risco: multiplicadorRisco,\n        domingo: diaSemana === 0,\n        noturno: (horaServico >= 18 || horaServico < 6),\n        gastronomia: temGastronomia\n      }\n    }\n  });\n}\n\nreturn result;"
+        },
+        "id": "e44d3ba0-25bc-48d6-8488-82db3b720003",
+        "name": "Calcular Mão de Obra",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          440,
+          0
+        ]
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Google Calendar",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Calendar": {
+        "main": [
+          [
+            {
+              "node": "Calcular Mão de Obra",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-05-30T05:33:58.400Z",
+        "id": 2061,
+        "workflowId": "afoSLtd5loytvNV9",
+        "versionId": "aee8f0a0-13e9-4782-a556-b54f32eac4df",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:16.912Z",
+        "id": 2393,
+        "workflowId": "afoSLtd5loytvNV9",
+        "versionId": "aee8f0a0-13e9-4782-a556-b54f32eac4df",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:16.921Z",
+        "id": 2394,
+        "workflowId": "afoSLtd5loytvNV9",
+        "versionId": "aee8f0a0-13e9-4782-a556-b54f32eac4df",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

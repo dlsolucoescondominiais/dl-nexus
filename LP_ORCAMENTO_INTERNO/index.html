@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Proposta Comercial Técnica | DL Soluções Condominiais</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+      --dl-bg: #f4f7f9;
+      --dl-surface: #ffffff;
+      --dl-text: #2c3e50;
+      --dl-text-muted: #5b6b7c;
+      --dl-heading: #0b1f33;
+      --dl-border: #dde4ec;
+      --dl-blue-dark: #0b1f33;
+      --dl-blue: #123a5f;
+      --dl-gold: #c8962e;
+      --dl-gold-light: #e8b84a;
+      --dl-success: #087443;
+      --dl-danger: #b42318;
+      --radius-lg: 12px;
+      --radius-md: 8px;
+      --shadow-doc: 0 10px 40px rgba(11,31,51,0.08);
+      --transition: 0.3s ease;
+    }
+
+    [data-theme="dark"] {
+      --dl-bg: #071422;
+      --dl-surface: #0f2640;
+      --dl-text: #e8edf2;
+      --dl-text-muted: #94a3b8;
+      --dl-heading: #f1f5f9;
+      --dl-border: #1e3a56;
+      --shadow-doc: 0 10px 40px rgba(0,0,0,0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--dl-bg); color: var(--dl-text); line-height: 1.6; transition: background var(--transition), color var(--transition); }
+    
+    .document-container { max-width: 900px; margin: 40px auto; background: var(--dl-surface); border-radius: var(--radius-lg); box-shadow: var(--shadow-doc); overflow: hidden; }
+    
+    /* Header Institucional */
+    .header { background: var(--dl-blue-dark); color: white; padding: 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; border-bottom: 4px solid var(--dl-gold); }
+    .header-logo { max-width: 200px; }
+    .header-logo img { max-width: 100%; height: auto; filter: brightness(0) invert(1); }
+    .header-legal { font-size: 0.8rem; opacity: 0.8; text-align: right; line-height: 1.5; }
+    
+    .client-data { padding: 30px 40px; border-bottom: 1px solid var(--dl-border); background: var(--dl-bg); display: flex; justify-content: space-between; align-items: center; }
+    .client-data h2 { font-family: 'Outfit', sans-serif; font-size: 1.4rem; color: var(--dl-heading); margin-bottom: 4px; }
+    .client-data p { font-size: 0.9rem; color: var(--dl-text-muted); }
+    .proposal-id { text-align: right; }
+    .proposal-id span { display: block; font-size: 0.8rem; color: var(--dl-text-muted); text-transform: uppercase; letter-spacing: 1px; }
+    .proposal-id strong { font-family: 'Outfit', sans-serif; font-size: 1.2rem; color: var(--dl-gold); }
+
+    /* Seções */
+    .section { padding: 40px; border-bottom: 1px solid var(--dl-border); }
+    .section:last-child { border-bottom: none; }
+    .section-title { font-family: 'Outfit', sans-serif; font-size: 1.5rem; color: var(--dl-blue); margin-bottom: 24px; display: flex; align-items: center; gap: 10px; }
+    [data-theme="dark"] .section-title { color: var(--dl-gold-light); }
+    .section-title i { color: var(--dl-gold); }
+
+    /* Matriz de Investimento */
+    .investment-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px; }
+    .price-card { border: 1px solid var(--dl-border); border-radius: var(--radius-md); padding: 24px; text-align: center; position: relative; background: var(--dl-bg); transition: transform var(--transition); }
+    .price-card:hover { transform: translateY(-3px); }
+    .price-card.featured { border-color: var(--dl-gold); background: rgba(200,150,46,0.05); }
+    .price-card.featured::before { content: 'MELHOR OPÇÃO'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--dl-gold); color: #1a1a1a; font-size: 0.7rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; letter-spacing: 1px; }
+    .price-card h4 { font-size: 1rem; color: var(--dl-text-muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+    .price-value { font-family: 'Outfit', sans-serif; font-size: 2.2rem; font-weight: 800; color: var(--dl-heading); margin-bottom: 8px; }
+    .price-desc { font-size: 0.85rem; color: var(--dl-success); font-weight: 600; }
+    .price-card:not(.featured) .price-desc { color: var(--dl-danger); }
+
+    /* Listas & Tabelas */
+    .feature-list { list-style: none; margin-bottom: 20px; }
+    .feature-list li { margin-bottom: 12px; padding-left: 28px; position: relative; }
+    .feature-list li::before { content: '\f00c'; font-family: 'Font Awesome 6 Free'; font-weight: 900; position: absolute; left: 0; top: 2px; color: var(--dl-success); }
+    
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+    .box-incluso h3 { color: var(--dl-success); font-size: 1.1rem; margin-bottom: 16px; border-bottom: 2px solid var(--dl-success); padding-bottom: 8px; }
+    .box-nao-incluso h3 { color: var(--dl-danger); font-size: 1.1rem; margin-bottom: 16px; border-bottom: 2px solid var(--dl-danger); padding-bottom: 8px; }
+    .box-nao-incluso .feature-list li::before { content: '\f00d'; color: var(--dl-danger); }
+
+    /* Cláusulas */
+    .alert-box { background: rgba(200,150,46,0.1); border-left: 4px solid var(--dl-gold); padding: 16px 20px; border-radius: 0 var(--radius-md) var(--radius-md) 0; font-size: 0.95rem; margin-top: 20px; }
+    .alert-box i { color: var(--dl-gold); margin-right: 8px; }
+
+    /* CTA / Formulário */
+    .cta-section { background: var(--dl-blue-dark); text-align: center; padding: 50px 40px; color: white; }
+    .cta-section h2 { font-family: 'Outfit', sans-serif; font-size: 1.8rem; margin-bottom: 24px; }
+    .btn-approve { background: var(--dl-success); color: white; border: none; padding: 16px 40px; font-size: 1.2rem; font-weight: 700; border-radius: var(--radius-md); cursor: pointer; transition: all var(--transition); display: inline-flex; align-items: center; gap: 10px; font-family: 'Inter', sans-serif; }
+    .btn-approve:hover { background: #065f36; transform: scale(1.02); box-shadow: 0 8px 24px rgba(8,116,67,0.4); }
+
+    /* Theme Toggle */
+    .theme-switch { position: fixed; top: 20px; right: 20px; background: var(--dl-surface); border: 1px solid var(--dl-border); width: 44px; height: 44px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 100; box-shadow: var(--shadow-doc); color: var(--dl-heading); }
+
+    @media (max-width: 768px) {
+      .header { flex-direction: column; text-align: center; }
+      .header-legal { text-align: center; }
+      .client-data { flex-direction: column; text-align: center; gap: 16px; }
+      .proposal-id { text-align: center; }
+      .compare-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="theme-switch" id="theme-btn" aria-label="Alternar Tema">🌙</button>
+
+  <div class="document-container">
+    
+    <!-- CABEÇALHO INSTITUCIONAL -->
+    <header class="header">
+      <div class="header-logo">
+        <!-- Logo Branca Forçada -->
+        <img src="../DL_SITE_B2B/assets/logo 250x150px sem fundo.png" alt="DL Soluções Condominiais">
+      </div>
+      <div class="header-legal">
+        <strong>DL SOLUÇÕES CONDOMINIAIS LTDA</strong><br>
+        CNPJ: 36.354.697/0001-46 | CREA-RJ: 2022346653<br>
+        Tecnólogo Responsável: Diogo Luiz de Oliveira<br>
+        Associada ABESE-SP
+      </div>
+    </header>
+
+    <!-- DADOS DO CLIENTE (Dinâmicos) -->
+    <div class="client-data">
+      <div>
+        <h2>Condomínio Edifício Exemplo</h2>
+        <p>A/C: Síndico João da Silva | Rio de Janeiro, RJ</p>
+      </div>
+      <div class="proposal-id">
+        <span>Proposta Oficial nº</span>
+        <strong>PRP-2026-0001</strong>
+      </div>
+    </div>
+
+    <!-- ESCOPO TÉCNICO -->
+    <section class="section">
+      <h3 class="section-title"><i class="fas fa-microchip"></i> Escopo Técnico (Tecnologia Fortress)</h3>
+      <p>Implantação do ecossistema <strong>Fortress</strong> para modernização do Controle de Acesso e Segurança Perimetral. O projeto visa a substituição integral do maquinário analógico por tecnologia IP de alta definição, com integração à portaria autônoma.</p>
+      <br>
+      <ul class="feature-list">
+        <li>Instalação de 16 Câmeras IP Full HD com visão noturna (ColorVu).</li>
+        <li>Substituição de Quadro de Comando para portões com redundância.</li>
+        <li>Instalação de Leitores Faciais nos acessos de pedestres.</li>
+        <li>Configuração de NVR com gravação para 30 dias ininterruptos.</li>
+      </ul>
+    </section>
+
+    <!-- PREMISSAS DO PROJETO -->
+    <section class="section">
+      <h3 class="section-title"><i class="fas fa-clipboard-check"></i> Premissas do Projeto</h3>
+      <p>A execução do serviço acima listado será realizada respeitando as seguintes premissas técnicas:</p>
+      <ul class="feature-list">
+        <li>Acesso liberado às áreas comuns e shaft's das 08h às 17h, de seg a sex.</li>
+        <li>Existência de infraestrutura (eletrodutos) desobstruída para passagem dos cabos.</li>
+        <li>Fornecimento de internet banda larga por parte do contratante no ponto do NVR.</li>
+      </ul>
+    </section>
+
+    <!-- INCLUSO VS NÃO INCLUSO -->
+    <section class="section">
+      <h3 class="section-title"><i class="fas fa-list-ul"></i> Demarcação de Responsabilidade</h3>
+      <div class="compare-grid">
+        <div class="box-incluso">
+          <h3>O que está INCLUSO</h3>
+          <ul class="feature-list">
+            <li>Mão de obra especializada.</li>
+            <li>Emissão de ART (CREA-RJ).</li>
+            <li>Seguro de obra durante a execução.</li>
+            <li>Treinamento da equipe de portaria.</li>
+          </ul>
+        </div>
+        <div class="box-nao-incluso">
+          <h3>O que NÃO está incluso</h3>
+          <ul class="feature-list">
+            <li>Obras civis, quebras de parede ou pintura.</li>
+            <li>Aluguel de plataforma elevatória (caso necessário).</li>
+            <li>Upgrade de links de internet.</li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- Cláusula de Materiais (Obrigatória) -->
+      <div class="alert-box">
+        <i class="fas fa-exclamation-triangle"></i>
+        <strong>Cláusula de Materiais:</strong> Materiais, peças, cabos, conectores e itens de infraestrutura são cobrados à parte, salvo quando explicitamente incluídos nas premissas.
+      </div>
+    </section>
+
+    <!-- MATRIZ DE INVESTIMENTO -->
+    <section class="section">
+      <h3 class="section-title"><i class="fas fa-chart-line"></i> Matriz de Investimento Comercial</h3>
+      <p>O Motor de Precificação DL Nexus calculou os seguintes valores de investimento para a sua infraestrutura, garantindo transparência total.</p>
+      
+      <div class="investment-grid">
+        <!-- Preço à Vista -->
+        <div class="price-card featured">
+          <h4>À Vista (PIX / Transferência)</h4>
+          <div class="price-value">R$ 14.500,00</div>
+          <div class="price-desc">Desconto aplicado: 6% OFF</div>
+        </div>
+        <!-- Preço Cartão/Boleto -->
+        <div class="price-card">
+          <h4>Cartão ou Boleto</h4>
+          <div class="price-value">R$ 15.425,00</div>
+          <div class="price-desc">Inclui Taxa Operacional de 9%</div>
+        </div>
+        <!-- Parcelamento -->
+        <div class="price-card">
+          <h4>Condição de Parcelamento</h4>
+          <div class="price-value">10x R$ 1.542,50</div>
+          <div class="price-desc" style="color: var(--dl-text-muted);">Sem juros no cartão de crédito</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLA E GARANTIA -->
+    <section class="section">
+      <h3 class="section-title"><i class="fas fa-shield-alt"></i> SLA e Garantias (DL Partner)</h3>
+      <p>Acreditamos em relacionamentos de longo prazo. O seu condomínio estará protegido pelas seguintes garantias:</p>
+      <ul class="feature-list">
+        <li><strong>Garantia de Execução:</strong> 90 dias para serviços de mão de obra a partir da entrega.</li>
+        <li><strong>Garantia de Equipamentos:</strong> Conforme política do fabricante (geralmente 12 meses).</li>
+        <li><strong>SLA de Atendimento Técnico:</strong> Tempo de resposta máximo de 4 horas em horário comercial para falhas críticas.</li>
+      </ul>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section class="cta-section">
+      <h2>Pronto para proteger o seu patrimônio?</h2>
+      <p style="margin-bottom: 30px; opacity: 0.9;">Ao aprovar esta proposta, o processo de faturamento e agendamento de execução é iniciado automaticamente.</p>
+      
+      <!-- Formulário apontando pro Webhook -->
+      <form action="https://n8n.dlsolucoescondominiais.com.br/webhook/start" method="POST">
+        <!-- Campos Ocultos para o n8n -->
+        <input type="hidden" name="acao" value="aprovar_proposta">
+        <input type="hidden" name="proposta_id" value="PRP-2026-0001">
+        <input type="hidden" name="cliente_nome" value="Condomínio Edifício Exemplo">
+        
+        <button type="submit" class="btn-approve">
+          <i class="fas fa-check-circle"></i> Aprovar Proposta Técnica
+        </button>
+      </form>
+    </section>
+
+  </div>
+
+  <script>
+    // Theme Toggle Logic
+    const themeBtn = document.getElementById('theme-btn');
+    const savedTheme = localStorage.getItem('dl-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    themeBtn.textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+    themeBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('dl-theme', next);
+      themeBtn.textContent = next === 'dark' ? '☀️' : '🌙';
+    });
+  </script>
+</body>
+</html>

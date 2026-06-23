@@ -1,0 +1,781 @@
+{
+  "name": "001_TELEGRAM_RECEPCAO_ANINHA_V3",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "telegram_trigger_node",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "4sGUaygxQklSMa3Z",
+          "name": "Aninha Telegram Bot (DL Nexus)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const msg = $input.item.json.message || {};\nconst canal = 'telegram';\nconst chat_id = String(msg.chat?.id || '');\nconst message_id = String(msg.message_id || '');\nconst texto = msg.text || '';\nconst first_name = msg.from?.first_name || '';\nconst last_name = msg.from?.last_name || '';\nconst nome_usuario = (first_name + ' ' + last_name).trim() || 'Cliente Telegram';\nconst username = msg.from?.username || '';\n\nlet hash_mensagem = message_id;\nif (!message_id) {\n  const min = new Date().toISOString().substring(0, 16); // yyyy-mm-ddThh:mm\n  hash_mensagem = canal + '_' + chat_id + '_' + texto.substring(0, 50) + '_' + min;\n}\n\nreturn [{\n  json: {\n    canal,\n    chat_id,\n    message_id,\n    hash_mensagem,\n    nome_usuario,\n    username,\n    texto\n  }\n}];"
+      },
+      "id": "normalizar_entrada_node",
+      "name": "Normalizar Entrada",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/mensagens_processadas_aninha?canal=eq.telegram&chat_id=eq.{{ $json.chat_id }}&hash_mensagem=eq.{{ $json.hash_mensagem }}&limit=1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_ANON_KEY}}"
+            }
+          ]
+        },
+        "options": {
+          "splitIntoItems": false
+        }
+      },
+      "id": "buscar_processada_node",
+      "name": "Buscar Processada",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        500,
+        300
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.length > 0 }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "mensagem_duplicada_node",
+      "name": "Mensagem Duplicada?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        700,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/eventos_aninha",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { canal: \"telegram\", chat_id: $node[\"Normalizar Entrada\"].json.chat_id, message_id: $node[\"Normalizar Entrada\"].json.message_id, direcao: \"sistema\", tipo_evento: \"mensagem_duplicada_ignorada\", conteudo: \"Mensagem duplicada ignorada\", payload: $node[\"Normalizar Entrada\"].json } }}"
+      },
+      "id": "logar_duplicidade_node",
+      "name": "Logar Duplicidade",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        150
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/mensagens_processadas_aninha",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { canal: \"telegram\", chat_id: $node[\"Normalizar Entrada\"].json.chat_id, message_id: $node[\"Normalizar Entrada\"].json.message_id, hash_mensagem: $node[\"Normalizar Entrada\"].json.hash_mensagem } }}"
+      },
+      "id": "marcar_processada_node",
+      "name": "Marcar Processada",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        400
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/conversas_aninha?canal=eq.telegram&chat_id=eq.{{ $node[\"Normalizar Entrada\"].json.chat_id }}&limit=1",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_ANON_KEY}}"
+            }
+          ]
+        },
+        "options": {
+          "splitIntoItems": false
+        }
+      },
+      "id": "buscar_conversa_node",
+      "name": "Buscar Conversa",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1100,
+        400
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.length > 0 }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "conversa_existe_node",
+      "name": "Conversa Existe?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1300,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/conversas_aninha",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { canal: \"telegram\", chat_id: $node[\"Normalizar Entrada\"].json.chat_id, username: $node[\"Normalizar Entrada\"].json.username, nome_usuario: $node[\"Normalizar Entrada\"].json.nome_usuario, etapa_funil: \"inicio\", status: \"em_atendimento\", dados_coletados: {} } }}"
+      },
+      "id": "criar_conversa_node",
+      "name": "Criar Conversa",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1500,
+        300
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const normalizado = $node[\"Normalizar Entrada\"].json;\nconst conversa = $items(\"Buscar Conversa\");\n\nlet contexto = {\n  intencao_atual: \"indefinido\",\n  etapa_funil: \"inicio\",\n  segmento: \"indefinido\",\n  dados_coletados: {},\n  ultima_mensagem: \"\",\n  ultima_resposta: \"\"\n};\n\nconst firstItem = (conversa.length > 0) ? conversa[0].json : null;\nconst c = (firstItem && !firstItem.error) ? (Array.isArray(firstItem) ? firstItem[0] : firstItem) : null;\nif (c && c.id) {\n  contexto.intencao_atual = c.intencao_atual || \"indefinido\";\n  contexto.etapa_funil = c.etapa_funil || \"inicio\";\n  contexto.segmento = c.segmento || \"indefinido\";\n  contexto.dados_coletados = c.dados_coletados || {};\n  contexto.ultima_mensagem = c.ultima_mensagem || \"\";\n  contexto.ultima_resposta = c.ultima_resposta || \"\";\n}\n\nreturn [{\n  json: {\n    canal: normalizado.canal,\n    chat_id: normalizado.chat_id,\n    message_id: normalizado.message_id,\n    nome_usuario: normalizado.nome_usuario,\n    username: normalizado.username,\n    mensagem_atual: normalizado.texto,\n    contexto: contexto\n  }\n}];"
+      },
+      "id": "preparar_payload_motor_node",
+      "name": "Preparar Payload Motor",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1750,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-aninha-atendimento",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "aninha_atendimento_node",
+      "name": "Aninha Atendimento",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1950,
+        400
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.resposta_cliente !== undefined && $json.resposta_cliente !== null }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "ia_retornou_resposta_node",
+      "name": "IA Retornou Resposta?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        2150,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const err = $node[\"Aninha Atendimento\"].json.error || $node[\"Aninha Atendimento\"].json;\nlet userMsg = '';\ntry {\n  userMsg = ($node[\"Normalizar Entrada\"].json.texto || '').toLowerCase();\n} catch (e) {\n  userMsg = '';\n}\n\nconst residentialKeywords = [\n  \"apartamento\", \"apto\", \"minha casa\", \"residência\", \"residencial\", \n  \"chuveiro\", \"tomada\", \"disjuntor do meu apartamento\", \"casa\"\n];\nlet isResidential = false;\nfor (const keyword of residentialKeywords) {\n  if (userMsg.includes(keyword)) {\n    isResidential = true;\n    break;\n  }\n}\n\nlet result = {};\nif (isResidential) {\n  result = {\n    responder_cliente: true,\n    resposta_cliente: \"No momento, a DL Soluções Condominiais atende demandas técnicas voltadas a condomínios, escolas, empresas e suporte a equipamentos profissionais. Para esse tipo de solicitação residencial avulsa, não conseguimos seguir com atendimento.\",\n    intencao_atual: \"residencial_bloqueado\",\n    etapa_funil: \"bloqueado_residencial\",\n    segmento: \"residencial\",\n    dados_coletados: {},\n    lead_qualificado: false,\n    encaminhar_humano: false,\n    motivo_encaminhamento: null,\n    bloquear: true,\n    motivo_bloqueio: \"atendimento residencial avulsa\",\n    is_fallback: true,\n    error_details: JSON.stringify(err)\n  };\n} else {\n  result = {\n    responder_cliente: true,\n    resposta_cliente: \"Recebi sua mensagem. Para seguir com a Avaliação Técnica, me informe o nome do condomínio, bairro e o problema principal identificado.\",\n    intencao_atual: \"indefinido\",\n    etapa_funil: \"coletando_dados_condominio\",\n    segmento: \"indefinido\",\n    dados_coletados: {},\n    lead_qualificado: false,\n    encaminhar_humano: false,\n    motivo_encaminhamento: null,\n    bloquear: false,\n    motivo_bloqueio: null,\n    is_fallback: true,\n    error_details: JSON.stringify(err)\n  };\n}\n\nreturn [{ json: result }];"
+      },
+      "id": "preparar_fallback_node",
+      "name": "Preparar Fallback",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2350,
+        250
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/logs_aninha_erros",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { workflow: \"001_TELEGRAM_RECEPCAO_ANINHA_V3\", node_name: \"Aninha Atendimento\", canal: \"telegram\", chat_id: $node[\"Normalizar Entrada\"].json.chat_id, erro: $json.error_details, payload: $json } }}"
+      },
+      "id": "logar_erro_ia_node",
+      "name": "Logar Erro de IA (Supabase)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2550,
+        150
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{ json: $json }];"
+      },
+      "id": "obter_resposta_final_node",
+      "name": "Obter Resposta Final",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2550,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/conversas_aninha?canal=eq.telegram&chat_id=eq.{{ $node[\"Normalizar Entrada\"].json.chat_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { intencao_atual: $json.intencao_atual, etapa_funil: $json.etapa_funil, segmento: $json.segmento, dados_coletados: $json.dados_coletados, ultima_mensagem: $node[\"Normalizar Entrada\"].json.texto, ultima_resposta: $json.resposta_cliente, status: $json.etapa_funil === 'lead_qualificado' ? 'lead_qualificado' : ($json.etapa_funil === 'bloqueado_residencial' ? 'bloqueado_residencial' : ($json.encaminhar_humano ? 'encaminhado_humano' : 'em_atendimento')), updated_at: new Date().toISOString() } }}"
+      },
+      "id": "atualizar_conversa_node",
+      "name": "Atualizar Conversa",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        2750,
+        400
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const normalizado = $node[\"Normalizar Entrada\"].json;\nconst motor = $node[\"Obter Resposta Final\"].json;\n\nconst events = [];\n\nevents.push({\n  canal: \"telegram\",\n  chat_id: normalizado.chat_id,\n  message_id: normalizado.message_id,\n  direcao: \"entrada\",\n  tipo_evento: \"entrada_usuario\",\n  conteudo: normalizado.texto,\n  payload: {}\n});\n\nevents.push({\n  canal: \"telegram\",\n  chat_id: normalizado.chat_id,\n  message_id: \"\",\n  direcao: \"saida\",\n  tipo_evento: \"resposta_aninha\",\n  conteudo: motor.resposta_cliente,\n  payload: motor\n});\n\nif (motor.lead_qualificado) {\n  events.push({\n    canal: \"telegram\",\n    chat_id: normalizado.chat_id,\n    message_id: \"\",\n    direcao: \"sistema\",\n    tipo_evento: \"lead_qualificado\",\n    conteudo: \"Lead qualificado pela Aninha\",\n    payload: motor.dados_coletados\n  });\n}\n\nif (motor.etapa_funil === \"bloqueado_residencial\") {\n  events.push({\n    canal: \"telegram\",\n    chat_id: normalizado.chat_id,\n    message_id: \"\",\n    direcao: \"sistema\",\n    tipo_evento: \"bloqueio_residencial\",\n    conteudo: \"Residencial bloqueado\",\n    payload: { motivo: motor.motivo_bloqueio }\n  });\n}\n\nreturn events.map(e => ({ json: e }));"
+      },
+      "id": "preparar_eventos_node",
+      "name": "Preparar Eventos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2950,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/eventos_aninha",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { canal: $json.canal, chat_id: $json.chat_id, message_id: $json.message_id, direcao: $json.direcao, tipo_evento: $json.tipo_evento, conteudo: $json.conteudo, payload: $json.payload } }}"
+      },
+      "id": "salvar_eventos_node",
+      "name": "Salvar Eventos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        3150,
+        400
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $node[\"Normalizar Entrada\"].json.chat_id }}",
+        "text": "={{ $json.resposta_cliente || 'Recebi sua mensagem. Para seguir com a Avaliação Técnica, me informe o nome do condomínio, bairro e o problema principal identificado.' }}",
+        "additionalFields": {}
+      },
+      "id": "telegram_send_node",
+      "name": "Telegram Send Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        2750,
+        550
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "4sGUaygxQklSMa3Z",
+          "name": "Aninha Telegram Bot (DL Nexus)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $node[\"ia_retornou_resposta_node\"].json.lead_qualificado }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "lead_qualificado_node",
+      "name": "Lead Qualificado?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        3550,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { nome_contato: $node[\"ia_retornou_resposta_node\"].json.dados_coletados.responsavel || $node[\"Normalizar Entrada\"].json.nome_usuario, telefone: $node[\"ia_retornou_resposta_node\"].json.dados_coletados.telefone || $node[\"Normalizar Entrada\"].json.telefone, nome_condominio: $node[\"ia_retornou_resposta_node\"].json.dados_coletados.nome_condominio, mensagem: $node[\"Normalizar Entrada\"].json.texto, tipo_servico: $node[\"ia_retornou_resposta_node\"].json.dados_coletados.servico || $node[\"ia_retornou_resposta_node\"].json.intencao_atual, origem: \"aninha_v3\", status: \"triado\" } }}"
+      },
+      "id": "registrar_lead_node",
+      "name": "Registrar Lead",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        3750,
+        300
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "8451974631",
+        "text": "=🔥 NOVO LEAD QUALIFICADO — Aninha DL Nexus\n\n📋 Segmento: {{ $node[\"ia_retornou_resposta_node\"].json.segmento }}\n👤 Nome: {{ $node[\"ia_retornou_resposta_node\"].json.dados_coletados.responsavel || $node[\"Normalizar Entrada\"].json.nome_usuario }}\n📍 Bairro: {{ $node[\"ia_retornou_resposta_node\"].json.dados_coletados.bairro || 'Não informado' }}\n📞 Telefone: {{ $node[\"ia_retornou_resposta_node\"].json.dados_coletados.telefone || $node[\"Normalizar Entrada\"].json.telefone }}\n🛠️ Serviço: {{ $node[\"ia_retornou_resposta_node\"].json.dados_coletados.servico || 'Não informado' }}\n💬 Problema: {{ $node[\"ia_retornou_resposta_node\"].json.dados_coletados.problema_relatado || 'Não informado' }}\n\n🎯 Ação recomendada: Contato humano para confirmar Avaliação Técnica.",
+        "additionalFields": {}
+      },
+      "id": "notificar_diogo_node",
+      "name": "Notificar Diogo",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        3950,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "4sGUaygxQklSMa3Z",
+          "name": "Aninha Telegram Bot (DL Nexus)"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Normalizar Entrada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizar Entrada": {
+      "main": [
+        [
+          {
+            "node": "Buscar Processada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Processada": {
+      "main": [
+        [
+          {
+            "node": "Mensagem Duplicada?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensagem Duplicada?": {
+      "main": [
+        [
+          {
+            "node": "Logar Duplicidade",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Marcar Processada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Marcar Processada": {
+      "main": [
+        [
+          {
+            "node": "Buscar Conversa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Buscar Conversa": {
+      "main": [
+        [
+          {
+            "node": "Conversa Existe?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conversa Existe?": {
+      "main": [
+        [
+          {
+            "node": "Preparar Payload Motor",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Criar Conversa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar Conversa": {
+      "main": [
+        [
+          {
+            "node": "Preparar Payload Motor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Payload Motor": {
+      "main": [
+        [
+          {
+            "node": "Aninha Atendimento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aninha Atendimento": {
+      "main": [
+        [
+          {
+            "node": "IA Retornou Resposta?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA Retornou Resposta?": {
+      "main": [
+        [
+          {
+            "node": "Obter Resposta Final",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Preparar Fallback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Fallback": {
+      "main": [
+        [
+          {
+            "node": "Logar Erro de IA (Supabase)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Obter Resposta Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obter Resposta Final": {
+      "main": [
+        [
+          {
+            "node": "Telegram Send Message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Atualizar Conversa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Atualizar Conversa": {
+      "main": [
+        [
+          {
+            "node": "Preparar Eventos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Eventos": {
+      "main": [
+        [
+          {
+            "node": "Salvar Eventos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Salvar Eventos": {
+      "main": [
+        [
+          {
+            "node": "Lead Qualificado?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Send Message": {
+      "main": [
+        []
+      ]
+    },
+    "Lead Qualificado?": {
+      "main": [
+        [
+          {
+            "node": "Registrar Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Registrar Lead": {
+      "main": [
+        [
+          {
+            "node": "Notificar Diogo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

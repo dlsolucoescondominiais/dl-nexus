@@ -1,73 +1,85 @@
 {
-  "portfolio": [
+  "empresa": "DL Soluções Condominiais",
+  "cta_principal": "https://dlsolucoescondominiais.com",
+  "cta_secundario": "https://wa.me/5521964742458",
+  "regras_globais": [
+    "Usar 'Avaliação Técnica'",
+    "Nunca usar 'visita técnica'",
+    "Não citar Condfy para cliente final",
+    "Usar apenas 'Fortress'",
+    "Não chamar Diogo de engenheiro",
+    "Usar 'Tecnólogo Responsável'"
+  ],
+  "portfolio_comercial": [
     {
-      "id": "dl_guardiao",
       "nome": "DL Guardião",
-      "descricao": "Segurança eletrônica, CFTV, câmeras, monitoramento, segurança perimetral e proteção patrimonial.",
-      "tags": ["cftv", "cameras", "segurança", "monitoramento"]
+      "descricao": "Segurança eletrônica, CFTV, câmeras, monitoramento, segurança perimetral e proteção patrimonial."
     },
     {
-      "id": "fortress",
       "nome": "Fortress",
-      "descricao": "Portaria autônoma e gestão de acesso.",
-      "tags": ["portaria_autonoma", "controle_de_acesso", "gestao_de_acesso"]
+      "descricao": "Portaria autônoma e gestão de acesso. Nunca citar Condfy para cliente final."
     },
     {
-      "id": "gatekeeper",
       "nome": "Gatekeeper",
-      "descricao": "Automação de portões, abertura Bluetooth/Wi-Fi, permissões e histórico de acesso.",
-      "tags": ["automacao_portao", "abertura_bluetooth", "historico_acesso"]
+      "descricao": "Automação de portões, Bluetooth/Wi-Fi, permissões e histórico de acesso."
     },
     {
-      "id": "dl_acqua",
       "nome": "DL Acqua",
-      "descricao": "Monitoramento de cisternas, caixas d’água, bombas e automação hídrica.",
-      "tags": ["bombas_cisterna", "automacao_hidrica", "caixa_dagua"]
+      "descricao": "Cisternas, caixas d’água, bombas, automação hídrica e monitoramento de nível."
     },
     {
-      "id": "dl_volt",
       "nome": "DL Volt",
-      "descricao": "Elétrica condominial, quadros, painéis, infraestrutura, automação elétrica e carregadores veiculares.",
-      "tags": ["eletrica_condominial", "quadros", "paineis", "infraestrutura_eletrica"]
+      "descricao": "Elétrica condominial, quadros, painéis, infraestrutura elétrica, automação e carregadores veiculares."
     },
     {
-      "id": "dl_ecovolt",
       "nome": "DL EcoVolt",
-      "descricao": "Energia solar on-grid, híbrida, off-grid, carport solar, backup e eficiência energética.",
-      "tags": ["solar_condominios", "solar_hibrido", "eficiencia_energetica"]
+      "descricao": "Energia solar on-grid, híbrida, off-grid, carport solar, backup e eficiência energética."
     },
     {
-      "id": "dl_partner",
-      "nome": "DL Partner",
-      "descricao": "Manutenção continuada e contratos recorrentes.",
-      "planos": ["Basic", "Master", "Premium"],
-      "tags": ["manutencao_continuada", "contrato_recorrente"]
-    },
-    {
-      "id": "dl_alerta",
       "nome": "DL Alerta",
-      "descricao": "Sistemas de prevenção de incêndio, centrais, detectores, sirenes, iluminação de emergência, testes e manutenção.",
-      "tags": ["prevencao_de_incendio", "iluminacao_emergencia"]
+      "descricao": "Prevenção de incêndio, centrais, detectores, sirenes, iluminação de emergência e manutenção."
     },
     {
-      "id": "dl_nexus",
+      "nome": "DL Partner",
+      "descricao": "Manutenção continuada, planos Basic, Master e Premium, SLA, relatórios e garantia estendida enquanto contrato vigente."
+    },
+    {
+      "nome": "Mult•Grill Express / Suporte Técnico DL",
+      "descricao": "Chapas, fritadeiras e equipamentos para lanchonetes, padarias, hamburguerias e restaurantes."
+    },
+    {
       "nome": "DL Nexus",
-      "descricao": "Plataforma interna de automação, IA, atendimento, prospecção, publicação e CRM.",
-      "tags": ["plataforma_interna", "ia", "crm"]
+      "descricao": "Plataforma interna de IA, n8n, automação, CRM, posts, propostas, prospecção, organização de mídia e atendimento."
     }
   ],
-  "regras_nomenclatura": {
-    "guardiao": "Solução comercial, não usar como nome de agente interno.",
-    "agente_monitoramento": "Sentinela",
-    "agente_organizacao": "Zelador"
-  },
-  "agentes_internos": {
-    "Aninha": "Atendimento e triagem.",
-    "Diego": "Análise técnica e roteamento técnico.",
-    "Jules": "Arquitetura, GitHub, scripts e workflows.",
-    "Manus": "Prospecção, pesquisa e pautas.",
-    "Sentinela": "Monitoramento, erros, notícias verificadas e saúde do sistema.",
-    "Zelador": "Organização de Google Drive, Google Fotos e mídias.",
-    "SocialPilot DL": "Criação/publicação social."
-  }
+  "agentes_internos": [
+    {
+      "nome": "Aninha",
+      "funcao": "Atendimento e triagem."
+    },
+    {
+      "nome": "Diego",
+      "funcao": "Análise técnica."
+    },
+    {
+      "nome": "Jules",
+      "funcao": "Desenvolvimento, GitHub e n8n."
+    },
+    {
+      "nome": "Manus",
+      "funcao": "Prospecção e pautas."
+    },
+    {
+      "nome": "Zelador",
+      "funcao": "Google Drive, mídias e organização."
+    },
+    {
+      "nome": "Sentinela",
+      "funcao": "Monitoramento, falhas, notícias verificadas e saúde do sistema."
+    },
+    {
+      "nome": "SocialPilot DL",
+      "funcao": "Publicação social."
+    }
+  ]
 }

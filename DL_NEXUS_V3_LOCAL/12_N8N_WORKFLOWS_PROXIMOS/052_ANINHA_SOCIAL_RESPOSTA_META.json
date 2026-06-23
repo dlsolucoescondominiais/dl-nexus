@@ -1,0 +1,156 @@
+{
+  "name": "052_ANINHA_SOCIAL_RESPOSTA_META",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_social_mensagens",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env['SUPABASE_ANON_KEY'] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "conversa_id",
+              "value": "={{ $json.conversa_id }}"
+            },
+            {
+              "name": "canal_origem",
+              "value": "={{ $json.canal_origem }}"
+            },
+            {
+              "name": "message_id",
+              "value": "=resp_{{ $json.message_id }}"
+            },
+            {
+              "name": "direction",
+              "value": "outbound"
+            },
+            {
+              "name": "texto",
+              "value": "={{ $json.texto_resposta }}"
+            },
+            {
+              "name": "dry_run",
+              "value": "={{ $json.dry_run }}"
+            }
+          ]
+        }
+      },
+      "id": "p16",
+      "name": "REGISTRAR_OUTBOUND",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        200,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "supabase_anon_key",
+          "name": "Supabase Anon Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.dry_run === false }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "p17",
+      "name": "IF_ENVIO_REAL",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env['TELEGRAM_DIOGO_CHAT_ID'] }}",
+        "text": "=DRY_RUN: Resposta Meta SDR ({{ $json.canal_origem }}):\n\nPara: {{ $json.sender_id }}\nMensagem:\n\"{{ $json.texto_resposta }}\""
+      },
+      "id": "p18",
+      "name": "ALERTA_TELEGRAM_DRY_RUN",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        600,
+        100
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "4sGUaygxQklSMa3Z",
+          "name": "Aninha Telegram Bot (DL Nexus)"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "REGISTRAR_OUTBOUND",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "REGISTRAR_OUTBOUND": {
+      "main": [
+        [
+          {
+            "node": "IF_ENVIO_REAL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF_ENVIO_REAL": {
+      "main": [
+        [],
+        [
+          {
+            "node": "ALERTA_TELEGRAM_DRY_RUN",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "active": false
+}

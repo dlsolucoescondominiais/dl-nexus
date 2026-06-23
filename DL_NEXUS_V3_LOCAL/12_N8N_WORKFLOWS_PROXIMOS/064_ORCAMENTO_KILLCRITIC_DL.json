@@ -1,0 +1,149 @@
+{
+  "name": "064_ORCAMENTO_KILLCRITIC_DL",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "id": "trigger_064",
+      "name": "Schedule (15m)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [0, 300]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "schema": "public",
+        "table": "dl_orcamentos_site_v2",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "status_orcamento",
+              "condition": "eq",
+              "keyValue": "markdown_gerado"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "supa_064_get",
+      "name": "Supabase Get Markdown",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase DL Nexus"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "if (!$input.all().length || !$input.all()[0].json.id) {\n  return [];\n}\nreturn $input.all();"
+      },
+      "id": "code_064_check",
+      "name": "Check Empty",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.item.json;\nconst prompt = `\nVocê é o KILLCRITIC DL. Avalie o orçamento abaixo.\nVocê DEVE bloquear o orçamento se encontrar qualquer um dos problemas abaixo:\n- Sem endereço completo\n- Sem descrição de necessidade\n- Escopo insuficiente para formar preço\n- Rateio condômino solicitado mas sem \"numero_unidades\"\n- Uso da palavra \"visita técnica\"\n- Uso da palavra \"B2B\" para público\n- Promessas absolutas sem garantia técnica\n- Afirmações técnicas sem evidência visual ou presencial\n\nRetorne EXATAMENTE UM JSON com a avaliação:\n{\n  \"decisao\": \"aprovado_para_revisao_humana\" ou \"bloqueado_pendencia\",\n  \"motivos\": [\"motivo1\", \"motivo2\"]\n}\n\nDADOS:\nPerfil: ${d.perfil_classificado}\nRateio: ${d.rateio_permitido}\nUnidades: ${d.numero_unidades}\nEndereco: ${d.endereco_completo}\nDescricao: ${d.descricao}\nMarkdown:\n${d.markdown_orcamento}\n`;\n\nreturn [{ json: { ...d, ai_prompt: prompt } }];"
+      },
+      "id": "code_064_prep_prompt",
+      "name": "Prep Prompt KillCritic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [720, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.deepseek.com/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "deepseek-chat"
+            },
+            {
+              "name": "messages",
+              "value": "=[{\"role\":\"user\", \"content\": {{$json.ai_prompt}} }]"
+            },
+            {
+              "name": "response_format",
+              "value": "={\"type\": \"json_object\"}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "http_064_deepseek",
+      "name": "DeepSeek KillCritic",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [960, 300],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "DEEPSEEK_CREDENTIAL_ID",
+          "name": "DeepSeek API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const original = $input.item.json;\nconst result = JSON.parse(original.choices[0].message.content);\n\nlet novoStatus = result.decisao === 'aprovado_para_revisao_humana' \n  ? 'aprovado_para_revisao_humana' \n  : 'bloqueado_pendencia';\n\n// Vamos agregar os motivos na lista de pendencias caso bloqueado\nlet pendencias = [];\ntry {\n  pendencias = typeof original.pendencias === 'string' ? JSON.parse(original.pendencias) : (original.pendencias || []);\n} catch(e) {}\n\nif (novoStatus === 'bloqueado_pendencia' && result.motivos) {\n  pendencias = [...new Set([...pendencias, ...result.motivos])];\n}\n\nreturn [{\n  json: {\n    id: original.id,\n    status_orcamento: novoStatus,\n    status_killcritic: novoStatus,\n    pendencias: JSON.stringify(pendencias)\n  }\n}];"
+      },
+      "id": "code_064_parse",
+      "name": "Parse Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 300]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "dl_orcamentos_site_v2",
+        "matchColumns": "id",
+        "columns": "status_orcamento,status_killcritic,pendencias",
+        "options": {}
+      },
+      "id": "supa_064_update",
+      "name": "Supabase Update",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1440, 300],
+      "credentials": {
+        "supabaseApi": {
+          "id": "SUPABASE_CREDENTIAL_ID",
+          "name": "Supabase DL Nexus"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule (15m)": { "main": [ [ { "node": "Supabase Get Markdown", "type": "main", "index": 0 } ] ] },
+    "Supabase Get Markdown": { "main": [ [ { "node": "Check Empty", "type": "main", "index": 0 } ] ] },
+    "Check Empty": { "main": [ [ { "node": "Prep Prompt KillCritic", "type": "main", "index": 0 } ] ] },
+    "Prep Prompt KillCritic": { "main": [ [ { "node": "DeepSeek KillCritic", "type": "main", "index": 0 } ] ] },
+    "DeepSeek KillCritic": { "main": [ [ { "node": "Parse Result", "type": "main", "index": 0 } ] ] },
+    "Parse Result": { "main": [ [ { "node": "Supabase Update", "type": "main", "index": 0 } ] ] }
+  },
+  "settings": { "executionOrder": "v1" }
+}

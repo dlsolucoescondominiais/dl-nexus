@@ -1,0 +1,53 @@
+--- 084_PUBLICADOR_TIKTOK_ASSISTIDO
+  Node: Webhook Trigger | Type: n8n-nodes-base.webhook | Creds: NO_CREDS
+  Node: IF: approved=true | Type: n8n-nodes-base.if | Creds: NO_CREDS
+  Node: Telegram: Não Aprovado | Type: n8n-nodes-base.telegram | Creds: ['telegramApi']
+  Node: Code KILLCRITIC | Type: n8n-nodes-base.code | Creds: NO_CREDS
+  Node: IF: KILLCRITIC aprovado | Type: n8n-nodes-base.if | Creds: NO_CREDS
+  Node: Telegram: KILLCRITIC Bloqueado | Type: n8n-nodes-base.telegram | Creds: ['telegramApi']
+  Node: Code: Gerar Pacote TikTok | Type: n8n-nodes-base.code | Creds: NO_CREDS
+  Node: Set: salvar tiktok_pacote | Type: n8n-nodes-base.set | Creds: NO_CREDS
+  Node: Telegram: Enviar Pacote TikTok | Type: n8n-nodes-base.telegram | Creds: ['telegramApi']
+  Node: Respond: Pacote Gerado OK | Type: n8n-nodes-base.respondToWebhook | Creds: NO_CREDS
+  Node: Respond: KILLCRITIC Bloqueado | Type: n8n-nodes-base.respondToWebhook | Creds: NO_CREDS
+  Node: Respond: Não Aprovado | Type: n8n-nodes-base.respondToWebhook | Creds: NO_CREDS
+--- 146_PUBLICADOR_MULTICANAL_DL
+  Node: Execute Workflow Trigger | Type: n8n-nodes-base.executeWorkflowTrigger | Creds: NO_CREDS
+  Node: Preparar Publicação | Type: n8n-nodes-base.code | Creds: NO_CREDS
+--- 082_PUBLICADOR_FACEBOOK_META_API
+  Node: Webhook Trigger - Publicar Facebook | Type: n8n-nodes-base.webhook | Creds: NO_CREDS
+  Node: IF: approved=true? | Type: n8n-nodes-base.if | Creds: NO_CREDS
+  Node: Code KILLCRITIC - Verificação de Termos | Type: n8n-nodes-base.code | Creds: NO_CREDS
+  Node: IF: KILLCRITIC Aprovado? | Type: n8n-nodes-base.if | Creds: NO_CREDS
+  Node: IF: image_url existe? | Type: n8n-nodes-base.if | Creds: NO_CREDS
+  Node: HTTP POST: Facebook /photos (com imagem) | Type: n8n-nodes-base.httpRequest | Creds: ['facebookGraphApi']
+  Node: HTTP POST: Facebook /feed (sem imagem) | Type: n8n-nodes-base.httpRequest | Creds: ['facebookGraphApi']
+  Node: Telegram: Confirmação de Publicação | Type: n8n-nodes-base.telegram | Creds: ['telegramApi']
+  Node: Telegram: Alerta de Bloqueio KILLCRITIC | Type: n8n-nodes-base.telegram | Creds: ['telegramApi']
+  Node: Webhook Response: Sucesso | Type: n8n-nodes-base.respondToWebhook | Creds: NO_CREDS
+  Node: Webhook Response: Bloqueado | Type: n8n-nodes-base.respondToWebhook | Creds: NO_CREDS
+  Node: Error Trigger | Type: n8n-nodes-base.errorTrigger | Creds: NO_CREDS
+  Node: Telegram: Alerta de Erro Crítico | Type: n8n-nodes-base.telegram | Creds: ['telegramApi']
+--- 020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO
+  Node: Manual Trigger | Type: n8n-nodes-base.manualTrigger | Creds: NO_CREDS
+  Node: Entrada do Post | Type: n8n-nodes-base.set | Creds: NO_CREDS
+  Node: Gerar Textos IA | Type: n8n-nodes-base.openAi | Creds: ['openAiApi']
+  Node: NORMALIZAR_SAIDA_IA_SOCIAL | Type: n8n-nodes-base.code | Creds: NO_CREDS
+  Node: KILLCRITIC Social | Type: n8n-nodes-base.code | Creds: NO_CREDS
+  Node: IF KILLCRITIC Aprovado? | Type: n8n-nodes-base.if | Creds: NO_CREDS
+  Node: Telegram Alerta Bloqueio | Type: n8n-nodes-base.telegram | Creds: ['telegramApi']
+  Node: Telegram Enviar Prévia | Type: n8n-nodes-base.telegram | Creds: ['telegramApi']
+  Node: Wait Aprovação Webhook | Type: n8n-nodes-base.wait | Creds: NO_CREDS
+  Node: IF Decisão Aprovada? | Type: n8n-nodes-base.if | Creds: NO_CREDS
+  Node: Telegram Reprovado Manual | Type: n8n-nodes-base.telegram | Creds: ['telegramApi']
+  Node: Facebook Publish | Type: n8n-nodes-base.httpRequest | Creds: ['facebookGraphApi']
+  Node: Instagram Media Container | Type: n8n-nodes-base.httpRequest | Creds: ['facebookGraphApi']
+  Node: Instagram Publish Container | Type: n8n-nodes-base.httpRequest | Creds: ['facebookGraphApi']
+  Node: Telegram Publish | Type: n8n-nodes-base.telegram | Creds: ['telegramApi']
+  Node: SMTP Relatório Final | Type: n8n-nodes-base.emailSend | Creds: ['smtp']
+--- 134_POST_GOOGLE_BUSINESS_DL_NEXUS
+  Node: Webhook Recebe Pedido | Type: n8n-nodes-base.webhook | Creds: NO_CREDS
+  Node: IF Aprovado | Type: n8n-nodes-base.if | Creds: NO_CREDS
+  Node: Gera Texto Produtos | Type: n8n-nodes-base.code | Creds: NO_CREDS
+  Node: Publicar no Google Business | Type: n8n-nodes-base.httpRequest | Creds: ['googleApi']
+  Node: Telegram Confirmacao | Type: n8n-nodes-base.telegram | Creds: ['telegramApi']

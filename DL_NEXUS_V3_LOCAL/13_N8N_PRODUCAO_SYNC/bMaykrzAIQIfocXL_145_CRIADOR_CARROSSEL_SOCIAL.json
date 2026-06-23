@@ -1,0 +1,81 @@
+{
+  "updatedAt": "2026-05-30T05:33:53.821Z",
+  "createdAt": "2026-05-25T09:46:55.759Z",
+  "id": "bMaykrzAIQIfocXL",
+  "name": "145_CRIADOR_CARROSSEL_SOCIAL",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Estrutura do Carrossel (Gancho, Problema, Risco, Solução, Produto, CTA)\nreturn items;"
+      },
+      "id": "2",
+      "name": "Gerar Carrossel",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        450,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Gerar Carrossel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "19bfe37b-85a1-4d55-8e0c-6a1e6640a52a",
+  "activeVersionId": null,
+  "versionCounter": 57,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-25T09:46:55.759Z",
+      "createdAt": "2026-05-25T09:46:55.759Z",
+      "role": "workflow:owner",
+      "workflowId": "bMaykrzAIQIfocXL",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

@@ -1,6 +1,6 @@
 {
   "name": "081_PUBLICADOR_INSTAGRAM_META_API",
-  "active": false,
+  "active": true,
   "nodes": [
     {
       "parameters": {
@@ -13,7 +13,10 @@
       "name": "Webhook Trigger",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [200, 300],
+      "position": [
+        200,
+        300
+      ],
       "webhookId": "081-publicador-instagram-dl-nexus"
     },
     {
@@ -43,7 +46,10 @@
       "name": "IF: approved=true",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [420, 300]
+      "position": [
+        420,
+        300
+      ]
     },
     {
       "parameters": {
@@ -72,7 +78,10 @@
       "name": "IF: image_url existe",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [640, 200]
+      "position": [
+        640,
+        200
+      ]
     },
     {
       "parameters": {
@@ -82,7 +91,10 @@
       "name": "Code KILLCRITIC",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [860, 200]
+      "position": [
+        860,
+        200
+      ]
     },
     {
       "parameters": {
@@ -111,12 +123,15 @@
       "name": "IF: KILLCRITIC APROVADO",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [1080, 200]
+      "position": [
+        1080,
+        200
+      ]
     },
     {
       "parameters": {
         "method": "POST",
-        "url": "https://graph.facebook.com/v19.0/INSTAGRAM_BUSINESS_ACCOUNT_ID_AQUI/media",
+        "url": "=https://graph.facebook.com/v25.0/{{$env.INSTAGRAM_BUSINESS_ACCOUNT_ID || '17841403185822108'}}/media",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "facebookGraphApi",
         "sendBody": true,
@@ -142,13 +157,17 @@
               "fullResponse": false
             }
           }
-        }
+        },
+        "jsonBody": "={\n  \"caption\": \"{{$json.legenda_instagram}}\",\n  \"image_url\": \"{{$json.image_url}}\"\n}"
       },
       "id": "node-006-create-media-container",
       "name": "HTTP: Criar Container de Mídia",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1300, 100],
+      "position": [
+        1300,
+        100
+      ],
       "credentials": {
         "facebookGraphApi": {
           "id": "cred-facebook-graph",
@@ -159,7 +178,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://graph.facebook.com/v19.0/INSTAGRAM_BUSINESS_ACCOUNT_ID_AQUI/media_publish",
+        "url": "=https://graph.facebook.com/v25.0/{{$env.INSTAGRAM_BUSINESS_ACCOUNT_ID || '17841403185822108'}}/media_publish",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "facebookGraphApi",
         "sendBody": true,
@@ -183,7 +202,10 @@
       "name": "HTTP: Publicar no Instagram",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1520, 100],
+      "position": [
+        1520,
+        100
+      ],
       "credentials": {
         "facebookGraphApi": {
           "id": "cred-facebook-graph",
@@ -193,7 +215,7 @@
     },
     {
       "parameters": {
-        "chatId": "CHAT_ID_AQUI",
+        "chatId": "-1002012015091",
         "text": "={{ '✅ *DL Nexus V3 | Instagram Publicado com Sucesso!*\\n\\n📸 *Post ID:* ' + $json.id + '\\n🕒 *Horário:* ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n\\n🔗 *Caption (início):* ' + ($node[\"Code KILLCRITIC\"].json.caption || '').substring(0, 100) + '...' + '\\n\\n🏢 _DL Soluções Condominiais | Workflow 081_' }}",
         "additionalFields": {
           "parse_mode": "Markdown"
@@ -203,7 +225,10 @@
       "name": "Telegram: Confirmação de Publicação",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [1740, 100],
+      "position": [
+        1740,
+        100
+      ],
       "credentials": {
         "telegramApi": {
           "id": "cred-telegram",
@@ -213,7 +238,7 @@
     },
     {
       "parameters": {
-        "chatId": "CHAT_ID_AQUI",
+        "chatId": "-1002012015091",
         "text": "={{ '🚫 *DL Nexus V3 | Post BLOQUEADO pelo KILLCRITIC*\\n\\n⚠️ *Motivos de Reprovação:*\\n' + ($json.motivos_reprovacao || []).map(m => '• ' + m).join('\\n') + '\\n\\n🔍 *Termos Proibidos:* ' + (($json.termos_proibidos_encontrados || []).length > 0 ? ($json.termos_proibidos_encontrados || []).join(', ') : 'Nenhum') + '\\n✅ *Termo Obrigatório:* ' + ($json.termo_obrigatorio_presente ? 'PRESENTE' : 'AUSENTE') + '\\n\\n🕒 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n🏢 _DL Soluções Condominiais | Workflow 081_' }}",
         "additionalFields": {
           "parse_mode": "Markdown"
@@ -223,7 +248,10 @@
       "name": "Telegram: Alerta KILLCRITIC Bloqueado",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [1300, 340],
+      "position": [
+        1300,
+        340
+      ],
       "credentials": {
         "telegramApi": {
           "id": "cred-telegram",
@@ -233,7 +261,7 @@
     },
     {
       "parameters": {
-        "chatId": "CHAT_ID_AQUI",
+        "chatId": "-1002012015091",
         "text": "={{ '🚫 *DL Nexus V3 | Post NÃO APROVADO*\\n\\n❌ O campo *approved* não está definido como *true*.\\nNenhuma publicação foi realizada.\\n\\n🕒 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n🏢 _DL Soluções Condominiais | Workflow 081_' }}",
         "additionalFields": {
           "parse_mode": "Markdown"
@@ -243,7 +271,10 @@
       "name": "Telegram: Alerta Não Aprovado",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [640, 460],
+      "position": [
+        640,
+        460
+      ],
       "credentials": {
         "telegramApi": {
           "id": "cred-telegram",
@@ -253,7 +284,7 @@
     },
     {
       "parameters": {
-        "chatId": "CHAT_ID_AQUI",
+        "chatId": "-1002012015091",
         "text": "={{ '⚠️ *DL Nexus V3 | image_url ausente*\\n\\nO payload recebido não contém uma URL de imagem válida.\\nPublicação cancelada.\\n\\n🕒 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n🏢 _DL Soluções Condominiais | Workflow 081_' }}",
         "additionalFields": {
           "parse_mode": "Markdown"
@@ -263,7 +294,10 @@
       "name": "Telegram: Alerta Sem Imagem",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [860, 400],
+      "position": [
+        860,
+        400
+      ],
       "credentials": {
         "telegramApi": {
           "id": "cred-telegram",
@@ -281,7 +315,10 @@
       "name": "Response: Sucesso",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [1960, 100]
+      "position": [
+        1960,
+        100
+      ]
     },
     {
       "parameters": {
@@ -295,7 +332,10 @@
       "name": "Response: Bloqueado",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [1520, 400]
+      "position": [
+        1520,
+        400
+      ]
     },
     {
       "parameters": {
@@ -305,11 +345,14 @@
       "name": "Error Trigger",
       "type": "n8n-nodes-base.errorTrigger",
       "typeVersion": 1,
-      "position": [200, 560]
+      "position": [
+        200,
+        560
+      ]
     },
     {
       "parameters": {
-        "chatId": "CHAT_ID_AQUI",
+        "chatId": "-1002012015091",
         "text": "={{ '🔴 *DL Nexus V3 | ERRO CRÍTICO - Workflow 081*\\n\\n💥 *Erro:* ' + ($json.error?.message || 'Erro desconhecido') + '\\n📍 *Nó:* ' + ($json.execution?.lastNodeExecuted || 'N/A') + '\\n🆔 *Execução:* ' + ($json.execution?.id || 'N/A') + '\\n\\n🕒 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n🏢 _DL Soluções Condominiais | Workflow 081_' }}",
         "additionalFields": {
           "parse_mode": "Markdown"
@@ -319,7 +362,10 @@
       "name": "Telegram: Erro Crítico",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [420, 560],
+      "position": [
+        420,
+        560
+      ],
       "credentials": {
         "telegramApi": {
           "id": "cred-telegram",

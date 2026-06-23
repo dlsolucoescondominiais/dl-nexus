@@ -1,3 +1,10 @@
+"""
+[DEPRECATED] Manus.IA removido do ecossistema DL Nexus.
+Este script foi desativado.
+"""
+import sys
+sys.exit("Script obsoleto. Manus.IA foi removido.")
+
 from pathlib import Path
 import json
 

@@ -1,0 +1,29 @@
+020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO.json: Updated successfully
+050_AGENTE_SDR_SOCIAL_DL.json: No changes needed
+051_ANINHA_SOCIAL_MEMORIA_SUPABASE.json: No changes needed
+052_ANINHA_SOCIAL_RESPOSTA_META.json: No changes needed
+053_ANINHA_SOCIAL_HANDOFF_TELEGRAM.json: No changes needed
+054_ANINHA_SOCIAL_RELATORIO_DIARIO.json: No changes needed
+081_PUBLICADOR_INSTAGRAM_META_API.json: Updated successfully
+082_PUBLICADOR_FACEBOOK_META_API.json: Updated successfully
+083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE.json: No changes needed
+084_PUBLICADOR_TIKTOK_AUTOMATICO.json: No changes needed
+085_SOCIAL_DISPATCHER_DL_NEXUS.json: No changes needed
+086_AGENTE_COMPLIANCE_SOCIAL.json: No changes needed
+132_ENGAJAMENTO_SOCIAL_ASSISTIDO_DL_NEXUS.json: No changes needed
+145_CRIADOR_CARROSSEL_SOCIAL.json: No changes needed
+146_PUBLICADOR_MULTICANAL_DL.json: No changes needed
+148_LOG_E_MEMORIA_SOCIAL.json: No changes needed
+149_RELATORIO_SOCIAL_DIARIO.json: No changes needed
+190_SENTINELA_AUTOPUBLICACAO_SOCIAL.json: No changes needed
+191_COLETOR_STATUS_N8N_SOCIAL.json: No changes needed
+192_DIAGNOSTICO_FALHAS_SOCIAL.json: No changes needed
+193_AUTO_RETRY_PUBLICACAO_SOCIAL.json: No changes needed
+195_RELATORIO_AUTOCORRECAO_SOCIAL.json: No changes needed
+197_LOG_AUTOPUBLICACAO_SOCIAL.json: No changes needed
+199_HEALTHCHECK_SOCIAL_DIARIO.json: No changes needed
+SOCIAL_GERADOR_REVISOR_DL.json: JSON Error: Expecting ',' delimiter: line 47 column 116 (char 1272)
+SOCIAL_PLANEJADOR_DIARIO_DL.json: No changes needed
+SOCIAL_PUBLICADOR_MULTICANAL_DL.json: JSON Error: Expecting ',' delimiter: line 53 column 35 (char 1287)
+SOCIAL_RELATORIO_SEMANAL_DL.json: No changes needed
+SOCIAL_VERIFICADOR_TOKEN_META.json: JSON Error: Expecting ',' delimiter: line 33 column 35 (char 774)

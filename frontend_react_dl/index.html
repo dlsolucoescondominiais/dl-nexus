@@ -1,395 +1,1400 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="scroll-smooth dark">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DL Soluções Condominiais | Engenharia e DL Partner™</title>
-    
-    <!-- Estratégia de SEO Local B2B -->
-    <meta name="description" content="Engenharia de Manutenção contínua para condomínios no Rio de Janeiro. Conheça o DL Partner™: Seguro de SLA para CFTV, Elétrica, Incêndio e Solar na Zona Sul, Centro, Barra, Recreio e Jacarepaguá.">
-    <meta name="keywords" content="Manutenção de condomínios RJ, DL Partner, SLA para Síndicos, CFTV Barra da Tijuca, Empresa de energia solar Recreio, PC de Luz Zona Sul, Avaliação técnica predial">
-    
-    <!-- Fonte Oficial B2B -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-    
-    <!-- Lucide Icons Nativo -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    
-    <!-- Tailwind CSS Engine -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            cyan: '#00f2fe',
-                            blue: '#4facfe',
-                            green: '#4ade80',
-                            red: '#ef4444',
-                            dark: '#0e1117',
-                            glass: 'rgba(255, 255, 255, 0.03)',
-                            border: 'rgba(255, 255, 255, 0.08)'
-                        }
-                    },
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    animation: { 'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite' }
-                }
-            }
-        }
-    </script>
-    <style>
-        .glass-card {
-            background: var(--tw-colors-brand-glass);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--tw-colors-brand-border);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        }
-        .text-gradient {
-            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .hero-glow {
-            position: absolute; width: 600px; height: 600px;
-            background: rgba(0, 242, 254, 0.15); filter: blur(140px);
-            border-radius: 50%; top: -150px; left: -150px; z-index: 0; pointer-events: none;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- React 18 & Babel via CDN -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  <title>DL Soluções Condominiais | Tecnologia, Segurança e Eficiência</title>
+
+  <meta
+    name="description"
+    content="DL Soluções Condominiais no Rio de Janeiro. Soluções B2B para condomínios, administradoras, colégios, restaurantes, lanchonetes e empresas."
+  />
+
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#07111f" />
+
+  <!-- INSERIR GTM AQUI -->
+  <!-- INSERIR GA4 AQUI -->
+  <!-- INSERIR GOOGLE ADS CONVERSION TRACKING AQUI -->
+
+  <style>
+    :root {
+      --bg: #07111f;
+      --bg-soft: #0b1b31;
+      --bg-card: #10243d;
+      --bg-card-2: #0d1f36;
+      --text: #f7fbff;
+      --text-muted: #b8c7d9;
+      --amber: #f6b642;
+      --amber-dark: #c88718;
+      --blue: #20a4ff;
+      --blue-soft: rgba(32, 164, 255, 0.15);
+      --danger: #ff5d5d;
+      --success: #35d07f;
+      --border: rgba(255, 255, 255, 0.12);
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      --radius: 22px;
+      --max: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(32, 164, 255, 0.18), transparent 34%),
+        radial-gradient(circle at 80% 10%, rgba(246, 182, 66, 0.13), transparent 30%),
+        var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .container {
+      width: min(100% - 32px, var(--max));
+      margin-inline: auto;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(7, 17, 31, 0.86);
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(18px);
+    }
+
+    .header-inner {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-logo {
+      height: 44px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: #07111f;
+      background: linear-gradient(135deg, var(--amber), #ffe2a1);
+      box-shadow: 0 0 32px rgba(246, 182, 66, 0.35);
+      font-weight: 900;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: var(--text-muted);
+      font-size: 0.93rem;
+    }
+
+    .nav a:hover {
+      color: var(--amber);
+    }
+
+    .mobile-menu-button {
+      display: none;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+
+    .hero {
+      padding: 86px 0 56px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--amber);
+      background: rgba(246, 182, 66, 0.1);
+      border: 1px solid rgba(246, 182, 66, 0.24);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.35rem, 5vw, 5rem);
+      line-height: 0.98;
+      letter-spacing: -0.07em;
+      margin-bottom: 22px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--text), var(--amber), var(--blue));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: clamp(1rem, 2vw, 1.22rem);
+      max-width: 760px;
+      margin-bottom: 28px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 13px 20px;
+      min-height: 48px;
+      cursor: pointer;
+      font-weight: 800;
+      transition: 0.2s ease;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--amber), #ffdb86);
+      color: #07111f;
+      box-shadow: 0 14px 35px rgba(246, 182, 66, 0.22);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 42px rgba(246, 182, 66, 0.32);
+    }
+
+    .btn-blue {
+      background: linear-gradient(135deg, var(--blue), #73ccff);
+      color: #041120;
+      box-shadow: 0 14px 35px rgba(32, 164, 255, 0.22);
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: rgba(246, 182, 66, 0.55);
+      color: var(--amber);
+      transform: translateY(-2px);
+    }
+
+    .btn-support {
+      background: rgba(32, 164, 255, 0.1);
+      color: var(--text);
+      border-color: rgba(32, 164, 255, 0.28);
+    }
+
+    .btn-support:hover {
+      background: rgba(32, 164, 255, 0.18);
+      transform: translateY(-2px);
+    }
+
+    .hero-note {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      max-width: 720px;
+    }
+
+    .hero-panel {
+      position: relative;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
+        var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      overflow: hidden;
+    }
+
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: -80px -80px auto auto;
+      width: 190px;
+      height: 190px;
+      border-radius: 50%;
+      background: rgba(246, 182, 66, 0.18);
+      filter: blur(10px);
+    }
+
+    .panel-title {
+      position: relative;
+      font-size: 1.25rem;
+      font-weight: 900;
+      margin-bottom: 18px;
+    }
+
+    .metric-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .metric-card {
+      position: relative;
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: rgba(7, 17, 31, 0.52);
+    }
+
+    .metric-card strong {
+      color: var(--amber);
+      display: block;
+      font-size: 1.02rem;
+      margin-bottom: 4px;
+    }
+
+    .metric-card span {
+      color: var(--text-muted);
+      font-size: 0.93rem;
+    }
+
+    .section {
+      padding: 68px 0;
+    }
+
+    .section-header {
+      max-width: 790px;
+      margin-bottom: 34px;
+    }
+
+    .section-header h2 {
+      font-size: clamp(1.8rem, 3vw, 3rem);
+      line-height: 1.08;
+      letter-spacing: -0.05em;
+      margin-bottom: 14px;
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 1.04rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.025)),
+        var(--bg-card-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    }
+
+    .card-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      background: var(--blue-soft);
+      color: var(--blue);
+      border: 1px solid rgba(32, 164, 255, 0.25);
+      border-radius: 14px;
+      margin-bottom: 16px;
+      font-weight: 900;
+    }
+
+    .card h3 {
+      font-size: 1.08rem;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .process {
+      counter-reset: step;
+    }
+
+    .process-card {
+      position: relative;
+      padding-top: 52px;
+    }
+
+    .process-card::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--amber);
+      color: #07111f;
+      font-weight: 900;
+      font-size: 0.9rem;
+    }
+
+    .form-section {
+      background:
+        linear-gradient(135deg, rgba(32, 164, 255, 0.12), transparent 35%),
+        linear-gradient(315deg, rgba(246, 182, 66, 0.10), transparent 35%),
+        rgba(255, 255, 255, 0.025);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-wrap {
+      display: grid;
+      grid-template-columns: 0.75fr 1.25fr;
+      gap: 28px;
+      align-items: start;
+    }
+
+    .form-aside {
+      position: sticky;
+      top: 98px;
+    }
+
+    .form-box {
+      background: rgba(7, 17, 31, 0.68);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: var(--text);
+      font-weight: 800;
+      font-size: 0.92rem;
+    }
+
+    .required {
+      color: var(--amber);
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 13px 14px;
+      outline: none;
+      transition: 0.2s ease;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 128px;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(32, 164, 255, 0.13);
+    }
+
+    select option {
+      color: #07111f;
+      background: #ffffff;
+    }
+
+    .checkbox-field {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+
+    .checkbox-field input {
+      width: 18px;
+      height: 18px;
+      margin-top: 3px;
+      accent-color: var(--amber);
+    }
+
+    .status-message {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      font-weight: 800;
+    }
+
+    .status-message.success {
+      display: block;
+      color: #06150d;
+      background: rgba(53, 208, 127, 0.92);
+      border-color: rgba(53, 208, 127, 0.65);
+    }
+
+    .status-message.error {
+      display: block;
+      color: #ffffff;
+      background: rgba(255, 93, 93, 0.22);
+      border-color: rgba(255, 93, 93, 0.45);
+    }
+
+    .status-message.warning {
+      display: block;
+      color: #07111f;
+      background: rgba(246, 182, 66, 0.92);
+      border-color: rgba(246, 182, 66, 0.65);
+    }
+
+    .form-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .blog-box {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 22px;
+      align-items: center;
+      background:
+        linear-gradient(135deg, rgba(246, 182, 66, 0.13), transparent 48%),
+        var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .contact-box {
+      background: rgba(7, 17, 31, 0.52);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 24px;
+    }
+
+    .contact-box h4 {
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .contact-box p {
+      margin-bottom: 8px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .contact-box a {
+      color: var(--blue);
+      font-weight: 600;
+    }
+
+    .footer {
+      padding: 38px 0;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      background: rgba(0, 0, 0, 0.18);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .footer strong {
+      color: var(--text);
+    }
+
+    .footer a:hover {
+      color: var(--amber);
+    }
+
+    .floating-whatsapp {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #25d366;
+      color: #fff;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 4px 14px rgba(37, 211, 102, 0.4);
+      z-index: 1000;
+      transition: transform 0.2s ease;
+      font-size: 32px;
+      text-decoration: none;
+    }
+
+    .floating-whatsapp:hover {
+      transform: scale(1.05);
+      color: #fff;
+    }
+
+    .floating-whatsapp svg {
+      width: 32px;
+      height: 32px;
+      fill: currentColor;
+    }
+
+    @media (max-width: 920px) {
+      .hero-grid,
+      .form-wrap,
+      .footer-grid,
+      .blog-box {
+        grid-template-columns: 1fr;
+      }
+
+      .grid-3,
+      .grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .form-aside {
+        position: static;
+      }
+
+      .nav {
+        display: none;
+        position: absolute;
+        top: 76px;
+        left: 16px;
+        right: 16px;
+        padding: 18px;
+        border-radius: 18px;
+        background: #081525;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nav.active {
+        display: flex;
+      }
+
+      .mobile-menu-button {
+        display: inline-flex;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .container {
+        width: min(100% - 24px, var(--max));
+      }
+
+      .hero {
+        padding: 54px 0 36px;
+      }
+
+      .section {
+        padding: 50px 0;
+      }
+
+      .grid-3,
+      .grid-4,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-actions,
+      .form-actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .brand-text {
+        max-width: 220px;
+      }
+    }
+  </style>
 </head>
-<body class="bg-brand-dark text-white font-sans antialiased overflow-x-hidden selection:bg-brand-cyan selection:text-black">
-    
-    <div id="root"></div>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="DL Soluções Condominiais">
+        <!-- INSERIR CAMINHO DO LOGO REAL DA DL AQUI -->
+        <img src="./assets/logo-dl.png" alt="DL Soluções Condominiais" class="brand-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';">
+        <span class="brand-mark" style="display: none;">DL</span>
+        <span class="brand-text">
+          DL Soluções Condominiais
+          <small>Rio de Janeiro, RJ</small>
+        </span>
+      </a>
 
-        // ---------- COMPONENTES REATIVOS ----------
+      <nav class="nav" id="mainNav" aria-label="Navegação principal">
+        <a href="#servicos">Serviços</a>
+        <a href="#diferenciais">Diferenciais</a>
+        <a href="#processo">Processo</a>
+        <a href="#formulario">Avaliação Técnica</a>
+        <a href="#blog">Blog do Síndico</a>
+        <a href="#contato">Contato</a>
+        <a href="#lgpd">Política de Privacidade</a>
+      </nav>
 
-        // 1. Navigation
-        const Navbar = () => (
-            <nav className="fixed w-full z-50 glass-card border-b border-brand-border top-0 transition-all duration-300">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-                    <div className="text-2xl font-extrabold tracking-tight">
-                        DL <span className="text-gradient">Soluções</span>
-                    </div>
-                    <div className="hidden md:flex space-x-8 text-sm font-semibold text-gray-300">
-                        <a href="#partner" className="hover:text-white transition">DL Partner™</a>
-                        <a href="#verticais" className="hover:text-white transition">Engenharia</a>
-                        <a href="#area" className="hover:text-white transition">Áreas Atendidas</a>
-                    </div>
-                    <a href="#avaliar" className="px-5 py-2 text-sm font-bold bg-white text-black rounded hover:bg-gray-200 transition">
-                        Solicitar Avaliação Técnica
-                    </a>
-                </div>
-            </nav>
-        );
+      <button class="mobile-menu-button" type="button" id="menuButton" aria-label="Abrir menu">
+        Menu
+      </button>
+    </div>
+  </header>
 
-        // 2. Hero Section
-        const HeroSection = () => (
-            <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 px-6 overflow-hidden">
-                <div className="hero-glow"></div>
-                <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center relative z-10">
-                    <div className="space-y-8">
-                        <div className="inline-flex items-center px-3 py-1 rounded-full border border-brand-green/30 bg-brand-green/10 text-brand-green text-sm font-semibold tracking-wide uppercase">
-                            <span className="w-2 h-2 rounded-full bg-brand-green mr-2 animate-pulse"></span>
-                            Tecnologia em Operação
-                        </div>
-                        <h1 className="text-5xl lg:text-7xl font-extrabold leading-tight tracking-tight">
-                            A Engenharia que não deixa o seu <br/><span className="text-gradient">Condomínio Parar.</span>
-                        </h1>
-                        <p className="text-xl text-gray-400 max-w-lg leading-relaxed">
-                            Mais do que instalar câmeras. A DL Soluções entrega infraestrutura contínua e manutenção técnica recorrente com SLA agressivo para síndicos e administradoras no Rio de Janeiro.
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-4">
-                            <a href="#avaliar" className="px-8 py-4 bg-gradient-to-r from-brand-cyan to-brand-blue rounded-lg font-bold text-lg text-center hover:opacity-90 transition shadow-[0_0_20px_rgba(0,242,254,0.3)]">
-                                Agendar Avaliação Técnica
-                            </a>
-                            <a href="#partner" className="px-8 py-4 glass-card rounded-lg font-bold text-lg text-center hover:bg-white/10 transition">
-                                Conhecer Programa DL Partner
-                            </a>
-                        </div>
-                    </div>
-                    <div className="hidden lg:block relative">
-                        <div className="absolute inset-0 bg-gradient-to-tr from-brand-cyan/20 to-transparent rounded-2xl filter blur-3xl"></div>
-                        <div className="glass-card p-8 rounded-2xl relative border border-white/10 transform rotate-2 hover:rotate-0 transition duration-500">
-                            <div className="flex items-center gap-3 mb-6 border-b border-white/10 pb-4">
-                                <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                                <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                            </div>
-                            <h3 className="text-2xl font-bold mb-4">Dash DL Partner™</h3>
-                            <div className="space-y-4">
-                                <div>
-                                    <div className="flex justify-between text-sm text-gray-400 mb-1">
-                                        <span>Garantia do Hardware (CFTV/Catracas)</span>
-                                        <span className="text-brand-green">100% Protegido</span>
-                                    </div>
-                                    <div className="w-full bg-white/5 rounded-full h-2"><div className="bg-brand-blue h-2 rounded-full" style={{width: '100%'}}></div></div>
-                                </div>
-                                <div>
-                                    <div className="flex justify-between text-sm text-gray-400 mb-1">
-                                        <span>Cumprimento de SLA TMEA (8 Horas)</span>
-                                        <span className="text-brand-green">Ativo On-Site</span>
-                                    </div>
-                                    <div className="w-full bg-white/5 rounded-full h-2"><div className="bg-brand-cyan h-2 rounded-full" style={{width: '100%'}}></div></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        );
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">Soluções B2B para condomínios e empresas</div>
 
-        // 3. Risco Oculto (Dores B2B)
-        const RiskSection = () => (
-            <section className="py-20 bg-black/40 border-y border-white/5">
-                <div className="max-w-7xl mx-auto px-6">
-                    <h2 className="text-3xl font-bold mb-12 text-center">O Risco Oculto da Manutenção Reativa</h2>
-                    <div className="grid md:grid-cols-3 gap-8">
-                        <div className="glass-card p-8 rounded-xl border-t-2 border-t-brand-red/50">
-                            <i data-lucide="alert-triangle" className="text-brand-red w-10 h-10 mb-6"></i>
-                            <h3 className="text-xl font-bold mb-3">O Custo da Surpresa</h3>
-                            <p className="text-gray-400 leading-relaxed">Equipamentos de segurança que falham quando você mais precisa geram passivos milionários para o condomínio e para o síndico.</p>
-                        </div>
-                        <div className="glass-card p-8 rounded-xl border-t-2 border-t-yellow-500/50">
-                            <i data-lucide="zap-off" className="text-yellow-500 w-10 h-10 mb-6"></i>
-                            <h3 className="text-xl font-bold mb-3">Apagões e Sobrecargas</h3>
-                            <p className="text-gray-400 leading-relaxed">Infraestrutura elétrica obsoleta e gambiarras antigas de porteiro não suportam a rotina moderna de EVs e ar-condicionado.</p>
-                        </div>
-                        <div className="glass-card p-8 rounded-xl border-t-2 border-t-orange-500/50">
-                            <i data-lucide="users-x" className="text-orange-500 w-10 h-10 mb-6"></i>
-                            <h3 className="text-xl font-bold mb-3">Equipes Sem Metodologia</h3>
-                            <p className="text-gray-400 leading-relaxed">Diaristas e "faz-tudo" não entregam responsabilidade técnica documentada, deixando buracos fiscais e laudos incompletos.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        );
+          <h1>
+            Tecnologia, Segurança e Eficiência para
+            <span class="gradient-text">Condomínios e Empresas</span>
+          </h1>
 
-        // 4. A Jóia da Coroa: DL Partner
-        const PartnerSection = () => (
-            <section id="partner" className="py-32 px-6 relative">
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-96 h-96 bg-brand-blue/10 rounded-full filter blur-[100px]"></div>
-                <div className="max-w-7xl mx-auto">
-                    <div className="text-center mb-16 max-w-3xl mx-auto">
-                        <span className="text-brand-cyan font-bold tracking-widest uppercase text-sm mb-4 inline-block">Blindagem Patrimonial</span>
-                        <h2 className="text-4xl md:text-5xl font-extrabold mb-6">Conheça o Programa DL Partner™</h2>
-                        <p className="text-xl text-gray-400">A única assinatura tecnológica do Rio de Janeiro focada no nível de serviço (SLA). O fim das "surpresas de orçamento aprovado em assembleia".</p>
-                    </div>
+          <p>
+            Solicite uma Avaliação Técnica para CFTV, controle de acesso, automação,
+            elétrica, prevenção de incêndio, energia solar ou manutenção de equipamentos
+            profissionais.
+          </p>
 
-                    <div className="glass-card p-1 lg:p-2 rounded-2xl max-w-5xl mx-auto border-brand-cyan/20 overflow-hidden">
-                        <div className="bg-black/60 rounded-xl p-8 lg:p-12">
-                            <h3 className="text-2xl font-bold mb-8 border-b border-white/10 pb-4">A Anatomia do Contrato B2B Ideal</h3>
-                            <ul className="grid md:grid-cols-2 gap-x-12 gap-y-6">
-                                <li className="flex items-start gap-4">
-                                    <i data-lucide="check-circle" className="text-brand-green shrink-0 mt-1"></i>
-                                    <div><strong className="text-white block text-lg">Troca de Hardwares Ilimitada</strong><span className="text-gray-400 text-sm">Cobertura nativa para queimas de câmeras ou placas controladoras.</span></div>
-                                </li>
-                                <li className="flex items-start gap-4">
-                                    <i data-lucide="check-circle" className="text-brand-green shrink-0 mt-1"></i>
-                                    <div><strong className="text-white block text-lg">SLA Tático Rigoroso</strong><span className="text-gray-400 text-sm">Garantimos um técnico On-Site no seu condomínio em até 8 Horas.</span></div>
-                                </li>
-                                <li className="flex items-start gap-4">
-                                    <i data-lucide="check-circle" className="text-brand-green shrink-0 mt-1"></i>
-                                    <div><strong className="text-white block text-lg">Ronda Preventiva Mensal</strong><span className="text-gray-400 text-sm">Auditoria e limpeza proativa. Acabamos com a manutenção "apaga fogo".</span></div>
-                                </li>
-                                <li className="flex items-start gap-4">
-                                    <i data-lucide="check-circle" className="text-brand-green shrink-0 mt-1"></i>
-                                    <div><strong className="text-white block text-lg">Dossiê e Relatórios Executivos</strong><span className="text-gray-400 text-sm">Entrega fotográfica de todas as inconformidades mensais para o conselho.</span></div>
-                                </li>
-                            </ul>
-                            <div className="mt-12 text-center">
-                                <a href="#avaliar" className="inline-block px-10 py-4 border-2 border-brand-cyan text-brand-cyan rounded-lg font-bold hover:bg-brand-cyan hover:text-black transition uppercase tracking-wide">
-                                    Agendar Avaliação para o Condomínio
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        );
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#formulario">
+              Solicitar Avaliação Técnica
+            </a>
 
-        // 5. Verticais de Serviço
-        const VerticaisSection = () => {
-            const servicos = [
-                { icon: "shield", title: "Segurança Eletrônica", tags: ["DL Guardião™", "DL Fortress™"], desc: "CFTV Forense e Portarias Autônomas Blindadas de alto padrão." },
-                { icon: "zap", title: "Elétrica & Infraestrutura", tags: ["DL Volt™", "DL Praxis™"], desc: "Retrofit de PCs, QDC e balanceamento com recolhimento de ART focado em conformidade NR." },
-                { icon: "flame", title: "Prevenção de Incêndio", tags: ["DL Alerta™"], desc: "Sistemas endereçáveis (PPCI), detecção de vazamento de gás homologados pelo CBMERJ." },
-                { icon: "sun", title: "Solar & EV Mobility", tags: ["DL EcoVolt Solar™", "VoltCharge™"], desc: "Projetos de captação fotovoltaica em telhados e instalação certificada de supercarregadores EV." },
-                { icon: "database", title: "Automação Predial", tags: ["DL Commander™", "DL Insight™"], desc: "Telemetria remota inteligente de bombas hídricas, cisternas e controle de áreas de lazer." }
-            ];
+            <a
+              class="btn btn-blue js-track-whatsapp-comercial"
+              href="https://wa.me/5521968782196?text=Quero%20solicitar%20uma%20Avalia%C3%A7%C3%A3o%20T%C3%A9cnica%20para%20meu%20condom%C3%ADnio%20ou%20empresa"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              WhatsApp Comercial
+            </a>
 
-            return (
-                <section id="verticais" className="py-20 px-6">
-                    <div className="max-w-7xl mx-auto">
-                        <div className="mb-16">
-                            <h2 className="text-4xl font-bold mb-4">Arquitetura de Soluções</h2>
-                            <p className="text-xl text-gray-400 max-w-2xl">ADL atua nos vértices críticos do seu empreendimento com engenharia especializada e produtos premium proprietários.</p>
-                        </div>
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {servicos.map((s, i) => (
-                                <div key={i} className="glass-card p-8 rounded-xl hover:border-brand-cyan/40 group cursor-default">
-                                    <i data-lucide={s.icon} className="text-white w-8 h-8 mb-6 group-hover:text-brand-cyan transition"></i>
-                                    <h3 className="text-xl font-bold mb-2">{s.title}</h3>
-                                    <div className="flex flex-wrap gap-2 mb-4">
-                                        {s.tags.map((tag, j) => (
-                                            <span key={j} className="text-[10px] uppercase font-bold px-2 py-1 bg-white/10 rounded">{tag}</span>
-                                        ))}
-                                    </div>
-                                    <p className="text-gray-400 text-sm leading-relaxed">{s.desc}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-            );
-        };
+            <a
+              class="btn btn-support js-track-suporte"
+              href="https://wa.me/5521964742458?text=Sou%20cliente%20da%20DL%20e%20preciso%20de%20suporte"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Sou cliente e preciso de suporte
+            </a>
+          </div>
 
-        // 6. Área Geográfica e Autoridade
-        const GeolocationSection = () => (
-            <section id="area" className="py-24 bg-black border-y border-white/5 relative">
-                <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center">
-                    <div>
-                        <h2 className="text-3xl font-bold mb-6">Cobertura Logística Tática (Rio de Janeiro)</h2>
-                        <p className="text-gray-400 text-lg mb-8 leading-relaxed">
-                            A capilaridade técnica define a nossa velocidade. Mantemos nosso escopo logístico limitado a regiões específicas do estado para garantir cumprimentos de contrato SLA implacáveis (até 8 Horas On-Site).
-                        </p>
-                        <div className="flex flex-wrap gap-3">
-                            {["Barra da Tijuca", "Recreio", "Zona Sul", "Centro", "Jacarepaguá", "Freguesia", "Camorim", "Vargem Grande", "Jardim Oceânico"].map((b,i)=> (
-                                <span key={i} className="px-4 py-2 glass-card border border-white/10 rounded-full text-sm font-semibold text-gray-300">{b}</span>
-                            ))}
-                        </div>
-                    </div>
-                    <div className="glass-card p-8 rounded-2xl border-l-4 border-l-brand-blue">
-                        <i data-lucide="award" className="w-12 h-12 text-brand-blue mb-4"></i>
-                        <h3 className="text-2xl font-bold mb-2">Engenharia Liderada com Rigor</h3>
-                        <p className="text-gray-400 leading-relaxed">
-                            "A nossa arquitetura não tolera achismos. A operação tática da DL Soluções é conduzida e auditada 
-                            por <strong>Diogo Luiz de Oliveira</strong> (Tecnólogo em Infraestrutura e Pós-Graduado em Energia Solar), 
-                            garantindo que qualquer diagnóstico preventivo em campo seja irrefutável técnica e juridicamente."
-                        </p>
-                    </div>
-                </div>
-            </section>
-        );
+          <p class="hero-note">
+            Atendimento direcionado a condomínios, administradoras, colégios,
+            restaurantes, lanchonetes e empresas. A captação comercial é separada do
+            suporte para clientes com contrato ativo.
+          </p>
+        </div>
 
-        // 7. Avaliação Técnica (CTA/Webhook Integrator)
-        const CTASection = () => {
-            const [status, setStatus] = useState("idle");
+        <aside class="hero-panel" aria-label="Resumo de soluções">
+          <h2 class="panel-title">Operação preparada para demandas B2B</h2>
 
-            const handleAvaliacao = (e) => {
-                e.preventDefault();
-                setStatus("loading");
-                const payload = {
-                    origem: "nova_landing_dl_partner",
-                    nome_contato: e.target.nome.value,
-                    telefone: e.target.zap.value,
-                    cargo: e.target.cargo.value,
-                    mensagem: e.target.dor.value
-                };
+          <div class="metric-grid">
+            <div class="metric-card">
+              <strong>Segurança eletrônica</strong>
+              <span>CFTV, controle de acesso, portaria autônoma e automação de portões.</span>
+            </div>
 
-                fetch("https://n8n.dlsolucoescondominiais.com.br/webhook/dl-pre-receptor", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                }).then(r => {
-                    setStatus(r.ok ? "success" : "error");
-                }).catch(() => setStatus("error"));
-            };
+            <div class="metric-card">
+              <strong>Infraestrutura predial</strong>
+              <span>Elétrica predial, automação, bombas, cisternas, caixas d’água e DL Acqua.</span>
+            </div>
 
-            return (
-                <section id="avaliar" className="py-32 px-6 bg-gradient-to-b from-brand-dark to-black">
-                    <div className="max-w-4xl mx-auto glass-card p-8 md:p-16 rounded-3xl border border-brand-cyan/20 shadow-2xl relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-cyan to-brand-green"></div>
-                        <div className="text-center mb-10">
-                            <h2 className="text-3xl md:text-5xl font-extrabold mb-4">Blindar seu Caixa é o 1º Passo.</h2>
-                            <p className="text-gray-400 text-lg">Nossa equipe de Inteligência e Liderança Técnica vai mapear suas plantas e enviar um Raio-X Operacional grátis.</p>
-                        </div>
+            <div class="metric-card">
+              <strong>Manutenção recorrente</strong>
+              <span>Contratos DL Partner para acompanhamento técnico e suporte contínuo.</span>
+            </div>
 
-                        {status === "success" ? (
-                            <div className="text-center bg-brand-green/10 border border-brand-green p-8 rounded-xl">
-                                <i data-lucide="check-circle-2" className="text-brand-green w-16 h-16 mx-auto mb-4"></i>
-                                <h3 className="text-2xl font-bold text-brand-green mb-2">Avaliação Acionada!</h3>
-                                <p className="text-white">A nossa inteligência capturou seus dados. Nas próximas 2 horas um técnico especialista DL entrará em contato para agendar a agenda tática do seu condomínio.</p>
-                            </div>
-                        ) : (
-                            <form onSubmit={handleAvaliacao} className="space-y-6">
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    <div><label className="block text-sm font-bold text-gray-400 mb-2">Nome do Condomínio / Síndico</label>
-                                    <input name="nome" type="text" required className="w-full bg-black/50 border border-white/10 rounded-lg p-4 text-white focus:border-brand-cyan outline-none transition" placeholder="Condomínio Órion..." /></div>
-                                    
-                                    <div><label className="block text-sm font-bold text-gray-400 mb-2">WhatsApp de Contato</label>
-                                    <input name="zap" type="text" required className="w-full bg-black/50 border border-white/10 rounded-lg p-4 text-white focus:border-brand-cyan outline-none transition" placeholder="(21) 99999-9999" /></div>
-                                </div>
-                                <div className="grid md:grid-cols-1 gap-6">
-                                    <div><label className="block text-sm font-bold text-gray-400 mb-2">Sua Função</label>
-                                    <select name="cargo" className="w-full bg-black/50 border border-white/10 rounded-lg p-4 text-white focus:border-brand-cyan outline-none transition">
-                                        <option value="Sindico">Síndico / Morador</option>
-                                        <option value="Administradora">Administradora</option>
-                                        <option value="Empresa">Gestor Comercial B2B</option>
-                                    </select></div>
-                                </div>
-                                <div><label className="block text-sm font-bold text-gray-400 mb-2">Qual a Dor ou Equipamento Atual Faltando?</label>
-                                    <textarea name="dor" required rows="4" className="w-full bg-black/50 border border-white/10 rounded-lg p-4 text-white focus:border-brand-cyan outline-none transition resize-none" placeholder="Ex: Queima constande nas bombas d'água / Câmeras antigas em Full HD..."></textarea>
-                                </div>
-                                
-                                <button type="submit" disabled={status==="loading"} className="w-full py-5 bg-gradient-to-r from-brand-cyan to-brand-blue rounded-xl font-extrabold text-xl text-center hover:opacity-90 transition shadow-[0_0_30px_rgba(0,242,254,0.2)] disabled:opacity-50 uppercase tracking-widest text-[#0a0d11]">
-                                    {status === "loading" ? "Processando Inteligência..." : "Requisitar Auditória Operacional"}
-                                </button>
-                                <p className="text-center text-xs text-gray-500 mt-4"><i data-lucide="lock" className="w-3 h-3 inline pb-0.5"></i> Dados seguros e processados por IA corporativa sob LGPD.</p>
-                            </form>
-                        )}
-                    </div>
-                </section>
-            );
-        }
+            <div class="metric-card">
+              <strong>Equipamentos profissionais</strong>
+              <span>Manutenção de chapas, grills e fritadeiras para operação comercial.</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
 
-        // 8. Footer
-        const Footer = () => (
-            <footer className="border-t border-white/5 py-12 px-6 bg-black">
-                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
-                    <div className="mb-6 md:mb-0 text-center md:text-left">
-                        <div className="text-xl font-extrabold tracking-tight mb-2">
-                            DL <span className="text-gray-500">Soluções Corporativas</span>
-                        </div>
-                        <p className="text-gray-500 text-sm">Engenharia, Câmeras Inteligentes e Manutenção Preventiva.</p>
-                    </div>
-                    <div className="flex gap-6 text-sm font-bold text-gray-400">
-                        <a href="/politica-de-privacidade" className="hover:text-white">Termos de Serviço</a>
-                        <a href="/lgpd-gdpr" className="hover:text-white">Compliance LGPD</a>
-                    </div>
-                </div>
-            </footer>
-        );
+    <section class="section" id="servicos">
+      <div class="container">
+        <div class="section-header">
+          <h2>Serviços para operações condominiais e empresariais</h2>
+          <p>
+            Soluções técnicas para ambientes coletivos, comerciais e corporativos,
+            sempre iniciando por triagem e Avaliação Técnica quando necessário.
+          </p>
+        </div>
 
-        // App Wrapper
-        const App = () => {
-            useEffect(() => {
-                lucide.createIcons();
-            }, []);
-            return (
-                <div className="min-h-screen">
-                    <Navbar />
-                    <HeroSection />
-                    <RiskSection />
-                    <VerticaisSection />
-                    <PartnerSection />
-                    <GeolocationSection />
-                    <CTASection />
-                    <Footer />
-                </div>
-            );
-        };
+        <div class="grid-3">
+          <article class="card">
+            <div class="card-icon">01</div>
+            <h3>DL Guardião</h3>
+            <p>CFTV, segurança eletrônica, monitoramento e proteção patrimonial para condomínios, colégios e empresas.</p>
+          </article>
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
+          <article class="card">
+            <div class="card-icon">02</div>
+            <h3>DL Fortress</h3>
+            <p>Controle de acesso, portaria autônoma, reconhecimento facial, biometria, senha, QR Code e gestão de acesso.</p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">03</div>
+            <h3>DL Acqua</h3>
+            <p>Automação e monitoramento de bombas, cisternas e caixas d’água para rotinas prediais mais seguras.</p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">04</div>
+            <h3>Gatekeeper</h3>
+            <p>Automação de portões e acessos para garagens, pedestres, lojas, depósitos e áreas controladas.</p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">05</div>
+            <h3>DL Volt</h3>
+            <p>Elétrica predial, automação, quadros, comandos, adequações e infraestrutura técnica.</p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">06</div>
+            <h3>DL EcoVolt Solar</h3>
+            <p>Energia solar para condomínios e empresas, com avaliação de viabilidade técnica e econômica.</p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">07</div>
+            <h3>DL VoltCharge</h3>
+            <p>Infraestrutura para carregadores veiculares em condomínios, estacionamentos e empresas.</p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">08</div>
+            <h3>DL Alerta</h3>
+            <p>Prevenção de incêndio, alarmes, sensores, sinalização, rotinas preventivas e apoio à segurança predial.</p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">09</div>
+            <h3>DL Partner</h3>
+            <p>Contrato de manutenção recorrente, histórico de atendimento, manutenção preventiva e tempo de resposta para chamados.</p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">10</div>
+            <h3>Mult•Grill Express / suporte técnico DL</h3>
+            <p>Suporte técnico para chapas, grills e fritadeiras profissionais em restaurantes e lanchonetes.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="diferenciais">
+      <div class="container">
+        <div class="section-header">
+          <h2>Diferenciais técnicos</h2>
+          <p>
+            Atendimento estruturado para reduzir ruído operacional, separar suporte de captação
+            comercial e direcionar cada solicitação ao canal adequado.
+          </p>
+        </div>
+
+        <div class="grid-4">
+          <article class="card">
+            <div class="card-icon">✓</div>
+            <h3>Triagem inteligente</h3>
+            <p>Formulário com dados essenciais para classificar urgência, serviço e tipo de cliente.</p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">↗</div>
+            <h3>Roteamento por canal</h3>
+            <p>Leads comerciais, suporte de clientes ativos e origem Meta seguem rotas separadas.</p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">UTM</div>
+            <h3>Pronto para mídia paga</h3>
+            <p>Captura UTMs, GCLID, GBRAID e WBRAID para análise de campanhas.</p>
+          </article>
+
+          <article class="card">
+            <div class="card-icon">B2B</div>
+            <h3>Foco empresarial</h3>
+            <p>Fluxo preparado para condomínios, administradoras, colégios e empresas.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section process" id="processo">
+      <div class="container">
+        <div class="section-header">
+          <h2>Processo de atendimento</h2>
+          <p>
+            Um fluxo objetivo para transformar a solicitação em análise, proposta e execução
+            com o canal correto desde o primeiro contato.
+          </p>
+        </div>
+
+        <div class="grid-3">
+          <article class="card process-card">
+            <h3>Solicitação</h3>
+            <p>O lead informa tipo de cliente, serviço, urgência e descrição da necessidade.</p>
+          </article>
+
+          <article class="card process-card">
+            <h3>Triagem</h3>
+            <p>A equipe identifica se é suporte de cliente ativo ou nova demanda comercial.</p>
+          </article>
+
+          <article class="card process-card">
+            <h3>Avaliação Técnica</h3>
+            <p>A necessidade é analisada para entendimento do cenário, escopo e prioridade.</p>
+          </article>
+
+          <article class="card process-card">
+            <h3>Proposta</h3>
+            <p>Após a análise, a DL direciona a melhor solução técnica para o cliente.</p>
+          </article>
+
+          <article class="card process-card">
+            <h3>Execução</h3>
+            <p>A equipe realiza o atendimento conforme escopo aprovado e condições definidas.</p>
+          </article>
+
+          <article class="card process-card">
+            <h3>Suporte</h3>
+            <p>Clientes com contrato ativo seguem pelo canal de suporte dedicado.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section form-section" id="formulario">
+      <div class="container form-wrap">
+        <aside class="form-aside">
+          <div class="section-header">
+            <h2>Solicitar Avaliação Técnica</h2>
+            <p>
+              Preencha os dados para que a DL Soluções Condominiais faça a triagem e retorne
+              pelo canal adequado.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Canais separados</h3>
+            <p>
+              Novas demandas comerciais são direcionadas para captação e triagem inicial.
+              Clientes com contrato ativo são direcionados ao suporte.
+            </p>
+
+            <div class="form-actions">
+              <a
+                class="btn btn-outline js-track-meta"
+                href="https://wa.me/5521992698612?text=Quero%20falar%20com%20a%20DL%20Solu%C3%A7%C3%B5es%20Condominiais"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Falar pelo WhatsApp Oficial Meta
+              </a>
+            </div>
+          </div>
+        </aside>
+
+        <div class="form-box">
+          <form id="leadForm" novalidate>
+            <div class="form-grid">
+              <div class="field full">
+                <label for="nome">Nome completo <span class="required">*</span></label>
+                <input id="nome" name="nome" type="text" autocomplete="name" required />
+              </div>
+
+              <div class="field">
+                <label for="whatsapp">WhatsApp <span class="required">*</span></label>
+                <input id="whatsapp" name="whatsapp" type="tel" autocomplete="tel" required />
+              </div>
+
+              <div class="field">
+                <label for="email">E-mail</label>
+                <input id="email" name="email" type="email" autocomplete="email" />
+              </div>
+
+              <div class="field">
+                <label for="tipo_cliente">Tipo de cliente <span class="required">*</span></label>
+                <select id="tipo_cliente" name="tipo_cliente" required>
+                  <option value="">Selecione</option>
+                  <option value="Condomínio">Condomínio</option>
+                  <option value="Administradora">Administradora</option>
+                  <option value="Colégio">Colégio</option>
+                  <option value="Restaurante">Restaurante</option>
+                  <option value="Lanchonete">Lanchonete</option>
+                  <option value="Empresa B2B">Empresa B2B</option>
+                  <option value="Outro B2B">Outro B2B</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="cliente_ativo">Já é cliente da DL? <span class="required">*</span></label>
+                <select id="cliente_ativo" name="cliente_ativo" required>
+                  <option value="">Selecione</option>
+                  <option value="true">Sim, tenho contrato ativo</option>
+                  <option value="false">Não, quero solicitar Avaliação Técnica</option>
+                </select>
+              </div>
+
+              <div class="field full">
+                <label for="nome_empresa_ou_condominio">Nome do condomínio/empresa</label>
+                <input id="nome_empresa_ou_condominio" name="nome_empresa_ou_condominio" type="text" />
+              </div>
+
+              <div class="field">
+                <label for="bairro">Bairro</label>
+                <input id="bairro" name="bairro" type="text" />
+              </div>
+
+              <div class="field">
+                <label for="cidade">Cidade</label>
+                <input id="cidade" name="cidade" type="text" value="Rio de Janeiro" />
+              </div>
+
+              <div class="field full">
+                <label for="servico_interesse">Serviço de interesse <span class="required">*</span></label>
+                <select id="servico_interesse" name="servico_interesse" required>
+                  <option value="">Selecione</option>
+                  <option value="DL Guardião — CFTV / Segurança eletrônica">DL Guardião — CFTV / Segurança eletrônica</option>
+                  <option value="DL Fortress — Controle de acesso / Portaria autônoma">DL Fortress — Controle de acesso / Portaria autônoma</option>
+                  <option value="DL Acqua — Automação de bombas, cisternas e caixas d’água">DL Acqua — Automação de bombas, cisternas e caixas d’água</option>
+                  <option value="Gatekeeper — Automação de portões e acessos">Gatekeeper — Automação de portões e acessos</option>
+                  <option value="DL Volt — Elétrica predial / automação">DL Volt — Elétrica predial / automação</option>
+                  <option value="DL EcoVolt Solar — Energia solar">DL EcoVolt Solar — Energia solar</option>
+                  <option value="DL VoltCharge — Carregador veicular">DL VoltCharge — Carregador veicular</option>
+                  <option value="DL Alerta — Prevenção de incêndio">DL Alerta — Prevenção de incêndio</option>
+                  <option value="DL Partner — Contrato de manutenção recorrente">DL Partner — Contrato de manutenção recorrente</option>
+                  <option value="Mult•Grill Express / suporte técnico DL — Chapas, grills e fritadeiras">Mult•Grill Express / suporte técnico DL — Chapas, grills e fritadeiras</option>
+                  <option value="Outro serviço B2B">Outro serviço B2B</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="urgencia">Urgência</label>
+                <select id="urgencia" name="urgencia">
+                  <option value="">Selecione</option>
+                  <option value="Baixa">Baixa</option>
+                  <option value="Média">Média</option>
+                  <option value="Alta">Alta</option>
+                  <option value="Emergencial">Emergencial</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="melhor_horario">Melhor horário para contato</label>
+                <input id="melhor_horario" name="melhor_horario" type="text" placeholder="Ex: Manhã, Tarde, Após 14h..." />
+              </div>
+
+              <div class="field full">
+                <label for="descricao">Descrição da necessidade <span class="required">*</span></label>
+                <textarea
+                  id="descricao"
+                  name="descricao"
+                  required
+                  placeholder="Descreva a necessidade do condomínio, colégio, restaurante, lanchonete ou empresa."
+                ></textarea>
+              </div>
+
+              <div class="field full checkbox-field">
+                <input type="checkbox" id="aceite_contato" name="aceite_contato" required />
+                <label for="aceite_contato">Aceito receber contato da DL Soluções Condominiais sobre minha solicitação.</label>
+              </div>
+
+              <div class="field full checkbox-field">
+                <input type="checkbox" id="aceite_lgpd" name="aceite_lgpd" required />
+                <label for="aceite_lgpd">Concordo com a Política de Privacidade e o processamento dos meus dados (LGPD).</label>
+              </div>
+
+            </div>
+
+            <div id="statusMessage" class="status-message"></div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary" style="width: 100%;">
+                Enviar Solicitação
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="blog">
+      <div class="container">
+        <div class="blog-box">
+          <div>
+            <h2>Blog do Síndico — em breve</h2>
+            <p style="color: var(--text-muted); margin-top: 10px;">
+              Conteúdos técnicos, alertas e notícias comentadas para síndicos e administradoras do Rio de Janeiro.
+            </p>
+          </div>
+          <a href="#formulario" class="btn btn-outline">Quero receber conteúdos técnicos</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="lgpd">
+      <div class="container">
+        <div class="section-header" style="max-width: 100%;">
+          <h2>Política de Privacidade e LGPD</h2>
+        </div>
+        <div class="card">
+          <p><strong>Privacidade e Tratamento de Dados</strong></p>
+          <br/>
+          <p>A DL Soluções Condominiais valoriza a privacidade de seus clientes e parceiros operacionais. Este aviso de privacidade informa como coletamos e usamos as suas informações em conformidade com a LGPD (Lei Geral de Proteção de Dados Pessoais).</p>
+          <br/>
+          <ul style="color: var(--text-muted); font-size: 0.95rem; margin-left: 20px; line-height: 1.8;">
+            <li><strong>Dados coletados:</strong> Nome, WhatsApp, e-mail, cargo/função, nome da empresa/condomínio e dados técnicos informados para a prestação de serviços.</li>
+            <li><strong>Finalidade:</strong> Contato comercial, triagem técnica, atendimento de suporte, geração de propostas e execução de serviços de engenharia.</li>
+            <li><strong>Compartilhamento e Venda:</strong> Nós <strong>nunca vendemos</strong> ou comercializamos os seus dados. Informações só são compartilhadas com sistemas internos (como n8n e gateways de WhatsApp) estritamente para realizar o atendimento solicitado.</li>
+            <li><strong>Canais de Contato:</strong> Você pode solicitar a remoção ou alteração de seus dados a qualquer momento através dos nossos canais de atendimento.</li>
+            <li><strong>E-mail do SAC:</strong> <a href="mailto:sac@dlsolucoescondominiais.com.br" style="color: var(--blue);">sac@dlsolucoescondominiais.com.br</a></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer" id="contato">
+    <div class="container footer-grid">
+      <div>
+        <div class="contact-box">
+          <h4>Canais de Contato</h4>
+          <p>Use o canal comercial para novas solicitações e o suporte para contratos ativos.</p>
+          <br/>
+          <p><strong>Comercial / Avaliação Técnica:</strong> <a href="https://wa.me/5521968782196?text=Quero%20solicitar%20uma%20Avalia%C3%A7%C3%A3o%20T%C3%A9cnica%20para%20meu%20condom%C3%ADnio%20ou%20empresa" target="_blank" class="js-track-whatsapp-comercial">21 96878-2196</a></p>
+          <p><strong>Suporte cliente ativo:</strong> <a href="https://wa.me/5521964742458?text=Sou%20cliente%20da%20DL%20e%20preciso%20de%20suporte" target="_blank" class="js-track-suporte">21 96474-2458</a></p>
+          <p><strong>WhatsApp Meta oficial:</strong> <a href="https://wa.me/5521992698612?text=Quero%20falar%20com%20a%20DL%20Solu%C3%A7%C3%B5es%20Condominiais" target="_blank" class="js-track-meta">21 99269-8612</a></p>
+          <p><strong>SAC:</strong> <a href="mailto:sac@dlsolucoescondominiais.com.br">sac@dlsolucoescondominiais.com.br</a></p>
+        </div>
+      </div>
+      <div>
+        <p><strong>DL Soluções Condominiais</strong></p>
+        <p>CNPJ: 36.354.697/0001-46</p>
+        <p>Rio de Janeiro, RJ</p>
+        <p>Tecnólogo responsável técnico: Diogo Luiz de Oliveira</p>
+        <br/>
+        <p>Site: <a href="https://dlsolucoescondominiais.com">https://dlsolucoescondominiais.com</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/5521968782196?text=Quero%20solicitar%20uma%20Avalia%C3%A7%C3%A3o%20T%C3%A9cnica%20para%20meu%20condom%C3%ADnio%20ou%20empresa" class="floating-whatsapp js-track-whatsapp-comercial" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Comercial">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+  </a>
+
+  <script>
+    // 6. Function DataLayer Tracking
+    function trackEvent(eventName, eventData = {}) {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: eventName,
+        ...eventData
+      });
+      // console.log(`[DataLayer] Event triggered: ${eventName}`, eventData); // DEBUG
+    }
+
+    // 8. Sanitization Function
+    function sanitize(value) {
+      if (!value) return "";
+      return value.replace(/[<>]/g, '').replace(/\s+/g, ' ').trim();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1 & 4. Capture UTMs and tracking params (localStorage & sessionStorage)
+      const urlParams = new URLSearchParams(window.location.search);
+      const trackingParams = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content', 'gclid', 'gbraid', 'wbraid'];
+      
+      trackingParams.forEach(param => {
+          if (urlParams.has(param)) {
+              localStorage.setItem(param, urlParams.get(param));
+              sessionStorage.setItem(param, urlParams.get(param));
+          }
+      });
+
+      // Track link clicks (Comercial, Suporte, Meta)
+      document.querySelectorAll('.js-track-whatsapp-comercial').forEach(el => {
+        el.addEventListener('click', () => trackEvent('clique_whatsapp_comercial'));
+      });
+      document.querySelectorAll('.js-track-suporte').forEach(el => {
+        el.addEventListener('click', () => trackEvent('clique_suporte_cliente'));
+      });
+      document.querySelectorAll('.js-track-meta').forEach(el => {
+        el.addEventListener('click', () => trackEvent('clique_whatsapp_meta'));
+      });
+
+      // 2. Mobile Menu Toggle
+      const menuButton = document.getElementById('menuButton');
+      const mainNav = document.getElementById('mainNav');
+      if(menuButton && mainNav) {
+        menuButton.addEventListener('click', () => {
+          mainNav.classList.toggle('active');
+        });
+      }
+
+      // 3. Form submission
+      const form = document.getElementById('leadForm');
+      const statusMessage = document.getElementById('statusMessage');
+
+      if (form) {
+          form.addEventListener('submit', async (e) => {
+              e.preventDefault();
+              
+              // Validate required fields
+              if (!form.checkValidity()) {
+                  form.reportValidity();
+                  return;
+              }
+
+              const formData = new FormData(form);
+              
+              // Sanitize inputs
+              const nome = sanitize(formData.get('nome'));
+              const whatsappOrig = sanitize(formData.get('whatsapp'));
+              const email = sanitize(formData.get('email'));
+              const tipo_cliente = sanitize(formData.get('tipo_cliente'));
+              const nome_empresa_ou_condominio = sanitize(formData.get('nome_empresa_ou_condominio'));
+              const bairro = sanitize(formData.get('bairro'));
+              const cidade = sanitize(formData.get('cidade'));
+              const servico_interesse = sanitize(formData.get('servico_interesse'));
+              const urgencia = sanitize(formData.get('urgencia'));
+              const melhor_horario = sanitize(formData.get('melhor_horario'));
+              const descricao = sanitize(formData.get('descricao'));
+
+              // 7. Normalize telephone
+              const whatsapp_normalizado = whatsappOrig.replace(/\D/g, '');
+
+              // 5. Block residential across all fields
+              const fieldsToAnalyze = [nome, tipo_cliente, nome_empresa_ou_condominio, bairro, cidade, servico_interesse, descricao, melhor_horario].join(' ').toLowerCase();
+              const residentialTerms = ['casa', 'minha casa', 'apartamento particular', 'residência', 'residencia', 'quarto', 'sala', 'moradia'];
+              
+              const isResidential = residentialTerms.some(term => {
+                  // check word boundaries for exact matches
+                  const regex = new RegExp(`\\b${term}\\b`, 'i');
+                  return regex.test(fieldsToAnalyze);
+              });
+              
+              if (isResidential) {
+                  statusMessage.className = 'status-message warning';
+                  statusMessage.textContent = 'No momento, a DL Soluções Condominiais atua com atendimento B2B para condomínios, colégios, restaurantes, lanchonetes e empresas.';
+                  trackEvent('lead_bloqueado_residencial', { blockReason: 'Termo residencial detectado' });
+                  return;
+              }
+
+              const isCliente = formData.get('cliente_ativo') === 'true';
+              
+              let canalDestino = "whatsapp_evolution_comercial";
+              let numeroDestino = "5521968782196";
+              let tipoRota = "novo_lead_comercial";
+
+              if (isCliente) {
+                  canalDestino = "whatsapp_business_suporte";
+                  numeroDestino = "5521964742458";
+                  tipoRota = "suporte_cliente_ativo";
+              } else {
+                  const source = sessionStorage.getItem('utm_source') || localStorage.getItem('utm_source') || '';
+                  const medium = sessionStorage.getItem('utm_medium') || localStorage.getItem('utm_medium') || '';
+                  const campaign = sessionStorage.getItem('utm_campaign') || localStorage.getItem('utm_campaign') || '';
+                  
+                  const metaTerms = ['meta', 'instagram', 'facebook', 'fb', 'ig'];
+                  const isMeta = metaTerms.some(term => 
+                      source.toLowerCase().includes(term) || 
+                      medium.toLowerCase().includes(term) || 
+                      campaign.toLowerCase().includes(term)
+                  );
+
+                  if (isMeta) {
+                      canalDestino = "whatsapp_meta_oficial";
+                      numeroDestino = "5521992698612";
+                      tipoRota = "lead_meta_oficial";
+                  }
+              }
+
+              const payload = {
+                  origem: "site_dl",
+                  canal_entrada: "formulario_web",
+                  dominio: "dlsolucoescondominiais.com",
+                  nome: nome,
+                  whatsapp: whatsappOrig,
+                  whatsapp_normalizado: whatsapp_normalizado,
+                  email: email,
+                  tipo_cliente: tipo_cliente,
+                  cliente_ativo: isCliente,
+                  nome_empresa_ou_condominio: nome_empresa_ou_condominio,
+                  bairro: bairro,
+                  cidade: cidade,
+                  servico_interesse: servico_interesse,
+                  urgencia: urgencia,
+                  descricao: descricao,
+                  melhor_horario: melhor_horario,
+                  aceite_contato: formData.get('aceite_contato') === 'on',
+                  aceite_lgpd: formData.get('aceite_lgpd') === 'on',
+                  canal_destino_preferencial: canalDestino,
+                  numero_destino: numeroDestino,
+                  tipo_rota: tipoRota,
+                  pagina_origem: window.location.href,
+                  user_agent: navigator.userAgent,
+                  utm_source: sessionStorage.getItem('utm_source') || localStorage.getItem('utm_source') || "",
+                  utm_medium: sessionStorage.getItem('utm_medium') || localStorage.getItem('utm_medium') || "",
+                  utm_campaign: sessionStorage.getItem('utm_campaign') || localStorage.getItem('utm_campaign') || "",
+                  utm_term: sessionStorage.getItem('utm_term') || localStorage.getItem('utm_term') || "",
+                  utm_content: sessionStorage.getItem('utm_content') || localStorage.getItem('utm_content') || "",
+                  gclid: sessionStorage.getItem('gclid') || localStorage.getItem('gclid') || "",
+                  gbraid: sessionStorage.getItem('gbraid') || localStorage.getItem('gbraid') || "",
+                  wbraid: sessionStorage.getItem('wbraid') || localStorage.getItem('wbraid') || "",
+                  data_envio: new Date().toISOString(),
+                  status_inicial: "novo_lead_site"
+              };
+
+              // 9. Console Test Payload
+              console.log("DL Nexus Payload:", payload); // REMOVER OU DESATIVAR EM PRODUÇÃO SE NECESSÁRIO.
+
+              const btn = form.querySelector('button[type="submit"]');
+              const originalText = btn.textContent;
+              btn.textContent = 'Enviando...';
+              btn.disabled = true;
+
+              try {
+                  const response = await fetch('https://n8n.dlsolucoescondominiais.com.br/webhook/dl-receptor', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(payload)
+                  });
+
+                  if (response.ok) {
+                      statusMessage.className = 'status-message success';
+                      statusMessage.textContent = 'Solicitação recebida. A equipe da DL Soluções Condominiais fará a triagem e retornará pelo canal adequado.';
+                      trackEvent('envio_formulario_avaliacao', { tipo_rota: tipoRota });
+                      form.reset();
+                  } else {
+                      throw new Error('Erro na resposta do webhook');
+                  }
+              } catch (error) {
+                  statusMessage.className = 'status-message error';
+                  statusMessage.textContent = 'Não foi possível enviar agora. Tente novamente ou chame pelo WhatsApp.';
+                  trackEvent('erro_formulario', { erro: error.message });
+              } finally {
+                  btn.textContent = originalText;
+                  btn.disabled = false;
+              }
+          });
+      }
+    });
+  </script>
 </body>
 </html>

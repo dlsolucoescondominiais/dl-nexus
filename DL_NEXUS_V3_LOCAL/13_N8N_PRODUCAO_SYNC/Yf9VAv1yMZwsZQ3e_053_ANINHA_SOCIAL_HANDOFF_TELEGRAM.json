@@ -1,0 +1,264 @@
+{
+  "updatedAt": "2026-06-15T20:26:42.497Z",
+  "createdAt": "2026-06-15T20:26:42.497Z",
+  "id": "Yf9VAv1yMZwsZQ3e",
+  "name": "053_ANINHA_SOCIAL_HANDOFF_TELEGRAM",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env['TELEGRAM_DIOGO_CHAT_ID'] }}",
+        "text": "=🔔 [HANDOFF SDR SOCIAL]\n\nCanal: {{ $json.canal_origem }}\nLead ID: {{ $json.sender_id }}\n\nMotivo: {{ $json.motivo_humano }}\n\nHistórico:\n{{ $json.historico }}"
+      },
+      "id": "t1",
+      "name": "ENVIAR_TELEGRAM_HANDOFF",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        200,
+        0
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "4sGUaygxQklSMa3Z",
+          "name": "Aninha Telegram Bot (DL Nexus)"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_social_conversas?id=eq.{{ $json.conversa_id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{ $env['SUPABASE_ANON_KEY'] }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "precisa_humano",
+              "value": true
+            },
+            {
+              "name": "etapa_funil",
+              "value": "handoff"
+            }
+          ]
+        }
+      },
+      "id": "t2",
+      "name": "ATUALIZAR_CONVERSA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [
+        400,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "supabase_anon_key",
+          "name": "Supabase Anon Key"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "ENVIAR_TELEGRAM_HANDOFF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ENVIAR_TELEGRAM_HANDOFF": {
+      "main": [
+        [
+          {
+            "node": "ATUALIZAR_CONVERSA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "edf69e50-e1f3-494c-bb9b-39e97096d270",
+  "activeVersionId": "edf69e50-e1f3-494c-bb9b-39e97096d270",
+  "versionCounter": 4,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-06-15T20:26:42.497Z",
+      "createdAt": "2026-06-15T20:26:42.497Z",
+      "role": "workflow:owner",
+      "workflowId": "Yf9VAv1yMZwsZQ3e",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-06-15T20:26:42.502Z",
+    "createdAt": "2026-06-15T20:26:42.502Z",
+    "versionId": "edf69e50-e1f3-494c-bb9b-39e97096d270",
+    "workflowId": "Yf9VAv1yMZwsZQ3e",
+    "nodes": [
+      {
+        "parameters": {},
+        "id": "trigger",
+        "name": "Execute Workflow Trigger",
+        "type": "n8n-nodes-base.executeWorkflowTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          0
+        ]
+      },
+      {
+        "parameters": {
+          "chatId": "={{ $env['TELEGRAM_DIOGO_CHAT_ID'] }}",
+          "text": "=🔔 [HANDOFF SDR SOCIAL]\n\nCanal: {{ $json.canal_origem }}\nLead ID: {{ $json.sender_id }}\n\nMotivo: {{ $json.motivo_humano }}\n\nHistórico:\n{{ $json.historico }}"
+        },
+        "id": "t1",
+        "name": "ENVIAR_TELEGRAM_HANDOFF",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1,
+        "position": [
+          200,
+          0
+        ],
+        "credentials": {
+          "telegramApi": {
+            "id": "4sGUaygxQklSMa3Z",
+            "name": "Aninha Telegram Bot (DL Nexus)"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "PATCH",
+          "url": "=https://nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_social_conversas?id=eq.{{ $json.conversa_id }}",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "apikey",
+                "value": "={{ $env['SUPABASE_ANON_KEY'] }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "precisa_humano",
+                "value": true
+              },
+              {
+                "name": "etapa_funil",
+                "value": "handoff"
+              }
+            ]
+          }
+        },
+        "id": "t2",
+        "name": "ATUALIZAR_CONVERSA",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4,
+        "position": [
+          400,
+          0
+        ],
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "supabase_anon_key",
+            "name": "Supabase Anon Key"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Execute Workflow Trigger": {
+        "main": [
+          [
+            {
+              "node": "ENVIAR_TELEGRAM_HANDOFF",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "ENVIAR_TELEGRAM_HANDOFF": {
+        "main": [
+          [
+            {
+              "node": "ATUALIZAR_CONVERSA",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-06-15T20:28:13.547Z",
+        "id": 2468,
+        "workflowId": "Yf9VAv1yMZwsZQ3e",
+        "versionId": "edf69e50-e1f3-494c-bb9b-39e97096d270",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

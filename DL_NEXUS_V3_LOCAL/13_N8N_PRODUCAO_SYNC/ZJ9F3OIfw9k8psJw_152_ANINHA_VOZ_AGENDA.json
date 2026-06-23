@@ -1,0 +1,317 @@
+{
+  "updatedAt": "2026-05-30T05:46:17.150Z",
+  "createdAt": "2026-05-30T05:42:15.048Z",
+  "id": "ZJ9F3OIfw9k8psJw",
+  "name": "152_ANINHA_VOZ_AGENDA",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ]
+      },
+      "id": "trigger_telegram",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        300
+      ],
+      "webhookId": "152_aninha_voice"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.message.voice ? true : false}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if_audio",
+      "name": "É Áudio?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fileId": "={{$json.message.voice.file_id}}"
+      },
+      "id": "telegram_download",
+      "name": "Baixar Áudio",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe"
+      },
+      "id": "openai_whisper",
+      "name": "Transcrição (Whisper)",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        600,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $node[\"É Áudio?\"].json.message.text || $node[\"É Áudio?\"].json.message.caption;\nreturn [{ json: { text: text } }];"
+      },
+      "id": "extract_text",
+      "name": "Extrair Texto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $node[\"Transcrição (Whisper)\"] ? $node[\"Transcrição (Whisper)\"].json.text : $node[\"Extrair Texto\"].json.text;\nreturn [{ json: { final_text: text } }];"
+      },
+      "id": "merge_audio_text",
+      "name": "Merge Texto",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://integrate.api.nvidia.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"meta/llama3-70b-instruct\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Você é a Secretária Executiva da DL Soluções Condominiais. O chefe enviou um comando de áudio sobre a agenda. Extraia as informações e responda ESTRITAMENTE em JSON com as chaves: 'date' (formato YYYY-MM-DD), 'time' (HH:MM), 'location' (string), 'task' (string). Se ele disser 'amanhã', calcule a data baseada em hoje ({{$now}}).\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"{{$json.final_text}}\"\n    }\n  ],\n  \"max_tokens\": 512\n}",
+        "options": {}
+      },
+      "id": "nvidia_extract",
+      "name": "Extrair Dados (NVIDIA)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1000,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "let data;\ntry {\n  data = JSON.parse($input.item.json.choices[0].message.content);\n} catch (e) {\n  data = { task: \"Indefinido\", location: \"Indefinido\", date: new Date().toISOString().split('T')[0], time: \"09:00\" };\n}\n\n// Calcula hora final (+2h)\nlet start = `${data.date}T${data.time}:00`;\nreturn [{ json: { ...data, start_time: start } }];"
+      },
+      "id": "parse_json",
+      "name": "Parser JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "calendar": "primary",
+        "start": "={{$json.start_time}}",
+        "end": "={{$json.start_time}}",
+        "summary": "={{$json.task}}",
+        "options": {
+          "location": "={{$json.location}}"
+        }
+      },
+      "id": "google_calendar",
+      "name": "Google Calendar",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1,
+      "position": [
+        1400,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$node[\"Telegram Trigger\"].json.message.chat.id}}",
+        "text": "=Anotado chefe! 📝\n\n🗓️ *Quando:* {{$node[\"Parser JSON\"].json.date}} às {{$node[\"Parser JSON\"].json.time}}\n📍 *Onde:* {{$node[\"Parser JSON\"].json.location}}\n🛠️ *O que:* {{$node[\"Parser JSON\"].json.task}}\n\nJá coloquei na sua Agenda do Google. Bom trabalho e dirija com segurança!",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram_reply",
+      "name": "Telegram Resposta",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1600,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "É Áudio?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "É Áudio?": {
+      "main": [
+        [
+          {
+            "node": "telegram_download",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extrair Texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "telegram_download": {
+      "main": [
+        [
+          {
+            "node": "Transcrição (Whisper)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcrição (Whisper)": {
+      "main": [
+        [
+          {
+            "node": "Merge Texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair Texto": {
+      "main": [
+        [
+          {
+            "node": "Merge Texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Texto": {
+      "main": [
+        [
+          {
+            "node": "Extrair Dados (NVIDIA)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair Dados (NVIDIA)": {
+      "main": [
+        [
+          {
+            "node": "Parser JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parser JSON": {
+      "main": [
+        [
+          {
+            "node": "Google Calendar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Calendar": {
+      "main": [
+        [
+          {
+            "node": "Telegram Resposta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "b553c214-bd4f-4235-a135-4d5f9e1a4370",
+  "activeVersionId": null,
+  "versionCounter": 2,
+  "triggerCount": 0,
+  "shared": [
+    {
+      "updatedAt": "2026-05-30T05:42:15.048Z",
+      "createdAt": "2026-05-30T05:42:15.048Z",
+      "role": "workflow:owner",
+      "workflowId": "ZJ9F3OIfw9k8psJw",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": null
+}

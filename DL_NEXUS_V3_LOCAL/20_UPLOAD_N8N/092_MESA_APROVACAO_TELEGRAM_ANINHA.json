@@ -1,24 +1,53 @@
 {
   "name": "092_MESA_APROVACAO_TELEGRAM_ANINHA",
-  "id": "mesaAprovacaoTelegramAninha092",
   "nodes": [
     {
-      "parameters": {},
+      "parameters": {
+        "updates": ["message", "callback_query"],
+        "additionalFields": {}
+      },
       "id": "1",
       "name": "Telegram Trigger",
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1,
-      "position": [250, 300]
+      "position": [256, 304],
+      "webhookId": "750a41dd-5944-40fd-a864-6971b5014d1c",
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram_credential_id",
+          "name": "Conta do Telegram"
+        }
+      }
     },
     {
       "parameters": {
-        "jsCode": "/* Receber comandos de aprovação: APROVAR 020, REVISAR 020, etc. */\nreturn items;"
+        "jsCode": "/* ═══════════════════════════════════════════════════════════\n   MESA DE APROVAÇÃO — ANINHA / DIOGO\n   Recebe comandos do Telegram e processa aprovações.\n   Comandos aceitos:\n     APROVAR <ID>   → Aprova e libera workflow\n     REVISAR <ID>   → Marca para revisão\n     REJEITAR <ID>  → Bloqueia execução\n     STATUS         → Lista pendências\n   ═══════════════════════════════════════════════════════════ */\n\nconst msg = $input.item.json;\nconst text = (msg.message?.text || msg.callback_query?.data || '').trim().toUpperCase();\nconst chatId = msg.message?.chat?.id || msg.callback_query?.message?.chat?.id || '';\nconst userName = msg.message?.from?.first_name || msg.callback_query?.from?.first_name || 'Operador';\n\nlet resposta = '';\nlet acao = 'desconhecido';\nlet targetId = '';\n\nif (text.startsWith('APROVAR')) {\n  targetId = text.replace('APROVAR', '').trim();\n  acao = 'aprovar';\n  resposta = `✅ *APROVADO* por ${userName}\\nWorkflow/Item: ${targetId || 'geral'}\\nData: ${new Date().toLocaleString('pt-BR')}`;\n} else if (text.startsWith('REVISAR')) {\n  targetId = text.replace('REVISAR', '').trim();\n  acao = 'revisar';\n  resposta = `🔄 *MARCADO PARA REVISÃO* por ${userName}\\nWorkflow/Item: ${targetId || 'geral'}\\nData: ${new Date().toLocaleString('pt-BR')}`;\n} else if (text.startsWith('REJEITAR')) {\n  targetId = text.replace('REJEITAR', '').trim();\n  acao = 'rejeitar';\n  resposta = `❌ *REJEITADO* por ${userName}\\nWorkflow/Item: ${targetId || 'geral'}\\nData: ${new Date().toLocaleString('pt-BR')}`;\n} else if (text === 'STATUS') {\n  acao = 'status';\n  resposta = `📊 *STATUS DA MESA DE APROVAÇÃO*\\nOperador: ${userName}\\nConsulta: ${new Date().toLocaleString('pt-BR')}\\n\\n_Nenhuma pendência no momento._`;\n} else {\n  resposta = `⚠️ Comando não reconhecido: \"${text}\"\\n\\nComandos válidos:\\n• APROVAR <ID>\\n• REVISAR <ID>\\n• REJEITAR <ID>\\n• STATUS`;\n}\n\nreturn [{\n  json: {\n    acao,\n    target: targetId,\n    operador: userName,\n    chat_id: chatId,\n    resposta,\n    timestamp: new Date().toISOString()\n  }\n}];"
       },
       "id": "2",
       "name": "Processar Comando",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [450, 300]
+      "position": [464, 304]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ $json.resposta }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "3",
+      "name": "Telegram Resposta",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [672, 304],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram_credential_id",
+          "name": "Conta do Telegram"
+        }
+      }
     }
   ],
   "connections": {
@@ -32,15 +61,19 @@
           }
         ]
       ]
+    },
+    "Processar Comando": {
+      "main": [
+        [
+          {
+            "node": "Telegram Resposta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
-  "settings": {
-    "executionOrder": "v1"
-  },
-  "tags": [
-    {"name": "Aninha"},
-    {"name": "Telegram"},
-    {"name": "Aprovação"}
-  ]
+  "settings": {}
 }

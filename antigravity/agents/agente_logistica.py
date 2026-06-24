@@ -17,6 +17,9 @@ class AgenteCartografo:
         """
         Calcula o trajeto via Google Maps API e retorna a Matriz Operacional.
         """
+        if not endereco_lead:
+            return {"erro": "Endereço não fornecido"}
+
         if not self.api_key:
             return {"status": "erro", "distancia_km": 0, "msg": "API_KEY do Google Ausente ou Inválida."}
 

@@ -98,6 +98,7 @@ def rodar_triagem_corporativa():
         print("✅ Caixa de entrada impecável! Nenhum documento para arquivar agora.")
         return
         
+    batch = service.new_batch_http_request()
     for arq in arquivos:
         nome = arq['name']
         tipo = arq['mimeType']
@@ -110,14 +111,19 @@ def rodar_triagem_corporativa():
         # 3. Verifica ou cria a pasta no Gabinete
         id_pasta_destino = obter_ou_criar_pasta(service, nome_pasta_destino)
         
-        # 4. Move o documento da Caixa de Entrada para a Gaveta Certa
-        service.files().update(
+        # 4. Move o documento da Caixa de Entrada para a Gaveta Certa (adiciona ao lote)
+        request = service.files().update(
             fileId=arq['id'],
             addParents=id_pasta_destino,
             removeParents=INBOX_FOLDER_ID,
             fields='id, parents'
-        ).execute()
-        print(f"✅ Documento guardado e organizado com sucesso!")
+        )
+        batch.add(request)
+        print(f"⏳ Documento agendado para arquivamento no lote...")
+
+    if arquivos:
+        batch.execute()
+        print(f"\n✅ Todos os documentos foram movidos e organizados com sucesso!")
 
 if __name__ == "__main__":
     print("==================================================")

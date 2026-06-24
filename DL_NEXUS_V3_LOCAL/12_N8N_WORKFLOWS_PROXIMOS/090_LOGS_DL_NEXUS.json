@@ -1,0 +1,117 @@
+{
+  "name": "090_LOGS_DL_NEXUS",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dlnexus-logs",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Logs",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "dlnexus-logs-in"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "workflow_origem",
+              "value": "={{$json.body.workflow_origem}}"
+            },
+            {
+              "name": "agente",
+              "value": "={{$json.body.agente}}"
+            },
+            {
+              "name": "canal",
+              "value": "={{$json.body.canal}}"
+            },
+            {
+              "name": "produto",
+              "value": "={{$json.body.produto}}"
+            },
+            {
+              "name": "tipo_evento",
+              "value": "={{$json.body.tipo_evento}}"
+            },
+            {
+              "name": "status",
+              "value": "={{$json.body.status}}"
+            },
+            {
+              "name": "mensagem",
+              "value": "={{$json.body.mensagem}}"
+            },
+            {
+              "name": "erro",
+              "value": "={{$json.body.erro}}"
+            },
+            {
+              "name": "timestamp",
+              "value": "={{$json.body.timestamp}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2",
+      "name": "Estruturar Log",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"message\": \"Log recebido com sucesso (Simulação Supabase)\",\n  \"data_logged\": {{$json}}\n}",
+        "options": {}
+      },
+      "id": "3",
+      "name": "Responder Sucesso (Simulado)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Logs": {
+      "main": [
+        [
+          {
+            "node": "Estruturar Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Estruturar Log": {
+      "main": [
+        [
+          {
+            "node": "Responder Sucesso (Simulado)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "1"
+}

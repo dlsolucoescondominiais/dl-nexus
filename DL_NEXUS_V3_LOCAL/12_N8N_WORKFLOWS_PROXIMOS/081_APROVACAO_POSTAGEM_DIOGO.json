@@ -1,0 +1,115 @@
+{
+  "name": "081_APROVACAO_POSTAGEM_DIOGO",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "socialpilot-aprovacao-in",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook SocialPilot",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "socialpilot-aprovacao-in"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "produto",
+              "value": "={{$json.body.produto}}"
+            },
+            {
+              "name": "titulo",
+              "value": "={{$json.body.titulo}}"
+            },
+            {
+              "name": "legenda_instagram_facebook",
+              "value": "={{$json.body.legenda_instagram_facebook}}"
+            },
+            {
+              "name": "texto_gmn",
+              "value": "={{$json.body.texto_gmn}}"
+            },
+            {
+              "name": "ideia_tiktok_reels",
+              "value": "={{$json.body.ideia_tiktok_reels}}"
+            },
+            {
+              "name": "hashtags",
+              "value": "={{$json.body.hashtags}}"
+            },
+            {
+              "name": "cta",
+              "value": "={{$json.body.cta}}"
+            },
+            {
+              "name": "status",
+              "value": "aguardando_aprovacao_humana"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2",
+      "name": "Extrair e Status",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "ID_DIOGO",
+        "text": "=Novo post gerado e aguardando aprovação!\nProduto: {{$json.produto}}\nTítulo: {{$json.titulo}}\n\nOpções:\n1 - Aprovar\n2 - Revisar\n3 - Rejeitar",
+        "additionalFields": {
+          "reply_markup": "{\"inline_keyboard\":[[{\"text\":\"Aprovar\",\"callback_data\":\"aprovar_post_{{$json.id}}\"},{\"text\":\"Revisar\",\"callback_data\":\"revisar_post_{{$json.id}}\"},{\"text\":\"Rejeitar\",\"callback_data\":\"rejeitar_post_{{$json.id}}\"}]]}"
+        }
+      },
+      "id": "3",
+      "name": "Notificar Diogo (Telegram)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook SocialPilot": {
+      "main": [
+        [
+          {
+            "node": "Extrair e Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair e Status": {
+      "main": [
+        [
+          {
+            "node": "Notificar Diogo (Telegram)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "1"
+}

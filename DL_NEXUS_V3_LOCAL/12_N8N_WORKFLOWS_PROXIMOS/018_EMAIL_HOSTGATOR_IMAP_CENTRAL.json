@@ -1,0 +1,250 @@
+{
+  "name": "018_EMAIL_HOSTGATOR_IMAP_CENTRAL",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "get",
+        "mailbox": "INBOX",
+        "format": "resolved",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Ler Emails IMAP",
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.to}}",
+              "operation": "contains",
+              "value2": "@dlsolucoescondominiais.com.br"
+            }
+          ]
+        }
+      },
+      "id": "2",
+      "name": "Filtro Caixas DL",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "prompt": "Classifique este email em uma das seguintes categorias: lead_comercial, pedido_orcamento, suporte_tecnico, sac_reclamacao, administrativo, financeiro, fornecedor, sistema_automatico, spam, nao_classificado. Responda apenas com a categoria.\n\nAssunto: {{$json.subject}}\nCorpo: {{$json.text}}",
+        "options": {}
+      },
+      "id": "3",
+      "name": "Classificar Email (IA)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "multiplex",
+        "rules": {
+          "rules": [
+            {
+              "output": 0,
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "={{$json.classificacao}}",
+                    "operation": "contains",
+                    "value2": "lead_comercial"
+                  },
+                  {
+                    "value1": "={{$json.classificacao}}",
+                    "operation": "contains",
+                    "value2": "pedido_orcamento"
+                  }
+                ]
+              }
+            },
+            {
+              "output": 1,
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "={{$json.classificacao}}",
+                    "operation": "contains",
+                    "value2": "suporte_tecnico"
+                  }
+                ]
+              }
+            },
+            {
+              "output": 2,
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "={{$json.classificacao}}",
+                    "operation": "contains",
+                    "value2": "sac_reclamacao"
+                  }
+                ]
+              }
+            },
+            {
+              "output": 3,
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "={{$json.classificacao}}",
+                    "operation": "contains",
+                    "value2": "administrativo"
+                  },
+                  {
+                    "value1": "={{$json.classificacao}}",
+                    "operation": "contains",
+                    "value2": "financeiro"
+                  },
+                  {
+                    "value1": "={{$json.classificacao}}",
+                    "operation": "contains",
+                    "value2": "fornecedor"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "id": "4",
+      "name": "Roteador",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        850,
+        300
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "5",
+      "name": "Encaminhar Aninha (Leads)",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        150
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "6",
+      "name": "Encaminhar Diego (Suporte)",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        300
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "7",
+      "name": "Encaminhar Humano/SAC",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        450
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "8",
+      "name": "Encaminhar Diogo (Admin)",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        600
+      ]
+    }
+  ],
+  "connections": {
+    "Ler Emails IMAP": {
+      "main": [
+        [
+          {
+            "node": "Filtro Caixas DL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro Caixas DL": {
+      "main": [
+        [
+          {
+            "node": "Classificar Email (IA)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classificar Email (IA)": {
+      "main": [
+        [
+          {
+            "node": "Roteador",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Roteador": {
+      "main": [
+        [
+          {
+            "node": "Encaminhar Aninha (Leads)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Encaminhar Diego (Suporte)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Encaminhar Humano/SAC",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Encaminhar Diogo (Admin)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "1"
+}

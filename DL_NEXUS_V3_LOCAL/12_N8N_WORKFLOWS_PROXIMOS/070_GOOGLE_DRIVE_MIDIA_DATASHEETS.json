@@ -1,0 +1,255 @@
+{
+  "name": "070_GOOGLE_DRIVE_MIDIA_DATASHEETS",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "drive-midia-in",
+        "options": {}
+      },
+      "id": "1",
+      "name": "Webhook Entrada Midia",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "drive-midia-in"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "produto",
+              "value": "={{$json.body.produto}}"
+            },
+            {
+              "name": "tipo_arquivo",
+              "value": "={{$json.body.tipo_arquivo}}"
+            },
+            {
+              "name": "nome_arquivo",
+              "value": "={{$json.body.nome_arquivo}}"
+            },
+            {
+              "name": "descricao",
+              "value": "={{$json.body.descricao}}"
+            },
+            {
+              "name": "link_arquivo",
+              "value": "={{$json.body.link_arquivo}}"
+            },
+            {
+              "name": "uso_recomendado",
+              "value": "={{$json.body.uso_recomendado}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "2",
+      "name": "Extrair Metadados",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "multiplex",
+        "rules": {
+          "rules": [
+            {
+              "output": 0,
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "={{$json.produto}}",
+                    "operation": "contains",
+                    "value2": "Fortress"
+                  }
+                ]
+              }
+            },
+            {
+              "output": 1,
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "={{$json.produto}}",
+                    "operation": "contains",
+                    "value2": "DL Acqua"
+                  }
+                ]
+              }
+            },
+            {
+              "output": 2,
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "={{$json.produto}}",
+                    "operation": "contains",
+                    "value2": "Gatekeeper"
+                  }
+                ]
+              }
+            },
+            {
+              "output": 3,
+              "conditions": {
+                "string": [
+                  {
+                    "value1": "={{$json.produto}}",
+                    "operation": "contains",
+                    "value2": "Geral"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "id": "3",
+      "name": "Roteador de Produto",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "fileContent": "={{$json.link_arquivo}}",
+        "name": "={{$json.nome_arquivo}}",
+        "parents": ["FOLDER_ID_01_FORTRESS"],
+        "options": {}
+      },
+      "id": "4",
+      "name": "Salvar Fortress",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "position": [
+        900,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "fileContent": "={{$json.link_arquivo}}",
+        "name": "={{$json.nome_arquivo}}",
+        "parents": ["FOLDER_ID_02_DL_ACQUA"],
+        "options": {}
+      },
+      "id": "5",
+      "name": "Salvar DL Acqua",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "position": [
+        900,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "fileContent": "={{$json.link_arquivo}}",
+        "name": "={{$json.nome_arquivo}}",
+        "parents": ["FOLDER_ID_03_GATEKEEPER"],
+        "options": {}
+      },
+      "id": "6",
+      "name": "Salvar Gatekeeper",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "position": [
+        900,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "fileContent": "={{$json.link_arquivo}}",
+        "name": "={{$json.nome_arquivo}}",
+        "parents": ["FOLDER_ID_99_POSTS_APROVADOS"],
+        "options": {}
+      },
+      "id": "7",
+      "name": "Salvar Geral/Posts",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "position": [
+        900,
+        600
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Entrada Midia": {
+      "main": [
+        [
+          {
+            "node": "Extrair Metadados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair Metadados": {
+      "main": [
+        [
+          {
+            "node": "Roteador de Produto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Roteador de Produto": {
+      "main": [
+        [
+          {
+            "node": "Salvar Fortress",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Salvar DL Acqua",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Salvar Gatekeeper",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Salvar Geral/Posts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "1"
+}

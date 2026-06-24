@@ -1,0 +1,46 @@
+{
+  "name": "090_GUARDIAO_N8N_DL_NEXUS_V3",
+  "active": false,
+  "nodes": [
+    {
+      "name": "Verificação Periódica",
+      "type": "n8n-nodes-base.scheduleTrigger"
+    },
+    {
+      "name": "Verificar n8n Online",
+      "type": "n8n-nodes-base.httpRequest"
+    },
+    {
+      "name": "Listar Workflows n8n",
+      "type": "n8n-nodes-base.httpRequest"
+    },
+    {
+      "name": "Buscar Execuções com Falha",
+      "type": "n8n-nodes-base.httpRequest"
+    },
+    {
+      "name": "CLASSIFICAR_FALHAS_N8N",
+      "type": "n8n-nodes-base.code"
+    },
+    {
+      "name": "GERAR_RELATORIO_TECNICO",
+      "type": "n8n-nodes-base.code"
+    },
+    {
+      "name": "Tem Falha Crítica?",
+      "type": "n8n-nodes-base.if"
+    },
+    {
+      "name": "Alerta Diogo/Raphael",
+      "type": "n8n-nodes-base.telegram"
+    },
+    {
+      "name": "Registrar Log Supabase",
+      "type": "n8n-nodes-base.supabase"
+    },
+    {
+      "name": "Registrar Log OK Supabase",
+      "type": "n8n-nodes-base.supabase"
+    }
+  ]
+}

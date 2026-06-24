@@ -3,6 +3,8 @@ import sys
 import io
 import datetime
 import requests
+import time
+from collections import deque
 from google import genai
 from googleapiclient.http import MediaIoBaseDownload
 from dotenv import load_dotenv
@@ -27,6 +29,26 @@ ARCHIVE_FOLDER_ID = os.getenv("ARCHIVE_FOLDER_ID")
 
 # Configura o Cérebro do Gemini (Novo SDK Oficial)
 gemini_client = genai.Client(api_key=GEMINI_API_KEY)
+
+# ⚡ Bolt: Sliding window para tracking de rate limit (15 RPM)
+_api_calls = deque()
+
+def _check_rate_limit():
+    """Aplica pausa apenas quando o limite de RPM está prestes a estourar, garantindo máxima velocidade."""
+    now = time.time()
+    # Remove marcações mais antigas que 60 segundos
+    while _api_calls and now - _api_calls[0] > 60:
+        _api_calls.popleft()
+    # Se chegamos a 14 chamadas na janela de 1 minuto, esperar até que a mais antiga expire
+    if len(_api_calls) >= 14:
+        sleep_time = 60 - (now - _api_calls[0])
+        if sleep_time > 0:
+            print(f"   [zZz] Aguardando {sleep_time:.2f}s para evitar limite de requisições da IA (Sliding Window)...")
+            time.sleep(sleep_time)
+        # Limpar expiradas após pausa
+        while _api_calls and time.time() - _api_calls[0] > 60:
+            _api_calls.popleft()
+    _api_calls.append(time.time())
 
 # =====================================================================
 # 2. SISTEMA DE AUTENTICAÇÃO BLINDADO
@@ -69,6 +91,7 @@ def extrair_local_com_ia(nome_arquivo):
     Se não houver, responda APENAS: 'VistoriaGeral'. Use CamelCase impecável e sem acentos.
     """
     try:
+        _check_rate_limit()
         res = gemini_client.models.generate_content(
             model='gemini-2.0-flash', 
             contents=prompt
@@ -96,6 +119,7 @@ Caso a mídia não carregue ou o arquivo não seja compatível, retorne ERRO_LEI
 
     try:
         imagem_part = genai.types.Part.from_bytes(data=dados_bytes, mime_type=mime_type)
+        _check_rate_limit()
         resposta = gemini_client.models.generate_content(
             model='gemini-2.0-flash', # O modelo 2.0 tem visão imbatível
             contents=[imagem_part, prompt_visao]
@@ -217,11 +241,6 @@ def orquestrar_limpeza_corporativa():
                 fileId=arq['id'], addParents=pasta_mes, removeParents='root',
                 body={'name': novo_nome}, fields='id, name').execute()
             print(f"   [OK] Movido e Renomeado para: {novo_nome} (Dentro de {classificacao}/{ano_str}/{mes_str})")
-            
-            # Rate limit protection (Gemini Free Tier: 15 RPM)
-            print("   [zZz] Aguardando 8 segundos para evitar limite de requisições da IA...")
-            import time
-            time.sleep(8)
 
     # ==========================================================
     # CONCLUSÃO

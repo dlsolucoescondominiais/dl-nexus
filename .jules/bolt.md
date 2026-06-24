@@ -1,0 +1,3 @@
+## 2024-06-23 - Sliding Window Rate Limiting vs Blocking Delays
+**Learning:** I discovered a performance bottleneck related to how this application handles API rate limits (Gemini 15 RPM). The code was using a synchronous, unconditional blocking delay (`time.sleep(8)`) after every loop iteration. This forces the entire thread to wait unnecessarily, even if the API quota limit hasn't actually been reached, completely sacrificing raw IO speed.
+**Action:** When handling external API rate-limiting bound by maximum requests per minute, replace static `time.sleep` with a dynamic sliding-window rate limiter using `collections.deque` to track call timestamps. This enables requests to be processed at maximum speed until the actual RPM threshold is approached.

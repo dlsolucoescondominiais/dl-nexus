@@ -247,7 +247,7 @@ def salvar_json(nome, conteudo):
 
 def main():
     print(f"\n{'='*60}")
-    print(f"  DL SOLUÇÕES — GERADOR DE WORKFLOW: ORÇAMENTO RÁPIDO")
+    print("  DL SOLUÇÕES — GERADOR DE WORKFLOW: ORÇAMENTO RÁPIDO")
     print(f"  Data: {HOJE}")
     print(f"{'='*60}\n")
 
@@ -255,19 +255,19 @@ def main():
     salvar_json("019_GERADOR_ORCAMENTO_RAPIDO.json", wf)
 
     print(f"\n{'─'*60}")
-    print(f"  Fluxo n8n gerado:")
-    print(f"    Manual Trigger")
-    print(f"      → Set: Dados da Proposta")
-    print(f"      → Code: Montar Texto da Proposta (KILLCRITIC inline)")
-    print(f"      → Output: Resultado Final")
+    print("  Fluxo n8n gerado:")
+    print("    Manual Trigger")
+    print("      → Set: Dados da Proposta")
+    print("      → Code: Montar Texto da Proposta (KILLCRITIC inline)")
+    print("      → Output: Resultado Final")
     print(f"{'─'*60}")
-    print(f"\n  Catálogo embutido: Fortress, DL Acqua, Gatekeeper,")
-    print(f"  DL Partner, DL Guardião, DL Volt, DL EcoVolt")
-    print(f"\n  Próximo passo:")
-    print(f"    1. Importar 019_GERADOR_ORCAMENTO_RAPIDO.json no n8n")
-    print(f"    2. Editar Set com dados reais do lead")
-    print(f"    3. Executar manualmente")
-    print(f"    4. Copiar proposta gerada e enviar para aprovação\n")
+    print("\n  Catálogo embutido: Fortress, DL Acqua, Gatekeeper,")
+    print("  DL Partner, DL Guardião, DL Volt, DL EcoVolt")
+    print("\n  Próximo passo:")
+    print("    1. Importar 019_GERADOR_ORCAMENTO_RAPIDO.json no n8n")
+    print("    2. Editar Set com dados reais do lead")
+    print("    3. Executar manualmente")
+    print("    4. Copiar proposta gerada e enviar para aprovação\n")
 
 
 if __name__ == "__main__":

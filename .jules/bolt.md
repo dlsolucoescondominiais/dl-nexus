@@ -1,0 +1,3 @@
+## 2024-05-17 - FastAPI Synchronous I/O Blocking
+**Learning:** Endpoints in `antigravity/routes` doing synchronous network I/O (via `requests` and synchronous `openai` clients) were incorrectly declared as `async def`. In FastAPI, `async def` runs on the main event loop. If it blocks for synchronous I/O, it halts the entire single-threaded server.
+**Action:** When working with FastAPI routes that must call synchronous SDKs (`requests`, `openai`), declare the route handler with `def` instead of `async def`. This automatically offloads the synchronous work to an external thread pool managed by Starlette, avoiding event loop blockage.

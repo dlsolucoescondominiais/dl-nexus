@@ -5,13 +5,17 @@
       "parameters": {
         "httpMethod": "POST",
         "path": "dl-aninha",
-        "options": {}
+        "options": {},
+        "authentication": "headerAuth"
       },
       "id": "wh-aninha",
       "name": "Entrada Aninha",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [100, 400]
+      "position": [
+        100,
+        400
+      ]
     },
     {
       "parameters": {
@@ -32,7 +36,10 @@
       "name": "Ler Persona Supabase",
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
-      "position": [320, 400],
+      "position": [
+        320,
+        400
+      ],
       "credentials": {
         "supabaseApi": {
           "id": "QzziIRhKJMDNAE1m"
@@ -45,9 +52,18 @@
         "value1": "={{ $json[0]?.persona || '' }}",
         "rules": {
           "rules": [
-            { "value2": "sindico", "outputKey": "sindico" },
-            { "value2": "admin_condominio", "outputKey": "admin_cond" },
-            { "value2": "admin_escola", "outputKey": "admin_escola" }
+            {
+              "value2": "sindico",
+              "outputKey": "sindico"
+            },
+            {
+              "value2": "admin_condominio",
+              "outputKey": "admin_cond"
+            },
+            {
+              "value2": "admin_escola",
+              "outputKey": "admin_escola"
+            }
           ]
         },
         "fallbackOutput": 3
@@ -56,18 +72,26 @@
       "name": "Switch Persona",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 1,
-      "position": [560, 400]
+      "position": [
+        560,
+        400
+      ]
     },
     {
       "parameters": {
         "model": "gpt-4o",
-        "options": { "temperature": 0.3 }
+        "options": {
+          "temperature": 0.3
+        }
       },
       "id": "llm-master",
       "name": "OpenAI",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1,
-      "position": [850, 1050]
+      "position": [
+        850,
+        1050
+      ]
     },
     {
       "parameters": {
@@ -77,7 +101,10 @@
       "name": "Memória Buffer",
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.2,
-      "position": [1020, 1050]
+      "position": [
+        1020,
+        1050
+      ]
     },
     {
       "parameters": {
@@ -91,21 +118,27 @@
       "name": "Agent Classificador",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.6,
-      "position": [850, 200]
+      "position": [
+        850,
+        200
+      ]
     },
     {
       "parameters": {
         "promptType": "define",
         "text": "={{ $('Entrada Aninha').item.json.body.mensagem_original || $('Entrada Aninha').item.json.body.mensagem || '' }}",
         "options": {
-          "systemMessage": "Você é a ANINHA, especialista comercial da DL Soluções Condominiais.\nO lead é um SÍNDICO.\n\nDOR PRINCIPAL DESSA PERSONA:\n- Quer agilidade e resolução sem drama para os moradores\n- Medo de gambiarras, quer segurança técnica e conformidade normativa\n- Precisa de relatórios e prestação de contas claros para a assembleia\n- Não quer ser responsabilizado por problemas de segurança (incêndio, CFTV, elétrica)\n\nSua conduta:\n- Fale diretamente sobre as vantagens da DL: padrão normativo (eletrodutos metálicos, não usamos canaleta plástica), laudos técnicos para assembleia, SLA de atendimento\n- Mencione cases de sucesso de condomínios similares (genéricos)\n- Nunca dê preço — o preço só sai após Avaliação Técnica\n\nQuando o lead demonstrar interesse em avançar para orçamento ou avaliação técnica, adicione a tag [ENCAMINHAR_JULES] no FINAL da sua resposta."
+          "systemMessage": "Você é a ANINHA, especialista comercial da DL Soluções Condominiais.\nO lead é um SÍNDICO.\n\nDOR PRINCIPAL DESSA PERSONA:\n- Quer agilidade e resolução sem drama para os moradores\n- Medo de gambiarras, quer segurança técnica e conformidade normativa\n- Precisa de relatórios e prestação de contas claros para a assembleia\n- Não quer ser responsabilizado por problemas de segurança (incêndio, CFTV, elétrica)\n\nSua conduta:\n- Fale diretamente sobre as vantagens da DL: padrão normativo (eletrodutos metálicos, utilizamos exclusivamente eletrodutos metálicos e fiação de padrão industrial), laudos técnicos para assembleia, SLA de atendimento\n- Mencione cases de sucesso de condomínios similares (genéricos)\n- Nunca dê preço — o preço só sai após Avaliação Técnica\n\nQuando o lead demonstrar interesse em avançar para orçamento ou avaliação técnica, adicione a tag [ENCAMINHAR_JULES] no FINAL da sua resposta."
         }
       },
       "id": "ag-sindico",
       "name": "Agent Síndico",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.6,
-      "position": [850, 400]
+      "position": [
+        850,
+        400
+      ]
     },
     {
       "parameters": {
@@ -119,7 +152,10 @@
       "name": "Agent Admin Cond",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.6,
-      "position": [850, 600]
+      "position": [
+        850,
+        600
+      ]
     },
     {
       "parameters": {
@@ -133,7 +169,10 @@
       "name": "Agent Escola",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.6,
-      "position": [850, 800]
+      "position": [
+        850,
+        800
+      ]
     },
     {
       "parameters": {
@@ -151,7 +190,10 @@
       "name": "Encaminhar para Engenharia?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [1150, 600]
+      "position": [
+        1150,
+        600
+      ]
     },
     {
       "parameters": {
@@ -180,7 +222,11 @@
       "name": "Chamar 004 Jules",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [1400, 500]
+      "position": [
+        1400,
+        500
+      ],
+      "onError": "continueErrorOutput"
     },
     {
       "parameters": {
@@ -198,7 +244,10 @@
       "name": "Detectou Sindico?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [1150, 100]
+      "position": [
+        1150,
+        100
+      ]
     },
     {
       "parameters": {
@@ -216,7 +265,10 @@
       "name": "Detectou Admin Cond?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [1150, 200]
+      "position": [
+        1150,
+        200
+      ]
     },
     {
       "parameters": {
@@ -234,7 +286,10 @@
       "name": "Detectou Escola?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [1150, 300]
+      "position": [
+        1150,
+        300
+      ]
     },
     {
       "parameters": {
@@ -250,8 +305,14 @@
         },
         "updateValues": {
           "values": [
-            { "column": "persona", "value": "sindico" },
-            { "column": "status", "value": "triado" }
+            {
+              "column": "persona",
+              "value": "sindico"
+            },
+            {
+              "column": "status",
+              "value": "triado"
+            }
           ]
         }
       },
@@ -259,8 +320,15 @@
       "name": "Salvar Persona Sindico",
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
-      "position": [1400, 50],
-      "credentials": { "supabaseApi": { "id": "QzziIRhKJMDNAE1m" } }
+      "position": [
+        1400,
+        50
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "QzziIRhKJMDNAE1m"
+        }
+      }
     },
     {
       "parameters": {
@@ -276,8 +344,14 @@
         },
         "updateValues": {
           "values": [
-            { "column": "persona", "value": "admin_condominio" },
-            { "column": "status", "value": "triado" }
+            {
+              "column": "persona",
+              "value": "admin_condominio"
+            },
+            {
+              "column": "status",
+              "value": "triado"
+            }
           ]
         }
       },
@@ -285,8 +359,15 @@
       "name": "Salvar Persona Admin",
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
-      "position": [1400, 200],
-      "credentials": { "supabaseApi": { "id": "QzziIRhKJMDNAE1m" } }
+      "position": [
+        1400,
+        200
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "QzziIRhKJMDNAE1m"
+        }
+      }
     },
     {
       "parameters": {
@@ -302,8 +383,14 @@
         },
         "updateValues": {
           "values": [
-            { "column": "persona", "value": "admin_escola" },
-            { "column": "status", "value": "triado" }
+            {
+              "column": "persona",
+              "value": "admin_escola"
+            },
+            {
+              "column": "status",
+              "value": "triado"
+            }
           ]
         }
       },
@@ -311,90 +398,235 @@
       "name": "Salvar Persona Escola",
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
-      "position": [1400, 300],
-      "credentials": { "supabaseApi": { "id": "QzziIRhKJMDNAE1m" } }
+      "position": [
+        1400,
+        300
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "QzziIRhKJMDNAE1m"
+        }
+      }
     }
   ],
   "connections": {
     "Entrada Aninha": {
       "main": [
-        [{ "node": "Ler Persona Supabase", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Ler Persona Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Ler Persona Supabase": {
       "main": [
-        [{ "node": "Switch Persona", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Switch Persona",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Switch Persona": {
       "main": [
-        [{ "node": "Agent Síndico", "type": "main", "index": 0 }],
-        [{ "node": "Agent Admin Cond", "type": "main", "index": 0 }],
-        [{ "node": "Agent Escola", "type": "main", "index": 0 }],
-        [{ "node": "Agent Classificador", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Agent Síndico",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agent Admin Cond",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agent Escola",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agent Classificador",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "OpenAI": {
       "ai_languageModel": [
-        [{ "node": "Agent Classificador", "type": "ai_languageModel", "index": 0 }],
-        [{ "node": "Agent Síndico", "type": "ai_languageModel", "index": 0 }],
-        [{ "node": "Agent Admin Cond", "type": "ai_languageModel", "index": 0 }],
-        [{ "node": "Agent Escola", "type": "ai_languageModel", "index": 0 }]
+        [
+          {
+            "node": "Agent Classificador",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agent Síndico",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agent Admin Cond",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agent Escola",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
       ]
     },
     "Memória Buffer": {
       "ai_memory": [
-        [{ "node": "Agent Classificador", "type": "ai_memory", "index": 0 }],
-        [{ "node": "Agent Síndico", "type": "ai_memory", "index": 0 }],
-        [{ "node": "Agent Admin Cond", "type": "ai_memory", "index": 0 }],
-        [{ "node": "Agent Escola", "type": "ai_memory", "index": 0 }]
+        [
+          {
+            "node": "Agent Classificador",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agent Síndico",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agent Admin Cond",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Agent Escola",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
       ]
     },
     "Agent Classificador": {
       "main": [
         [
-          { "node": "Detectou Sindico?", "type": "main", "index": 0 },
-          { "node": "Detectou Admin Cond?", "type": "main", "index": 0 },
-          { "node": "Detectou Escola?", "type": "main", "index": 0 }
+          {
+            "node": "Detectou Sindico?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Detectou Admin Cond?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Detectou Escola?",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "Detectou Sindico?": {
       "main": [
-        [{ "node": "Salvar Persona Sindico", "type": "main", "index": 0 }],
+        [
+          {
+            "node": "Salvar Persona Sindico",
+            "type": "main",
+            "index": 0
+          }
+        ],
         []
       ]
     },
     "Detectou Admin Cond?": {
       "main": [
-        [{ "node": "Salvar Persona Admin", "type": "main", "index": 0 }],
+        [
+          {
+            "node": "Salvar Persona Admin",
+            "type": "main",
+            "index": 0
+          }
+        ],
         []
       ]
     },
     "Detectou Escola?": {
       "main": [
-        [{ "node": "Salvar Persona Escola", "type": "main", "index": 0 }],
+        [
+          {
+            "node": "Salvar Persona Escola",
+            "type": "main",
+            "index": 0
+          }
+        ],
         []
       ]
     },
     "Agent Síndico": {
       "main": [
-        [{ "node": "Encaminhar para Engenharia?", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Encaminhar para Engenharia?",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Agent Admin Cond": {
       "main": [
-        [{ "node": "Encaminhar para Engenharia?", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Encaminhar para Engenharia?",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Agent Escola": {
       "main": [
-        [{ "node": "Encaminhar para Engenharia?", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Encaminhar para Engenharia?",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Encaminhar para Engenharia?": {
       "main": [
-        [{ "node": "Chamar 004 Jules", "type": "main", "index": 0 }],
+        [
+          {
+            "node": "Chamar 004 Jules",
+            "type": "main",
+            "index": 0
+          }
+        ],
         []
       ]
     }

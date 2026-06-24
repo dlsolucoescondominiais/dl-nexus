@@ -4,7 +4,8 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "dl-jules"
+        "path": "dl-jules",
+        "authentication": "headerAuth"
       },
       "id": "wh-jules",
       "name": "Entrada Jules",
@@ -28,7 +29,8 @@
       "position": [
         400,
         200
-      ]
+      ],
+      "onError": "continueErrorOutput"
     }
   ],
   "connections": {

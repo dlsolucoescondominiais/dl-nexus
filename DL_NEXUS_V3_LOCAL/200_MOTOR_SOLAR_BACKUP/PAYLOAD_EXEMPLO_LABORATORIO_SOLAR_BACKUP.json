@@ -1,0 +1,39 @@
+{
+    "cliente": {
+        "nome": "Laboratórios XYZ",
+        "tipo_cliente": "laboratorio"
+    },
+    "eletrico": {
+        "tipo_ligacao": "trifasico",
+        "tensao": "380V/220V",
+        "padrao_entrada": "industrial"
+    },
+    "conta": {
+        "consumo_mensal_kwh": 8000,
+        "concessionaria": "Enel"
+    },
+    "backup": {
+        "autonomia_horas": 12,
+        "motores_bombas_elevadores": true
+    },
+    "cargas_criticas": [
+        {
+            "descricao": "Freezer Ultra Baixa Temp",
+            "potencia_w": 1200,
+            "horas_uso": 24,
+            "quantidade": 2
+        },
+        {
+            "descricao": "Incubadora",
+            "potencia_w": 600,
+            "horas_uso": 24,
+            "quantidade": 3
+        },
+        {
+            "descricao": "Servidor de Dados",
+            "potencia_w": 800,
+            "horas_uso": 24,
+            "quantidade": 1
+        }
+    ]
+}

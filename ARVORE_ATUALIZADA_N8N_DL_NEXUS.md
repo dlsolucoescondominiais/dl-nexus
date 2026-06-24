@@ -84,6 +84,19 @@
 ## 11. GitHub e Versionamento
 - 🔴 **Monitoramento de Credenciais:** Status crítico aguardando confirmação de rotação efetiva das credenciais legadas expostas na branch histórica (GH013). O push foi limpo, mas a rotação mandatório das chaves das plataformas de destino deve ser comprovada e mantida fora do controle de versão.
 
+\n## 13. Motor Solar e Backup DL EcoVolt
+- 🟢 **200_SOLAR_BACKUP_RECEPCAO_DADOS:** Recebe dados do cliente por formulário, WhatsApp, input manual ou planilha.
+- 🟢 **201_SOLAR_BACKUP_ANALISE_CONTA_ENERGIA:** Analisa consumo, conta, tarifa, concessionária, tipo de ligação e histórico.
+- 🟢 **202_SOLAR_BACKUP_CARGAS_CRITICAS:** Calcula cargas críticas, potência simultânea, autonomia, motores e prioridade.
+- 🟢 **203_SOLAR_BACKUP_DIMENSIONAMENTO_BATERIAS:** Calcula energia necessária, bateria útil, bateria nominal, perdas, DoD, margem técnica e quantidade estimada.
+- 🟢 **204_SOLAR_BACKUP_DIMENSIONAMENTO_INVERSOR:** Calcula potência do inversor, pico de partida, compatibilidade e margem.
+- 🟢 **205_SOLAR_BACKUP_DIMENSIONAMENTO_FOTOVOLTAICO:** Calcula sistema solar preliminar em kWp conforme consumo, geração estimada, área e objetivo.
+- 🟢 **206_SOLAR_BACKUP_BASE_EQUIPAMENTOS_CORSOLAR_SOLAX:** Consulta base de equipamentos, modelos, custos, compatibilidade e fornecedor.
+- 🟢 **207_SOLAR_BACKUP_KILLCRITIC_TECNICO:** Audita riscos técnicos, comerciais, dados faltantes e promessas indevidas.
+- 🟢 **208_SOLAR_BACKUP_GERADOR_PROPOSTA_MARKDOWN:** Gera proposta em Markdown com versão cliente e versão interna.
+- 🟢 **209_SOLAR_BACKUP_GERADOR_PDF_GOOGLE_DOCS:** Gera Google Docs e PDF.
+- 🟢 **210_SOLAR_BACKUP_AGENTE_EVOLUCAO_ORCAMENTOS:** Analisa orçamentos anteriores para melhorar o motor automaticamente.
+
 ## 12. Workflows Legados / Não Mexer
 - ⚙️ **130_MANUS_PROSPECCAO_B2B_RJ** (`active=false`, Manus.IA removido, mantido para histórico)
 - ⚙️ **060_AGENT_MANUS_PROSPECCAO_ATIVA** (`active=false`, Manus.IA removido, mantido para histórico)

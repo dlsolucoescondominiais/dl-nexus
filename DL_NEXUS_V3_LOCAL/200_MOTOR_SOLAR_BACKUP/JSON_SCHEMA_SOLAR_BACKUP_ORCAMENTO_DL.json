@@ -1,0 +1,226 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "OrcamentoSolarBackup",
+    "type": "object",
+    "properties": {
+        "cliente": {
+            "type": "object",
+            "properties": {
+                "nome": {
+                    "type": "string"
+                },
+                "tipo_cliente": {
+                    "type": "string",
+                    "enum": [
+                        "condominio",
+                        "residencia",
+                        "empresa",
+                        "escola",
+                        "laboratorio",
+                        "restaurante",
+                        "comercio"
+                    ]
+                },
+                "endereco": {
+                    "type": "string"
+                },
+                "bairro": {
+                    "type": "string"
+                },
+                "cidade": {
+                    "type": "string"
+                },
+                "responsavel": {
+                    "type": "string"
+                },
+                "whatsapp": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "nome",
+                "tipo_cliente",
+                "whatsapp"
+            ]
+        },
+        "eletrico": {
+            "type": "object",
+            "properties": {
+                "tipo_ligacao": {
+                    "type": "string",
+                    "enum": [
+                        "monofasico",
+                        "bifasico",
+                        "trifasico"
+                    ]
+                },
+                "tensao": {
+                    "type": "string"
+                },
+                "disjuntor_geral": {
+                    "type": "string"
+                },
+                "padrao_entrada": {
+                    "type": "string"
+                },
+                "aterramento": {
+                    "type": "boolean"
+                },
+                "dr_dps": {
+                    "type": "boolean"
+                },
+                "quadro_cargas_criticas": {
+                    "type": "boolean"
+                },
+                "distancia_inversor_quadro": {
+                    "type": "number"
+                },
+                "distancia_baterias_quadro": {
+                    "type": "number"
+                }
+            },
+            "required": [
+                "tipo_ligacao",
+                "tensao",
+                "padrao_entrada"
+            ]
+        },
+        "conta": {
+            "type": "object",
+            "properties": {
+                "consumo_mensal_kwh": {
+                    "type": "number"
+                },
+                "valor_medio_conta": {
+                    "type": "number"
+                },
+                "historico_12_meses": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                },
+                "concessionaria": {
+                    "type": "string"
+                },
+                "tarifa": {
+                    "type": "string"
+                },
+                "demanda_contratada": {
+                    "type": "number"
+                },
+                "objetivo": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "consumo_mensal_kwh",
+                "concessionaria"
+            ]
+        },
+        "solar": {
+            "type": "object",
+            "properties": {
+                "area_disponivel": {
+                    "type": "number"
+                },
+                "tipo_telhado_laje": {
+                    "type": "string"
+                },
+                "sombreamento": {
+                    "type": "string"
+                },
+                "orientacao": {
+                    "type": "string"
+                },
+                "inclinacao": {
+                    "type": "number"
+                },
+                "local_inversor": {
+                    "type": "string"
+                },
+                "local_baterias": {
+                    "type": "string"
+                },
+                "ventilacao": {
+                    "type": "string"
+                },
+                "fotos_local": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "backup": {
+            "type": "object",
+            "properties": {
+                "autonomia_horas": {
+                    "type": "number"
+                },
+                "cargas_criticas": {
+                    "type": "boolean"
+                },
+                "potencia_carga": {
+                    "type": "number"
+                },
+                "quantidade_carga": {
+                    "type": "integer"
+                },
+                "horas_uso_carga": {
+                    "type": "number"
+                },
+                "cargas_simultaneas": {
+                    "type": "boolean"
+                },
+                "motores_bombas_elevadores": {
+                    "type": "boolean"
+                },
+                "pico_partida": {
+                    "type": "number"
+                },
+                "prioridade_cargas": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "autonomia_horas",
+                "motores_bombas_elevadores"
+            ]
+        },
+        "cargas_criticas": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "descricao": {
+                        "type": "string"
+                    },
+                    "potencia_w": {
+                        "type": "number"
+                    },
+                    "horas_uso": {
+                        "type": "number"
+                    },
+                    "quantidade": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "descricao",
+                    "potencia_w",
+                    "horas_uso",
+                    "quantidade"
+                ]
+            }
+        }
+    },
+    "required": [
+        "cliente",
+        "eletrico",
+        "conta",
+        "cargas_criticas",
+        "backup"
+    ]
+}

@@ -1,0 +1,51 @@
+{
+    "cliente": {
+        "nome": "Condomínio Residencial das Flores",
+        "tipo_cliente": "condominio"
+    },
+    "eletrico": {
+        "tipo_ligacao": "trifasico",
+        "tensao": "220V/127V",
+        "padrao_entrada": "antigo"
+    },
+    "conta": {
+        "consumo_mensal_kwh": 3500,
+        "concessionaria": "Light"
+    },
+    "backup": {
+        "autonomia_horas": 4,
+        "motores_bombas_elevadores": true
+    },
+    "cargas_criticas": [
+        {
+            "descricao": "CFTV",
+            "potencia_w": 150,
+            "horas_uso": 24,
+            "quantidade": 1
+        },
+        {
+            "descricao": "Portão Automático",
+            "potencia_w": 500,
+            "horas_uso": 1,
+            "quantidade": 2
+        },
+        {
+            "descricao": "Internet/Roteador",
+            "potencia_w": 50,
+            "horas_uso": 24,
+            "quantidade": 1
+        },
+        {
+            "descricao": "Iluminação de Emergência LED",
+            "potencia_w": 10,
+            "horas_uso": 12,
+            "quantidade": 20
+        },
+        {
+            "descricao": "Bomba de Recalque (Requer Avaliação Técnica para Pico)",
+            "potencia_w": 1500,
+            "horas_uso": 2,
+            "quantidade": 1
+        }
+    ]
+}

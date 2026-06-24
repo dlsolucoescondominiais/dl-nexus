@@ -1,0 +1,45 @@
+{
+    "cliente": {
+        "nome": "Lanchonete Sabor e Cia",
+        "tipo_cliente": "restaurante"
+    },
+    "eletrico": {
+        "tipo_ligacao": "trifasico",
+        "tensao": "220V/127V",
+        "padrao_entrada": "comercial"
+    },
+    "conta": {
+        "consumo_mensal_kwh": 2500,
+        "concessionaria": "Light"
+    },
+    "backup": {
+        "autonomia_horas": 8,
+        "motores_bombas_elevadores": true
+    },
+    "cargas_criticas": [
+        {
+            "descricao": "Computador PDV",
+            "potencia_w": 250,
+            "horas_uso": 16,
+            "quantidade": 2
+        },
+        {
+            "descricao": "Câmera CFTV",
+            "potencia_w": 15,
+            "horas_uso": 24,
+            "quantidade": 8
+        },
+        {
+            "descricao": "Roteador",
+            "potencia_w": 30,
+            "horas_uso": 24,
+            "quantidade": 1
+        },
+        {
+            "descricao": "Freezer Sorvete",
+            "potencia_w": 800,
+            "horas_uso": 12,
+            "quantidade": 1
+        }
+    ]
+}

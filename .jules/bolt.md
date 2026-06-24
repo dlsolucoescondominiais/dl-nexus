@@ -1,0 +1,3 @@
+## 2024-05-24 - FastAPI Sync Route Handlers for Blocking I/O
+**Learning:** In the `antigravity` FastAPI backend, some route handlers (`aninha.py` and `marketing.py`) perform synchronous, blocking I/O operations (like `requests.post()` and `openai` SDK calls) but are declared with `async def`. This is a significant anti-pattern in FastAPI because it blocks the single-threaded main event loop, severely degrading concurrent request throughput.
+**Action:** Route handlers that do not use `await` internally and rely on blocking synchronous code MUST be declared with a standard `def`. This allows FastAPI to automatically offload execution to an external threadpool, preserving the event loop's responsiveness for other asynchronous tasks.

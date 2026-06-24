@@ -1,0 +1,95 @@
+{
+  "name": "203_SOLAR_BACKUP_DIMENSIONAMENTO_BATERIAS",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "solar-backup-baterias",
+        "options": {}
+      },
+      "id": "webhook_receptor",
+      "name": "Trigger Baterias",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const orcamento = $json.body || {};\nconst calc = orcamento.dimensionamento_backup_calculado || {};\nconst energia_critica = calc.energia_critica_diaria_kwh || 0;\n\n// Parâmetros de cálculo obrigatórios\nconst dod = 0.80; // Depth of Discharge máximo (80%)\nconst eficiencia = 0.85; // Eficiência do inversor/sistema híbrido (85%)\nconst margem_tecnica = 0.25; // Margem técnica de reserva (25%)\n\n// Fórmulas\nconst bateria_util_kwh = energia_critica;\n// Nominal = útil / (DoD * eficiência) * (1 + margem)\nconst bateria_nominal_kwh = Number((bateria_util_kwh / (dod * eficiencia) * (1 + margem_tecnica)).toFixed(3));\n\n// Capacidade de descarga contínua a 0.5C (padrão de baterias LFP SolaX Triple Power)\nconst bateria_capacidade_descarga_kw = Number((bateria_nominal_kwh * 0.5).toFixed(3));\n\nconst simultanea_kw = calc.potencia_critica_simultanea_kw || 0;\nconst pendencias_baterias = [];\n\nif (bateria_capacidade_descarga_kw < simultanea_kw) {\n  pendencias_baterias.push(`A potência de descarga contínua do banco (${bateria_capacidade_descarga_kw} kW) é menor que a carga simultânea crítica (${simultanea_kw} kW). Risco de sobrecarga e desligamento. Requer aumento do banco de baterias.`);\n}\n\nreturn {\n  ...orcamento,\n  dimensionamento_backup_calculado: {\n    ...calc,\n    bateria_util_kwh,\n    bateria_nominal_kwh,\n    bateria_capacidade_descarga_kw,\n    paramentos_calculo: {\n      dod_permitido: dod,\n      eficiencia_sistema: eficiencia,\n      margem_tecnica: margem_tecnica\n    },\n    pendencias_baterias\n  },\n  status: 'calculado_baterias'\n};"
+      },
+      "id": "calcular_baterias",
+      "name": "Dimensionar Banco de Baterias",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://db.nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_solar_orcamentos?protocolo=eq.{{$json.protocolo}}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"bateria_util_kwh\": {{ $json.dimensionamento_backup_calculado.bateria_util_kwh }},\n  \"bateria_nominal_kwh\": {{ $json.dimensionamento_backup_calculado.bateria_nominal_kwh }},\n  \"bateria_capacidade_descarga_kw\": {{ $json.dimensionamento_backup_calculado.bateria_capacidade_descarga_kw }},\n  \"status\": \"{{ $json.status }}\"\n}"
+      },
+      "id": "atualizar_supabase_baterias",
+      "name": "Atualizar Supabase Baterias",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        500,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Trigger Baterias": {
+      "main": [
+        [
+          {
+            "node": "Dimensionar Banco de Baterias",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dimensionar Banco de Baterias": {
+      "main": [
+        [
+          {
+            "node": "Atualizar Supabase Baterias",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

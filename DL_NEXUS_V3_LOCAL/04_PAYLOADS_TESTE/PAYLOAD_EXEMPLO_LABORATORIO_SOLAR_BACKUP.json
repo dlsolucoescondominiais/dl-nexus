@@ -1,0 +1,107 @@
+{
+  "protocolo": "ECO-20260624-0003",
+  "cliente": {
+    "nome": "Laboratório de Análises MedLab RJ",
+    "tipo_cliente": "laboratorio",
+    "responsavel": "Dra. Patrícia Albuquerque",
+    "whatsapp": "+5521977776666",
+    "email": "p.albuquerque@medlabrj.com.br",
+    "endereco": "Rua Voluntários da Pátria, 120",
+    "bairro": "Botafogo",
+    "cidade": "Rio de Janeiro"
+  },
+  "dados_eletricos": {
+    "tipo_ligacao": "trifasico",
+    "tensao": "220/380",
+    "disjuntor_geral": "100",
+    "padrao_entrada": "Entrada padrão Light",
+    "aterramento": true,
+    "dr_dps": true,
+    "quadro_cargas_criticas": true,
+    "distancia_inversor_quadro_metros": 12,
+    "distancia_baterias_quadro_metros": 8
+  },
+  "dados_conta": {
+    "consumo_mensal_kwh": 2800,
+    "valor_medio_conta": 3300.00,
+    "concessionaria": "Light",
+    "tarifa": 1.15,
+    "demanda_contratada_kw": 0,
+    "objetivo": "contingencia",
+    "historico_12_meses_kwh": [2600, 2750, 2800, 2900, 2650, 2700, 2850, 2950, 3100, 2800, 2700, 2800]
+  },
+  "dados_solares": {
+    "area_disponivel_m2": 150,
+    "tipo_telhado_laje": "laje técnica impermeabilizada",
+    "sombreamento": "prédio vizinho projeta sombra após as 16h",
+    "orientacao": "norte",
+    "inclinacao": "10 graus",
+    "local_inversor": "corredor técnico",
+    "local_baterias": "sala de T.I. com ar condicionado 24h",
+    "ventilacao_adequada": true
+  },
+  "cargas_criticas": [
+    {
+      "nome_carga": "Freezer Ultra-LFP Vacinas (-80C)",
+      "potencia_w": 1200,
+      "quantidade": 1,
+      "horas_uso_diario": 24,
+      "simultanea": true,
+      "motor": true,
+      "pico_partida": {
+        "tipo_partida": "inversor_frequencia",
+        "corrente_partida_a": 8,
+        "fator_pico": 1.5
+      },
+      "prioridade": 1
+    },
+    {
+      "nome_carga": "Refrigeradores de Reativos Clínicos",
+      "potencia_w": 350,
+      "quantidade": 3,
+      "horas_uso_diario": 24,
+      "simultanea": true,
+      "motor": true,
+      "pico_partida": {
+        "tipo_partida": "inversor_frequencia",
+        "corrente_partida_a": 3,
+        "fator_pico": 1.5
+      },
+      "prioridade": 1
+    },
+    {
+      "nome_carga": "Servidores de Resultados e T.I.",
+      "potencia_w": 1500,
+      "quantidade": 1,
+      "horas_uso_diario": 24,
+      "simultanea": true,
+      "motor": false,
+      "prioridade": 1
+    },
+    {
+      "nome_carga": "Ar Condicionado Inverter Split da Sala de TI (9000 BTUs)",
+      "potencia_w": 900,
+      "quantidade": 1,
+      "horas_uso_diario": 24,
+      "simultanea": true,
+      "motor": true,
+      "pico_partida": {
+        "tipo_partida": "inversor_frequencia",
+        "corrente_partida_a": 6,
+        "fator_pico": 1.3
+      },
+      "prioridade": 2
+    }
+  ],
+  "autonomia_desejada_horas": 24,
+  "status": "calculado_preliminar",
+  "compliance_killcritic": {
+    "status_killcritic": "APROVADO_COM_RESSALVAS",
+    "risco_killcritic": "medio",
+    "motivos_bloqueio": [],
+    "pendencias_criticas": [
+      "Confirmar o correto chaveamento da automação de bypass na T.I. durante a transição para baterias",
+      "Avaliação Técnica em Botafogo necessária para verificar a real atenuação de sombreamento do edifício vizinho"
+    ]
+  }
+}

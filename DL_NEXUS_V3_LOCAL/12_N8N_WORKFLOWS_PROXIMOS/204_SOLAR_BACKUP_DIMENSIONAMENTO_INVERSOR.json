@@ -1,0 +1,95 @@
+{
+  "name": "204_SOLAR_BACKUP_DIMENSIONAMENTO_INVERSOR",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "solar-backup-inversor",
+        "options": {}
+      },
+      "id": "webhook_receptor",
+      "name": "Trigger Inversor",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const orcamento = $json.body || {};\nconst calc = orcamento.dimensionamento_backup_calculado || {};\nconst dados_eletricos = orcamento.dados_eletricos || {};\n\nconst simultanea_kw = calc.potencia_critica_simultanea_kw || 0;\nconst margem_tecnica = (calc.paramentos_calculo || {}).margem_tecnica || 0.25;\n\n// Potência mínima do inversor\nconst potencia_inversor_minima_kw = Number((simultanea_kw * (1 + margem_tecnica)).toFixed(3));\n\nlet inversor_sugerido = 'Cascata/Múltiplos Inversores Híbridos (Requer Avaliação Técnica)';\nlet compatibilidade_valida = true;\nconst pendencias_inversor = [];\n\nconst fase = dados_eletricos.tipo_ligacao || 'trifasico';\n\nif (fase === 'monofasico' || fase === 'bifasico') {\n  if (potencia_inversor_minima_kw <= 5.0) {\n    inversor_sugerido = 'SolaX X1-Hybrid 5.0-D';\n  } else {\n    compatibilidade_valida = false;\n    pendencias_inversor.push(`Potência de backup calculada (${potencia_inversor_minima_kw} kW) excede limite monofásico/bifásico padrão de 5 kW. Requer alteração do padrão do cliente para trifásico.`);\n  }\n} else if (fase === 'trifasico') {\n  if (potencia_inversor_minima_kw <= 10.0) {\n    inversor_sugerido = 'SolaX X3-Hybrid 10.0-D';\n  } else if (potencia_inversor_minima_kw <= 15.0) {\n    inversor_sugerido = 'SolaX X3-Hybrid 15.0-D';\n  } else {\n    inversor_sugerido = 'Múltiplos Inversores SolaX X3 Híbridos em Cascata';\n    pendencias_inversor.push(`Potência calculada (${potencia_inversor_minima_kw} kW) requer múltiplos inversores integrados em paralelo.`);\n  }\n}\n\nreturn {\n  ...orcamento,\n  dimensionamento_backup_calculado: {\n    ...calc,\n    potencia_inversor_minima_kw,\n    inversor_sugerido,\n    compatibilidade_valida,\n    pendencias_inversor\n  },\n  status: 'calculado_inversor'\n};"
+      },
+      "id": "calcular_inversor",
+      "name": "Dimensionar Inversor Hibrido",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://db.nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_solar_orcamentos?protocolo=eq.{{$json.protocolo}}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"potencia_inversor_minima_kw\": {{ $json.dimensionamento_backup_calculado.potencia_inversor_minima_kw }},\n  \"inversor_sugerido\": \"{{ $json.dimensionamento_backup_calculado.inversor_sugerido }}\",\n  \"status\": \"{{ $json.status }}\"\n}"
+      },
+      "id": "atualizar_supabase_inversor",
+      "name": "Atualizar Supabase Inversor",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        500,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Trigger Inversor": {
+      "main": [
+        [
+          {
+            "node": "Dimensionar Inversor Hibrido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dimensionar Inversor Hibrido": {
+      "main": [
+        [
+          {
+            "node": "Atualizar Supabase Inversor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

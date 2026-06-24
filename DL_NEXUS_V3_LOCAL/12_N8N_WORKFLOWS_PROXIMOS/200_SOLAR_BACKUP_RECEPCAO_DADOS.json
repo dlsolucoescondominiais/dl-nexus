@@ -1,0 +1,99 @@
+{
+  "name": "200_SOLAR_BACKUP_RECEPCAO_DADOS",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "solar-backup-dados",
+        "options": {}
+      },
+      "id": "webhook_receptor",
+      "name": "Recepção de Dados Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || {};\nconst timestamp = new Date().toISOString();\nconst datePart = timestamp.slice(0,10).replace(/-/g, '');\nconst rand = Math.floor(1000 + Math.random() * 9000);\nconst protocolo = `ECO-${datePart}-${rand}`;\n\nreturn {\n  protocolo,\n  cliente: {\n    nome: body.nome || 'Cliente não identificado',\n    tipo_cliente: body.tipo_cliente || 'condominio',\n    responsavel: body.responsavel || body.nome || 'Responsável não identificado',\n    whatsapp: body.whatsapp || '',\n    email: body.email || '',\n    endereco: body.endereco || '',\n    bairro: body.bairro || '',\n    cidade: body.cidade || 'Rio de Janeiro'\n  },\n  dados_eletricos: {\n    tipo_ligacao: body.tipo_ligacao || 'trifasico',\n    tensao: body.tensao || '220/380',\n    disjuntor_geral: body.disjuntor_geral || '100',\n    padrao_entrada: body.padrao_entrada || 'Muro Light',\n    aterramento: !!body.aterramento,\n    dr_dps: !!body.dr_dps,\n    quadro_cargas_criticas: !!body.quadro_cargas_criticas,\n    distancia_inversor_quadro_metros: Number(body.distancia_inversor_quadro) || 10,\n    distancia_baterias_quadro_metros: Number(body.distancia_baterias_quadro) || 10\n  },\n  dados_conta: {\n    consumo_mensal_kwh: Number(body.consumo_mensal_kwh) || 1000,\n    valor_medio_conta: Number(body.valor_medio_conta) || 1200,\n    concessionaria: body.concessionaria || 'Light',\n    tarifa: Number(body.tarifa) || 1.15,\n    demanda_contratada_kw: Number(body.demanda_contratada_kw) || 0,\n    objetivo: body.objetivo || 'hibrido',\n    historico_12_meses_kwh: body.historico_12_meses || []\n  },\n  dados_solares: {\n    area_disponivel_m2: Number(body.area_disponivel) || 100,\n    tipo_telhado_laje: body.tipo_telhado_laje || 'laje plana',\n    sombreamento: body.sombreamento || 'nenhum',\n    orientacao: body.orientacao || 'norte',\n    inclinacao: body.inclinacao || '15 graus',\n    local_inversor: body.local_inversor || 'garagem',\n    local_baterias: body.local_baterias || 'garagem',\n    ventilacao_adequada: !!body.ventilacao\n  },\n  cargas_criticas: body.cargas_criticas || [],\n  autonomia_desejada_horas: Number(body.autonomia_horas) || 8,\n  status: 'recebido',\n  compliance_killcritic: {\n    status_killcritic: 'BLOQUEADO',\n    risco_killcritic: 'baixo',\n    motivos_bloqueio: ['Aguardando cálculo e auditoria'],\n    pendencias_criticas: []\n  }\n};"
+      },
+      "id": "normalizar_dados",
+      "name": "Normalizar Payload Entrada",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.SUPABASE_URL}}/rest/v1/dl_solar_orcamentos",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"protocolo\": \"{{ $json.protocolo }}\",\n  \"cliente\": \"{{ $json.cliente.nome }}\",\n  \"tipo_cliente\": \"{{ $json.cliente.tipo_cliente }}\",\n  \"status\": \"{{ $json.status }}\",\n  \"objetivo\": \"{{ $json.dados_conta.objetivo }}\",\n  \"consumo_mensal_kwh\": {{ $json.dados_conta.consumo_mensal_kwh }},\n  \"valor_conta\": {{ $json.dados_conta.valor_medio_conta }},\n  \"tensao\": \"{{ $json.dados_eletricos.tensao }}\",\n  \"tipo_ligacao\": \"{{ $json.dados_eletricos.tipo_ligacao }}\",\n  \"disjuntor_geral\": \"{{ $json.dados_eletricos.disjuntor_geral }}\",\n  \"padrao_entrada\": \"{{ $json.dados_eletricos.padrao_entrada }}\",\n  \"aterramento\": {{ $json.dados_eletricos.aterramento }},\n  \"dr_dps\": {{ $json.dados_eletricos.dr_dps }},\n  \"quadro_cargas_criticas\": {{ $json.dados_eletricos.quadro_cargas_criticas }},\n  \"distancia_inversor_quadro\": {{ $json.dados_eletricos.distancia_inversor_quadro_metros }},\n  \"distancia_baterias_quadro\": {{ $json.dados_eletricos.distancia_baterias_quadro_metros }},\n  \"area_disponivel\": {{ $json.dados_solares.area_disponivel_m2 }},\n  \"tipo_telhado_laje\": \"{{ $json.dados_solares.tipo_telhado_laje }}\",\n  \"sombreamento\": \"{{ $json.dados_solares.sombreamento }}\",\n  \"orientacao\": \"{{ $json.dados_solares.orientacao }}\",\n  \"inclinacao\": \"{{ $json.dados_solares.inclinacao }}\",\n  \"local_inversor\": \"{{ $json.dados_solares.local_inversor }}\",\n  \"local_baterias\": \"{{ $json.dados_solares.local_baterias }}\",\n  \"ventilacao\": {{ $json.dados_solares.ventilacao_adequada }},\n  \"autonomia_horas\": {{ $json.autonomia_desejada_horas }},\n  \"risco_killcritic\": \"{{ $json.compliance_killcritic.risco_killcritic }}\"\n}"
+      },
+      "id": "salvar_supabase",
+      "name": "Inserir no Supabase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        500,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Recepção de Dados Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalizar Payload Entrada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalizar Payload Entrada": {
+      "main": [
+        [
+          {
+            "node": "Inserir no Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

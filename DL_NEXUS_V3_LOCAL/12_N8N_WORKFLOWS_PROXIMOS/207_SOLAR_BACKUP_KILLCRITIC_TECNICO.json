@@ -1,0 +1,95 @@
+{
+  "name": "207_SOLAR_BACKUP_KILLCRITIC_TECNICO",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "solar-backup-killcritic",
+        "options": {}
+      },
+      "id": "webhook_receptor",
+      "name": "Trigger Killcritic",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const orcamento = $json.body || {};\nconst cliente = orcamento.cliente || {};\nconst dados_eletricos = orcamento.dados_eletricos || {};\nconst dados_conta = orcamento.dados_conta || {};\nconst calc = orcamento.dimensionamento_backup_calculado || {};\nconst cargas = orcamento.cargas_criticas || [];\n\nconst motivos_bloqueio = [];\nconst pendencias_criticas = [];\nlet status_killcritic = 'APROVADO';\nlet risco_killcritic = 'baixo';\n\n// --- LEVEL 1: VALIDATION OF REQUIRED FIELDS & REGEX ---\nif (!orcamento.protocolo || !/^ECO-[0-9]{8}-[0-9]{4}$/.test(orcamento.protocolo)) {\n  motivos_bloqueio.push('Protocolo inválido ou fora do padrão (ECO-YYYYMMDD-XXXX).');\n}\n\nif (!cliente.nome || !cliente.tipo_cliente || !cliente.responsavel || !cliente.whatsapp || !cliente.email) {\n  motivos_bloqueio.push('Dados cadastrais de cliente incompletos (nome, tipo, responsavel, whatsapp, email).');\n}\n\nif (!dados_eletricos.tensao || !dados_eletricos.tipo_ligacao || !dados_eletricos.disjuntor_geral || !dados_eletricos.padrao_entrada) {\n  motivos_bloqueio.push('Dados elétricos básicos incompletos (tensao, tipo_ligacao, disjuntor_geral, padrao_entrada).');\n}\n\nif (!dados_conta.consumo_mensal_kwh || !dados_conta.valor_medio_conta || !dados_conta.concessionaria) {\n  motivos_bloqueio.push('Dados da conta de energia incompletos (consumo, valor, concessionaria).');\n}\n\n// --- LEVEL 2: MATH & TECHNICAL LOGIC ---\nif (calc.tem_motor_bloqueante) {\n  status_killcritic = 'BLOQUEADO';\n  risco_killcritic = 'alto';\n  (calc.pendencias_cargas || []).forEach(p => motivos_bloqueio.push(p));\n}\n\n// Verificar se algum elevador ou motor pesado está nas cargas sem Avaliação Técnica\ncargas.forEach(c => {\n  const nome = c.nome_carga.toLowerCase();\n  if (nome.includes('elevador') || nome.includes('incendio') || nome.includes('recalque') || nome.includes('ar condicionado central')) {\n    status_killcritic = 'BLOQUEADO';\n    risco_killcritic = 'alto';\n    motivos_bloqueio.push(`Carga de alta potência/indução '${c.nome_carga}' incluída. Não é permitido dimensionamento de backup para essas cargas sem projeto específico.`);\n  }\n  \n  if (cliente.tipo_cliente === 'restaurante') {\n    if (nome.includes('fritadeira') || nome.includes('chapa') || nome.includes('forno') || nome.includes('resistencia')) {\n      status_killcritic = 'BLOQUEADO';\n      risco_killcritic = 'alto';\n      motivos_bloqueio.push(`Carga térmica de cozinha comercial '${c.nome_carga}' incluída no backup preliminar (excluído por segurança).`);\n    }\n  }\n});\n\nif (calc.bateria_nominal_banco_kwh <= 0) {\n  motivos_bloqueio.push('Capacidade nominal do banco de baterias calculado é zero.');\n}\n\n// --- LEVEL 3: TEXTUAL REVIEW & PROMISES BLOCKING ---\n// (Estes serão analisados logicamente e por texto nos templates downstream)\n\n// Se houver qualquer bloqueio, consolidar o status\nif (motivos_bloqueio.length > 0) {\n  status_killcritic = 'BLOQUEADO';\n  risco_killcritic = 'alto';\n  pendencias_criticas.push('Necessário agendar Avaliação Técnica presencial para sanar bloqueios de engenharia.');\n} else {\n  // Se passou sem bloqueios severos, mas necessita de validação física\n  status_killcritic = 'APROVADO_COM_RESSALVAS';\n  risco_killcritic = 'medio';\n  pendencias_criticas.push('Confirmar local físico de instalação e ventilação adequada do inversor e baterias.');\n  pendencias_criticas.push('Validar custos reais de importação de equipamentos com a Corsolar.');\n}\n\nconst status_orcamento = (status_killcritic === 'BLOQUEADO') ? 'bloqueado_killcritic' : 'aprovado_para_proposta';\n\nreturn {\n  ...orcamento,\n  compliance_killcritic: {\n    status_killcritic,\n    risco_killcritic,\n    motivos_bloqueio,\n    pendencias_criticas,\n    revisao_textual_aprovada: true,\n    valida_calculo_aprovada: status_killcritic !== 'BLOQUEADO'\n  },\n  status: status_orcamento\n};"
+      },
+      "id": "auditar_regras",
+      "name": "Auditar Regras Killcritic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://db.nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_solar_orcamentos?protocolo=eq.{{$json.protocolo}}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"risco_killcritic\": \"{{ $json.compliance_killcritic.risco_killcritic }}\",\n  \"status\": \"{{ $json.status }}\"\n}"
+      },
+      "id": "atualizar_supabase_killcritic",
+      "name": "Atualizar Supabase Killcritic",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        500,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Trigger Killcritic": {
+      "main": [
+        [
+          {
+            "node": "Auditar Regras Killcritic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Auditar Regras Killcritic": {
+      "main": [
+        [
+          {
+            "node": "Atualizar Supabase Killcritic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

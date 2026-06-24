@@ -1,0 +1,97 @@
+{
+  "protocolo": "ECO-20260624-0004",
+  "cliente": {
+    "nome": "Restaurante e Chopperia Carioca",
+    "tipo_cliente": "restaurante",
+    "responsavel": "Manoel Castro",
+    "whatsapp": "+5521966665555",
+    "email": "castro.chopp@gmail.com",
+    "endereco": "Rua Laranjeiras, 450",
+    "bairro": "Laranjeiras",
+    "cidade": "Rio de Janeiro"
+  },
+  "dados_eletricos": {
+    "tipo_ligacao": "trifasico",
+    "tensao": "127/220",
+    "disjuntor_geral": "80",
+    "padrao_entrada": "Entrada padrão Light",
+    "aterramento": true,
+    "dr_dps": true,
+    "quadro_cargas_criticas": true,
+    "distancia_inversor_quadro_metros": 8,
+    "distancia_baterias_quadro_metros": 6
+  },
+  "dados_conta": {
+    "consumo_mensal_kwh": 3100,
+    "valor_medio_conta": 3600.00,
+    "concessionaria": "Light",
+    "tarifa": 1.15,
+    "demanda_contratada_kw": 0,
+    "objetivo": "backup",
+    "historico_12_meses_kwh": [2900, 3000, 3100, 3200, 3300, 3400, 3250, 3150, 3000, 2950, 3050, 3100]
+  },
+  "dados_solares": {
+    "area_disponivel_m2": 80,
+    "tipo_telhado_laje": "telha metálica sanduíche",
+    "sombreamento": "livre de sombras nas horas centrais",
+    "orientacao": "norte",
+    "inclinacao": "12 graus",
+    "local_inversor": "depósito de bebidas",
+    "local_baterias": "depósito de bebidas (área protegida)",
+    "ventilacao_adequada": true
+  },
+  "cargas_criticas": [
+    {
+      "nome_carga": "Sistema PDV (Computador Caixa, Impressora e POS)",
+      "potencia_w": 350,
+      "quantidade": 2,
+      "horas_uso_diario": 12,
+      "simultanea": true,
+      "motor": false,
+      "prioridade": 1
+    },
+    {
+      "nome_carga": "Iluminação Básica do Salão (LED)",
+      "potencia_w": 400,
+      "quantidade": 1,
+      "horas_uso_diario": 12,
+      "simultanea": true,
+      "motor": false,
+      "prioridade": 1
+    },
+    {
+      "nome_carga": "Segurança, Roteador e CFTV",
+      "potencia_w": 250,
+      "quantidade": 1,
+      "horas_uso_diario": 24,
+      "simultanea": true,
+      "motor": false,
+      "prioridade": 1
+    },
+    {
+      "nome_carga": "Câmara Fria Inverter (Conservação de Carnes/Bebidas)",
+      "potencia_w": 1800,
+      "quantidade": 1,
+      "horas_uso_diario": 24,
+      "simultanea": true,
+      "motor": true,
+      "pico_partida": {
+        "tipo_partida": "inversor_frequencia",
+        "corrente_partida_a": 10,
+        "fator_pico": 1.5
+      },
+      "prioridade": 2
+    }
+  ],
+  "autonomia_desejada_horas": 6,
+  "status": "calculado_preliminar",
+  "compliance_killcritic": {
+    "status_killcritic": "APROVADO_COM_RESSALVAS",
+    "risco_killcritic": "medio",
+    "motivos_bloqueio": [],
+    "pendencias_criticas": [
+      "Confirmar exclusão de fornos de pizza, fritadeiras elétricas, chapas e resistências do circuito de backup (cargas térmicas de alto impacto excluídas de forma mandatória)",
+      "Verificar se o depósito de bebidas possui refrigeração de ambiente suficiente para dissipação térmica das baterias"
+    ]
+  }
+}

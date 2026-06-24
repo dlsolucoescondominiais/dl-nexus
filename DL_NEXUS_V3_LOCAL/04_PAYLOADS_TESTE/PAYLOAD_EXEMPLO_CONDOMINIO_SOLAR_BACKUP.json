@@ -1,0 +1,119 @@
+{
+  "protocolo": "ECO-20260624-0001",
+  "cliente": {
+    "nome": "Condomínio Residencial Flores do Bosque",
+    "tipo_cliente": "condominio",
+    "responsavel": "Marcos Silva (Síndico Profissional)",
+    "whatsapp": "+5521999998888",
+    "email": "floresbosque@gmail.com",
+    "endereco": "Avenida das Américas, 4500",
+    "bairro": "Barra da Tijuca",
+    "cidade": "Rio de Janeiro"
+  },
+  "dados_eletricos": {
+    "tipo_ligacao": "trifasico",
+    "tensao": "220/380",
+    "disjuntor_geral": "150",
+    "padrao_entrada": "Subestação Abrigada",
+    "aterramento": true,
+    "dr_dps": true,
+    "quadro_cargas_criticas": false,
+    "distancia_inversor_quadro_metros": 15,
+    "distancia_baterias_quadro_metros": 15
+  },
+  "dados_conta": {
+    "consumo_mensal_kwh": 4500,
+    "valor_medio_conta": 5200.00,
+    "concessionaria": "Light",
+    "tarifa": 1.15,
+    "demanda_contratada_kw": 0,
+    "objetivo": "hibrido",
+    "historico_12_meses_kwh": [4400, 4600, 4550, 4300, 4800, 4900, 4700, 4400, 4200, 4350, 4500, 4600]
+  },
+  "dados_solares": {
+    "area_disponivel_m2": 250,
+    "tipo_telhado_laje": "laje plana de concreto",
+    "sombreamento": "nenhum sombreamento relevante",
+    "orientacao": "norte",
+    "inclinacao": "15 graus",
+    "local_inversor": "sala de máquinas do QGBT",
+    "local_baterias": "sala técnica de baterias",
+    "ventilacao_adequada": true
+  },
+  "cargas_criticas": [
+    {
+      "nome_carga": "Sistema CFTV e Guarita",
+      "potencia_w": 800,
+      "quantidade": 1,
+      "horas_uso_diario": 24,
+      "simultanea": true,
+      "motor": false,
+      "prioridade": 1
+    },
+    {
+      "nome_carga": "Iluminação de Emergência das Escadas",
+      "potencia_w": 1200,
+      "quantidade": 1,
+      "horas_uso_diario": 12,
+      "simultanea": true,
+      "motor": false,
+      "prioridade": 1
+    },
+    {
+      "nome_carga": "Portões de Acesso Veículos",
+      "potencia_w": 750,
+      "quantidade": 2,
+      "horas_uso_diario": 4,
+      "simultanea": true,
+      "motor": true,
+      "pico_partida": {
+        "tipo_partida": "soft_starter",
+        "corrente_partida_a": 10,
+        "fator_pico": 2.5
+      },
+      "prioridade": 2
+    },
+    {
+      "nome_carga": "Bomba de Recalque d'Água (Bomba 1)",
+      "potencia_w": 2200,
+      "quantidade": 1,
+      "horas_uso_diario": 6,
+      "simultanea": false,
+      "motor": true,
+      "pico_partida": {
+        "tipo_partida": "desconhecido",
+        "corrente_partida_a": 0,
+        "fator_pico": 6.0
+      },
+      "prioridade": 2
+    },
+    {
+      "nome_carga": "Elevador Social Bloco A",
+      "potencia_w": 7500,
+      "quantidade": 1,
+      "horas_uso_diario": 8,
+      "simultanea": false,
+      "motor": true,
+      "pico_partida": {
+        "tipo_partida": "desconhecido",
+        "corrente_partida_a": 0,
+        "fator_pico": 7.0
+      },
+      "prioridade": 3
+    }
+  ],
+  "autonomia_desejada_horas": 8,
+  "status": "recebido",
+  "compliance_killcritic": {
+    "status_killcritic": "BLOQUEADO",
+    "risco_killcritic": "alto",
+    "motivos_bloqueio": [
+      "Presença de Elevador Social nas cargas críticas (bloqueado de dimensionamento automático)",
+      "Bomba de Recalque de água sem tipo de partida/dados definidos (desconhecido)"
+    ],
+    "pendencias_criticas": [
+      "Realizar Avaliação Técnica presencial para verificar partida do elevador e bombas",
+      "Revisar exclusão de motores de alta potência do backup comum"
+    ]
+  }
+}

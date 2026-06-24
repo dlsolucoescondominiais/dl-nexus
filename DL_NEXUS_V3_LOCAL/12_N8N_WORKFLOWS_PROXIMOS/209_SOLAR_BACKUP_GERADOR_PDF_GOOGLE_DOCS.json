@@ -1,0 +1,171 @@
+{
+  "name": "209_SOLAR_BACKUP_GERADOR_PDF_GOOGLE_DOCS",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "solar-backup-pdf",
+        "options": {}
+      },
+      "id": "webhook_receptor",
+      "name": "Trigger Gerador PDF",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "document",
+        "operation": "create",
+        "title": "=Orçamento EcoVolt - {{ $json.body.protocolo }}",
+        "options": {}
+      },
+      "id": "criar_gdoc",
+      "name": "Criar Google Doc Preliminar",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        300,
+        300
+      ],
+      "notes": "Homologação: Criará um novo arquivo Google Doc no Drive utilizando a conta de serviço configurada."
+    },
+    {
+      "parameters": {
+        "resource": "document",
+        "operation": "update",
+        "documentId": "={{ $json.documentId }}",
+        "actionsUi": {
+          "actionList": [
+            {
+              "action": "insertText",
+              "text": "={{ $json.body.proposta_markdown.cliente }}"
+            }
+          ]
+        }
+      },
+      "id": "preencher_gdoc",
+      "name": "Preencher Conteúdo Proposta",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        500,
+        300
+      ],
+      "notes": "Homologação: Insere o corpo do Markdown do cliente renderizado no arquivo Google Doc."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://www.googleapis.com/drive/v3/files/{{ $json.documentId }}/export?mimeType=application/pdf",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.GOOGLE_DRIVE_OAUTH_TOKEN}}"
+            }
+          ]
+        }
+      },
+      "id": "exportar_pdf",
+      "name": "Exportar para PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        700,
+        300
+      ],
+      "notes": "Homologação: Exporta o Google Doc como PDF. Requer token OAuth com escopo de leitura do Google Drive."
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://db.nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_solar_orcamentos?protocolo=eq.{{$json.body.protocolo}}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"status\": \"pdf_gerado\"\n}"
+      },
+      "id": "atualizar_supabase_pdf",
+      "name": "Atualizar Supabase Status PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        900,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Trigger Gerador PDF": {
+      "main": [
+        [
+          {
+            "node": "Criar Google Doc Preliminar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar Google Doc Preliminar": {
+      "main": [
+        [
+          {
+            "node": "Preencher Conteúdo Proposta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preencher Conteúdo Proposta": {
+      "main": [
+        [
+          {
+            "node": "Exportar para PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Exportar para PDF": {
+      "main": [
+        [
+          {
+            "node": "Atualizar Supabase Status PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

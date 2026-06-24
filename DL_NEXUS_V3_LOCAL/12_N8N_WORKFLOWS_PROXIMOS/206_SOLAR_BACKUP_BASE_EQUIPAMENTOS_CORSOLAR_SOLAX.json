@@ -1,0 +1,135 @@
+{
+  "name": "206_SOLAR_BACKUP_BASE_EQUIPAMENTOS_CORSOLAR_SOLAX",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "solar-backup-equipamentos",
+        "options": {}
+      },
+      "id": "webhook_receptor",
+      "name": "Trigger Equipamentos",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://db.nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_solar_equipamentos?ativo=eq.true",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            }
+          ]
+        }
+      },
+      "id": "consultar_equipamentos",
+      "name": "Consultar Banco Equipamentos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const orcamento = $json.body || {};\nconst calc = orcamento.dimensionamento_backup_calculado || {};\nconst inversor_modelo = calc.inversor_sugerido || '';\nconst nominal_kwh = calc.bateria_nominal_kwh || 0;\n\n// Obter catálogo do passo anterior (HttpRequest retorna array no item anterior)\nconst catalogo = $items(\"Consultar Banco Equipamentos\")[0].json || [];\n\n// Localizar inversor no catálogo ou usar padrão\nlet inversor = catalogo.find(e => e.modelo === inversor_modelo && e.tipo === 'inversor_hibrido');\nif (!inversor) {\n  inversor = {\n    modelo: inversor_modelo || 'SolaX X3-Hybrid 10.0-D',\n    custo: null,\n    status: 'pendente_validacao',\n    fornecedor: 'Corsolar'\n  };\n}\n\n// Localizar módulo de bateria padrão (5.8 kWh nominal)\nlet bateria_modelo = catalogo.find(e => e.tipo === 'bateria_litio' && e.capacidade_kwh === 5.8);\nif (!bateria_modelo) {\n  bateria_modelo = {\n    modelo: 'Triple Power T-BAT H 5.8 (LFP)',\n    capacidade_kwh: 5.8,\n    custo: null,\n    status: 'pendente_validacao',\n    fornecedor: 'Corsolar'\n  };\n}\n\n// Calcular quantidade de baterias (arredondar para cima)\nconst baterias_qtd = nominal_kwh > 0 ? Math.ceil(nominal_kwh / bateria_modelo.capacidade_kwh) : 0;\n\n// Custos de referência estimados (comercial preliminar)\nconst custo_unit_inversor = inversor.custo || 14000.00; // Valor padrão se for null\nconst custo_unit_bateria = bateria_modelo.custo || 11000.00;\n\nconst custo_equipamentos = custo_unit_inversor + (custo_unit_bateria * baterias_qtd);\nconst logistica_impostos = custo_equipamentos * 0.12; // Estimativa de 12%\nconst custo_instalacao = 5000.00 + (baterias_qtd * 800); // Base Homem-Hora\n\nconst margem_bruta_porcentagem = 35; // Margem padrão comercial DL\nconst custo_total = custo_equipamentos + logistica_impostos + custo_instalacao;\n\n// Preço de venda = custo total / (1 - margem)\nconst valor_final_estimado = Number((custo_total / (1 - (margem_bruta_porcentagem / 100))).toFixed(2));\n\nreturn {\n  ...orcamento,\n  dimensionamento_backup_calculado: {\n    ...calc,\n    baterias_sugeridas: [\n      {\n        modelo: bateria_modelo.modelo,\n        quantidade: baterias_qtd,\n        capacidade_kwh: bateria_modelo.capacidade_kwh\n      }\n    ]\n  },\n  financeiro: {\n    custos_estimados_equipamentos: custo_equipamentos,\n    custo_instalacao_estimado: custo_instalacao,\n    logistica_impostos,\n    margem_bruta_porcentagem,\n    valor_final_estimado\n  },\n  status: 'calculado_equipamentos'\n};"
+      },
+      "id": "mapear_equipamentos_custos",
+      "name": "Mapear Modelos e Custos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://db.nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_solar_orcamentos?protocolo=eq.{{$json.protocolo}}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"valor_estimado\": {{ $json.financeiro.valor_final_estimado }},\n  \"custos_estimados\": {{ $json.financeiro.custos_estimados_equipamentos + $json.financeiro.custo_instalacao_estimado + $json.financeiro.logistica_impostos }},\n  \"margem\": {{ $json.financeiro.margem_bruta_porcentagem }},\n  \"status\": \"{{ $json.status }}\"\n}"
+      },
+      "id": "atualizar_supabase_financeiro",
+      "name": "Atualizar Supabase Financeiro",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        700,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Trigger Equipamentos": {
+      "main": [
+        [
+          {
+            "node": "Consultar Banco Equipamentos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consultar Banco Equipamentos": {
+      "main": [
+        [
+          {
+            "node": "Mapear Modelos e Custos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mapear Modelos e Custos": {
+      "main": [
+        [
+          {
+            "node": "Atualizar Supabase Financeiro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

@@ -88,3 +88,17 @@
 - ⚙️ **130_MANUS_PROSPECCAO_B2B_RJ** (`active=false`, Manus.IA removido, mantido para histórico)
 - ⚙️ **060_AGENT_MANUS_PROSPECCAO_ATIVA** (`active=false`, Manus.IA removido, mantido para histórico)
 - ⚙️ **070_CRON_MANUS_DIARIO** (`active=false`, Manus.IA removido, mantido para histórico)
+
+## 13. Motor Solar e Backup DL EcoVolt
+- 🟡 **200_SOLAR_BACKUP_RECEPCAO_DADOS:** HOMOLOGAÇÃO — recepção e normalização de payloads de entrada no Supabase.
+- 🟡 **201_SOLAR_BACKUP_ANALISE_CONTA_ENERGIA:** HOMOLOGAÇÃO — análise de consumo médio, tarifas e baseline de energia.
+- 🟡 **202_SOLAR_BACKUP_CARGAS_CRITICAS:** HOMOLOGAÇÃO — cálculo determinístico de simultaneidade e energia diária do backup.
+- 🟡 **203_SOLAR_BACKUP_DIMENSIONAMENTO_BATERIAS:** HOMOLOGAÇÃO — cálculo modular de energia nominal e limites de descarga.
+- 🟡 **204_SOLAR_BACKUP_DIMENSIONAMENTO_INVERSOR:** HOMOLOGAÇÃO — seleção de potência mínima e compatibilidade de fases com SolaX.
+- 🟡 **205_SOLAR_BACKUP_DIMENSIONAMENTO_FOTOVOLTAICO:** HOMOLOGAÇÃO — cálculo preliminar de kWp gerador com base em irradiação regional.
+- 🟡 **206_SOLAR_BACKUP_BASE_EQUIPAMENTOS_CORSOLAR_SOLAX:** HOMOLOGAÇÃO — associação com banco de dados de inversores e baterias LFP.
+- 🟡 **207_SOLAR_BACKUP_KILLCRITIC_TECNICO:** HOMOLOGAÇÃO — triplo filtro auditor (sintaxe, física de cálculos e compliance comercial).
+- 🟡 **208_SOLAR_BACKUP_GERADOR_PROPOSTA_MARKDOWN:** HOMOLOGAÇÃO — renderizador das minutas de proposta (cliente e interna).
+- 🟡 **209_SOLAR_BACKUP_GERADOR_PDF_GOOGLE_DOCS:** HOMOLOGAÇÃO — compilação para Google Docs e exportação de PDF.
+- 🟡 **210_SOLAR_BACKUP_AGENTE_EVOLUCAO_ORCAMENTOS:** HOMOLOGAÇÃO — análise de histórico para regeneração de parâmetros.
+

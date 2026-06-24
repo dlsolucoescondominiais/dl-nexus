@@ -1,0 +1,242 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DLSolarBackupOrcamento",
+  "description": "Schema JSON para validação de dados de entrada, cálculos e conformidade do Motor Solar e Backup DL EcoVolt",
+  "type": "object",
+  "required": [
+    "protocolo",
+    "cliente",
+    "dados_eletricos",
+    "dados_conta",
+    "cargas_criticas",
+    "autonomia_desejada_horas",
+    "status",
+    "compliance_killcritic"
+  ],
+  "properties": {
+    "protocolo": {
+      "type": "string",
+      "pattern": "^ECO-[0-9]{8}-[0-9]{4}$",
+      "description": "Identificador exclusivo do orçamento (ex: ECO-20260624-0001)"
+    },
+    "cliente": {
+      "type": "object",
+      "required": [
+        "nome",
+        "tipo_cliente",
+        "responsavel",
+        "whatsapp",
+        "email",
+        "endereco",
+        "bairro",
+        "cidade"
+      ],
+      "properties": {
+        "nome": { "type": "string" },
+        "tipo_cliente": {
+          "type": "string",
+          "enum": ["condominio", "residencia", "empresa", "escola", "laboratorio", "restaurante", "comercio"]
+        },
+        "responsavel": { "type": "string" },
+        "whatsapp": { "type": "string", "pattern": "^\\+?[1-9]\\d{1,14}$" },
+        "email": { "type": "string", "format": "email" },
+        "endereco": { "type": "string" },
+        "bairro": { "type": "string" },
+        "cidade": { "type": "string", "default": "Rio de Janeiro" }
+      }
+    },
+    "dados_eletricos": {
+      "type": "object",
+      "required": [
+        "tipo_ligacao",
+        "tensao",
+        "disjuntor_geral",
+        "padrao_entrada"
+      ],
+      "properties": {
+        "tipo_ligacao": {
+          "type": "string",
+          "enum": ["monofasico", "bifasico", "trifasico"]
+        },
+        "tensao": {
+          "type": "string",
+          "enum": ["127", "220", "380", "127/220", "220/380"]
+        },
+        "disjuntor_geral": { "type": "string" },
+        "padrao_entrada": { "type": "string" },
+        "aterramento": { "type": "boolean", "default": false },
+        "dr_dps": { "type": "boolean", "default": false },
+        "quadro_cargas_criticas": { "type": "boolean", "default": false },
+        "distancia_inversor_quadro_metros": { "type": "number" },
+        "distancia_baterias_quadro_metros": { "type": "number" }
+      }
+    },
+    "dados_conta": {
+      "type": "object",
+      "required": [
+        "consumo_mensal_kwh",
+        "valor_medio_conta",
+        "concessionaria",
+        "objetivo"
+      ],
+      "properties": {
+        "consumo_mensal_kwh": { "type": "number", "minimum": 0 },
+        "valor_medio_conta": { "type": "number", "minimum": 0 },
+        "concessionaria": { "type": "string" },
+        "tarifa": { "type": "number" },
+        "demanda_contratada_kw": { "type": "number", "minimum": 0 },
+        "objetivo": {
+          "type": "string",
+          "enum": ["economia", "backup", "hibrido", "off-grid_parcial", "contingencia"]
+        },
+        "historico_12_meses_kwh": {
+          "type": "array",
+          "items": { "type": "number" }
+        }
+      }
+    },
+    "dados_solares": {
+      "type": "object",
+      "properties": {
+        "area_disponivel_m2": { "type": "number", "minimum": 0 },
+        "tipo_telhado_laje": { "type": "string" },
+        "sombreamento": { "type": "string" },
+        "orientacao": { "type": "string" },
+        "inclinacao": { "type": "string" },
+        "local_inversor": { "type": "string" },
+        "local_baterias": { "type": "string" },
+        "ventilacao_adequada": { "type": "boolean", "default": false }
+      }
+    },
+    "cargas_criticas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "nome_carga",
+          "potencia_w",
+          "quantidade",
+          "horas_uso_diario"
+        ],
+        "properties": {
+          "nome_carga": { "type": "string" },
+          "potencia_w": { "type": "number", "minimum": 0 },
+          "quantidade": { "type": "integer", "minimum": 1 },
+          "horas_uso_diario": { "type": "number", "minimum": 0, "maximum": 24 },
+          "simultanea": { "type": "boolean", "default": true },
+          "motor": { "type": "boolean", "default": false },
+          "pico_partida": {
+            "type": "object",
+            "properties": {
+              "tipo_partida": { "type": "string", "enum": ["direta", "soft_starter", "inversor_frequencia", "desconhecido"] },
+              "corrente_partida_a": { "type": "number" },
+              "fator_pico": { "type": "number" }
+            }
+          },
+          "prioridade": { "type": "integer", "minimum": 1, "maximum": 3 }
+        }
+      }
+    },
+    "autonomia_desejada_horas": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Tempo em horas que as cargas críticas devem rodar sob baterias"
+    },
+    "dimensionamento_backup_calculado": {
+      "type": "object",
+      "properties": {
+        "energia_critica_diaria_kwh": { "type": "number" },
+        "bateria_util_necessaria_kwh": { "type": "number" },
+        "bateria_nominal_banco_kwh": { "type": "number" },
+        "bateria_capacidade_descarga_kw": { "type": "number" },
+        "potencia_critica_total_kw": { "type": "number" },
+        "potencia_critica_simultanea_kw": { "type": "number" },
+        "potencia_inversor_minima_kw": { "type": "number" },
+        "inversor_sugerido": { "type": "string" },
+        "baterias_sugeridas": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "modelo": { "type": "string" },
+              "quantidade": { "type": "integer" },
+              "capacidade_kwh": { "type": "number" }
+            }
+          }
+        },
+        "paramentos_calculo": {
+          "type": "object",
+          "properties": {
+            "dod_permitido": { "type": "number", "default": 0.8 },
+            "eficiencia_sistema": { "type": "number", "default": 0.85 },
+            "margem_tecnica": { "type": "number", "default": 0.25 }
+          }
+        }
+      }
+    },
+    "dimensionamento_solar_calculado": {
+      "type": "object",
+      "properties": {
+        "sistema_solar_kwp_preliminar": { "type": "number" },
+        "geracao_mensal_estimada_kwh": { "type": "number" },
+        "irradiacao_regiao_kwh_m2_dia": { "type": "number" }
+      }
+    },
+    "financeiro": {
+      "type": "object",
+      "properties": {
+        "custos_estimados_equipamentos": { "type": "number" },
+        "custo_instalacao_estimado": { "type": "number" },
+        "logistica_impostos": { "type": "number" },
+        "margem_bruta_porcentagem": { "type": "number" },
+        "valor_final_estimado": { "type": "number" }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "recebido",
+        "dados_insuficientes",
+        "calculado_preliminar",
+        "bloqueado_killcritic",
+        "aprovado_para_proposta",
+        "proposta_gerada",
+        "pdf_gerado",
+        "enviado_cliente",
+        "em_negociacao",
+        "fechado",
+        "perdido",
+        "aprendizado_pendente",
+        "aprendizado_aplicado"
+      ]
+    },
+    "compliance_killcritic": {
+      "type": "object",
+      "required": [
+        "status_killcritic",
+        "motivos_bloqueio",
+        "pendencias_criticas"
+      ],
+      "properties": {
+        "status_killcritic": {
+          "type": "string",
+          "enum": ["APROVADO", "APROVADO_COM_RESSALVAS", "BLOQUEADO"]
+        },
+        "risco_killcritic": {
+          "type": "string",
+          "enum": ["baixo", "medio", "alto"]
+        },
+        "motivos_bloqueio": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "pendencias_criticas": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "revisao_textual_aprovada": { "type": "boolean", "default": false },
+        "valida_calculo_aprovada": { "type": "boolean", "default": false }
+      }
+    }
+  }
+}

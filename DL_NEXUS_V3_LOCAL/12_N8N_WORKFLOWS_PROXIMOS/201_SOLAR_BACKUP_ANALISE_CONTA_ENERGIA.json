@@ -1,0 +1,95 @@
+{
+  "name": "201_SOLAR_BACKUP_ANALISE_CONTA_ENERGIA",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "solar-backup-analise-conta",
+        "options": {}
+      },
+      "id": "webhook_receptor",
+      "name": "Trigger Analise Conta",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const orcamento = $json.body || {};\nconst dados_conta = orcamento.dados_conta || {};\nlet consumo = dados_conta.consumo_mensal_kwh || 0;\n\n// Se houver histórico de 12 meses, calcular a média real\nif (dados_conta.historico_12_meses_kwh && dados_conta.historico_12_meses_kwh.length > 0) {\n  const soma = dados_conta.historico_12_meses_kwh.reduce((a, b) => a + b, 0);\n  consumo = Math.round(soma / dados_conta.historico_12_meses_kwh.length);\n}\n\nconst tarifa = dados_conta.tarifa || 1.15; // Tarifa média do RJ se não houver\nconst valor_estimado_conta = consumo * tarifa;\n\nreturn {\n  ...orcamento,\n  dados_conta: {\n    ...dados_conta,\n    consumo_mensal_kwh: consumo,\n    valor_medio_conta: dados_conta.valor_medio_conta || valor_estimado_conta,\n    tarifa: tarifa\n  },\n  status: 'analisado_conta'\n};"
+      },
+      "id": "analisar_consumo",
+      "name": "Processar Consumo e Tarifa",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://db.nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_solar_orcamentos?protocolo=eq.{{$json.protocolo}}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"consumo_mensal_kwh\": {{ $json.dados_conta.consumo_mensal_kwh }},\n  \"valor_conta\": {{ $json.dados_conta.valor_medio_conta }},\n  \"status\": \"{{ $json.status }}\"\n}"
+      },
+      "id": "atualizar_supabase",
+      "name": "Atualizar Supabase Conta",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        500,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Trigger Analise Conta": {
+      "main": [
+        [
+          {
+            "node": "Processar Consumo e Tarifa",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Processar Consumo e Tarifa": {
+      "main": [
+        [
+          {
+            "node": "Atualizar Supabase Conta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

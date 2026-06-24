@@ -1,0 +1,95 @@
+{
+  "name": "205_SOLAR_BACKUP_DIMENSIONAMENTO_FOTOVOLTAICO",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "solar-backup-fotovoltaico",
+        "options": {}
+      },
+      "id": "webhook_receptor",
+      "name": "Trigger Fotovoltaico",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const orcamento = $json.body || {};\nconst dados_conta = orcamento.dados_conta || {};\nconst consumo = dados_conta.consumo_mensal_kwh || 0;\n\n// Geração estimada média por kWp no Rio de Janeiro = 115 kWh/mês por kWp instalado\n// Baseado em 4.2h médias de sol pleno diário corrigido por perdas de sistema (18%)\nconst geracao_mensal_estimada_por_kwp = 115;\n\nconst sistema_solar_kwp_preliminar = Number((consumo / geracao_mensal_estimada_por_kwp).toFixed(2));\nconst geracao_mensal_estimada_kwh = Math.round(sistema_solar_kwp_preliminar * geracao_mensal_estimada_por_kwp);\n\nreturn {\n  ...orcamento,\n  dimensionamento_solar_calculado: {\n    sistema_solar_kwp_preliminar,\n    geracao_mensal_estimada_kwh,\n    irradiacao_regiao_kwh_m2_dia: 4.86 // Média anual do Rio de Janeiro\n  },\n  status: 'calculado_solar'\n};"
+      },
+      "id": "calcular_solar",
+      "name": "Calcular Arranjo Fotovoltaico",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "=https://db.nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_solar_orcamentos?protocolo=eq.{{$json.protocolo}}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"sistema_solar_kwp\": {{ $json.dimensionamento_solar_calculado.sistema_solar_kwp_preliminar }},\n  \"status\": \"{{ $json.status }}\"\n}"
+      },
+      "id": "atualizar_supabase_solar",
+      "name": "Atualizar Supabase Solar",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        500,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Trigger Fotovoltaico": {
+      "main": [
+        [
+          {
+            "node": "Calcular Arranjo Fotovoltaico",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calcular Arranjo Fotovoltaico": {
+      "main": [
+        [
+          {
+            "node": "Atualizar Supabase Solar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

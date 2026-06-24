@@ -1,0 +1,162 @@
+{
+  "name": "210_SOLAR_BACKUP_AGENTE_EVOLUCAO_ORCAMENTOS",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": "0 0 * * 0"
+      },
+      "id": "cron_semanal",
+      "name": "Cron Semanal Domingo",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "solar-backup-agente-evolucao",
+        "options": {}
+      },
+      "id": "webhook_manual",
+      "name": "Trigger Manual Evolucao",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://db.nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_solar_orcamentos?select=*,dl_solar_cargas_criticas(*),dl_solar_orcamento_versoes(*)&status=in.(fechado,perdido,bloqueado_killcritic)",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            }
+          ]
+        }
+      },
+      "id": "obter_historico_orcamentos",
+      "name": "Obter Historico Supabase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        350,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gemini-2.5-flash",
+        "prompt": "=Você é o Agente de IA para Evolução de Motores de Orçamento da DL Soluções Condominiais.\n\nSeu papel é analisar a lista de orçamentos históricos (fechados, perdidos e bloqueados) abaixo e identificar:\n1. Padrões de perda comercial (preço muito alto, baterias subdimensionadas).\n2. Erros técnicos recorrentes identificados em campo.\n3. Bloqueios do KILLCRITIC que poderiam ser evitados se as regras fossem ajustadas.\n4. Flutuação de custos de baterias/inversores.\n\nHistórico de Orçamentos:\n{{ JSON.stringify($json) }}\n\nForneça uma análise concisa e escreva recomendações de novos parâmetros de margem técnica, limites de autonomia e modelos preferenciais.\nRetorne APENAS um objeto JSON válido (sem blocos de markdown ```json):\n{\n  \"analise_erros\": \"descrição curta\",\n  \"impacto_margens\": \"recomendações de margem\",\n  \"recomendacao_futura\": \"recomendações técnicas\",\n  \"sugerir_alteracao_regra\": false,\n  \"regra_sugerida\": null\n}",
+        "options": {}
+      },
+      "id": "ia_analista_evolucao",
+      "name": "IA Analista Evolução",
+      "type": "n8n-nodes-base.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        550,
+        350
+      ],
+      "notes": "Homologação: Processa o histórico do Supabase com o modelo Gemini Flash."
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://db.nejdtvkpiclagsnfljsz.supabase.co/rest/v1/dl_solar_aprendizado",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "={{$env.SUPABASE_ANON_KEY}}"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{$env.SUPABASE_SERVICE_ROLE_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"erro_detectado\": \"{{ $json.analise_erros }}\",\n  \"ajuste_feito\": \"{{ $json.impacto_margens }}\",\n  \"recomendacao_futura\": \"{{ $json.recomendacao_futura }}\",\n  \"aplicar_regra\": {{ $json.sugerir_alteracao_regra }},\n  \"orcamento_id\": null\n}"
+      },
+      "id": "gravar_aprendizado",
+      "name": "Gravar Aprendizado Supabase",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        750,
+        350
+      ]
+    }
+  ],
+  "connections": {
+    "Cron Semanal Domingo": {
+      "main": [
+        [
+          {
+            "node": "Obter Historico Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger Manual Evolucao": {
+      "main": [
+        [
+          {
+            "node": "Obter Historico Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obter Historico Supabase": {
+      "main": [
+        [
+          {
+            "node": "IA Analista Evolução",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA Analista Evolução": {
+      "main": [
+        [
+          {
+            "node": "Gravar Aprendizado Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

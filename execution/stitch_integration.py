@@ -148,19 +148,28 @@ class SupabaseClient:
     def get_leads_summary(self) -> dict:
         """Retorna resumo dos leads para o dashboard"""
         all_leads = self.get_leads(limit=1000)
-        total = len(all_leads)
-        novos = sum(1 for l in all_leads if l.get("status") == "novo")
-        triados = sum(1 for l in all_leads if l.get("status") == "triado")
 
-        # Agrupar por tipo de serviço
+        # ⚡ Bolt: O(N) loop fusion for leads summary calculation
+        # Consolida quatro varreduras iterativas em um único loop
+        total = len(all_leads)
+        novos = 0
+        triados = 0
         servicos = {}
+        portes = {}
+
         for lead in all_leads:
+            # Conta status
+            status = lead.get("status")
+            if status == "novo":
+                novos += 1
+            elif status == "triado":
+                triados += 1
+
+            # Agrupa por tipo de serviço
             tipo = lead.get("tipo_servico") or "Não classificado"
             servicos[tipo] = servicos.get(tipo, 0) + 1
 
-        # Agrupar por porte
-        portes = {}
-        for lead in all_leads:
+            # Agrupa por porte
             porte = lead.get("porte") or "Não definido"
             portes[porte] = portes.get(porte, 0) + 1
 

@@ -1,0 +1,121 @@
+{
+  "name": "003_roteador_diego_v3_killcritic",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-diego"
+      },
+      "id": "wh-diego",
+      "name": "Entrada Diego",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "leads",
+        "filters": {
+          "conditions": [
+            {
+              "column": "telefone",
+              "value": "={{ $json.body.telefone }}"
+            }
+          ]
+        },
+        "updateValues": {
+          "values": [
+            {
+              "column": "status",
+              "value": "agendado"
+            }
+          ]
+        }
+      },
+      "id": "sb-update",
+      "name": "Update Supabase",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        350,
+        200
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "QzziIRhKJMDNAE1m"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/dl-especialistas",
+        "sendBody": true
+      },
+      "id": "call-specs",
+      "name": "Chamar T\u00e9cnicos (004)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        600,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.mensagem }}",
+        "options": {
+          "systemMessage": "Voc\u00ea \u00e9 o DIEGO, Diretor T\u00e9cnico da DL Solu\u00e7\u00f5es Condominiais.\nSua especialidade t\u00e9cnica cobre as seguintes \u00e1reas operacionais:\n\n- suporte el\u00e9trico;\n- CFTV;\n- controle de acesso;\n- infraestrutura de redes;\n- energia solar com baterias;\n- energia solar conex\u00e3o de placas;\n- energia solar h\u00edbrida;\n- automa\u00e7\u00e3o de condom\u00ednio;\n- comandos el\u00e9tricos;\n- pain\u00e9is novos e antigos;\n- bombas;\n- cisternas;\n- caixas d'\u00e1gua;\n- boias;\n- recalque;\n- contatores;\n- rel\u00e9s;\n- DL Acqua;\n- Gatekeeper;\n- Fortress;\n- DL Partner;\n- DL Guardi\u00e3o;\n- DL Volt;\n- DL Commander;\n- DL Alerta;\n- Avalia\u00e7\u00e3o T\u00e9cnica.\n\nREGRAS GLOBAIS KILLCRITIC:\n- NUNCA use a express\u00e3o 'visita t\u00e9cnica'. Use SEMPRE 'Avalia\u00e7\u00e3o T\u00e9cnica'.\n- NUNCA sugira 'canaleta pl\u00e1stica' (usamos eletrodutos galvanizados).\n- N\u00c3O atenda hidr\u00e1ulica pura (redirecione para especialista se for o caso, n\u00f3s cuidamos da automa\u00e7\u00e3o das bombas).\n- N\u00e3o prometa pre\u00e7o final sem Avalia\u00e7\u00e3o T\u00e9cnica.\n- Nunca prometer cobertura de pe\u00e7as sem contrato aprovado.\n- Nunca gerar pre\u00e7o final autom\u00e1tico.\n- Estruture custos em: Setup, Implanta\u00e7\u00e3o, Mensalidade, SLA, Pe\u00e7as, Equipamentos, e Chamados Avulsos.\n- Foque em DL Partner e contratos de recorr\u00eancia.\n- Cart\u00e3o \u00e9 valor parcelado, PIX tem desconto.\n- Garantia apenas atrelada a contrato ativo.\n\nO Diego V3 deve:\n1. receber leads ou chamados t\u00e9cnicos vindos da Aninha, e-mail, WhatsApp, Telegram, Meta, ManyChat ou webhook;\n2. classificar a \u00e1rea t\u00e9cnica;\n3. identificar produto relacionado;\n4. definir prioridade;\n5. pedir dados t\u00e9cnicos m\u00ednimos;\n6. separar escopo el\u00e9trico/comando/automa\u00e7\u00e3o de hidr\u00e1ulica pura;\n7. indicar Avalia\u00e7\u00e3o T\u00e9cnica quando necess\u00e1rio;\n8. encaminhar para or\u00e7amento, suporte, campo, humano ou DL Partner;"
+        }
+      },
+      "id": "ag-diego-v3",
+      "name": "AI Agent Diego V3",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.6,
+      "position": [
+        450,
+        450
+      ]
+    }
+  ],
+  "connections": {
+    "Entrada Diego": {
+      "main": [
+        [
+          {
+            "node": "AI Agent Diego V3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent Diego V3": {
+      "main": [
+        [
+          {
+            "node": "Update Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Supabase": {
+      "main": [
+        [
+          {
+            "node": "Chamar T\u00e9cnicos (004)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

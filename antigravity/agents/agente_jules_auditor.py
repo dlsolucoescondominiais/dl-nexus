@@ -35,6 +35,9 @@ class JulesAuditorAgent:
 
     def auditar_proposta(self, proposta_bruta: str) -> Dict[str, Any]:
         """ Recebe a proposta técnica gerada e devolve auditada em JSON """
+        if not proposta_bruta:
+            return {'erro': 'Proposta vazia'}
+
         if not self.client:
             return {
                 "status_auditoria": "REPROVADO",

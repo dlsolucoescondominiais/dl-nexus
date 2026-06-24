@@ -37,6 +37,20 @@ def disparar_webhook_n8n_background(resultado_triagem: dict):
     except Exception as e:
         print(f"Falha ao notificar o webhook do n8n: {e}")
 
+@router.post("/receber_mensagem")
+async def receber_mensagem(mensagem: str):
+    """
+    Endpoint para analisar a mensagem do cliente com o motor da IA e retornar a intenção.
+    """
+    try:
+        resposta_ia = aninha.analisar_mensagem_ia(mensagem)
+        return {
+            "status": "sucesso",
+            "resposta": resposta_ia
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erro na Aninha: {str(e)}")
+
 @router.post("/triagem")
 async def triagem_lead(lead: LeadRequest, bg_tasks: BackgroundTasks):
     """

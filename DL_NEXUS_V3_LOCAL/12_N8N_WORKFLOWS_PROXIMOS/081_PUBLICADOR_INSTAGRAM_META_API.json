@@ -131,7 +131,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://graph.facebook.com/v25.0/{{$env.INSTAGRAM_BUSINESS_ACCOUNT_ID || '17841403185822108'}}/media",
+        "url": "=https://graph.facebook.com/v25.0/{{$env.META_IG_BUSINESS_ID_DL || '17841403185822108'}}/media",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "facebookGraphApi",
         "sendBody": true,
@@ -178,7 +178,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "=https://graph.facebook.com/v25.0/{{$env.INSTAGRAM_BUSINESS_ACCOUNT_ID || '17841403185822108'}}/media_publish",
+        "url": "=https://graph.facebook.com/v25.0/{{$env.META_IG_BUSINESS_ID_DL || '17841403185822108'}}/media_publish",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "facebookGraphApi",
         "sendBody": true,

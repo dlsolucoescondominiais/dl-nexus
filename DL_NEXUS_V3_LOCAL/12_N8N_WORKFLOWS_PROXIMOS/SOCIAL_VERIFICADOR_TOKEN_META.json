@@ -23,20 +23,20 @@
     },
     {
       "parameters": {
-        "url": "=https://graph.facebook.com/v25.0/{{$env.FACEBOOK_PAGE_ID || '100166804716824'}}?fields=id,name,username,link,instagram_business_account",
+        "url": "=https://graph.facebook.com/v25.0/{{$env.META_FACEBOOK_PAGE_ID || '100166804716824'}}?fields=id,name,username,link,instagram_business_account",
         "method": "GET",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "Authorization",
-              "value": "={{ 'Bearer ' + $env.META_TOKEN }}"
+              "value": "={{ 'Bearer ' + $env.META_PAGE_ACCESS_TOKEN_DL }}"
             }
           ]
         },
         "sendQuery": true,
         "specifyQuery": "json",
-        "jsonQuery": "={\n  \"appsecret_proof\": \"{{ $env.META_APP_SECRET ? $evaluateExpression('crypto.createHmac(\\'sha256\\', $env.META_APP_SECRET).update($env.META_TOKEN).digest(\\'hex\\')') : '' }}\"\n}"
+        "jsonQuery": "={\n  \"appsecret_proof\": \"{{ $env.META_APP_SECRET ? $evaluateExpression('crypto.createHmac(\\'sha256\\', $env.META_APP_SECRET).update($env.META_PAGE_ACCESS_TOKEN_DL).digest(\\'hex\\')') : '' }}\"\n}"
       },
       "id": "meta_token_check",
       "name": "Verificar Token Meta",
@@ -71,7 +71,7 @@
     {
       "parameters": {
         "chatId": "YOUR_TELEGRAM_CHAT_ID",
-        "text": "=⚠️ *Alerta Crítico: Token Meta Expirado (DL)*\n\nO *token de sistema/longa duração com verificação preventiva* do Meta falhou na validação de rotina.\n\n*Erro retornado:* `{{ JSON.stringify($json.error) }}`\n\n_Ação necessária: Reautorizar a conta Meta e atualizar a variável META_TOKEN no arquivo .env._"
+        "text": "=⚠️ *Alerta Crítico: Token Meta Expirado (DL)*\n\nO *token de sistema/longa duração com verificação preventiva* do Meta falhou na validação de rotina.\n\n*Erro retornado:* `{{ JSON.stringify($json.error) }}`\n\n_Ação necessária: Reautorizar a conta Meta e atualizar a variável META_PAGE_ACCESS_TOKEN_DL no arquivo .env._"
       },
       "id": "telegram_token_alert",
       "name": "Alerta Telegram Token Meta",

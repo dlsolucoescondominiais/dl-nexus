@@ -171,7 +171,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer {{ $env.META_ACCESS_TOKEN }}"
+              "value": "Bearer {{ $env.META_PAGE_ACCESS_TOKEN_DL }}"
             }
           ]
         },
@@ -202,13 +202,13 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://graph.facebook.com/v19.0/{{ $env.INSTAGRAM_BUSINESS_ACCOUNT_ID }}/media",
+        "url": "https://graph.facebook.com/v19.0/{{ $env.META_IG_BUSINESS_ID_DL }}/media",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer {{ $env.META_ACCESS_TOKEN }}"
+              "value": "Bearer {{ $env.META_PAGE_ACCESS_TOKEN_DL }}"
             }
           ]
         },
@@ -239,13 +239,13 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "https://graph.facebook.com/v19.0/{{ $env.INSTAGRAM_BUSINESS_ACCOUNT_ID }}/media_publish",
+        "url": "https://graph.facebook.com/v19.0/{{ $env.META_IG_BUSINESS_ID_DL }}/media_publish",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer {{ $env.META_ACCESS_TOKEN }}"
+              "value": "Bearer {{ $env.META_PAGE_ACCESS_TOKEN_DL }}"
             }
           ]
         },

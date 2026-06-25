@@ -163,7 +163,7 @@
       ],
       "parameters": {
         "method": "POST",
-        "url": "={{ $json.image_url ? 'https://graph.facebook.com/v25.0/' + ($env.FACEBOOK_PAGE_ID || '{{.META_FACEBOOK_PAGE_ID}}') + '/photos' : 'https://graph.facebook.com/v25.0/' + ($env.FACEBOOK_PAGE_ID || '{{.META_FACEBOOK_PAGE_ID}}') + '/feed' }}",
+        "url": "={{ $json.image_url ? 'https://graph.facebook.com/v25.0/' + ($env.META_FACEBOOK_PAGE_ID || '{{.META_META_FACEBOOK_PAGE_ID}}') + '/photos' : 'https://graph.facebook.com/v25.0/' + ($env.META_FACEBOOK_PAGE_ID || '{{.META_META_FACEBOOK_PAGE_ID}}') + '/feed' }}",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "facebookGraphApi",
         "sendBody": true,
@@ -218,7 +218,7 @@
       ],
       "parameters": {
         "method": "POST",
-        "url": "={{ $json.image_url ? 'https://graph.facebook.com/v25.0/' + ($env.FACEBOOK_PAGE_ID || '{{.META_FACEBOOK_PAGE_ID}}') + '/photos' : 'https://graph.facebook.com/v25.0/' + ($env.FACEBOOK_PAGE_ID || '{{.META_FACEBOOK_PAGE_ID}}') + '/feed' }}",
+        "url": "={{ $json.image_url ? 'https://graph.facebook.com/v25.0/' + ($env.META_FACEBOOK_PAGE_ID || '{{.META_META_FACEBOOK_PAGE_ID}}') + '/photos' : 'https://graph.facebook.com/v25.0/' + ($env.META_FACEBOOK_PAGE_ID || '{{.META_META_FACEBOOK_PAGE_ID}}') + '/feed' }}",
         "authentication": "predefinedCredentialType",
         "nodeCredentialType": "facebookGraphApi",
         "sendBody": true,

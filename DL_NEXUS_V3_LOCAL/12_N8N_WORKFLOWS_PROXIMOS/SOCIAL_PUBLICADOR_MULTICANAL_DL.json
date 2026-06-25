@@ -43,14 +43,14 @@
     },
     {
       "parameters": {
-        "url": "=https://graph.facebook.com/v25.0/{{$env.INSTAGRAM_BUSINESS_ACCOUNT_ID || '17841403185822108'}}/media",
+        "url": "=https://graph.facebook.com/v25.0/{{$env.META_IG_BUSINESS_ID_DL || '17841403185822108'}}/media",
         "method": "POST",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "Authorization",
-              "value": "={{ 'Bearer ' + $env.META_TOKEN }}"
+              "value": "={{ 'Bearer ' + $env.META_PAGE_ACCESS_TOKEN_DL }}"
             }
           ]
         },
@@ -84,14 +84,14 @@
     },
     {
       "parameters": {
-        "url": "=https://graph.facebook.com/v25.0/{{$env.INSTAGRAM_BUSINESS_ACCOUNT_ID || '17841403185822108'}}/media_publish",
+        "url": "=https://graph.facebook.com/v25.0/{{$env.META_IG_BUSINESS_ID_DL || '17841403185822108'}}/media_publish",
         "method": "POST",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "Authorization",
-              "value": "={{ 'Bearer ' + $env.META_TOKEN }}"
+              "value": "={{ 'Bearer ' + $env.META_PAGE_ACCESS_TOKEN_DL }}"
             }
           ]
         },
@@ -111,14 +111,14 @@
     },
     {
       "parameters": {
-        "url": "={{ $json.image_url ? 'https://graph.facebook.com/v25.0/' + ($env.FACEBOOK_PAGE_ID || '100166804716824') + '/photos' : 'https://graph.facebook.com/v25.0/' + ($env.FACEBOOK_PAGE_ID || '100166804716824') + '/feed' }}",
+        "url": "={{ $json.image_url ? 'https://graph.facebook.com/v25.0/' + ($env.META_FACEBOOK_PAGE_ID || '100166804716824') + '/photos' : 'https://graph.facebook.com/v25.0/' + ($env.META_FACEBOOK_PAGE_ID || '100166804716824') + '/feed' }}",
         "method": "POST",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
             {
               "name": "Authorization",
-              "value": "={{ 'Bearer ' + $env.META_TOKEN }}"
+              "value": "={{ 'Bearer ' + $env.META_PAGE_ACCESS_TOKEN_DL }}"
             }
           ]
         },

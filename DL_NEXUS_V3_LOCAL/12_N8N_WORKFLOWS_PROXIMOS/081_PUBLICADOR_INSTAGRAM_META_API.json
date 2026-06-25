@@ -148,6 +148,10 @@
             {
               "name": "media_type",
               "value": "IMAGE"
+            },
+            {
+              "name": "access_token",
+              "value": "={{.META_PAGE_ACCESS_TOKEN_DL}}"
             }
           ]
         },
@@ -167,13 +171,7 @@
       "position": [
         1300,
         100
-      ],
-      "credentials": {
-        "facebookGraphApi": {
-          "id": "cred-facebook-graph",
-          "name": "Aplicativo do Facebook"
-        }
-      }
+      ]
     },
     {
       "parameters": {
@@ -187,6 +185,10 @@
             {
               "name": "creation_id",
               "value": "={{ $json.id }}"
+            },
+            {
+              "name": "access_token",
+              "value": "={{.META_PAGE_ACCESS_TOKEN_DL}}"
             }
           ]
         },
@@ -205,13 +207,7 @@
       "position": [
         1520,
         100
-      ],
-      "credentials": {
-        "facebookGraphApi": {
-          "id": "cred-facebook-graph",
-          "name": "Aplicativo do Facebook"
-        }
-      }
+      ]
     },
     {
       "parameters": {

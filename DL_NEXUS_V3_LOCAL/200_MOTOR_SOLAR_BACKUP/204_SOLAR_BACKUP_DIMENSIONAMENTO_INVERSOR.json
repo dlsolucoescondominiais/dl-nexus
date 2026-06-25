@@ -13,11 +13,11 @@
         },
         {
             "parameters": {
-                "functionCode": "// Lógica para 204_SOLAR_BACKUP_DIMENSIONAMENTO_INVERSOR\nreturn items;"
+                "jsCode": "\n// 204_SOLAR_BACKUP_DIMENSIONAMENTO_INVERSOR\nconst potencia_critica_simultanea_kw = $input.item.json.potencia_critica_simultanea_kw || 0;\nconst margem_tecnica = 1.25; // 25% margem\n\nlet potencia_inversor_minima_kw = potencia_critica_simultanea_kw * margem_tecnica;\n\n// Regra de Motores/Pico (se aplicável)\nif ($input.item.json.tem_motores) {\n    potencia_inversor_minima_kw *= 1.5; // Fator simplificado para placeholder se não avaliado\n}\n\n$input.item.json.potencia_inversor_minima_kw = parseFloat(potencia_inversor_minima_kw.toFixed(2));\n\nreturn $input.item;\n"
             },
             "name": "Lógica Core",
-            "type": "n8n-nodes-base.function",
-            "typeVersion": 1,
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
             "position": [
                 450,
                 300

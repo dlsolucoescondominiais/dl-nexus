@@ -13,11 +13,11 @@
         },
         {
             "parameters": {
-                "functionCode": "// Lógica para 203_SOLAR_BACKUP_DIMENSIONAMENTO_BATERIAS\nreturn items;"
+                "jsCode": "\n// 203_SOLAR_BACKUP_DIMENSIONAMENTO_BATERIAS\nconst energia_critica_kwh = $input.item.json.energia_critica_kwh || 0;\nconst eficiencia_sistema = 0.85; // Padrão\nconst profundidade_descarga = 0.90; // Exemplo DoD LiFePO4\nconst margem_tecnica = 1.25; // 25% margem\n\nconst bateria_nominal_kwh = (energia_critica_kwh / eficiencia_sistema / profundidade_descarga) * margem_tecnica;\n\n$input.item.json.bateria_nominal_kwh = parseFloat(bateria_nominal_kwh.toFixed(2));\n$input.item.json.baterias_sugeridas = Math.ceil(bateria_nominal_kwh / 5.12); // Exemplo modulos 5.12kWh\n\nreturn $input.item;\n"
             },
             "name": "Lógica Core",
-            "type": "n8n-nodes-base.function",
-            "typeVersion": 1,
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
             "position": [
                 450,
                 300

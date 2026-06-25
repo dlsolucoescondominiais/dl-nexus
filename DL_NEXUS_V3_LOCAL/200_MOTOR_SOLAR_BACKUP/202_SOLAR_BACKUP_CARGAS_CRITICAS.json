@@ -13,11 +13,11 @@
         },
         {
             "parameters": {
-                "functionCode": "// Lógica para 202_SOLAR_BACKUP_CARGAS_CRITICAS\nreturn items;"
+                "jsCode": "\n// 202_SOLAR_BACKUP_CARGAS_CRITICAS\nconst cargas = $input.item.json.cargas_criticas || [];\nlet potencia_critica_simultanea_kw = 0;\nlet energia_critica_kwh = 0;\nlet tem_motores = false;\n\nfor (const carga of cargas) {\n    const pot_kw = carga.potencia_w / 1000;\n    const energia = pot_kw * carga.horas_uso * carga.quantidade;\n    energia_critica_kwh += energia;\n    potencia_critica_simultanea_kw += (pot_kw * carga.quantidade);\n    \n    if (carga.descricao.toLowerCase().match(/(bomba|motor|elevador|compressor)/)) {\n        tem_motores = true;\n    }\n}\n\n$input.item.json.energia_critica_kwh = energia_critica_kwh;\n$input.item.json.potencia_critica_simultanea_kw = potencia_critica_simultanea_kw;\n$input.item.json.tem_motores = tem_motores;\n\nreturn $input.item;\n"
             },
             "name": "Lógica Core",
-            "type": "n8n-nodes-base.function",
-            "typeVersion": 1,
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
             "position": [
                 450,
                 300

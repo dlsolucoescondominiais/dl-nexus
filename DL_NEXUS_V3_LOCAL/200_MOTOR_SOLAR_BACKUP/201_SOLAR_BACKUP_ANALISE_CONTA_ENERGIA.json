@@ -1,0 +1,42 @@
+{
+    "name": "201_SOLAR_BACKUP_ANALISE_CONTA_ENERGIA",
+    "nodes": [
+        {
+            "parameters": {},
+            "name": "Start",
+            "type": "n8n-nodes-base.start",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "functionCode": "// Lógica para 201_SOLAR_BACKUP_ANALISE_CONTA_ENERGIA\nreturn items;"
+            },
+            "name": "Lógica Core",
+            "type": "n8n-nodes-base.function",
+            "typeVersion": 1,
+            "position": [
+                450,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Start": {
+            "main": [
+                [
+                    {
+                        "node": "Lógica Core",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "active": false,
+    "settings": {}
+}

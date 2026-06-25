@@ -1,0 +1,51 @@
+{
+    "cliente": {
+        "nome": "João da Silva",
+        "tipo_cliente": "residencia"
+    },
+    "eletrico": {
+        "tipo_ligacao": "bifasico",
+        "tensao": "220V/127V",
+        "padrao_entrada": "novo"
+    },
+    "conta": {
+        "consumo_mensal_kwh": 400,
+        "concessionaria": "Light"
+    },
+    "backup": {
+        "autonomia_horas": 6,
+        "motores_bombas_elevadores": false
+    },
+    "cargas_criticas": [
+        {
+            "descricao": "Geladeira",
+            "potencia_w": 400,
+            "horas_uso": 12,
+            "quantidade": 1
+        },
+        {
+            "descricao": "TV",
+            "potencia_w": 150,
+            "horas_uso": 6,
+            "quantidade": 1
+        },
+        {
+            "descricao": "Roteador WiFi",
+            "potencia_w": 20,
+            "horas_uso": 24,
+            "quantidade": 1
+        },
+        {
+            "descricao": "Iluminação LED",
+            "potencia_w": 15,
+            "horas_uso": 6,
+            "quantidade": 5
+        },
+        {
+            "descricao": "Motor Portão",
+            "potencia_w": 400,
+            "horas_uso": 0.5,
+            "quantidade": 1
+        }
+    ]
+}

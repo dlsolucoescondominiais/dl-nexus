@@ -1,0 +1,42 @@
+{
+    "name": "205_SOLAR_BACKUP_DIMENSIONAMENTO_FOTOVOLTAICO",
+    "nodes": [
+        {
+            "parameters": {},
+            "name": "Start",
+            "type": "n8n-nodes-base.start",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "\n// 205_SOLAR_BACKUP_DIMENSIONAMENTO_FOTOVOLTAICO\nconst consumo_mensal_kwh = $input.item.json.conta?.consumo_mensal_kwh || 0;\n// A geração mensal estimada por kWp deve vir de tabela configurável por região.\n// Placeholder: 120 kWh/mês por kWp\nconst geracao_mensal_estimada_por_kwp = 120; \n\nconst sistema_solar_kwp_preliminar = consumo_mensal_kwh / geracao_mensal_estimada_por_kwp;\n\n$input.item.json.sistema_solar_kwp_preliminar = parseFloat(sistema_solar_kwp_preliminar.toFixed(2));\n\nreturn $input.item;\n"
+            },
+            "name": "Lógica Core",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                450,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Start": {
+            "main": [
+                [
+                    {
+                        "node": "Lógica Core",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    },
+    "active": false,
+    "settings": {}
+}

@@ -39,7 +39,7 @@ export default function ChecklistMobile({ leadId = 'a1b2c3d4-e5f6-7890-1234-5678
 
     try {
       // 1. Grava na tabela de avaliações técnicas no formato V3 do Supabase
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('avaliacoes_tecnicas')
         .insert([
           {

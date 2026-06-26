@@ -122,7 +122,7 @@ const LeadDetails = () => {
 
       <div className="mt-6 bg-slate-50 p-5 rounded-md border border-slate-200">
         <h2 className="text-lg font-semibold text-slate-700 mb-3 border-b pb-2">Mensagem Original (Primeiro Contato)</h2>
-        <p className="text-slate-600 whitespace-pre-wrap italic">"{lead.mensagem || 'Sem mensagem de escopo.'}"</p>
+        <p className="text-slate-600 whitespace-pre-wrap italic">&quot;{lead.mensagem || 'Sem mensagem de escopo.'}&quot;</p>
       </div>
 
       {/* Injeção da Tabela de Mensagens do WhatsApp */}

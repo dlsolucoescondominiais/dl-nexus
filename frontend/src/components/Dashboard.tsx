@@ -32,7 +32,7 @@ export default function Dashboard() {
     // Subscribing ao Supabase Realtime V6
     const subscription = supabase
       .channel('public:leads')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, payload => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'leads' }, () => {
         fetchDashboardData();
       })
       .subscribe();
@@ -55,11 +55,19 @@ export default function Dashboard() {
 
     setLeads(leadsData || []);
 
-    // Calcula KPIs do Funil
+    // Calcula KPIs do Funil (⚡ Bolt: O(N) Loop Fusion)
     const total = leadsData?.length || 0;
-    const negociando = leadsData?.filter(l => l.pipeline_stage === 'negociacao').length || 0;
-    const ganhos = leadsData?.filter(l => l.pipeline_stage === 'fechado_ganho').length || 0;
-    const recorrentes = leadsData?.filter(l => l.pipeline_stage === 'contrato_recorrente').length || 0;
+    let negociando = 0;
+    let ganhos = 0;
+    let recorrentes = 0;
+
+    if (leadsData) {
+      for (const l of leadsData) {
+        if (l.pipeline_stage === 'negociacao') negociando++;
+        else if (l.pipeline_stage === 'fechado_ganho') ganhos++;
+        else if (l.pipeline_stage === 'contrato_recorrente') recorrentes++;
+      }
+    }
 
     setKpis({
       total_leads: total,

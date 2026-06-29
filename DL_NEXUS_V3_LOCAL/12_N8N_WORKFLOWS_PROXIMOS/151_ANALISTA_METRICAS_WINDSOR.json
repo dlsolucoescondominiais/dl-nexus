@@ -51,7 +51,7 @@
         "nodeCredentialType": "httpHeaderAuth",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"meta/llama3-70b-instruct\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Atue como um Analista de Dados Sênior da DL Soluções Condominiais. Analise os dados brutos e gere um relatório objetivo.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Auditoria de Retenção e Formato Campeão: Analise os dados dos últimos 30 dias. Identifique possíveis gargalos e qual formato de conteúdo atrai mais diretores de escolas e síndicos. Dados: {{$json.data}}\"\n    }\n  ],\n  \"max_tokens\": 1024\n}",
+        "jsonBody": "={\n  \"model\": \"meta/llama3-70b-instruct\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Atue como um Analista de Dados S\u00eanior da DL Solu\u00e7\u00f5es Condominiais. Analise os dados brutos e gere um relat\u00f3rio objetivo.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Auditoria de Reten\u00e7\u00e3o e Formato Campe\u00e3o: Analise os dados dos \u00faltimos 30 dias. Identifique poss\u00edveis gargalos e qual formato de conte\u00fado atrai mais diretores de escolas e s\u00edndicos. Dados: {{$json.data}}\"\n    }\n  ],\n  \"max_tokens\": 1024\n}",
         "options": {}
       },
       "id": "c3d4e5f6-a1b2-4c3d-8e4f-5a6b7c8d9ea0",
@@ -72,13 +72,13 @@
     {
       "parameters": {
         "chatId": "={{$env.TELEGRAM_DIOGO_CHAT_ID}}",
-        "text": "=📊 *Relatório Semanal de Inteligência Comercial (DL Nexus)*\n\n{{$('Analista NVIDIA (Llama 3)').item.json.choices[0].message.content}}",
+        "text": "=\ud83d\udcca *Relat\u00f3rio Semanal de Intelig\u00eancia Comercial (DL Nexus)*\n\n{{$('Analista NVIDIA (Llama 3)').item.json.choices[0].message.content}}",
         "additionalFields": {
           "parse_mode": "Markdown"
         }
       },
       "id": "d4e5f6a1-b2c3-4d4e-8f5a-6b7c8d9ea0b1",
-      "name": "Telegram: Enviar Relatório",
+      "name": "Telegram: Enviar Relat\u00f3rio",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.1,
       "position": [
@@ -120,7 +120,7 @@
       "main": [
         [
           {
-            "node": "Telegram: Enviar Relatório",
+            "node": "Telegram: Enviar Relat\u00f3rio",
             "type": "main",
             "index": 0
           }
@@ -131,5 +131,6 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "pinData": {}
+  "pinData": {},
+  "active": true
 }

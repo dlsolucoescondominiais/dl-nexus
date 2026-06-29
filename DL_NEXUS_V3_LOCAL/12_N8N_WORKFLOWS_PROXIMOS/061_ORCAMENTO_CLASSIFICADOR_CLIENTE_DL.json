@@ -1,6 +1,6 @@
 {
   "name": "061_ORCAMENTO_CLASSIFICADOR_CLIENTE_DL",
-  "active": false,
+  "active": true,
   "nodes": [
     {
       "parameters": {
@@ -17,7 +17,10 @@
       "name": "Schedule (15m)",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.1,
-      "position": [0, 300]
+      "position": [
+        0,
+        300
+      ]
     },
     {
       "parameters": {
@@ -40,7 +43,10 @@
       "name": "Supabase Get Pendentes",
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
-      "position": [240, 300],
+      "position": [
+        240,
+        300
+      ],
       "credentials": {
         "supabaseApi": {
           "id": "SUPABASE_CREDENTIAL_ID",
@@ -56,17 +62,23 @@
       "name": "Check Empty",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [480, 300]
+      "position": [
+        480,
+        300
+      ]
     },
     {
       "parameters": {
-        "jsCode": "const d = $input.item.json;\nconst prompt = `\nVocê é o Classificador DL Nexus. Analise este lead e retorne um JSON estrito.\n\nRegras de Perfil (perfil_classificado):\n- sindico_condominio, pessoa_fisica, pj_escola, pj_restaurante, pj_lanchonete, pj_confeitaria, pj_empresa_comercio, administradora.\n\nLinhas DL (linha_dl):\n- DL Guardião, DL Fortress, DL Acqua, DL Gatekeeper, DL Volt, DL VoltCharge, DL EcoVolt, DL Alerta, DL Partner, DL Express.\n- Escolha a mais provável.\n\nPendências (array de strings):\n- 'sem_cnpj', 'sem_numero_unidades', 'sem_endereco', 'sem_descricao', 'sem_midia', 'escopo_insuficiente'\n\nRetorne EXATAMENTE este JSON e mais nada:\n{\n  \"perfil_classificado\": \"\",\n  \"linha_dl\": \"\",\n  \"novas_pendencias\": []\n}\n\nLEAD:\nTipo: ${d.tipo_cliente}\nNome Empresa: ${d.nome_empresa_ou_condominio}\nServiço Interesse: ${d.servico_interesse}\nDescrição: ${d.descricao}\nCNPJ: ${d.cnpj}\nUnidades: ${d.numero_unidades}\nEndereco: ${d.endereco_completo}\nMidia: ${d.midia_urls}\n`;\n\nreturn [{ json: { ...d, ai_prompt: prompt } }];"
+        "jsCode": "const d = $input.item.json;\nconst prompt = `\nVoc\u00ea \u00e9 o Classificador DL Nexus. Analise este lead e retorne um JSON estrito.\n\nRegras de Perfil (perfil_classificado):\n- sindico_condominio, pessoa_fisica, pj_escola, pj_restaurante, pj_lanchonete, pj_confeitaria, pj_empresa_comercio, administradora.\n\nLinhas DL (linha_dl):\n- DL Guardi\u00e3o, DL Fortress, DL Acqua, DL Gatekeeper, DL Volt, DL VoltCharge, DL EcoVolt, DL Alerta, DL Partner, DL Express.\n- Escolha a mais prov\u00e1vel.\n\nPend\u00eancias (array de strings):\n- 'sem_cnpj', 'sem_numero_unidades', 'sem_endereco', 'sem_descricao', 'sem_midia', 'escopo_insuficiente'\n\nRetorne EXATAMENTE este JSON e mais nada:\n{\n  \"perfil_classificado\": \"\",\n  \"linha_dl\": \"\",\n  \"novas_pendencias\": []\n}\n\nLEAD:\nTipo: ${d.tipo_cliente}\nNome Empresa: ${d.nome_empresa_ou_condominio}\nServi\u00e7o Interesse: ${d.servico_interesse}\nDescri\u00e7\u00e3o: ${d.descricao}\nCNPJ: ${d.cnpj}\nUnidades: ${d.numero_unidades}\nEndereco: ${d.endereco_completo}\nMidia: ${d.midia_urls}\n`;\n\nreturn [{ json: { ...d, ai_prompt: prompt } }];"
       },
       "id": "code_061_prep_prompt",
       "name": "Prep Prompt",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [720, 300]
+      "position": [
+        720,
+        300
+      ]
     },
     {
       "parameters": {
@@ -97,7 +109,10 @@
       "name": "DeepSeek Classify",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [960, 300],
+      "position": [
+        960,
+        300
+      ],
       "credentials": {
         "httpHeaderAuth": {
           "id": "DEEPSEEK_CREDENTIAL_ID",
@@ -113,7 +128,10 @@
       "name": "Parse Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1200, 300]
+      "position": [
+        1200,
+        300
+      ]
     },
     {
       "parameters": {
@@ -128,7 +146,10 @@
       "name": "Supabase Update",
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
-      "position": [1440, 300],
+      "position": [
+        1440,
+        300
+      ],
       "credentials": {
         "supabaseApi": {
           "id": "SUPABASE_CREDENTIAL_ID",
@@ -138,12 +159,74 @@
     }
   ],
   "connections": {
-    "Schedule (15m)": { "main": [ [ { "node": "Supabase Get Pendentes", "type": "main", "index": 0 } ] ] },
-    "Supabase Get Pendentes": { "main": [ [ { "node": "Check Empty", "type": "main", "index": 0 } ] ] },
-    "Check Empty": { "main": [ [ { "node": "Prep Prompt", "type": "main", "index": 0 } ] ] },
-    "Prep Prompt": { "main": [ [ { "node": "DeepSeek Classify", "type": "main", "index": 0 } ] ] },
-    "DeepSeek Classify": { "main": [ [ { "node": "Parse Result", "type": "main", "index": 0 } ] ] },
-    "Parse Result": { "main": [ [ { "node": "Supabase Update", "type": "main", "index": 0 } ] ] }
+    "Schedule (15m)": {
+      "main": [
+        [
+          {
+            "node": "Supabase Get Pendentes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Get Pendentes": {
+      "main": [
+        [
+          {
+            "node": "Check Empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Empty": {
+      "main": [
+        [
+          {
+            "node": "Prep Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prep Prompt": {
+      "main": [
+        [
+          {
+            "node": "DeepSeek Classify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek Classify": {
+      "main": [
+        [
+          {
+            "node": "Parse Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Result": {
+      "main": [
+        [
+          {
+            "node": "Supabase Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
   },
-  "settings": { "executionOrder": "v1" }
+  "settings": {
+    "executionOrder": "v1"
+  }
 }

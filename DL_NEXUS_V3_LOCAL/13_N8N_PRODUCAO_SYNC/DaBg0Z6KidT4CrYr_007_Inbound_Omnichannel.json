@@ -4,7 +4,7 @@
   "id": "DaBg0Z6KidT4CrYr",
   "name": "007_Inbound_Omnichannel",
   "description": null,
-  "active": false,
+  "active": true,
   "isArchived": true,
   "nodes": [
     {
@@ -195,7 +195,7 @@
             },
             {
               "name": "diretriz_aninha",
-              "value": "Processar lead com foco imperativo em fechamento de Avaliação Técnica presencial para serviços de recorrência/implantação (elétrica, CFTV, portaria autônoma)."
+              "value": "Processar lead com foco imperativo em fechamento de Avalia\u00e7\u00e3o T\u00e9cnica presencial para servi\u00e7os de recorr\u00eancia/implanta\u00e7\u00e3o (el\u00e9trica, CFTV, portaria aut\u00f4noma)."
             }
           ]
         },

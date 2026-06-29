@@ -138,7 +138,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Google Business localPosts (pendente até OAuth2 estar configurado)\nreturn [{ json: { status: \"pendente_credencial\", mensagem: \"Credencial do Google Business Profile pendente de configuração OAuth2.\" } }];"
+        "jsCode": "// Google Business localPosts (pendente at\u00e9 OAuth2 estar configurado)\nreturn [{ json: { status: \"pendente_credencial\", mensagem: \"Credencial do Google Business Profile pendente de configura\u00e7\u00e3o OAuth2.\" } }];"
       },
       "id": "gmb_publish",
       "name": "Google Business localPosts",
@@ -151,7 +151,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// TikTok postagem automática (pendente/assistida)\n// Requer vídeo vertical e credenciais TikTok aprovadas\nreturn [{ json: { status: \"pendente_credencial\", mensagem: \"Pendente até haver vídeo vertical e credencial aprovada.\" } }];"
+        "jsCode": "// TikTok postagem autom\u00e1tica (pendente/assistida)\n// Requer v\u00eddeo vertical e credenciais TikTok aprovadas\nreturn [{ json: { status: \"pendente_credencial\", mensagem: \"Pendente at\u00e9 haver v\u00eddeo vertical e credencial aprovada.\" } }];"
       },
       "id": "tiktok_publish",
       "name": "TikTok Publishing Node",
@@ -164,7 +164,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// LinkedIn postagem na página/organização (pendente)\n// LinkedIn requer texto institucional corporativo e credencial configurada\nreturn [{ json: { status: \"pendente_credencial\", mensagem: \"LinkedIn pendente até credencial de página/organização estar configurada.\" } }];"
+        "jsCode": "// LinkedIn postagem na p\u00e1gina/organiza\u00e7\u00e3o (pendente)\n// LinkedIn requer texto institucional corporativo e credencial configurada\nreturn [{ json: { status: \"pendente_credencial\", mensagem: \"LinkedIn pendente at\u00e9 credencial de p\u00e1gina/organiza\u00e7\u00e3o estar configurada.\" } }];"
       },
       "id": "linkedin_publish",
       "name": "LinkedIn Publishing Node",
@@ -211,7 +211,7 @@
     {
       "parameters": {
         "chatId": "YOUR_TELEGRAM_CHAT_ID",
-        "text": "=📢 *Log de Publicação Multicanal (DL)*\n\n*ID:* `{{ $json.id }}`\n*Status Global:* `{{ $json.status_global }}`\n*Tentativas:* `{{ JSON.stringify($json.tentativas) }}`\n*Status dos Canais:*\n- Instagram: `{{ $json.status_instagram }}`\n- Facebook: `{{ $json.status_facebook }}`\n- Google Business: `{{ $json.status_google_business }}`\n- TikTok: `{{ $json.status_tiktok }}`\n- LinkedIn: `{{ $json.status_linkedin }}`\n\n*Erros:* `{{ JSON.stringify($json.erros) }}`"
+        "text": "=\ud83d\udce2 *Log de Publica\u00e7\u00e3o Multicanal (DL)*\n\n*ID:* `{{ $json.id }}`\n*Status Global:* `{{ $json.status_global }}`\n*Tentativas:* `{{ JSON.stringify($json.tentativas) }}`\n*Status dos Canais:*\n- Instagram: `{{ $json.status_instagram }}`\n- Facebook: `{{ $json.status_facebook }}`\n- Google Business: `{{ $json.status_google_business }}`\n- TikTok: `{{ $json.status_tiktok }}`\n- LinkedIn: `{{ $json.status_linkedin }}`\n\n*Erros:* `{{ JSON.stringify($json.erros) }}`"
       },
       "id": "telegram_log_publish",
       "name": "Telegram Log",
@@ -458,7 +458,7 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   }

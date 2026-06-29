@@ -18,7 +18,7 @@
     {
       "parameters": {
         "chatId": "-1002012015091",
-        "text": "={{ \"🟢 *ORÇAMENTO APROVADO PELO KILLCRITIC*\\n\\nID: \" + $json.orcamento_id + \"\\nScore: \" + $json.score_confianca }}",
+        "text": "={{ \"\ud83d\udfe2 *OR\u00c7AMENTO APROVADO PELO KILLCRITIC*\\n\\nID: \" + $json.orcamento_id + \"\\nScore: \" + $json.score_confianca }}",
         "additionalFields": {
           "parse_mode": "Markdown"
         }
@@ -46,6 +46,6 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {}
 }

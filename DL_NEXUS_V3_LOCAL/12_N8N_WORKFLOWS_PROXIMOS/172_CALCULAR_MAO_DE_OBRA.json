@@ -11,7 +11,10 @@
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1.1,
-      "position": [0, 0],
+      "position": [
+        0,
+        0
+      ],
       "webhookId": "calcularMaoObra172DlNexus20260527"
     },
     {
@@ -26,7 +29,10 @@
       "name": "Google Calendar",
       "type": "n8n-nodes-base.googleCalendar",
       "typeVersion": 1,
-      "position": [220, 0],
+      "position": [
+        220,
+        0
+      ],
       "credentials": {
         "googleCalendarOAuth2Api": {
           "id": "placeholder_google_calendar_oauth2",
@@ -36,13 +42,16 @@
     },
     {
       "parameters": {
-        "jsCode": "const webhookItems = $('Webhook').all();\nconst result = [];\n\nfor (let i = 0; i < webhookItems.length; i++) {\n  const data = webhookItems[i].json.body || webhookItems[i].json || {};\n  \n  // Extrair dados críticos\n  const complexidade = data.complexidade;\n  const dataServicoStr = data.data_servico || new Date().toISOString();\n  const dataServico = new Date(dataServicoStr);\n  const horaServico = dataServico.getHours();\n  const diaSemana = dataServico.getDay();\n  \n  const temGastronomia = data.equipamentos && (data.equipamentos.includes('chapa') || data.equipamentos.includes('fritadeira') || data.gastronomia === true);\n  \n  // Validar dados críticos\n  if (!complexidade) {\n    result.push({\n      json: {\n        status: \"Sob Avaliação Técnica\",\n        motivo: \"Faltam dados críticos (complexidade) para calcular a mão de obra.\"\n      }\n    });\n    continue;\n  }\n  \n  // Hora técnica base\n  let horaTecnica = 120;\n  if (complexidade === 'critica') horaTecnica = 220;\n  \n  // Urgência / Multiplicadores de Tempo\n  let multiplicadorUrgencia = 1.0;\n  if (diaSemana === 0) {\n    multiplicadorUrgencia = 2.5; // Domingo\n  } else if (horaServico >= 18 || horaServico < 6) {\n    multiplicadorUrgencia = 2.0; // Noite\n  }\n  \n  // Risco\n  let multiplicadorRisco = 1.0;\n  if (temGastronomia) {\n    multiplicadorRisco = 1.2;\n  }\n  \n  // Cálculo final\n  const horasEstimadas = data.horas_estimadas || 1;\n  const custoInterno = horaTecnica * multiplicadorUrgencia * multiplicadorRisco * horasEstimadas;\n  \n  // Formatação da saída - não expor custo interno\n  const margemLucro = 1.4;\n  const precoRecomendado = Math.round(custoInterno * margemLucro * 100) / 100;\n  const faixaMin = Math.round(precoRecomendado * 0.9 * 100) / 100;\n  const faixaMax = Math.round(precoRecomendado * 1.15 * 100) / 100;\n  \n  result.push({\n    json: {\n      status: \"Sucesso\",\n      preco_recomendado: precoRecomendado,\n      faixa_comercial: {\n        min: faixaMin,\n        max: faixaMax\n      },\n      imposto_estimado_percentual: \"imposto_estimado_percentual\", // Pendente de validação contábil\n      detalhes_ocultos: \"Custo interno ocultado conforme diretriz.\",\n      multiplicadores_aplicados: {\n        urgencia: multiplicadorUrgencia,\n        risco: multiplicadorRisco,\n        domingo: diaSemana === 0,\n        noturno: (horaServico >= 18 || horaServico < 6),\n        gastronomia: temGastronomia\n      }\n    }\n  });\n}\n\nreturn result;"
+        "jsCode": "const webhookItems = $('Webhook').all();\nconst result = [];\n\nfor (let i = 0; i < webhookItems.length; i++) {\n  const data = webhookItems[i].json.body || webhookItems[i].json || {};\n  \n  // Extrair dados cr\u00edticos\n  const complexidade = data.complexidade;\n  const dataServicoStr = data.data_servico || new Date().toISOString();\n  const dataServico = new Date(dataServicoStr);\n  const horaServico = dataServico.getHours();\n  const diaSemana = dataServico.getDay();\n  \n  const temGastronomia = data.equipamentos && (data.equipamentos.includes('chapa') || data.equipamentos.includes('fritadeira') || data.gastronomia === true);\n  \n  // Validar dados cr\u00edticos\n  if (!complexidade) {\n    result.push({\n      json: {\n        status: \"Sob Avalia\u00e7\u00e3o T\u00e9cnica\",\n        motivo: \"Faltam dados cr\u00edticos (complexidade) para calcular a m\u00e3o de obra.\"\n      }\n    });\n    continue;\n  }\n  \n  // Hora t\u00e9cnica base\n  let horaTecnica = 120;\n  if (complexidade === 'critica') horaTecnica = 220;\n  \n  // Urg\u00eancia / Multiplicadores de Tempo\n  let multiplicadorUrgencia = 1.0;\n  if (diaSemana === 0) {\n    multiplicadorUrgencia = 2.5; // Domingo\n  } else if (horaServico >= 18 || horaServico < 6) {\n    multiplicadorUrgencia = 2.0; // Noite\n  }\n  \n  // Risco\n  let multiplicadorRisco = 1.0;\n  if (temGastronomia) {\n    multiplicadorRisco = 1.2;\n  }\n  \n  // C\u00e1lculo final\n  const horasEstimadas = data.horas_estimadas || 1;\n  const custoInterno = horaTecnica * multiplicadorUrgencia * multiplicadorRisco * horasEstimadas;\n  \n  // Formata\u00e7\u00e3o da sa\u00edda - n\u00e3o expor custo interno\n  const margemLucro = 1.4;\n  const precoRecomendado = Math.round(custoInterno * margemLucro * 100) / 100;\n  const faixaMin = Math.round(precoRecomendado * 0.9 * 100) / 100;\n  const faixaMax = Math.round(precoRecomendado * 1.15 * 100) / 100;\n  \n  result.push({\n    json: {\n      status: \"Sucesso\",\n      preco_recomendado: precoRecomendado,\n      faixa_comercial: {\n        min: faixaMin,\n        max: faixaMax\n      },\n      imposto_estimado_percentual: \"imposto_estimado_percentual\", // Pendente de valida\u00e7\u00e3o cont\u00e1bil\n      detalhes_ocultos: \"Custo interno ocultado conforme diretriz.\",\n      multiplicadores_aplicados: {\n        urgencia: multiplicadorUrgencia,\n        risco: multiplicadorRisco,\n        domingo: diaSemana === 0,\n        noturno: (horaServico >= 18 || horaServico < 6),\n        gastronomia: temGastronomia\n      }\n    }\n  });\n}\n\nreturn result;"
       },
       "id": "e44d3ba0-25bc-48d6-8488-82db3b720003",
-      "name": "Calcular Mão de Obra",
+      "name": "Calcular M\u00e3o de Obra",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [440, 0]
+      "position": [
+        440,
+        0
+      ]
     }
   ],
   "connections": {
@@ -61,7 +70,7 @@
       "main": [
         [
           {
-            "node": "Calcular Mão de Obra",
+            "node": "Calcular M\u00e3o de Obra",
             "type": "main",
             "index": 0
           }
@@ -69,7 +78,7 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },

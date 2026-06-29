@@ -15,7 +15,7 @@
     {
       "parameters": {
         "chatId": "={{ $env['TELEGRAM_DIOGO_CHAT_ID'] }}",
-        "text": "📊 Relatório SDR Social Diário (Placeholder Fase 2)\n\nO motor 050 processou interações nas últimas 24h."
+        "text": "\ud83d\udcca Relat\u00f3rio SDR Social Di\u00e1rio (Placeholder Fase 2)\n\nO motor 050 processou intera\u00e7\u00f5es nas \u00faltimas 24h."
       },
       "id": "r1",
       "name": "ENVIAR_RELATORIO",
@@ -49,5 +49,5 @@
   "settings": {
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "active": false
+  "active": true
 }

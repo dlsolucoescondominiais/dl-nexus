@@ -1,6 +1,6 @@
 {
   "name": "060_ORCAMENTO_RECEPCAO_SITE_DL",
-  "active": false,
+  "active": true,
   "nodes": [
     {
       "parameters": {
@@ -13,18 +13,24 @@
       "name": "Webhook Orcamento V2",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1.1,
-      "position": [0, 300],
+      "position": [
+        0,
+        300
+      ],
       "webhookId": "orcamento-v2-060"
     },
     {
       "parameters": {
-        "jsCode": "// ═══════════════════════════════════════════\n// 060 — STEP 1: VALIDAR ESTRUTURA DO PAYLOAD\n// ═══════════════════════════════════════════\n\nconst body = $input.item.json.body || $input.item.json;\nconst erros = [];\n\n// Blocos obrigatórios\nif (!body.lead || typeof body.lead !== 'object') erros.push('Bloco lead ausente');\nif (!body.localizacao || typeof body.localizacao !== 'object') erros.push('Bloco localizacao ausente');\nif (!body.demanda || typeof body.demanda !== 'object') erros.push('Bloco demanda ausente');\nif (!body.consentimento || typeof body.consentimento !== 'object') erros.push('Bloco consentimento ausente');\n\nif (erros.length > 0) {\n  return [{\n    json: {\n      ok: false,\n      erro: 'Payload inválido: ' + erros.join('; '),\n      _abort: true\n    }\n  }];\n}\n\n// Campos obrigatórios dentro dos blocos\nconst lead = body.lead;\nconst loc = body.localizacao;\nconst dem = body.demanda;\nconst cons = body.consentimento;\n\nconst camposFaltantes = [];\nif (!lead.nome) camposFaltantes.push('lead.nome');\nif (!lead.whatsapp) camposFaltantes.push('lead.whatsapp');\nif (!lead.email) camposFaltantes.push('lead.email');\nif (!lead.tipo_cliente) camposFaltantes.push('lead.tipo_cliente');\nif (!lead.nome_empresa_ou_condominio) camposFaltantes.push('lead.nome_empresa_ou_condominio');\nif (!loc.bairro) camposFaltantes.push('localizacao.bairro');\nif (!loc.cidade) camposFaltantes.push('localizacao.cidade');\nif (!loc.endereco_completo) camposFaltantes.push('localizacao.endereco_completo');\nif (!dem.servico_interesse) camposFaltantes.push('demanda.servico_interesse');\nif (!dem.urgencia) camposFaltantes.push('demanda.urgencia');\nif (!dem.descricao) camposFaltantes.push('demanda.descricao');\n\nif (camposFaltantes.length > 0) {\n  return [{\n    json: {\n      ok: false,\n      erro: 'Campos obrigatórios faltando: ' + camposFaltantes.join(', '),\n      _abort: true\n    }\n  }];\n}\n\n// Passar payload validado\nreturn [{\n  json: {\n    _abort: false,\n    lead: body.lead,\n    localizacao: body.localizacao,\n    infraestrutura: body.infraestrutura || {},\n    demanda: body.demanda,\n    midia: body.midia || {},\n    consentimento: body.consentimento,\n    origem_lead: body.origem_lead || { canal: 'site', versao_form: 'V2', pagina: 'desconhecida' }\n  }\n}];"
+        "jsCode": "// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n// 060 \u2014 STEP 1: VALIDAR ESTRUTURA DO PAYLOAD\n// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\nconst body = $input.item.json.body || $input.item.json;\nconst erros = [];\n\n// Blocos obrigat\u00f3rios\nif (!body.lead || typeof body.lead !== 'object') erros.push('Bloco lead ausente');\nif (!body.localizacao || typeof body.localizacao !== 'object') erros.push('Bloco localizacao ausente');\nif (!body.demanda || typeof body.demanda !== 'object') erros.push('Bloco demanda ausente');\nif (!body.consentimento || typeof body.consentimento !== 'object') erros.push('Bloco consentimento ausente');\n\nif (erros.length > 0) {\n  return [{\n    json: {\n      ok: false,\n      erro: 'Payload inv\u00e1lido: ' + erros.join('; '),\n      _abort: true\n    }\n  }];\n}\n\n// Campos obrigat\u00f3rios dentro dos blocos\nconst lead = body.lead;\nconst loc = body.localizacao;\nconst dem = body.demanda;\nconst cons = body.consentimento;\n\nconst camposFaltantes = [];\nif (!lead.nome) camposFaltantes.push('lead.nome');\nif (!lead.whatsapp) camposFaltantes.push('lead.whatsapp');\nif (!lead.email) camposFaltantes.push('lead.email');\nif (!lead.tipo_cliente) camposFaltantes.push('lead.tipo_cliente');\nif (!lead.nome_empresa_ou_condominio) camposFaltantes.push('lead.nome_empresa_ou_condominio');\nif (!loc.bairro) camposFaltantes.push('localizacao.bairro');\nif (!loc.cidade) camposFaltantes.push('localizacao.cidade');\nif (!loc.endereco_completo) camposFaltantes.push('localizacao.endereco_completo');\nif (!dem.servico_interesse) camposFaltantes.push('demanda.servico_interesse');\nif (!dem.urgencia) camposFaltantes.push('demanda.urgencia');\nif (!dem.descricao) camposFaltantes.push('demanda.descricao');\n\nif (camposFaltantes.length > 0) {\n  return [{\n    json: {\n      ok: false,\n      erro: 'Campos obrigat\u00f3rios faltando: ' + camposFaltantes.join(', '),\n      _abort: true\n    }\n  }];\n}\n\n// Passar payload validado\nreturn [{\n  json: {\n    _abort: false,\n    lead: body.lead,\n    localizacao: body.localizacao,\n    infraestrutura: body.infraestrutura || {},\n    demanda: body.demanda,\n    midia: body.midia || {},\n    consentimento: body.consentimento,\n    origem_lead: body.origem_lead || { canal: 'site', versao_form: 'V2', pagina: 'desconhecida' }\n  }\n}];"
       },
       "id": "code_060_validar",
       "name": "Validar Estrutura",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [280, 300]
+      "position": [
+        280,
+        300
+      ]
     },
     {
       "parameters": {
@@ -41,37 +47,49 @@
       "name": "Abortar?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [520, 300]
+      "position": [
+        520,
+        300
+      ]
     },
     {
       "parameters": {
-        "jsCode": "// ═══════════════════════════════════════════\n// 060 — STEP 2: NORMALIZAR DADOS\n// ═══════════════════════════════════════════\n\nconst d = $input.item.json;\nconst lead = d.lead;\nconst loc = d.localizacao;\nconst infra = d.infraestrutura;\nconst dem = d.demanda;\nconst midia = d.midia;\nconst cons = d.consentimento;\nconst origem = d.origem_lead;\n\nfunction trim(v) { return (v || '').toString().trim(); }\nfunction lc(v) { return trim(v).toLowerCase(); }\nfunction maskCPF(cpf) {\n  const c = trim(cpf).replace(/\\D/g, '');\n  if (c.length < 11) return '';\n  return c.substring(0,3) + '.***.' + c.substring(6,9) + '-' + c.substring(9,11);\n}\n\nconst protocolo = 'ORC-V2-' + Date.now().toString(36).toUpperCase();\n\nreturn [{\n  json: {\n    protocolo,\n    nome: trim(lead.nome),\n    whatsapp: trim(lead.whatsapp).replace(/\\D/g, ''),\n    email: lc(lead.email),\n    nome_empresa_ou_condominio: trim(lead.nome_empresa_ou_condominio),\n    tipo_cliente: lc(lead.tipo_cliente),\n    cliente_ativo: lead.cliente_ativo === true || lead.cliente_ativo === 'true',\n    cnpj: trim(lead.cnpj).replace(/\\D/g, ''),\n    cpf_mascarado: maskCPF(lead.cpf),\n    responsavel_aprovacao: trim(lead.responsavel_aprovacao),\n    cep: trim(loc.cep).replace(/\\D/g, ''),\n    endereco_completo: trim(loc.endereco_completo),\n    bairro: trim(loc.bairro),\n    cidade: trim(loc.cidade),\n    numero_unidades: infra.numero_unidades || null,\n    numero_blocos: infra.numero_blocos || null,\n    servico_interesse: trim(dem.servico_interesse),\n    urgencia: lc(dem.urgencia),\n    melhor_horario: trim(dem.melhor_horario),\n    descricao: trim(dem.descricao),\n    tipo_orcamento: trim(dem.tipo_orcamento),\n    upload_imagem: midia.upload_imagem || [],\n    upload_video: midia.upload_video || [],\n    aceite_contato: cons.aceite_contato === true,\n    aceite_lgpd: cons.aceite_lgpd === true,\n    origem: trim(origem.canal),\n    versao_form: trim(origem.versao_form),\n    pagina_origem: trim(origem.pagina)\n  }\n}];"
+        "jsCode": "// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n// 060 \u2014 STEP 2: NORMALIZAR DADOS\n// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\nconst d = $input.item.json;\nconst lead = d.lead;\nconst loc = d.localizacao;\nconst infra = d.infraestrutura;\nconst dem = d.demanda;\nconst midia = d.midia;\nconst cons = d.consentimento;\nconst origem = d.origem_lead;\n\nfunction trim(v) { return (v || '').toString().trim(); }\nfunction lc(v) { return trim(v).toLowerCase(); }\nfunction maskCPF(cpf) {\n  const c = trim(cpf).replace(/\\D/g, '');\n  if (c.length < 11) return '';\n  return c.substring(0,3) + '.***.' + c.substring(6,9) + '-' + c.substring(9,11);\n}\n\nconst protocolo = 'ORC-V2-' + Date.now().toString(36).toUpperCase();\n\nreturn [{\n  json: {\n    protocolo,\n    nome: trim(lead.nome),\n    whatsapp: trim(lead.whatsapp).replace(/\\D/g, ''),\n    email: lc(lead.email),\n    nome_empresa_ou_condominio: trim(lead.nome_empresa_ou_condominio),\n    tipo_cliente: lc(lead.tipo_cliente),\n    cliente_ativo: lead.cliente_ativo === true || lead.cliente_ativo === 'true',\n    cnpj: trim(lead.cnpj).replace(/\\D/g, ''),\n    cpf_mascarado: maskCPF(lead.cpf),\n    responsavel_aprovacao: trim(lead.responsavel_aprovacao),\n    cep: trim(loc.cep).replace(/\\D/g, ''),\n    endereco_completo: trim(loc.endereco_completo),\n    bairro: trim(loc.bairro),\n    cidade: trim(loc.cidade),\n    numero_unidades: infra.numero_unidades || null,\n    numero_blocos: infra.numero_blocos || null,\n    servico_interesse: trim(dem.servico_interesse),\n    urgencia: lc(dem.urgencia),\n    melhor_horario: trim(dem.melhor_horario),\n    descricao: trim(dem.descricao),\n    tipo_orcamento: trim(dem.tipo_orcamento),\n    upload_imagem: midia.upload_imagem || [],\n    upload_video: midia.upload_video || [],\n    aceite_contato: cons.aceite_contato === true,\n    aceite_lgpd: cons.aceite_lgpd === true,\n    origem: trim(origem.canal),\n    versao_form: trim(origem.versao_form),\n    pagina_origem: trim(origem.pagina)\n  }\n}];"
       },
       "id": "code_060_normalizar",
       "name": "Normalizar Dados",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [780, 440]
+      "position": [
+        780,
+        440
+      ]
     },
     {
       "parameters": {
-        "jsCode": "// ═══════════════════════════════════════════\n// 060 — STEP 3: CLASSIFICAR PENDÊNCIAS\n// ═══════════════════════════════════════════\n\nconst d = $input.item.json;\nconst pendencias = [];\n\n// CNPJ\nconst tiposExigemCNPJ = ['condominio', 'empresa', 'administradora'];\nif (tiposExigemCNPJ.includes(d.tipo_cliente) && !d.cnpj) {\n  pendencias.push('sem_cnpj');\n}\n\n// numero_unidades\nif (d.tipo_cliente === 'condominio' && !d.numero_unidades) {\n  pendencias.push('sem_numero_unidades');\n}\n\n// endereço\nif (!d.endereco_completo) {\n  pendencias.push('sem_endereco');\n}\n\n// descrição\nif (!d.descricao) {\n  pendencias.push('sem_descricao');\n}\n\n// LGPD\nif (!d.aceite_lgpd) {\n  pendencias.push('sem_lgpd');\n}\n\n// Mídia placeholder\nconst todasMidias = [...(d.upload_imagem || []), ...(d.upload_video || [])];\nif (todasMidias.some(u => u.startsWith('pending://'))) {\n  pendencias.push('midia_placeholder');\n}\n\n// Rateio\nlet rateio_permitido = false;\nif (d.tipo_cliente === 'condominio' && d.numero_unidades && d.numero_unidades > 0) {\n  rateio_permitido = true;\n}\n\n// Status\nconst criticas = ['sem_endereco', 'sem_descricao', 'sem_lgpd'];\nconst temCritica = pendencias.some(p => criticas.includes(p));\nconst status_orcamento = temCritica ? 'pendente_dados' : 'recebido_para_triagem';\n\nreturn [{\n  json: {\n    ...d,\n    pendencias,\n    rateio_permitido,\n    status_orcamento\n  }\n}];"
+        "jsCode": "// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n// 060 \u2014 STEP 3: CLASSIFICAR PEND\u00caNCIAS\n// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\nconst d = $input.item.json;\nconst pendencias = [];\n\n// CNPJ\nconst tiposExigemCNPJ = ['condominio', 'empresa', 'administradora'];\nif (tiposExigemCNPJ.includes(d.tipo_cliente) && !d.cnpj) {\n  pendencias.push('sem_cnpj');\n}\n\n// numero_unidades\nif (d.tipo_cliente === 'condominio' && !d.numero_unidades) {\n  pendencias.push('sem_numero_unidades');\n}\n\n// endere\u00e7o\nif (!d.endereco_completo) {\n  pendencias.push('sem_endereco');\n}\n\n// descri\u00e7\u00e3o\nif (!d.descricao) {\n  pendencias.push('sem_descricao');\n}\n\n// LGPD\nif (!d.aceite_lgpd) {\n  pendencias.push('sem_lgpd');\n}\n\n// M\u00eddia placeholder\nconst todasMidias = [...(d.upload_imagem || []), ...(d.upload_video || [])];\nif (todasMidias.some(u => u.startsWith('pending://'))) {\n  pendencias.push('midia_placeholder');\n}\n\n// Rateio\nlet rateio_permitido = false;\nif (d.tipo_cliente === 'condominio' && d.numero_unidades && d.numero_unidades > 0) {\n  rateio_permitido = true;\n}\n\n// Status\nconst criticas = ['sem_endereco', 'sem_descricao', 'sem_lgpd'];\nconst temCritica = pendencias.some(p => criticas.includes(p));\nconst status_orcamento = temCritica ? 'pendente_dados' : 'recebido_para_triagem';\n\nreturn [{\n  json: {\n    ...d,\n    pendencias,\n    rateio_permitido,\n    status_orcamento\n  }\n}];"
       },
       "id": "code_060_pendencias",
-      "name": "Classificar Pendências",
+      "name": "Classificar Pend\u00eancias",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1060, 440]
+      "position": [
+        1060,
+        440
+      ]
     },
     {
       "parameters": {
-        "jsCode": "// ═══════════════════════════════════════════\n// 060 — STEP 4: PREPARAR REGISTRO SUPABASE\n// ═══════════════════════════════════════════\n\nconst d = $input.item.json;\n\nconst registro = {\n  protocolo: d.protocolo,\n  origem: d.origem,\n  versao_form: d.versao_form,\n  nome: d.nome,\n  whatsapp: d.whatsapp,\n  email: d.email,\n  tipo_cliente: d.tipo_cliente,\n  nome_empresa_ou_condominio: d.nome_empresa_ou_condominio,\n  cnpj: d.cnpj || null,\n  cpf_hash_ou_mascarado: d.cpf_mascarado || null,\n  cep: d.cep || null,\n  endereco_completo: d.endereco_completo,\n  bairro: d.bairro,\n  cidade: d.cidade,\n  servico_interesse: d.servico_interesse,\n  urgencia: d.urgencia,\n  descricao: d.descricao,\n  tipo_orcamento: d.tipo_orcamento || null,\n  numero_unidades: d.numero_unidades,\n  numero_blocos: d.numero_blocos,\n  rateio_permitido: d.rateio_permitido,\n  midia_urls: JSON.stringify([...(d.upload_imagem || []), ...(d.upload_video || [])]),\n  consentimento_lgpd: d.aceite_lgpd,\n  pendencias: JSON.stringify(d.pendencias),\n  status_orcamento: d.status_orcamento,\n  payload_original: JSON.stringify($input.item.json)\n};\n\nreturn [{ json: registro }];"
+        "jsCode": "// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n// 060 \u2014 STEP 4: PREPARAR REGISTRO SUPABASE\n// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\nconst d = $input.item.json;\n\nconst registro = {\n  protocolo: d.protocolo,\n  origem: d.origem,\n  versao_form: d.versao_form,\n  nome: d.nome,\n  whatsapp: d.whatsapp,\n  email: d.email,\n  tipo_cliente: d.tipo_cliente,\n  nome_empresa_ou_condominio: d.nome_empresa_ou_condominio,\n  cnpj: d.cnpj || null,\n  cpf_hash_ou_mascarado: d.cpf_mascarado || null,\n  cep: d.cep || null,\n  endereco_completo: d.endereco_completo,\n  bairro: d.bairro,\n  cidade: d.cidade,\n  servico_interesse: d.servico_interesse,\n  urgencia: d.urgencia,\n  descricao: d.descricao,\n  tipo_orcamento: d.tipo_orcamento || null,\n  numero_unidades: d.numero_unidades,\n  numero_blocos: d.numero_blocos,\n  rateio_permitido: d.rateio_permitido,\n  midia_urls: JSON.stringify([...(d.upload_imagem || []), ...(d.upload_video || [])]),\n  consentimento_lgpd: d.aceite_lgpd,\n  pendencias: JSON.stringify(d.pendencias),\n  status_orcamento: d.status_orcamento,\n  payload_original: JSON.stringify($input.item.json)\n};\n\nreturn [{ json: registro }];"
       },
       "id": "code_060_supabase_prep",
       "name": "Preparar Supabase",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1340, 440]
+      "position": [
+        1340,
+        440
+      ]
     },
     {
       "parameters": {
@@ -85,7 +103,10 @@
       "name": "Supabase Insert",
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
-      "position": [1620, 440],
+      "position": [
+        1620,
+        440
+      ],
       "credentials": {
         "supabaseApi": {
           "id": "SUPABASE_CREDENTIAL_ID",
@@ -95,13 +116,16 @@
     },
     {
       "parameters": {
-        "jsCode": "// ═══════════════════════════════════════════\n// 060 — STEP 5: MONTAR MENSAGEM TELEGRAM\n// ═══════════════════════════════════════════\n\nconst d = $input.item.json;\n\nconst pendenciasStr = d.pendencias && d.pendencias.length > 0\n  ? JSON.parse(d.pendencias).join(', ')\n  : 'nenhuma';\n\nconst msg = [\n  '🆕 *Novo Lead — Avaliação Técnica V2*',\n  '',\n  '📋 *Protocolo:* ' + d.protocolo,\n  '👤 *Nome:* ' + d.nome,\n  '🏢 *Tipo:* ' + d.tipo_cliente,\n  '🏠 *Empresa/Condomínio:* ' + d.nome_empresa_ou_condominio,\n  '🔧 *Serviço:* ' + d.servico_interesse,\n  '⚡ *Urgência:* ' + d.urgencia,\n  '📍 *Bairro/Cidade:* ' + d.bairro + ' / ' + d.cidade,\n  '',\n  '⚠️ *Pendências:* ' + pendenciasStr,\n  '📊 *Rateio permitido:* ' + (d.rateio_permitido === true || d.rateio_permitido === 'true' ? 'sim' : 'não'),\n  '📌 *Status:* ' + d.status_orcamento,\n  '',\n  '_Via formulário V2 — ambiente de teste_'\n].join('\\n');\n\nreturn [{ json: { ...d, telegram_msg: msg } }];"
+        "jsCode": "// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n// 060 \u2014 STEP 5: MONTAR MENSAGEM TELEGRAM\n// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\nconst d = $input.item.json;\n\nconst pendenciasStr = d.pendencias && d.pendencias.length > 0\n  ? JSON.parse(d.pendencias).join(', ')\n  : 'nenhuma';\n\nconst msg = [\n  '\ud83c\udd95 *Novo Lead \u2014 Avalia\u00e7\u00e3o T\u00e9cnica V2*',\n  '',\n  '\ud83d\udccb *Protocolo:* ' + d.protocolo,\n  '\ud83d\udc64 *Nome:* ' + d.nome,\n  '\ud83c\udfe2 *Tipo:* ' + d.tipo_cliente,\n  '\ud83c\udfe0 *Empresa/Condom\u00ednio:* ' + d.nome_empresa_ou_condominio,\n  '\ud83d\udd27 *Servi\u00e7o:* ' + d.servico_interesse,\n  '\u26a1 *Urg\u00eancia:* ' + d.urgencia,\n  '\ud83d\udccd *Bairro/Cidade:* ' + d.bairro + ' / ' + d.cidade,\n  '',\n  '\u26a0\ufe0f *Pend\u00eancias:* ' + pendenciasStr,\n  '\ud83d\udcca *Rateio permitido:* ' + (d.rateio_permitido === true || d.rateio_permitido === 'true' ? 'sim' : 'n\u00e3o'),\n  '\ud83d\udccc *Status:* ' + d.status_orcamento,\n  '',\n  '_Via formul\u00e1rio V2 \u2014 ambiente de teste_'\n].join('\\n');\n\nreturn [{ json: { ...d, telegram_msg: msg } }];"
       },
       "id": "code_060_telegram_msg",
       "name": "Montar Telegram",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1900, 440]
+      "position": [
+        1900,
+        440
+      ]
     },
     {
       "parameters": {
@@ -115,7 +139,10 @@
       "name": "Telegram Alerta",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [2180, 440],
+      "position": [
+        2180,
+        440
+      ],
       "credentials": {
         "telegramApi": {
           "id": "TELEGRAM_CREDENTIAL_ID",
@@ -125,13 +152,16 @@
     },
     {
       "parameters": {
-        "jsCode": "// ═══════════════════════════════════════════\n// 060 — STEP 6: RESPOSTA HTTP PARA O FORMULÁRIO\n// ═══════════════════════════════════════════\n\nconst d = $input.item.json;\n\nreturn [{\n  json: {\n    ok: true,\n    status: 'recebido',\n    protocolo: d.protocolo,\n    status_orcamento: d.status_orcamento,\n    pendencias: JSON.parse(d.pendencias || '[]')\n  }\n}];"
+        "jsCode": "// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n// 060 \u2014 STEP 6: RESPOSTA HTTP PARA O FORMUL\u00c1RIO\n// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\nconst d = $input.item.json;\n\nreturn [{\n  json: {\n    ok: true,\n    status: 'recebido',\n    protocolo: d.protocolo,\n    status_orcamento: d.status_orcamento,\n    pendencias: JSON.parse(d.pendencias || '[]')\n  }\n}];"
       },
       "id": "code_060_response",
       "name": "Resposta HTTP",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [2460, 440]
+      "position": [
+        2460,
+        440
+      ]
     },
     {
       "parameters": {
@@ -141,54 +171,117 @@
       "name": "Resposta Erro",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [780, 160]
+      "position": [
+        780,
+        160
+      ]
     }
   ],
   "connections": {
     "Webhook Orcamento V2": {
       "main": [
-        [{ "node": "Validar Estrutura", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Validar Estrutura",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Validar Estrutura": {
       "main": [
-        [{ "node": "Abortar?", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Abortar?",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Abortar?": {
       "main": [
-        [{ "node": "Resposta Erro", "type": "main", "index": 0 }],
-        [{ "node": "Normalizar Dados", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Resposta Erro",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Normalizar Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Normalizar Dados": {
       "main": [
-        [{ "node": "Classificar Pendências", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Classificar Pend\u00eancias",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
-    "Classificar Pendências": {
+    "Classificar Pend\u00eancias": {
       "main": [
-        [{ "node": "Preparar Supabase", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Preparar Supabase",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Preparar Supabase": {
       "main": [
-        [{ "node": "Supabase Insert", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Supabase Insert",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Supabase Insert": {
       "main": [
-        [{ "node": "Montar Telegram", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Montar Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Montar Telegram": {
       "main": [
-        [{ "node": "Telegram Alerta", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Telegram Alerta",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Telegram Alerta": {
       "main": [
-        [{ "node": "Resposta HTTP", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Resposta HTTP",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },
@@ -196,9 +289,17 @@
     "executionOrder": "v1"
   },
   "tags": [
-    { "name": "orcamento" },
-    { "name": "site" },
-    { "name": "v2" },
-    { "name": "teste" }
+    {
+      "name": "orcamento"
+    },
+    {
+      "name": "site"
+    },
+    {
+      "name": "v2"
+    },
+    {
+      "name": "teste"
+    }
   ]
 }

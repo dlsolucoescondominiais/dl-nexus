@@ -29,7 +29,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Normalizar payload de entrada\nconst body = $input.first().json.body || $input.first().json;\n\nconst nome = body.nome || body.name || 'Lead Desconhecido';\nconst telefone = body.telefone || body.phone || body.whatsapp || '';\nconst email = body.email || '';\nconst mensagem = body.mensagem || body.message || body.texto || '';\nconst origem = body.origem || body.source || 'webhook-direto';\nconst condominio = body.condominio || body.condo || '';\nconst servico = body.servico || body.service || body.tipo || '';\nconst urgencia = body.urgencia || body.priority || 'normal';\nconst timestamp = new Date().toISOString();\n\n// Classificar tipo de suporte\nlet tipo_suporte = 'geral';\nconst msg = mensagem.toLowerCase();\n\nif (msg.includes('solar') || msg.includes('energia') || msg.includes('fotovoltaic')) {\n  tipo_suporte = 'energia_solar';\n} else if (msg.includes('cftv') || msg.includes('câmera') || msg.includes('camera') || msg.includes('segurança')) {\n  tipo_suporte = 'cftv_seguranca';\n} else if (msg.includes('elétric') || msg.includes('eletric') || msg.includes('disjuntor') || msg.includes('curto')) {\n  tipo_suporte = 'eletrica';\n} else if (msg.includes('automação') || msg.includes('automacao') || msg.includes('portão') || msg.includes('portao')) {\n  tipo_suporte = 'automacao';\n} else if (msg.includes('incêndio') || msg.includes('incendio') || msg.includes('extint') || msg.includes('bombeiro')) {\n  tipo_suporte = 'prevencao_incendio';\n}\n\n// KILLCRITIC — Termos proibidos na mensagem (auditoria)\nconst termosProibidos = ['visita técnica', 'visita tecnica', 'canaleta plástica', 'canaleta plastica', 'engenheiro'];\nconst infracoes = termosProibidos.filter(t => msg.includes(t));\nconst killcritic_aprovado = infracoes.length === 0;\n\nreturn [{\n  json: {\n    nome,\n    telefone,\n    email,\n    mensagem,\n    origem,\n    condominio,\n    servico,\n    tipo_suporte,\n    urgencia,\n    timestamp,\n    killcritic_aprovado,\n    killcritic_infracoes: infracoes,\n    lead_id: `diego-sup-${Date.now()}`\n  }\n}];"
+        "jsCode": "// Normalizar payload de entrada\nconst body = $input.first().json.body || $input.first().json;\n\nconst nome = body.nome || body.name || 'Lead Desconhecido';\nconst telefone = body.telefone || body.phone || body.whatsapp || '';\nconst email = body.email || '';\nconst mensagem = body.mensagem || body.message || body.texto || '';\nconst origem = body.origem || body.source || 'webhook-direto';\nconst condominio = body.condominio || body.condo || '';\nconst servico = body.servico || body.service || body.tipo || '';\nconst urgencia = body.urgencia || body.priority || 'normal';\nconst timestamp = new Date().toISOString();\n\n// Classificar tipo de suporte\nlet tipo_suporte = 'geral';\nconst msg = mensagem.toLowerCase();\n\nif (msg.includes('solar') || msg.includes('energia') || msg.includes('fotovoltaic')) {\n  tipo_suporte = 'energia_solar';\n} else if (msg.includes('cftv') || msg.includes('c\u00e2mera') || msg.includes('camera') || msg.includes('seguran\u00e7a')) {\n  tipo_suporte = 'cftv_seguranca';\n} else if (msg.includes('el\u00e9tric') || msg.includes('eletric') || msg.includes('disjuntor') || msg.includes('curto')) {\n  tipo_suporte = 'eletrica';\n} else if (msg.includes('automa\u00e7\u00e3o') || msg.includes('automacao') || msg.includes('port\u00e3o') || msg.includes('portao')) {\n  tipo_suporte = 'automacao';\n} else if (msg.includes('inc\u00eandio') || msg.includes('incendio') || msg.includes('extint') || msg.includes('bombeiro')) {\n  tipo_suporte = 'prevencao_incendio';\n}\n\n// KILLCRITIC \u2014 Termos proibidos na mensagem (auditoria)\nconst termosProibidos = ['visita t\u00e9cnica', 'visita tecnica', 'canaleta pl\u00e1stica', 'canaleta plastica', 'engenheiro'];\nconst infracoes = termosProibidos.filter(t => msg.includes(t));\nconst killcritic_aprovado = infracoes.length === 0;\n\nreturn [{\n  json: {\n    nome,\n    telefone,\n    email,\n    mensagem,\n    origem,\n    condominio,\n    servico,\n    tipo_suporte,\n    urgencia,\n    timestamp,\n    killcritic_aprovado,\n    killcritic_infracoes: infracoes,\n    lead_id: `diego-sup-${Date.now()}`\n  }\n}];"
       },
       "id": "norm-001",
       "name": "Normalizar Payload",
@@ -140,7 +140,7 @@
         }
       },
       "id": "http-especialistas-001",
-      "name": "Chamar Técnicos (004)",
+      "name": "Chamar T\u00e9cnicos (004)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
       "position": [
@@ -151,7 +151,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"status\": \"sucesso\",\n  \"mensagem\": \"Suporte técnico DL acionado com sucesso.\",\n  \"lead_id\": \"{{ $json.lead_id || 'registrado' }}\",\n  \"tipo_suporte\": \"{{ $json.tipo_suporte || 'geral' }}\",\n  \"proximo_passo\": \"Avaliação Técnica será agendada. O Tecnólogo responsável entrará em contato.\"\n}",
+        "responseBody": "={\n  \"status\": \"sucesso\",\n  \"mensagem\": \"Suporte t\u00e9cnico DL acionado com sucesso.\",\n  \"lead_id\": \"{{ $json.lead_id || 'registrado' }}\",\n  \"tipo_suporte\": \"{{ $json.tipo_suporte || 'geral' }}\",\n  \"proximo_passo\": \"Avalia\u00e7\u00e3o T\u00e9cnica ser\u00e1 agendada. O Tecn\u00f3logo respons\u00e1vel entrar\u00e1 em contato.\"\n}",
         "options": {}
       },
       "id": "resp-ok-001",
@@ -193,7 +193,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Log de erro para auditoria\nconst error = $input.first().json;\nconst timestamp = new Date().toISOString();\n\nconsole.log(`[ERRO DIEGO SUPORTE] ${timestamp}:`, JSON.stringify(error));\n\nreturn [{\n  json: {\n    alerta: 'ERRO no workflow Diego Suporte Técnico',\n    timestamp,\n    erro: error.message || JSON.stringify(error),\n    workflow: '003_roteador_diego_v3_tecnico_suporte',\n    acao: 'Verificar logs do n8n e corrigir'\n  }\n}];"
+        "jsCode": "// Log de erro para auditoria\nconst error = $input.first().json;\nconst timestamp = new Date().toISOString();\n\nconsole.log(`[ERRO DIEGO SUPORTE] ${timestamp}:`, JSON.stringify(error));\n\nreturn [{\n  json: {\n    alerta: 'ERRO no workflow Diego Suporte T\u00e9cnico',\n    timestamp,\n    erro: error.message || JSON.stringify(error),\n    workflow: '003_roteador_diego_v3_tecnico_suporte',\n    acao: 'Verificar logs do n8n e corrigir'\n  }\n}];"
       },
       "id": "error-handler-001",
       "name": "Error Handler",
@@ -250,14 +250,14 @@
       "main": [
         [
           {
-            "node": "Chamar Técnicos (004)",
+            "node": "Chamar T\u00e9cnicos (004)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Chamar Técnicos (004)": {
+    "Chamar T\u00e9cnicos (004)": {
       "main": [
         [
           {
@@ -297,7 +297,7 @@
     }
   ],
   "triggerCount": 1,
-  "active": false,
+  "active": true,
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "824b30e9dd5b4de2e0751d58c32084e6728f4773ae8ea4ca84318c5bc6ba2207"

@@ -7,17 +7,23 @@
       "name": "Execute Workflow Trigger",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
-      "position": [250, 300]
+      "position": [
+        250,
+        300
+      ]
     },
     {
       "parameters": {
-        "jsCode": "// Estrutura do Carrossel (Gancho, Problema, Risco, Solução, Produto, CTA)\nreturn items;"
+        "jsCode": "// Estrutura do Carrossel (Gancho, Problema, Risco, Solu\u00e7\u00e3o, Produto, CTA)\nreturn items;"
       },
       "id": "2",
       "name": "Gerar Carrossel",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [450, 300]
+      "position": [
+        450,
+        300
+      ]
     }
   ],
   "connections": {
@@ -33,9 +39,16 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "tags": [{"name": "Social Media"}, {"name": "Carrossel"}]
+  "tags": [
+    {
+      "name": "Social Media"
+    },
+    {
+      "name": "Carrossel"
+    }
+  ]
 }

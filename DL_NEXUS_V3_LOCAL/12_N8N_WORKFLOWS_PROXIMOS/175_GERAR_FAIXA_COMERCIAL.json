@@ -11,18 +11,24 @@
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [250, 300],
+      "position": [
+        250,
+        300
+      ],
       "webhookId": "gerarFaixaComercial175DlNexus20260527"
     },
     {
       "parameters": {
-        "jsCode": "const input = $input.item.json.body || $input.item.json;\n\n// Extração de variáveis de custo se disponiveis\nconst materialCost = input.custo_material || 0;\nconst laborCost = input.custo_mao_de_obra || 0;\nconst transportCost = input.custo_deslocamento || 0;\nconst gastronomyCostMultiplier = input.alta_urgencia_gastronomia ? 1.25 : 1.0; // Urgência (chapas, fritadeiras)\n\nconst tipo_cliente = input.tipo_cliente || 'condominio';\nconst prioridade = input.prioridade || 'normal';\n\n// Soma de custos internos (Custo Operacional Estimado)\nlet custo_operacional_estimado = (materialCost + laborCost + transportCost) * gastronomyCostMultiplier;\n\n// Se faltar dados críticos e não tiver custo preenchido, define Avaliação Técnica\nif (custo_operacional_estimado === 0) {\n    return {\n        status: \"Sob Avaliação Técnica\",\n        mensagem: \"Dados críticos ausentes. Requer Avaliação Técnica do Tecnólogo Responsável.\"\n    };\n}\n\n// Aplicação de margens (35% e 45%)\nlet preco_minimo_sem_prejuizo = custo_operacional_estimado * 1.35;\nlet preco_comercial_recomendado = custo_operacional_estimado * 1.45;\n\n// Garantia de Piso\nlet piso = 450; // Padrão\nif (prioridade === 'emergencia' || prioridade === 'alta') {\n    piso = 650;\n}\n\n// Aplicando Piso\nif (preco_comercial_recomendado < piso) {\n    preco_comercial_recomendado = piso;\n}\nif (preco_minimo_sem_prejuizo < piso * 0.85) {\n    preco_minimo_sem_prejuizo = piso * 0.85;\n}\n\n// Formas de Pagamento\nconst preco_comercial_recomendado_pix = preco_comercial_recomendado;\nconst preco_comercial_recomendado_cartao = preco_comercial_recomendado * 1.09;\n\n// Imposto - Sempre imposto_estimado_percentual\nconst imposto_estimado_percentual = 0.06; // Pendente de validação contábil\n\n// Retorno: Separando a visão do cliente da visão interna (para não expor custos)\nreturn {\n    proposta: {\n        preco_minimo_sem_prejuizo: parseFloat(preco_minimo_sem_prejuizo.toFixed(2)),\n        preco_comercial_recomendado_pix: parseFloat(preco_comercial_recomendado_pix.toFixed(2)),\n        preco_comercial_recomendado_cartao: parseFloat(preco_comercial_recomendado_cartao.toFixed(2)),\n        imposto_estimado_percentual: imposto_estimado_percentual,\n        observacao_imposto: \"Pendência de validação contábil\",\n        observacao_tecnica: \"Valores sujeitos a Avaliação Técnica do Tecnólogo Responsável da DL Soluções.\"\n    },\n    auditoria_interna: {\n        custo_operacional_estimado: parseFloat(custo_operacional_estimado.toFixed(2)),\n        urgencia_gastronomia_aplicada: input.alta_urgencia_gastronomia || false,\n        piso_acionado: preco_comercial_recomendado === piso\n    }\n};"
+        "jsCode": "const input = $input.item.json.body || $input.item.json;\n\n// Extra\u00e7\u00e3o de vari\u00e1veis de custo se disponiveis\nconst materialCost = input.custo_material || 0;\nconst laborCost = input.custo_mao_de_obra || 0;\nconst transportCost = input.custo_deslocamento || 0;\nconst gastronomyCostMultiplier = input.alta_urgencia_gastronomia ? 1.25 : 1.0; // Urg\u00eancia (chapas, fritadeiras)\n\nconst tipo_cliente = input.tipo_cliente || 'condominio';\nconst prioridade = input.prioridade || 'normal';\n\n// Soma de custos internos (Custo Operacional Estimado)\nlet custo_operacional_estimado = (materialCost + laborCost + transportCost) * gastronomyCostMultiplier;\n\n// Se faltar dados cr\u00edticos e n\u00e3o tiver custo preenchido, define Avalia\u00e7\u00e3o T\u00e9cnica\nif (custo_operacional_estimado === 0) {\n    return {\n        status: \"Sob Avalia\u00e7\u00e3o T\u00e9cnica\",\n        mensagem: \"Dados cr\u00edticos ausentes. Requer Avalia\u00e7\u00e3o T\u00e9cnica do Tecn\u00f3logo Respons\u00e1vel.\"\n    };\n}\n\n// Aplica\u00e7\u00e3o de margens (35% e 45%)\nlet preco_minimo_sem_prejuizo = custo_operacional_estimado * 1.35;\nlet preco_comercial_recomendado = custo_operacional_estimado * 1.45;\n\n// Garantia de Piso\nlet piso = 450; // Padr\u00e3o\nif (prioridade === 'emergencia' || prioridade === 'alta') {\n    piso = 650;\n}\n\n// Aplicando Piso\nif (preco_comercial_recomendado < piso) {\n    preco_comercial_recomendado = piso;\n}\nif (preco_minimo_sem_prejuizo < piso * 0.85) {\n    preco_minimo_sem_prejuizo = piso * 0.85;\n}\n\n// Formas de Pagamento\nconst preco_comercial_recomendado_pix = preco_comercial_recomendado;\nconst preco_comercial_recomendado_cartao = preco_comercial_recomendado * 1.09;\n\n// Imposto - Sempre imposto_estimado_percentual\nconst imposto_estimado_percentual = 0.06; // Pendente de valida\u00e7\u00e3o cont\u00e1bil\n\n// Retorno: Separando a vis\u00e3o do cliente da vis\u00e3o interna (para n\u00e3o expor custos)\nreturn {\n    proposta: {\n        preco_minimo_sem_prejuizo: parseFloat(preco_minimo_sem_prejuizo.toFixed(2)),\n        preco_comercial_recomendado_pix: parseFloat(preco_comercial_recomendado_pix.toFixed(2)),\n        preco_comercial_recomendado_cartao: parseFloat(preco_comercial_recomendado_cartao.toFixed(2)),\n        imposto_estimado_percentual: imposto_estimado_percentual,\n        observacao_imposto: \"Pend\u00eancia de valida\u00e7\u00e3o cont\u00e1bil\",\n        observacao_tecnica: \"Valores sujeitos a Avalia\u00e7\u00e3o T\u00e9cnica do Tecn\u00f3logo Respons\u00e1vel da DL Solu\u00e7\u00f5es.\"\n    },\n    auditoria_interna: {\n        custo_operacional_estimado: parseFloat(custo_operacional_estimado.toFixed(2)),\n        urgencia_gastronomia_aplicada: input.alta_urgencia_gastronomia || false,\n        piso_acionado: preco_comercial_recomendado === piso\n    }\n};"
       },
       "id": "cb1c34a7-96af-4be5-927b-2d7c570994cc",
       "name": "Calcular Precificacao",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [450, 300]
+      "position": [
+        450,
+        300
+      ]
     }
   ],
   "pinData": {},
@@ -39,7 +45,7 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },

@@ -4,7 +4,7 @@
   "id": "zYx9XBg8V2IpESle",
   "name": "140_ZELADOR_MIDIAS_GOOGLE_DRIVE",
   "description": null,
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -42,7 +42,7 @@
         300
       ],
       "notesInFlow": true,
-      "notes": "Lê a configuração local"
+      "notes": "L\u00ea a configura\u00e7\u00e3o local"
     },
     {
       "parameters": {
@@ -93,10 +93,10 @@
     },
     {
       "parameters": {
-        "jsCode": "\nconst arquivos = [];\n\n// AQUI O USUARIO DEVE PREENCHER OS IDS DAS PASTAS RAIZ DE DESTINO\nconst ID_PASTA_FOTOS = \"COLOQUE_AQUI_O_ID_DA_PASTA_DE_FOTOS\";\nconst ID_PASTA_VIDEOS = \"COLOQUE_AQUI_O_ID_DA_PASTA_DE_VIDEOS\";\nconst ID_PASTA_DOCS = \"COLOQUE_AQUI_O_ID_DA_PASTA_DE_DOCS\";\nconst ID_PASTA_SENSIVEIS = \"COLOQUE_AQUI_O_ID_DA_PASTA_DE_SENSIVEIS\";\n\nfor (const item of $input.all()) {\n  const f = item.json;\n  \n  const original_name = f.name || \"\";\n  const ext = original_name.includes('.') ? original_name.split('.').pop().toLowerCase() : \"\";\n  const mime = f.mimeType || \"\";\n  \n  let tipo_midia = \"documento\";\n  let pasta_destino = ID_PASTA_DOCS;\n  \n  if (mime.includes(\"image\")) {\n      tipo_midia = \"imagem\";\n      pasta_destino = ID_PASTA_FOTOS;\n  }\n  else if (mime.includes(\"video\")) {\n      tipo_midia = \"vídeo\";\n      pasta_destino = ID_PASTA_VIDEOS;\n  }\n  else if (mime.includes(\"audio\") || mime.includes(\"pdf\") || mime.includes(\"document\") || mime.includes(\"text\")) {\n      tipo_midia = \"documento\";\n      pasta_destino = ID_PASTA_DOCS;\n  }\n  \n  let risco = \"\";\n  let usa_nao = false;\n  const nomes_risco = [\"placa\", \"cnh\", \"rg\", \"cpf\", \"boleto\", \"contrato\", \"rosto\", \"cliente\", \"email\"];\n  if (nomes_risco.some(r => original_name.toLowerCase().includes(r))) {\n    risco = \"POSSIVEL_DADO_SENSIVEL\";\n    pasta_destino = ID_PASTA_SENSIVEIS;\n  }\n  \n  const tema = tipo_midia === \"imagem\" ? \"foto_campo\" : (tipo_midia === \"vídeo\" ? \"video_campo\" : \"duvidoso\");\n  const produto = \"DL_NEXUS\"; \n  \n  const out = {\n    \"file_id\": f.id,\n    \"link_drive\": f.webViewLink || \"\",\n    \"file_name_original\": original_name,\n    \"file_name_sugerido\": `2026_${produto}_${tema}_${original_name}`,\n    \"pasta_origem_id\": f.parents ? f.parents[0] : \"\",\n    \"pasta_destino_id\": pasta_destino,\n    \"tipo_midia\": tipo_midia\n  };\n  \n  arquivos.push({ json: out });\n}\n\nreturn arquivos;\n"
+        "jsCode": "\nconst arquivos = [];\n\n// AQUI O USUARIO DEVE PREENCHER OS IDS DAS PASTAS RAIZ DE DESTINO\nconst ID_PASTA_FOTOS = \"COLOQUE_AQUI_O_ID_DA_PASTA_DE_FOTOS\";\nconst ID_PASTA_VIDEOS = \"COLOQUE_AQUI_O_ID_DA_PASTA_DE_VIDEOS\";\nconst ID_PASTA_DOCS = \"COLOQUE_AQUI_O_ID_DA_PASTA_DE_DOCS\";\nconst ID_PASTA_SENSIVEIS = \"COLOQUE_AQUI_O_ID_DA_PASTA_DE_SENSIVEIS\";\n\nfor (const item of $input.all()) {\n  const f = item.json;\n  \n  const original_name = f.name || \"\";\n  const ext = original_name.includes('.') ? original_name.split('.').pop().toLowerCase() : \"\";\n  const mime = f.mimeType || \"\";\n  \n  let tipo_midia = \"documento\";\n  let pasta_destino = ID_PASTA_DOCS;\n  \n  if (mime.includes(\"image\")) {\n      tipo_midia = \"imagem\";\n      pasta_destino = ID_PASTA_FOTOS;\n  }\n  else if (mime.includes(\"video\")) {\n      tipo_midia = \"v\u00eddeo\";\n      pasta_destino = ID_PASTA_VIDEOS;\n  }\n  else if (mime.includes(\"audio\") || mime.includes(\"pdf\") || mime.includes(\"document\") || mime.includes(\"text\")) {\n      tipo_midia = \"documento\";\n      pasta_destino = ID_PASTA_DOCS;\n  }\n  \n  let risco = \"\";\n  let usa_nao = false;\n  const nomes_risco = [\"placa\", \"cnh\", \"rg\", \"cpf\", \"boleto\", \"contrato\", \"rosto\", \"cliente\", \"email\"];\n  if (nomes_risco.some(r => original_name.toLowerCase().includes(r))) {\n    risco = \"POSSIVEL_DADO_SENSIVEL\";\n    pasta_destino = ID_PASTA_SENSIVEIS;\n  }\n  \n  const tema = tipo_midia === \"imagem\" ? \"foto_campo\" : (tipo_midia === \"v\u00eddeo\" ? \"video_campo\" : \"duvidoso\");\n  const produto = \"DL_NEXUS\"; \n  \n  const out = {\n    \"file_id\": f.id,\n    \"link_drive\": f.webViewLink || \"\",\n    \"file_name_original\": original_name,\n    \"file_name_sugerido\": `2026_${produto}_${tema}_${original_name}`,\n    \"pasta_origem_id\": f.parents ? f.parents[0] : \"\",\n    \"pasta_destino_id\": pasta_destino,\n    \"tipo_midia\": tipo_midia\n  };\n  \n  arquivos.push({ json: out });\n}\n\nreturn arquivos;\n"
       },
       "id": "classificar",
-      "name": "Classificar Mídias",
+      "name": "Classificar M\u00eddias",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
@@ -194,14 +194,14 @@
       "main": [
         [
           {
-            "node": "Classificar Mídias (DRY RUN)",
+            "node": "Classificar M\u00eddias (DRY RUN)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Classificar Mídias (DRY RUN)": {
+    "Classificar M\u00eddias (DRY RUN)": {
       "main": [
         [
           {
@@ -212,7 +212,7 @@
         ]
       ]
     },
-    "Classificar Mídias": {
+    "Classificar M\u00eddias": {
       "main": [
         [
           {

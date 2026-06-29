@@ -44,7 +44,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"meta/llama3-70b-instruct\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Atue como Aninha, Assistente Executiva da DL Soluções Condominiais. Leia o e-mail recebido e escreva uma sugestão de resposta profissional e vendedora. Foco em soluções B2B (energia solar, CFTV, elétrica, prevenção de incêndios). Nunca fale de hidráulica.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Assunto: {{$json.subject}}\\n\\nMensagem:\\n{{$json.textPlain}}\"\n    }\n  ],\n  \"max_tokens\": 1024\n}",
+        "jsonBody": "={\n  \"model\": \"meta/llama3-70b-instruct\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Atue como Aninha, Assistente Executiva da DL Solu\u00e7\u00f5es Condominiais. Leia o e-mail recebido e escreva uma sugest\u00e3o de resposta profissional e vendedora. Foco em solu\u00e7\u00f5es B2B (energia solar, CFTV, el\u00e9trica, preven\u00e7\u00e3o de inc\u00eandios). Nunca fale de hidr\u00e1ulica.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Assunto: {{$json.subject}}\\n\\nMensagem:\\n{{$json.textPlain}}\"\n    }\n  ],\n  \"max_tokens\": 1024\n}",
         "options": {}
       },
       "id": "nvidia_email",
@@ -107,5 +107,6 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "pinData": {}
+  "pinData": {},
+  "active": true
 }

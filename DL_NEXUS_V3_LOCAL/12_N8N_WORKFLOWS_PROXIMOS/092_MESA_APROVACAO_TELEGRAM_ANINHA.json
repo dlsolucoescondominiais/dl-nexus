@@ -3,14 +3,20 @@
   "nodes": [
     {
       "parameters": {
-        "updates": ["message", "callback_query"],
+        "updates": [
+          "message",
+          "callback_query"
+        ],
         "additionalFields": {}
       },
       "id": "1",
       "name": "Telegram Trigger",
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1,
-      "position": [256, 304],
+      "position": [
+        256,
+        304
+      ],
       "webhookId": "750a41dd-5944-40fd-a864-6971b5014d1c",
       "credentials": {
         "telegramApi": {
@@ -21,13 +27,16 @@
     },
     {
       "parameters": {
-        "jsCode": "/* ═══════════════════════════════════════════════════════════\n   MESA DE APROVAÇÃO — ANINHA / DIOGO\n   Recebe comandos do Telegram e processa aprovações.\n   Comandos aceitos:\n     APROVAR <ID>   → Aprova e libera workflow\n     REVISAR <ID>   → Marca para revisão\n     REJEITAR <ID>  → Bloqueia execução\n     STATUS         → Lista pendências\n   ═══════════════════════════════════════════════════════════ */\n\nconst msg = $input.item.json;\nconst text = (msg.message?.text || msg.callback_query?.data || '').trim().toUpperCase();\nconst chatId = msg.message?.chat?.id || msg.callback_query?.message?.chat?.id || '';\nconst userName = msg.message?.from?.first_name || msg.callback_query?.from?.first_name || 'Operador';\n\nlet resposta = '';\nlet acao = 'desconhecido';\nlet targetId = '';\n\nif (text.startsWith('APROVAR')) {\n  targetId = text.replace('APROVAR', '').trim();\n  acao = 'aprovar';\n  resposta = `✅ *APROVADO* por ${userName}\\nWorkflow/Item: ${targetId || 'geral'}\\nData: ${new Date().toLocaleString('pt-BR')}`;\n} else if (text.startsWith('REVISAR')) {\n  targetId = text.replace('REVISAR', '').trim();\n  acao = 'revisar';\n  resposta = `🔄 *MARCADO PARA REVISÃO* por ${userName}\\nWorkflow/Item: ${targetId || 'geral'}\\nData: ${new Date().toLocaleString('pt-BR')}`;\n} else if (text.startsWith('REJEITAR')) {\n  targetId = text.replace('REJEITAR', '').trim();\n  acao = 'rejeitar';\n  resposta = `❌ *REJEITADO* por ${userName}\\nWorkflow/Item: ${targetId || 'geral'}\\nData: ${new Date().toLocaleString('pt-BR')}`;\n} else if (text === 'STATUS') {\n  acao = 'status';\n  resposta = `📊 *STATUS DA MESA DE APROVAÇÃO*\\nOperador: ${userName}\\nConsulta: ${new Date().toLocaleString('pt-BR')}\\n\\n_Nenhuma pendência no momento._`;\n} else {\n  resposta = `⚠️ Comando não reconhecido: \"${text}\"\\n\\nComandos válidos:\\n• APROVAR <ID>\\n• REVISAR <ID>\\n• REJEITAR <ID>\\n• STATUS`;\n}\n\nreturn [{\n  json: {\n    acao,\n    target: targetId,\n    operador: userName,\n    chat_id: chatId,\n    resposta,\n    timestamp: new Date().toISOString()\n  }\n}];"
+        "jsCode": "/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n   MESA DE APROVA\u00c7\u00c3O \u2014 ANINHA / DIOGO\n   Recebe comandos do Telegram e processa aprova\u00e7\u00f5es.\n   Comandos aceitos:\n     APROVAR <ID>   \u2192 Aprova e libera workflow\n     REVISAR <ID>   \u2192 Marca para revis\u00e3o\n     REJEITAR <ID>  \u2192 Bloqueia execu\u00e7\u00e3o\n     STATUS         \u2192 Lista pend\u00eancias\n   \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */\n\nconst msg = $input.item.json;\nconst text = (msg.message?.text || msg.callback_query?.data || '').trim().toUpperCase();\nconst chatId = msg.message?.chat?.id || msg.callback_query?.message?.chat?.id || '';\nconst userName = msg.message?.from?.first_name || msg.callback_query?.from?.first_name || 'Operador';\n\nlet resposta = '';\nlet acao = 'desconhecido';\nlet targetId = '';\n\nif (text.startsWith('APROVAR')) {\n  targetId = text.replace('APROVAR', '').trim();\n  acao = 'aprovar';\n  resposta = `\u2705 *APROVADO* por ${userName}\\nWorkflow/Item: ${targetId || 'geral'}\\nData: ${new Date().toLocaleString('pt-BR')}`;\n} else if (text.startsWith('REVISAR')) {\n  targetId = text.replace('REVISAR', '').trim();\n  acao = 'revisar';\n  resposta = `\ud83d\udd04 *MARCADO PARA REVIS\u00c3O* por ${userName}\\nWorkflow/Item: ${targetId || 'geral'}\\nData: ${new Date().toLocaleString('pt-BR')}`;\n} else if (text.startsWith('REJEITAR')) {\n  targetId = text.replace('REJEITAR', '').trim();\n  acao = 'rejeitar';\n  resposta = `\u274c *REJEITADO* por ${userName}\\nWorkflow/Item: ${targetId || 'geral'}\\nData: ${new Date().toLocaleString('pt-BR')}`;\n} else if (text === 'STATUS') {\n  acao = 'status';\n  resposta = `\ud83d\udcca *STATUS DA MESA DE APROVA\u00c7\u00c3O*\\nOperador: ${userName}\\nConsulta: ${new Date().toLocaleString('pt-BR')}\\n\\n_Nenhuma pend\u00eancia no momento._`;\n} else {\n  resposta = `\u26a0\ufe0f Comando n\u00e3o reconhecido: \"${text}\"\\n\\nComandos v\u00e1lidos:\\n\u2022 APROVAR <ID>\\n\u2022 REVISAR <ID>\\n\u2022 REJEITAR <ID>\\n\u2022 STATUS`;\n}\n\nreturn [{\n  json: {\n    acao,\n    target: targetId,\n    operador: userName,\n    chat_id: chatId,\n    resposta,\n    timestamp: new Date().toISOString()\n  }\n}];"
       },
       "id": "2",
       "name": "Processar Comando",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [464, 304]
+      "position": [
+        464,
+        304
+      ]
     },
     {
       "parameters": {
@@ -41,7 +50,10 @@
       "name": "Telegram Resposta",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.1,
-      "position": [672, 304],
+      "position": [
+        672,
+        304
+      ],
       "credentials": {
         "telegramApi": {
           "id": "telegram_credential_id",
@@ -74,6 +86,6 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {}
 }

@@ -7,17 +7,23 @@
       "name": "Execute Workflow Trigger",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
-      "position": [250, 300]
+      "position": [
+        250,
+        300
+      ]
     },
     {
       "parameters": {
-        "jsCode": "// Conversão da mídia em pauta comercial\nreturn items;"
+        "jsCode": "// Convers\u00e3o da m\u00eddia em pauta comercial\nreturn items;"
       },
       "id": "2",
       "name": "Classificar Tema",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [450, 300]
+      "position": [
+        450,
+        300
+      ]
     }
   ],
   "connections": {
@@ -33,9 +39,13 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "tags": [{"name": "Classificador"}]
+  "tags": [
+    {
+      "name": "Classificador"
+    }
+  ]
 }

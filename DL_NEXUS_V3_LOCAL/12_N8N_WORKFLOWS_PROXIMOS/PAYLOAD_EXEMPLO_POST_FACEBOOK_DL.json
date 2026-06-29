@@ -1,13 +1,13 @@
 {
   "canal": "facebook",
-  "linha_dl": "DL Guardião",
-  "publico": "síndicos de condomínios pequenos e médios no Rio de Janeiro",
+  "linha_dl": "DL Guardi\u00e3o",
+  "publico": "s\u00edndicos de condom\u00ednios pequenos e m\u00e9dios no Rio de Janeiro",
   "formato": "feed",
-  "tema": "Revisão de pontos cegos em sistemas CFTV condominiais",
-  "objetivo": "Gerar demanda para Avaliação Técnica de CFTV",
-  "legenda_facebook": "Você sabia que até sistemas de câmeras bem instalados podem desenvolver pontos cegos com o tempo?\n\nMudanças na estrutura do condomínio, crescimento da vegetação, envelhecimento dos equipamentos e até alterações no layout das áreas comuns podem comprometer a cobertura do seu sistema de monitoramento.\n\nÉ natural que, ao longo dos anos, a infraestrutura de CFTV precise ser reavaliada. Câmeras que antes cobriam acessos estratégicos podem ter o campo de visão parcialmente obstruído, ou novos pontos de circulação podem ter surgido sem cobertura adequada.\n\nA DL Guardião, linha de segurança eletrônica da DL Soluções Condominiais, realiza avaliações técnicas completas do sistema de monitoramento do seu condomínio. Nossos engenheiros analisam a cobertura existente, identificam oportunidades de melhoria e apresentam um relatório técnico detalhado — sem compromisso.\n\n📋 Solicite uma Avaliação Técnica da DL para identificar melhorias no sistema de monitoramento do seu condomínio.\n\n📞 Entre em contato pelo link na bio ou envie uma mensagem diretamente para nossa página.\n\n#DLGuardiao #CFTVCondominial #SegurancaCondominial #SindicosRJ #AvaliacaoTecnica #DLSolucoes",
+  "tema": "Revis\u00e3o de pontos cegos em sistemas CFTV condominiais",
+  "objetivo": "Gerar demanda para Avalia\u00e7\u00e3o T\u00e9cnica de CFTV",
+  "legenda_facebook": "Voc\u00ea sabia que at\u00e9 sistemas de c\u00e2meras bem instalados podem desenvolver pontos cegos com o tempo?\n\nMudan\u00e7as na estrutura do condom\u00ednio, crescimento da vegeta\u00e7\u00e3o, envelhecimento dos equipamentos e at\u00e9 altera\u00e7\u00f5es no layout das \u00e1reas comuns podem comprometer a cobertura do seu sistema de monitoramento.\n\n\u00c9 natural que, ao longo dos anos, a infraestrutura de CFTV precise ser reavaliada. C\u00e2meras que antes cobriam acessos estrat\u00e9gicos podem ter o campo de vis\u00e3o parcialmente obstru\u00eddo, ou novos pontos de circula\u00e7\u00e3o podem ter surgido sem cobertura adequada.\n\nA DL Guardi\u00e3o, linha de seguran\u00e7a eletr\u00f4nica da DL Solu\u00e7\u00f5es Condominiais, realiza avalia\u00e7\u00f5es t\u00e9cnicas completas do sistema de monitoramento do seu condom\u00ednio. Nossos engenheiros analisam a cobertura existente, identificam oportunidades de melhoria e apresentam um relat\u00f3rio t\u00e9cnico detalhado \u2014 sem compromisso.\n\n\ud83d\udccb Solicite uma Avalia\u00e7\u00e3o T\u00e9cnica da DL para identificar melhorias no sistema de monitoramento do seu condom\u00ednio.\n\n\ud83d\udcde Entre em contato pelo link na bio ou envie uma mensagem diretamente para nossa p\u00e1gina.\n\n#DLGuardiao #CFTVCondominial #SegurancaCondominial #SindicosRJ #AvaliacaoTecnica #DLSolucoes",
   "legenda_instagram": "",
-  "cta": "Solicite uma Avaliação Técnica da DL para identificar melhorias no sistema de monitoramento do seu condomínio.",
+  "cta": "Solicite uma Avalia\u00e7\u00e3o T\u00e9cnica da DL para identificar melhorias no sistema de monitoramento do seu condom\u00ednio.",
   "hashtags": [
     "#DLGuardiao",
     "#CFTVCondominial",
@@ -17,7 +17,7 @@
     "#DLSolucoes"
   ],
   "image_prompt_en": "Photorealistic 1:1 image of a modern condominium security control room with multiple CCTV monitors showing different camera angles, clean organized equipment rack, soft ambient lighting, professional atmosphere, no visible faces, no readable text on screens, no logos, Sony A7R IV, 35mm lens, shallow depth of field, commercial photography style",
-  "alt_text": "Sala de controle de segurança condominial com múltiplos monitores de CFTV exibindo diferentes ângulos de câmera e rack de equipamentos organizado.",
+  "alt_text": "Sala de controle de seguran\u00e7a condominial com m\u00faltiplos monitores de CFTV exibindo diferentes \u00e2ngulos de c\u00e2mera e rack de equipamentos organizado.",
   "risco_meta": "baixo",
   "precisa_aprovacao_humana": false,
   "motivo_aprovacao_humana": "",
@@ -37,5 +37,6 @@
   "erro_meta": "",
   "id_execucao_n8n": "",
   "fonte_noticia": "",
-  "carrossel_slides": []
+  "carrossel_slides": [],
+  "active": true
 }

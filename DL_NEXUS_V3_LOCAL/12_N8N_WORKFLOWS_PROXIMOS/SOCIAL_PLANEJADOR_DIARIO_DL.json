@@ -62,7 +62,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const items = $input.all();\nif (items.length === 0) {\n  return [{ json: { tema: \"Manutenção Preventiva de Portaria\", tipo: \"educativo\", produto_dl: \"DL Fortress\", comentario_tecnico: \"Comentário da DL: Manter a infraestrutura de controle de acesso ativa sob contrato recorrente.\" } }];\n}\nconst randomIndex = Math.floor(Math.random() * items.length);\nconst item = items[randomIndex].json;\n\n// Mapeia produto baseado no titulo\nconst text = (item.title + \" \" + (item.contentSnippet || \"\")).toLowerCase();\nlet produto = \"DL Partner\";\nif (text.includes(\"solar\") || text.includes(\"energia\")) produto = \"DL EcoVolt\";\nelse if (text.includes(\"câmera\") || text.includes(\"segurança\") || text.includes(\"roubo\")) produto = \"DL Guardião\";\nelse if (text.includes(\"fogo\") || text.includes(\"incêndio\")) produto = \"DL Alerta\";\nelse if (text.includes(\"bomba\") || text.includes(\"caixa d\")) produto = \"DL Acqua\";\nelse if (text.includes(\"portão\") || text.includes(\"acesso\")) produto = \"DL Gatekeeper\";\n\nreturn [{\n  json: {\n    tema: item.title,\n    tipo: \"noticias\",\n    fonte_nome: \"RSS Feed\",\n    fonte_url: item.link,\n    resumo: item.contentSnippet || item.content,\n    produto_dl: produto,\n    comentario_tecnico: \"Comentário da DL: A tecnologia aplicada ao condomínio reduz perdas de segurança. Recomenda-se Avaliação Técnica de \" + produto\n  }\n}];"
+        "jsCode": "const items = $input.all();\nif (items.length === 0) {\n  return [{ json: { tema: \"Manuten\u00e7\u00e3o Preventiva de Portaria\", tipo: \"educativo\", produto_dl: \"DL Fortress\", comentario_tecnico: \"Coment\u00e1rio da DL: Manter a infraestrutura de controle de acesso ativa sob contrato recorrente.\" } }];\n}\nconst randomIndex = Math.floor(Math.random() * items.length);\nconst item = items[randomIndex].json;\n\n// Mapeia produto baseado no titulo\nconst text = (item.title + \" \" + (item.contentSnippet || \"\")).toLowerCase();\nlet produto = \"DL Partner\";\nif (text.includes(\"solar\") || text.includes(\"energia\")) produto = \"DL EcoVolt\";\nelse if (text.includes(\"c\u00e2mera\") || text.includes(\"seguran\u00e7a\") || text.includes(\"roubo\")) produto = \"DL Guardi\u00e3o\";\nelse if (text.includes(\"fogo\") || text.includes(\"inc\u00eandio\")) produto = \"DL Alerta\";\nelse if (text.includes(\"bomba\") || text.includes(\"caixa d\")) produto = \"DL Acqua\";\nelse if (text.includes(\"port\u00e3o\") || text.includes(\"acesso\")) produto = \"DL Gatekeeper\";\n\nreturn [{\n  json: {\n    tema: item.title,\n    tipo: \"noticias\",\n    fonte_nome: \"RSS Feed\",\n    fonte_url: item.link,\n    resumo: item.contentSnippet || item.content,\n    produto_dl: produto,\n    comentario_tecnico: \"Coment\u00e1rio da DL: A tecnologia aplicada ao condom\u00ednio reduz perdas de seguran\u00e7a. Recomenda-se Avalia\u00e7\u00e3o T\u00e9cnica de \" + produto\n  }\n}];"
       },
       "id": "code_parse_news",
       "name": "Processar Noticias",
@@ -75,7 +75,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const temas = [\n  { tema: \"Importância da Manutenção Elétrica Predial no Inverno\", produto: \"DL Volt\", comentario: \"Avaliação periódica em quadros elétricos previne sobrecargas no inverno.\" },\n  { tema: \"Como a Portaria Autônoma reduz custos operacionais\", produto: \"DL Fortress\", comentario: \"A tecnologia Fortress reduz custos com portarias físicas mantendo rastreabilidade.\" },\n  { tema: \"Vantagens do Backup de Energia Híbrido em Condomínios\", produto: \"DL EcoVolt\", comentario: \"Economia com economia de ponta e continuidade para portões e CFTV.\" }\n];\nconst selected = temas[Math.floor(Math.random() * temas.length)];\nreturn [{\n  json: {\n    tema: selected.tema,\n    tipo: \"educativo\",\n    fonte_nome: \"DL Educativo\",\n    produto_dl: selected.produto,\n    comentario_tecnico: selected.comentario\n  }\n}];"
+        "jsCode": "const temas = [\n  { tema: \"Import\u00e2ncia da Manuten\u00e7\u00e3o El\u00e9trica Predial no Inverno\", produto: \"DL Volt\", comentario: \"Avalia\u00e7\u00e3o peri\u00f3dica em quadros el\u00e9tricos previne sobrecargas no inverno.\" },\n  { tema: \"Como a Portaria Aut\u00f4noma reduz custos operacionais\", produto: \"DL Fortress\", comentario: \"A tecnologia Fortress reduz custos com portarias f\u00edsicas mantendo rastreabilidade.\" },\n  { tema: \"Vantagens do Backup de Energia H\u00edbrido em Condom\u00ednios\", produto: \"DL EcoVolt\", comentario: \"Economia com economia de ponta e continuidade para port\u00f5es e CFTV.\" }\n];\nconst selected = temas[Math.floor(Math.random() * temas.length)];\nreturn [{\n  json: {\n    tema: selected.tema,\n    tipo: \"educativo\",\n    fonte_nome: \"DL Educativo\",\n    produto_dl: selected.produto,\n    comentario_tecnico: selected.comentario\n  }\n}];"
       },
       "id": "code_educativo",
       "name": "Gerar Tema Educativo",
@@ -185,7 +185,7 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   }

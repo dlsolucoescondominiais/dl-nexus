@@ -7,7 +7,10 @@
       "name": "Manual Trigger",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [0, 0]
+      "position": [
+        0,
+        0
+      ]
     },
     {
       "parameters": {
@@ -30,7 +33,10 @@
       "name": "GET Facebook Pages",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [200, 0],
+      "position": [
+        200,
+        0
+      ],
       "credentials": {
         "facebookGraphApi": {
           "id": "Aplicativo do Facebook",
@@ -46,7 +52,10 @@
       "name": "Extrair Page IDs",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [400, 0]
+      "position": [
+        400,
+        0
+      ]
     },
     {
       "parameters": {
@@ -60,7 +69,10 @@
       "name": "GET Instagram Business Account",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [600, -100],
+      "position": [
+        600,
+        -100
+      ],
       "credentials": {
         "facebookGraphApi": {
           "id": "Aplicativo do Facebook",
@@ -80,7 +92,10 @@
       "name": "GET Instagram Accounts List",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [600, 100],
+      "position": [
+        600,
+        100
+      ],
       "credentials": {
         "facebookGraphApi": {
           "id": "Aplicativo do Facebook",
@@ -90,19 +105,22 @@
     },
     {
       "parameters": {
-        "jsCode": "const extraidos = $('Extrair Page IDs').item.json;\nconst igData = $('GET Instagram Business Account').item.json || {};\nconst igAccounts = $('GET Instagram Accounts List').item.json || {};\n\nconst igIdViaPage = igData.instagram_business_account\n  ? igData.instagram_business_account.id\n  : null;\nconst igIdViaList = igAccounts.data && igAccounts.data[0]\n  ? igAccounts.data[0].id\n  : null;\nconst igId = igIdViaPage || igIdViaList || 'NAO_ENCONTRADO';\n\nconst igUser = igAccounts.data && igAccounts.data[0]\n  ? igAccounts.data[0].username\n  : 'N/A';\n\nconst relatorio = [\n  '=== RELATORIO DE IDs SOCIAIS — DL NEXUS V3 ===',\n  '',\n  '📘 FACEBOOK',\n  'PAGE_ID_AQUI → substitua por: ' + extraidos.page_id_principal,\n  'Nome da Pagina: ' + extraidos.page_name_principal,\n  'Total de paginas encontradas: ' + extraidos.total_paginas,\n  '',\n  '📸 INSTAGRAM',\n  'META_IG_BUSINESS_ID_DL_AQUI → substitua por: ' + igId,\n  'Username Instagram: @' + igUser,\n  '',\n  '💬 TELEGRAM',\n  'CHAT_ID_AQUI → para descobrir:',\n  '  1. Envie qualquer mensagem para o seu bot no Telegram.',\n  '  2. Acesse: https://api.telegram.org/bot{SEU_TOKEN}/getUpdates',\n  '  3. Copie o valor de result[0].message.chat.id',\n  '',\n  '=== PROXIMO PASSO ===',\n  'Substitua os placeholders acima nos nos do workflow',\n  '020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO.',\n  'Apos substituir, ative o workflow SOMENTE com certeza.',\n  '',\n  'Gerado por: 021_DESCOBRIR_IDS_SOCIAIS_DL_NEXUS'\n].join('\\n');\n\nreturn {\n  json: {\n    page_id: extraidos.page_id_principal,\n    page_name: extraidos.page_name_principal,\n    instagram_business_account_id: igId,\n    instagram_username: igUser,\n    chat_id_instrucao: 'Envie msg ao bot, acesse api.telegram.org/bot{TOKEN}/getUpdates, copie chat.id',\n    relatorio_completo: relatorio\n  }\n};"
+        "jsCode": "const extraidos = $('Extrair Page IDs').item.json;\nconst igData = $('GET Instagram Business Account').item.json || {};\nconst igAccounts = $('GET Instagram Accounts List').item.json || {};\n\nconst igIdViaPage = igData.instagram_business_account\n  ? igData.instagram_business_account.id\n  : null;\nconst igIdViaList = igAccounts.data && igAccounts.data[0]\n  ? igAccounts.data[0].id\n  : null;\nconst igId = igIdViaPage || igIdViaList || 'NAO_ENCONTRADO';\n\nconst igUser = igAccounts.data && igAccounts.data[0]\n  ? igAccounts.data[0].username\n  : 'N/A';\n\nconst relatorio = [\n  '=== RELATORIO DE IDs SOCIAIS \u2014 DL NEXUS V3 ===',\n  '',\n  '\ud83d\udcd8 FACEBOOK',\n  'PAGE_ID_AQUI \u2192 substitua por: ' + extraidos.page_id_principal,\n  'Nome da Pagina: ' + extraidos.page_name_principal,\n  'Total de paginas encontradas: ' + extraidos.total_paginas,\n  '',\n  '\ud83d\udcf8 INSTAGRAM',\n  'META_IG_BUSINESS_ID_DL_AQUI \u2192 substitua por: ' + igId,\n  'Username Instagram: @' + igUser,\n  '',\n  '\ud83d\udcac TELEGRAM',\n  'CHAT_ID_AQUI \u2192 para descobrir:',\n  '  1. Envie qualquer mensagem para o seu bot no Telegram.',\n  '  2. Acesse: https://api.telegram.org/bot{SEU_TOKEN}/getUpdates',\n  '  3. Copie o valor de result[0].message.chat.id',\n  '',\n  '=== PROXIMO PASSO ===',\n  'Substitua os placeholders acima nos nos do workflow',\n  '020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO.',\n  'Apos substituir, ative o workflow SOMENTE com certeza.',\n  '',\n  'Gerado por: 021_DESCOBRIR_IDS_SOCIAIS_DL_NEXUS'\n].join('\\n');\n\nreturn {\n  json: {\n    page_id: extraidos.page_id_principal,\n    page_name: extraidos.page_name_principal,\n    instagram_business_account_id: igId,\n    instagram_username: igUser,\n    chat_id_instrucao: 'Envie msg ao bot, acesse api.telegram.org/bot{TOKEN}/getUpdates, copie chat.id',\n    relatorio_completo: relatorio\n  }\n};"
       },
       "id": "montar_relatorio_ids",
       "name": "Montar Relatorio de IDs",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [800, 0]
+      "position": [
+        800,
+        0
+      ]
     },
     {
       "parameters": {
         "fromEmail": "suporte@dlsolucoescondominiais.com.br",
         "toEmail": "suporte@dlsolucoescondominiais.com.br",
-        "subject": "[DL Nexus] IDs Sociais Descobertos — 021_DESCOBRIR_IDS_SOCIAIS",
+        "subject": "[DL Nexus] IDs Sociais Descobertos \u2014 021_DESCOBRIR_IDS_SOCIAIS",
         "text": "={{ $json.relatorio_completo }}",
         "options": {}
       },
@@ -110,7 +128,10 @@
       "name": "Email com IDs Descobertos",
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2,
-      "position": [1000, -100],
+      "position": [
+        1000,
+        -100
+      ],
       "credentials": {
         "smtp": {
           "id": "SMTP - Suporte DL",
@@ -121,14 +142,17 @@
     {
       "parameters": {
         "chatId": "CHAT_ID_AQUI",
-        "text": "={{ '✅ IDs descobertos pelo 021_DESCOBRIR_IDS_SOCIAIS:\\n\\n📘 PAGE_ID: ' + $('Montar Relatorio de IDs').item.json.page_id + '\\n📸 INSTAGRAM_BUSINESS_ID: ' + $('Montar Relatorio de IDs').item.json.instagram_business_account_id + '\\n\\n📧 Relatorio completo enviado para suporte@dlsolucoescondominiais.com.br\\n\\n💬 Para CHAT_ID: envie msg ao bot e acesse /getUpdates' }}",
+        "text": "={{ '\u2705 IDs descobertos pelo 021_DESCOBRIR_IDS_SOCIAIS:\\n\\n\ud83d\udcd8 PAGE_ID: ' + $('Montar Relatorio de IDs').item.json.page_id + '\\n\ud83d\udcf8 INSTAGRAM_BUSINESS_ID: ' + $('Montar Relatorio de IDs').item.json.instagram_business_account_id + '\\n\\n\ud83d\udce7 Relatorio completo enviado para suporte@dlsolucoescondominiais.com.br\\n\\n\ud83d\udcac Para CHAT_ID: envie msg ao bot e acesse /getUpdates' }}",
         "additionalFields": {}
       },
       "id": "telegram_ids",
       "name": "Telegram Resumo IDs",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.1,
-      "position": [1000, 100],
+      "position": [
+        1000,
+        100
+      ],
       "credentials": {
         "telegramApi": {
           "id": "Conta do Telegram",
@@ -215,13 +239,19 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
   "tags": [
-    { "name": "DL_NEXUS_V3" },
-    { "name": "UTILITARIO" },
-    { "name": "CONFIGURACAO" }
+    {
+      "name": "DL_NEXUS_V3"
+    },
+    {
+      "name": "UTILITARIO"
+    },
+    {
+      "name": "CONFIGURACAO"
+    }
   ]
 }

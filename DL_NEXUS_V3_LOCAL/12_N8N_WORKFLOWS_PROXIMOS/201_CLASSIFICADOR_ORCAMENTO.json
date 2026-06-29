@@ -53,7 +53,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\"model\": \"deepseek-chat\", \"response_format\": {\"type\": \"json_object\"}, \"messages\": [{\"role\": \"system\", \"content\": \"Você é o Agente Classificador. Leia o payload_normalizado. Defina a linha_confirmada, categoria_confirmada e a complexidade do orçamento. Retorne JSON estruturado.\"}, {\"role\": \"user\", \"content\": \"PAYLOAD DO AGENTE:\\n={{JSON.stringify($json)}}\"}]}",
+        "jsonBody": "{\"model\": \"deepseek-chat\", \"response_format\": {\"type\": \"json_object\"}, \"messages\": [{\"role\": \"system\", \"content\": \"Voc\u00ea \u00e9 o Agente Classificador. Leia o payload_normalizado. Defina a linha_confirmada, categoria_confirmada e a complexidade do or\u00e7amento. Retorne JSON estruturado.\"}, {\"role\": \"user\", \"content\": \"PAYLOAD DO AGENTE:\\n={{JSON.stringify($json)}}\"}]}",
         "options": {}
       },
       "id": "api_llm",
@@ -114,6 +114,6 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {}
 }

@@ -8,7 +8,7 @@
         "options": {}
       },
       "id": "webhook_receptor",
-      "name": "Recepção de Dados Webhook",
+      "name": "Recep\u00e7\u00e3o de Dados Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
       "position": [
@@ -18,7 +18,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const body = $json.body || {};\nconst timestamp = new Date().toISOString();\nconst datePart = timestamp.slice(0,10).replace(/-/g, '');\nconst rand = Math.floor(1000 + Math.random() * 9000);\nconst protocolo = `ECO-${datePart}-${rand}`;\n\nreturn {\n  protocolo,\n  cliente: {\n    nome: body.nome || 'Cliente não identificado',\n    tipo_cliente: body.tipo_cliente || 'condominio',\n    responsavel: body.responsavel || body.nome || 'Responsável não identificado',\n    whatsapp: body.whatsapp || '',\n    email: body.email || '',\n    endereco: body.endereco || '',\n    bairro: body.bairro || '',\n    cidade: body.cidade || 'Rio de Janeiro'\n  },\n  dados_eletricos: {\n    tipo_ligacao: body.tipo_ligacao || 'trifasico',\n    tensao: body.tensao || '220/380',\n    disjuntor_geral: body.disjuntor_geral || '100',\n    padrao_entrada: body.padrao_entrada || 'Muro Light',\n    aterramento: !!body.aterramento,\n    dr_dps: !!body.dr_dps,\n    quadro_cargas_criticas: !!body.quadro_cargas_criticas,\n    distancia_inversor_quadro_metros: Number(body.distancia_inversor_quadro) || 10,\n    distancia_baterias_quadro_metros: Number(body.distancia_baterias_quadro) || 10\n  },\n  dados_conta: {\n    consumo_mensal_kwh: Number(body.consumo_mensal_kwh) || 1000,\n    valor_medio_conta: Number(body.valor_medio_conta) || 1200,\n    concessionaria: body.concessionaria || 'Light',\n    tarifa: Number(body.tarifa) || 1.15,\n    demanda_contratada_kw: Number(body.demanda_contratada_kw) || 0,\n    objetivo: body.objetivo || 'hibrido',\n    historico_12_meses_kwh: body.historico_12_meses || []\n  },\n  dados_solares: {\n    area_disponivel_m2: Number(body.area_disponivel) || 100,\n    tipo_telhado_laje: body.tipo_telhado_laje || 'laje plana',\n    sombreamento: body.sombreamento || 'nenhum',\n    orientacao: body.orientacao || 'norte',\n    inclinacao: body.inclinacao || '15 graus',\n    local_inversor: body.local_inversor || 'garagem',\n    local_baterias: body.local_baterias || 'garagem',\n    ventilacao_adequada: !!body.ventilacao\n  },\n  cargas_criticas: body.cargas_criticas || [],\n  autonomia_desejada_horas: Number(body.autonomia_horas) || 8,\n  status: 'recebido',\n  compliance_killcritic: {\n    status_killcritic: 'BLOQUEADO',\n    risco_killcritic: 'baixo',\n    motivos_bloqueio: ['Aguardando cálculo e auditoria'],\n    pendencias_criticas: []\n  }\n};"
+        "jsCode": "const body = $json.body || {};\nconst timestamp = new Date().toISOString();\nconst datePart = timestamp.slice(0,10).replace(/-/g, '');\nconst rand = Math.floor(1000 + Math.random() * 9000);\nconst protocolo = `ECO-${datePart}-${rand}`;\n\nreturn {\n  protocolo,\n  cliente: {\n    nome: body.nome || 'Cliente n\u00e3o identificado',\n    tipo_cliente: body.tipo_cliente || 'condominio',\n    responsavel: body.responsavel || body.nome || 'Respons\u00e1vel n\u00e3o identificado',\n    whatsapp: body.whatsapp || '',\n    email: body.email || '',\n    endereco: body.endereco || '',\n    bairro: body.bairro || '',\n    cidade: body.cidade || 'Rio de Janeiro'\n  },\n  dados_eletricos: {\n    tipo_ligacao: body.tipo_ligacao || 'trifasico',\n    tensao: body.tensao || '220/380',\n    disjuntor_geral: body.disjuntor_geral || '100',\n    padrao_entrada: body.padrao_entrada || 'Muro Light',\n    aterramento: !!body.aterramento,\n    dr_dps: !!body.dr_dps,\n    quadro_cargas_criticas: !!body.quadro_cargas_criticas,\n    distancia_inversor_quadro_metros: Number(body.distancia_inversor_quadro) || 10,\n    distancia_baterias_quadro_metros: Number(body.distancia_baterias_quadro) || 10\n  },\n  dados_conta: {\n    consumo_mensal_kwh: Number(body.consumo_mensal_kwh) || 1000,\n    valor_medio_conta: Number(body.valor_medio_conta) || 1200,\n    concessionaria: body.concessionaria || 'Light',\n    tarifa: Number(body.tarifa) || 1.15,\n    demanda_contratada_kw: Number(body.demanda_contratada_kw) || 0,\n    objetivo: body.objetivo || 'hibrido',\n    historico_12_meses_kwh: body.historico_12_meses || []\n  },\n  dados_solares: {\n    area_disponivel_m2: Number(body.area_disponivel) || 100,\n    tipo_telhado_laje: body.tipo_telhado_laje || 'laje plana',\n    sombreamento: body.sombreamento || 'nenhum',\n    orientacao: body.orientacao || 'norte',\n    inclinacao: body.inclinacao || '15 graus',\n    local_inversor: body.local_inversor || 'garagem',\n    local_baterias: body.local_baterias || 'garagem',\n    ventilacao_adequada: !!body.ventilacao\n  },\n  cargas_criticas: body.cargas_criticas || [],\n  autonomia_desejada_horas: Number(body.autonomia_horas) || 8,\n  status: 'recebido',\n  compliance_killcritic: {\n    status_killcritic: 'BLOQUEADO',\n    risco_killcritic: 'baixo',\n    motivos_bloqueio: ['Aguardando c\u00e1lculo e auditoria'],\n    pendencias_criticas: []\n  }\n};"
       },
       "id": "normalizar_dados",
       "name": "Normalizar Payload Entrada",
@@ -71,7 +71,7 @@
     }
   ],
   "connections": {
-    "Recepção de Dados Webhook": {
+    "Recep\u00e7\u00e3o de Dados Webhook": {
       "main": [
         [
           {
@@ -94,6 +94,6 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {}
 }

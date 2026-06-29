@@ -54,7 +54,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\"contents\": [{\"parts\": [{\"text\": \"SISTEMA:\\nVocê é o Agente de Materiais e Custos. Liste materiais, quantidades e pesquise estimativas de custo.\\n\\nPAYLOAD DO AGENTE:\\n={{JSON.stringify($json)}}\"}]}], \"generationConfig\": {\"response_mime_type\": \"application/json\"}}",
+        "jsonBody": "{\"contents\": [{\"parts\": [{\"text\": \"SISTEMA:\\nVoc\u00ea \u00e9 o Agente de Materiais e Custos. Liste materiais, quantidades e pesquise estimativas de custo.\\n\\nPAYLOAD DO AGENTE:\\n={{JSON.stringify($json)}}\"}]}], \"generationConfig\": {\"response_mime_type\": \"application/json\"}}",
         "options": {}
       },
       "id": "api_llm",
@@ -115,6 +115,6 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {}
 }

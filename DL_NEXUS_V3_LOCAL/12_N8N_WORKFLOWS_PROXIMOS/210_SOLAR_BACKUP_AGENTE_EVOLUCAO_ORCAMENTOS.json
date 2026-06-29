@@ -61,18 +61,18 @@
     {
       "parameters": {
         "model": "gemini-2.5-flash",
-        "prompt": "=Você é o Agente de IA para Evolução de Motores de Orçamento da DL Soluções Condominiais.\n\nSeu papel é analisar a lista de orçamentos históricos (fechados, perdidos e bloqueados) abaixo e identificar:\n1. Padrões de perda comercial (preço muito alto, baterias subdimensionadas).\n2. Erros técnicos recorrentes identificados em campo.\n3. Bloqueios do KILLCRITIC que poderiam ser evitados se as regras fossem ajustadas.\n4. Flutuação de custos de baterias/inversores.\n\nHistórico de Orçamentos:\n{{ JSON.stringify($json) }}\n\nForneça uma análise concisa e escreva recomendações de novos parâmetros de margem técnica, limites de autonomia e modelos preferenciais.\nRetorne APENAS um objeto JSON válido (sem blocos de markdown ```json):\n{\n  \"analise_erros\": \"descrição curta\",\n  \"impacto_margens\": \"recomendações de margem\",\n  \"recomendacao_futura\": \"recomendações técnicas\",\n  \"sugerir_alteracao_regra\": false,\n  \"regra_sugerida\": null\n}",
+        "prompt": "=Voc\u00ea \u00e9 o Agente de IA para Evolu\u00e7\u00e3o de Motores de Or\u00e7amento da DL Solu\u00e7\u00f5es Condominiais.\n\nSeu papel \u00e9 analisar a lista de or\u00e7amentos hist\u00f3ricos (fechados, perdidos e bloqueados) abaixo e identificar:\n1. Padr\u00f5es de perda comercial (pre\u00e7o muito alto, baterias subdimensionadas).\n2. Erros t\u00e9cnicos recorrentes identificados em campo.\n3. Bloqueios do KILLCRITIC que poderiam ser evitados se as regras fossem ajustadas.\n4. Flutua\u00e7\u00e3o de custos de baterias/inversores.\n\nHist\u00f3rico de Or\u00e7amentos:\n{{ JSON.stringify($json) }}\n\nForne\u00e7a uma an\u00e1lise concisa e escreva recomenda\u00e7\u00f5es de novos par\u00e2metros de margem t\u00e9cnica, limites de autonomia e modelos preferenciais.\nRetorne APENAS um objeto JSON v\u00e1lido (sem blocos de markdown ```json):\n{\n  \"analise_erros\": \"descri\u00e7\u00e3o curta\",\n  \"impacto_margens\": \"recomenda\u00e7\u00f5es de margem\",\n  \"recomendacao_futura\": \"recomenda\u00e7\u00f5es t\u00e9cnicas\",\n  \"sugerir_alteracao_regra\": false,\n  \"regra_sugerida\": null\n}",
         "options": {}
       },
       "id": "ia_analista_evolucao",
-      "name": "IA Analista Evolução",
+      "name": "IA Analista Evolu\u00e7\u00e3o",
       "type": "n8n-nodes-base.googleGemini",
       "typeVersion": 1,
       "position": [
         550,
         350
       ],
-      "notes": "Homologação: Processa o histórico do Supabase com o modelo Gemini Flash."
+      "notes": "Homologa\u00e7\u00e3o: Processa o hist\u00f3rico do Supabase com o modelo Gemini Flash."
     },
     {
       "parameters": {
@@ -138,14 +138,14 @@
       "main": [
         [
           {
-            "node": "IA Analista Evolução",
+            "node": "IA Analista Evolu\u00e7\u00e3o",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "IA Analista Evolução": {
+    "IA Analista Evolu\u00e7\u00e3o": {
       "main": [
         [
           {
@@ -157,6 +157,6 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {}
 }

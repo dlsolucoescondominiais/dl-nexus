@@ -1,6 +1,6 @@
 {
   "name": "064_ORCAMENTO_KILLCRITIC_DL",
-  "active": false,
+  "active": true,
   "nodes": [
     {
       "parameters": {
@@ -17,7 +17,10 @@
       "name": "Schedule (15m)",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.1,
-      "position": [0, 300]
+      "position": [
+        0,
+        300
+      ]
     },
     {
       "parameters": {
@@ -40,7 +43,10 @@
       "name": "Supabase Get Markdown",
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
-      "position": [240, 300],
+      "position": [
+        240,
+        300
+      ],
       "credentials": {
         "supabaseApi": {
           "id": "SUPABASE_CREDENTIAL_ID",
@@ -56,17 +62,23 @@
       "name": "Check Empty",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [480, 300]
+      "position": [
+        480,
+        300
+      ]
     },
     {
       "parameters": {
-        "jsCode": "const d = $input.item.json;\nconst prompt = `\nVocê é o KILLCRITIC DL. Avalie o orçamento abaixo.\nVocê DEVE bloquear o orçamento se encontrar qualquer um dos problemas abaixo:\n- Sem endereço completo\n- Sem descrição de necessidade\n- Escopo insuficiente para formar preço\n- Rateio condômino solicitado mas sem \"numero_unidades\"\n- Uso da palavra \"visita técnica\"\n- Uso da palavra \"B2B\" para público\n- Promessas absolutas sem garantia técnica\n- Afirmações técnicas sem evidência visual ou presencial\n\nRetorne EXATAMENTE UM JSON com a avaliação:\n{\n  \"decisao\": \"aprovado_para_revisao_humana\" ou \"bloqueado_pendencia\",\n  \"motivos\": [\"motivo1\", \"motivo2\"]\n}\n\nDADOS:\nPerfil: ${d.perfil_classificado}\nRateio: ${d.rateio_permitido}\nUnidades: ${d.numero_unidades}\nEndereco: ${d.endereco_completo}\nDescricao: ${d.descricao}\nMarkdown:\n${d.markdown_orcamento}\n`;\n\nreturn [{ json: { ...d, ai_prompt: prompt } }];"
+        "jsCode": "const d = $input.item.json;\nconst prompt = `\nVoc\u00ea \u00e9 o KILLCRITIC DL. Avalie o or\u00e7amento abaixo.\nVoc\u00ea DEVE bloquear o or\u00e7amento se encontrar qualquer um dos problemas abaixo:\n- Sem endere\u00e7o completo\n- Sem descri\u00e7\u00e3o de necessidade\n- Escopo insuficiente para formar pre\u00e7o\n- Rateio cond\u00f4mino solicitado mas sem \"numero_unidades\"\n- Uso da palavra \"visita t\u00e9cnica\"\n- Uso da palavra \"B2B\" para p\u00fablico\n- Promessas absolutas sem garantia t\u00e9cnica\n- Afirma\u00e7\u00f5es t\u00e9cnicas sem evid\u00eancia visual ou presencial\n\nRetorne EXATAMENTE UM JSON com a avalia\u00e7\u00e3o:\n{\n  \"decisao\": \"aprovado_para_revisao_humana\" ou \"bloqueado_pendencia\",\n  \"motivos\": [\"motivo1\", \"motivo2\"]\n}\n\nDADOS:\nPerfil: ${d.perfil_classificado}\nRateio: ${d.rateio_permitido}\nUnidades: ${d.numero_unidades}\nEndereco: ${d.endereco_completo}\nDescricao: ${d.descricao}\nMarkdown:\n${d.markdown_orcamento}\n`;\n\nreturn [{ json: { ...d, ai_prompt: prompt } }];"
       },
       "id": "code_064_prep_prompt",
       "name": "Prep Prompt KillCritic",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [720, 300]
+      "position": [
+        720,
+        300
+      ]
     },
     {
       "parameters": {
@@ -97,7 +109,10 @@
       "name": "DeepSeek KillCritic",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [960, 300],
+      "position": [
+        960,
+        300
+      ],
       "credentials": {
         "httpHeaderAuth": {
           "id": "DEEPSEEK_CREDENTIAL_ID",
@@ -113,7 +128,10 @@
       "name": "Parse Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1200, 300]
+      "position": [
+        1200,
+        300
+      ]
     },
     {
       "parameters": {
@@ -128,7 +146,10 @@
       "name": "Supabase Update",
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
-      "position": [1440, 300],
+      "position": [
+        1440,
+        300
+      ],
       "credentials": {
         "supabaseApi": {
           "id": "SUPABASE_CREDENTIAL_ID",
@@ -138,12 +159,74 @@
     }
   ],
   "connections": {
-    "Schedule (15m)": { "main": [ [ { "node": "Supabase Get Markdown", "type": "main", "index": 0 } ] ] },
-    "Supabase Get Markdown": { "main": [ [ { "node": "Check Empty", "type": "main", "index": 0 } ] ] },
-    "Check Empty": { "main": [ [ { "node": "Prep Prompt KillCritic", "type": "main", "index": 0 } ] ] },
-    "Prep Prompt KillCritic": { "main": [ [ { "node": "DeepSeek KillCritic", "type": "main", "index": 0 } ] ] },
-    "DeepSeek KillCritic": { "main": [ [ { "node": "Parse Result", "type": "main", "index": 0 } ] ] },
-    "Parse Result": { "main": [ [ { "node": "Supabase Update", "type": "main", "index": 0 } ] ] }
+    "Schedule (15m)": {
+      "main": [
+        [
+          {
+            "node": "Supabase Get Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Get Markdown": {
+      "main": [
+        [
+          {
+            "node": "Check Empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Empty": {
+      "main": [
+        [
+          {
+            "node": "Prep Prompt KillCritic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prep Prompt KillCritic": {
+      "main": [
+        [
+          {
+            "node": "DeepSeek KillCritic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek KillCritic": {
+      "main": [
+        [
+          {
+            "node": "Parse Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Result": {
+      "main": [
+        [
+          {
+            "node": "Supabase Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
   },
-  "settings": { "executionOrder": "v1" }
+  "settings": {
+    "executionOrder": "v1"
+  }
 }

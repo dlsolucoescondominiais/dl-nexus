@@ -12,18 +12,24 @@
       "name": "Webhook DL Nexus V3",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [0, 0],
+      "position": [
+        0,
+        0
+      ],
       "webhookId": "orcamento-maestro-v3"
     },
     {
       "parameters": {
-        "jsCode": "const payloadRaw = $input.item.json.body.payload_json;\nlet payload = {};\ntry {\n  payload = JSON.parse(payloadRaw);\n} catch(e) {\n  payload = { erro: \"JSON Inválido no body\" };\n}\nreturn { json: payload };"
+        "jsCode": "const payloadRaw = $input.item.json.body.payload_json;\nlet payload = {};\ntry {\n  payload = JSON.parse(payloadRaw);\n} catch(e) {\n  payload = { erro: \"JSON Inv\u00e1lido no body\" };\n}\nreturn { json: payload };"
       },
       "id": "parse_payload",
       "name": "Parse Payload JSON",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [200, 0]
+      "position": [
+        200,
+        0
+      ]
     },
     {
       "parameters": {
@@ -32,20 +38,29 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            { "name": "Authorization", "value": "Bearer {{$env.DEEPSEEK_API_KEY}}" },
-            { "name": "Content-Type", "value": "application/json" }
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.DEEPSEEK_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
           ]
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    { \"role\": \"system\", \"content\": \"1. IA CLASSIFICADORA: Analise o payload e defina a complexidade, linha do portfólio e se há dados faltando para o orçamento. Retorne JSON: { \\\"linha_confirmada\\\": \\\"...\\\", \\\"complexidade\\\": \\\"...\\\", \\\"dados_faltantes\\\": [] }\" },\n    { \"role\": \"user\", \"content\": \"DADOS: \" + JSON.stringify($json) }\n  ]\n}",
+        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    { \"role\": \"system\", \"content\": \"1. IA CLASSIFICADORA: Analise o payload e defina a complexidade, linha do portf\u00f3lio e se h\u00e1 dados faltando para o or\u00e7amento. Retorne JSON: { \\\"linha_confirmada\\\": \\\"...\\\", \\\"complexidade\\\": \\\"...\\\", \\\"dados_faltantes\\\": [] }\" },\n    { \"role\": \"user\", \"content\": \"DADOS: \" + JSON.stringify($json) }\n  ]\n}",
         "options": {}
       },
       "id": "ia_1_classificadora",
       "name": "IA 1: Classificadora",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [400, 0]
+      "position": [
+        400,
+        0
+      ]
     },
     {
       "parameters": {
@@ -54,20 +69,29 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            { "name": "Authorization", "value": "Bearer {{$env.DEEPSEEK_API_KEY}}" },
-            { "name": "Content-Type", "value": "application/json" }
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.DEEPSEEK_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
           ]
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    { \"role\": \"system\", \"content\": \"2. IA TÉCNICA: Avalie o payload e a saída da IA 1. Calcule cargas elétricas, dimensione cabos (se DL Volt), valide CFTV (se Guardião). Aponte riscos técnicos. Retorne JSON: { \\\"diagnostico_tecnico\\\": \\\"...\\\", \\\"riscos_tecnicos\\\": [], \\\"parecer_engenharia\\\": \\\"...\\\" }\" },\n    { \"role\": \"user\", \"content\": \"PAYLOAD: \" + JSON.stringify($('Parse Payload JSON').item.json) }\n  ]\n}",
+        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    { \"role\": \"system\", \"content\": \"2. IA T\u00c9CNICA: Avalie o payload e a sa\u00edda da IA 1. Calcule cargas el\u00e9tricas, dimensione cabos (se DL Volt), valide CFTV (se Guardi\u00e3o). Aponte riscos t\u00e9cnicos. Retorne JSON: { \\\"diagnostico_tecnico\\\": \\\"...\\\", \\\"riscos_tecnicos\\\": [], \\\"parecer_engenharia\\\": \\\"...\\\" }\" },\n    { \"role\": \"user\", \"content\": \"PAYLOAD: \" + JSON.stringify($('Parse Payload JSON').item.json) }\n  ]\n}",
         "options": {}
       },
       "id": "ia_2_tecnica",
-      "name": "IA 2: Técnica",
+      "name": "IA 2: T\u00e9cnica",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [600, 0]
+      "position": [
+        600,
+        0
+      ]
     },
     {
       "parameters": {
@@ -76,20 +100,29 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            { "name": "Authorization", "value": "Bearer {{$env.DEEPSEEK_API_KEY}}" },
-            { "name": "Content-Type", "value": "application/json" }
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.DEEPSEEK_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
           ]
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    { \"role\": \"system\", \"content\": \"3. IA MATERIAIS: Com base na Engenharia (IA 2), liste os materiais, quantidades e preços de custo de mercado. Retorne JSON: { \\\"materiais_cliente\\\": [], \\\"materiais_internos\\\": [], \\\"total_custo_materiais\\\": 0 }\" },\n    { \"role\": \"user\", \"content\": \"ENG: \" + $json.choices[0].message.content + \" PAYLOAD: \" + JSON.stringify($('Parse Payload JSON').item.json) }\n  ]\n}",
+        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    { \"role\": \"system\", \"content\": \"3. IA MATERIAIS: Com base na Engenharia (IA 2), liste os materiais, quantidades e pre\u00e7os de custo de mercado. Retorne JSON: { \\\"materiais_cliente\\\": [], \\\"materiais_internos\\\": [], \\\"total_custo_materiais\\\": 0 }\" },\n    { \"role\": \"user\", \"content\": \"ENG: \" + $json.choices[0].message.content + \" PAYLOAD: \" + JSON.stringify($('Parse Payload JSON').item.json) }\n  ]\n}",
         "options": {}
       },
       "id": "ia_3_materiais",
       "name": "IA 3: Materiais",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [800, 0]
+      "position": [
+        800,
+        0
+      ]
     },
     {
       "parameters": {
@@ -98,20 +131,29 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            { "name": "Authorization", "value": "Bearer {{$env.DEEPSEEK_API_KEY}}" },
-            { "name": "Content-Type", "value": "application/json" }
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.DEEPSEEK_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
           ]
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    { \"role\": \"system\", \"content\": \"4. IA MÃO DE OBRA: Calcule diárias, equipe, dificuldade e deslocamento baseado na Segmentação (ex: Condomínio 400 unid = mais tempo). Retorne JSON: { \\\"dificuldade\\\": \\\"...\\\", \\\"diarias\\\": 0, \\\"tamanho_equipe\\\": 0, \\\"custo_deslocamento\\\": 0, \\\"custo_mao_obra\\\": 0 }\" },\n    { \"role\": \"user\", \"content\": \"PAYLOAD: \" + JSON.stringify($('Parse Payload JSON').item.json) }\n  ]\n}",
+        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    { \"role\": \"system\", \"content\": \"4. IA M\u00c3O DE OBRA: Calcule di\u00e1rias, equipe, dificuldade e deslocamento baseado na Segmenta\u00e7\u00e3o (ex: Condom\u00ednio 400 unid = mais tempo). Retorne JSON: { \\\"dificuldade\\\": \\\"...\\\", \\\"diarias\\\": 0, \\\"tamanho_equipe\\\": 0, \\\"custo_deslocamento\\\": 0, \\\"custo_mao_obra\\\": 0 }\" },\n    { \"role\": \"user\", \"content\": \"PAYLOAD: \" + JSON.stringify($('Parse Payload JSON').item.json) }\n  ]\n}",
         "options": {}
       },
       "id": "ia_4_mao_obra",
-      "name": "IA 4: Mão de Obra",
+      "name": "IA 4: M\u00e3o de Obra",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [1000, 0]
+      "position": [
+        1000,
+        0
+      ]
     },
     {
       "parameters": {
@@ -119,22 +161,35 @@
         "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent",
         "sendQuery": true,
         "queryParameters": {
-          "parameters": [{ "name": "key", "value": "={{$env.GEMINI_API_KEY}}" }]
+          "parameters": [
+            {
+              "name": "key",
+              "value": "={{$env.GEMINI_API_KEY}}"
+            }
+          ]
         },
         "sendHeaders": true,
         "headerParameters": {
-          "parameters": [{ "name": "Content-Type", "value": "application/json" }]
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"5. IA COMERCIAL: Receba Materiais (IA3) e Mão de Obra (IA4). Aplique margem de lucro. Separe infraestrutura de equipamentos. Oferte o 'DL Partner' se viável. Retorne JSON: { \\\"preco_final_servico\\\": 0, \\\"preco_final_materiais\\\": 0, \\\"total_geral\\\": 0, \\\"oferta_partner\\\": \\\"...\\\" } \\n\\n MATERIAIS: \" + $('IA 3: Materiais').item.json.choices[0].message.content + \"\\nMÃO OBRA: \" + $json.choices[0].message.content\n        }\n      ]\n    }\n  ],\n  \"generationConfig\": { \"response_mime_type\": \"application/json\" }\n}",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"5. IA COMERCIAL: Receba Materiais (IA3) e M\u00e3o de Obra (IA4). Aplique margem de lucro. Separe infraestrutura de equipamentos. Oferte o 'DL Partner' se vi\u00e1vel. Retorne JSON: { \\\"preco_final_servico\\\": 0, \\\"preco_final_materiais\\\": 0, \\\"total_geral\\\": 0, \\\"oferta_partner\\\": \\\"...\\\" } \\n\\n MATERIAIS: \" + $('IA 3: Materiais').item.json.choices[0].message.content + \"\\nM\u00c3O OBRA: \" + $json.choices[0].message.content\n        }\n      ]\n    }\n  ],\n  \"generationConfig\": { \"response_mime_type\": \"application/json\" }\n}",
         "options": {}
       },
       "id": "ia_5_comercial",
       "name": "IA 5: Comercial",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [1200, 0]
+      "position": [
+        1200,
+        0
+      ]
     },
     {
       "parameters": {
@@ -143,90 +198,134 @@
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
-            { "name": "Authorization", "value": "Bearer {{$env.DEEPSEEK_API_KEY}}" },
-            { "name": "Content-Type", "value": "application/json" }
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.DEEPSEEK_API_KEY}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
           ]
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    { \"role\": \"system\", \"content\": \"6. IA REDATORA: Redija em Markdown 2 documentos finais. A Proposta Cliente (CENSURADA sem marcas de hardware e sem lucros, com explicação de SLA) e a Proposta Interna (com margens, custos e riscos). REGRAS DE LOGO NA PROPOSTA CLIENTE: Sempre inclua '![Logo DL](/assets/logo-dl-solucoes.png)', '![ABESE](/assets/abese.png)', e '![CREA-RJ](/assets/crea-rj.png)'. SE, e somente se, a empresa 'Anjos' for parceira/citada no orçamento, inclua também '![Logo Anjos](/assets/logo-anjos.png)'. Retorne JSON: { \\\"proposta_cliente\\\": \\\"...\\\", \\\"proposta_interna\\\": \\\"...\\\" }\" },\n    { \"role\": \"user\", \"content\": \"RESUMO COMERCIAL: \" + $json.candidates[0].content.parts[0].text + \"\\nPAYLOAD: \" + JSON.stringify($('Parse Payload JSON').item.json) }\n  ]\n}",
+        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    { \"role\": \"system\", \"content\": \"6. IA REDATORA: Redija em Markdown 2 documentos finais. A Proposta Cliente (CENSURADA sem marcas de hardware e sem lucros, com explica\u00e7\u00e3o de SLA) e a Proposta Interna (com margens, custos e riscos). REGRAS DE LOGO NA PROPOSTA CLIENTE: Sempre inclua '![Logo DL](/assets/logo-dl-solucoes.png)', '![ABESE](/assets/abese.png)', e '![CREA-RJ](/assets/crea-rj.png)'. SE, e somente se, a empresa 'Anjos' for parceira/citada no or\u00e7amento, inclua tamb\u00e9m '![Logo Anjos](/assets/logo-anjos.png)'. Retorne JSON: { \\\"proposta_cliente\\\": \\\"...\\\", \\\"proposta_interna\\\": \\\"...\\\" }\" },\n    { \"role\": \"user\", \"content\": \"RESUMO COMERCIAL: \" + $json.candidates[0].content.parts[0].text + \"\\nPAYLOAD: \" + JSON.stringify($('Parse Payload JSON').item.json) }\n  ]\n}",
         "options": {}
       },
       "id": "ia_6_redatora",
       "name": "IA 6: Redatora",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [1400, 0]
+      "position": [
+        1400,
+        0
+      ]
     },
     {
       "parameters": {
-        "jsCode": "const output = {\n  orcamento_id: $('Parse Payload JSON').item.json.meta.orcamento_id,\n  classificacao: JSON.parse($('IA 1: Classificadora').item.json.choices[0].message.content),\n  tecnico: JSON.parse($('IA 2: Técnica').item.json.choices[0].message.content),\n  materiais: JSON.parse($('IA 3: Materiais').item.json.choices[0].message.content),\n  mao_obra: JSON.parse($('IA 4: Mão de Obra').item.json.choices[0].message.content),\n  comercial: JSON.parse($('IA 5: Comercial').item.json.candidates[0].content.parts[0].text),\n  redacao: JSON.parse($('IA 6: Redatora').item.json.choices[0].message.content)\n};\nreturn { json: output };"
+        "jsCode": "const output = {\n  orcamento_id: $('Parse Payload JSON').item.json.meta.orcamento_id,\n  classificacao: JSON.parse($('IA 1: Classificadora').item.json.choices[0].message.content),\n  tecnico: JSON.parse($('IA 2: T\u00e9cnica').item.json.choices[0].message.content),\n  materiais: JSON.parse($('IA 3: Materiais').item.json.choices[0].message.content),\n  mao_obra: JSON.parse($('IA 4: M\u00e3o de Obra').item.json.choices[0].message.content),\n  comercial: JSON.parse($('IA 5: Comercial').item.json.candidates[0].content.parts[0].text),\n  redacao: JSON.parse($('IA 6: Redatora').item.json.choices[0].message.content)\n};\nreturn { json: output };"
       },
       "id": "compilador_final",
       "name": "Compilador Final",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1600, 0]
+      "position": [
+        1600,
+        0
+      ]
     }
   ],
   "connections": {
     "Webhook DL Nexus V3": {
       "main": [
         [
-          { "node": "Parse Payload JSON", "type": "main", "index": 0 }
+          {
+            "node": "Parse Payload JSON",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "Parse Payload JSON": {
       "main": [
         [
-          { "node": "IA 1: Classificadora", "type": "main", "index": 0 }
+          {
+            "node": "IA 1: Classificadora",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "IA 1: Classificadora": {
       "main": [
         [
-          { "node": "IA 2: Técnica", "type": "main", "index": 0 }
+          {
+            "node": "IA 2: T\u00e9cnica",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
-    "IA 2: Técnica": {
+    "IA 2: T\u00e9cnica": {
       "main": [
         [
-          { "node": "IA 3: Materiais", "type": "main", "index": 0 }
+          {
+            "node": "IA 3: Materiais",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "IA 3: Materiais": {
       "main": [
         [
-          { "node": "IA 4: Mão de Obra", "type": "main", "index": 0 }
+          {
+            "node": "IA 4: M\u00e3o de Obra",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
-    "IA 4: Mão de Obra": {
+    "IA 4: M\u00e3o de Obra": {
       "main": [
         [
-          { "node": "IA 5: Comercial", "type": "main", "index": 0 }
+          {
+            "node": "IA 5: Comercial",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "IA 5: Comercial": {
       "main": [
         [
-          { "node": "IA 6: Redatora", "type": "main", "index": 0 }
+          {
+            "node": "IA 6: Redatora",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
     "IA 6: Redatora": {
       "main": [
         [
-          { "node": "Compilador Final", "type": "main", "index": 0 }
+          {
+            "node": "Compilador Final",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {}
 }

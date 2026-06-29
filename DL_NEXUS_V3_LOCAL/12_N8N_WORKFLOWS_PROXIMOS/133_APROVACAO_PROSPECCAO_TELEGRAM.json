@@ -20,7 +20,7 @@
     {
       "parameters": {
         "chatId": "CHAT_ID_AQUI",
-        "text": "=*Aprovação de Prospecção*=\n\n*Lead:* {{$json.body.lead}}\n*Detalhes:* {{$json.body.detalhes}}\n\nPor favor, escolha uma ação:",
+        "text": "=*Aprova\u00e7\u00e3o de Prospec\u00e7\u00e3o*=\n\n*Lead:* {{$json.body.lead}}\n*Detalhes:* {{$json.body.detalhes}}\n\nPor favor, escolha uma a\u00e7\u00e3o:",
         "replyMarkup": "inlineKeyboard",
         "inlineKeyboard": {
           "rows": [
@@ -46,7 +46,7 @@
               "row": {
                 "buttons": [
                   {
-                    "text": "Agendar Avaliação Técnica",
+                    "text": "Agendar Avalia\u00e7\u00e3o T\u00e9cnica",
                     "callbackData": "agendar_{{$json.body.id}}"
                   }
                 ]
@@ -102,7 +102,7 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },

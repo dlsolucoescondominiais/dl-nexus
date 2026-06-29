@@ -19,7 +19,7 @@
     },
     {
       "parameters": {
-        "jsCode": "let data = $input.item.json.body || {};\n\n// Rule: Se faltar dados críticos, o motor deve retornar \"Sob Avaliação Técnica\"\nif (!data.preco_recomendado && !data.faixa_comercial) {\n  data.status_avaliacao = \"Sob Avaliação Técnica\";\n} else {\n  data.status_avaliacao = \"Precificado\";\n}\n\n// Rule: Não expor custo interno ao cliente. Mostrar apenas a faixa comercial e o preço recomendado.\nlet clientPayload = Object.assign({}, data);\ndelete clientPayload.custo_interno;\ndelete clientPayload.margem_lucro;\n\n// Rule: A gastronomia tem alta urgência.\nlet priority = (data.urgency_gastronomy) ? 'HIGH' : 'NORMAL';\n\n// Rule: Imposto sempre \"imposto_estimado_percentual\" com pendência de validação contábil.\nlet imposto = data.imposto_estimado_percentual || \"Pendente de validação contábil\";\n\nreturn {\n  proposta_id: data.proposta_id || 'UNKNOWN',\n  faixa_comercial: data.faixa_comercial || 'N/A',\n  preco_recomendado: data.preco_recomendado || 0,\n  imposto_estimado_percentual: imposto,\n  status_avaliacao: data.status_avaliacao,\n  priority: priority,\n  payload_completo: clientPayload\n};"
+        "jsCode": "let data = $input.item.json.body || {};\n\n// Rule: Se faltar dados cr\u00edticos, o motor deve retornar \"Sob Avalia\u00e7\u00e3o T\u00e9cnica\"\nif (!data.preco_recomendado && !data.faixa_comercial) {\n  data.status_avaliacao = \"Sob Avalia\u00e7\u00e3o T\u00e9cnica\";\n} else {\n  data.status_avaliacao = \"Precificado\";\n}\n\n// Rule: N\u00e3o expor custo interno ao cliente. Mostrar apenas a faixa comercial e o pre\u00e7o recomendado.\nlet clientPayload = Object.assign({}, data);\ndelete clientPayload.custo_interno;\ndelete clientPayload.margem_lucro;\n\n// Rule: A gastronomia tem alta urg\u00eancia.\nlet priority = (data.urgency_gastronomy) ? 'HIGH' : 'NORMAL';\n\n// Rule: Imposto sempre \"imposto_estimado_percentual\" com pend\u00eancia de valida\u00e7\u00e3o cont\u00e1bil.\nlet imposto = data.imposto_estimado_percentual || \"Pendente de valida\u00e7\u00e3o cont\u00e1bil\";\n\nreturn {\n  proposta_id: data.proposta_id || 'UNKNOWN',\n  faixa_comercial: data.faixa_comercial || 'N/A',\n  preco_recomendado: data.preco_recomendado || 0,\n  imposto_estimado_percentual: imposto,\n  status_avaliacao: data.status_avaliacao,\n  priority: priority,\n  payload_completo: clientPayload\n};"
       },
       "id": "e45db6e1-95bc-42b7-814d-b6ebc453e9a7",
       "name": "Validate & Format Payload",
@@ -136,7 +136,7 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },

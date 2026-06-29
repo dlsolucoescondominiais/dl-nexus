@@ -297,7 +297,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const err = $node[\"Aninha Atendimento\"].json.error || $node[\"Aninha Atendimento\"].json;\nlet userMsg = '';\ntry {\n  userMsg = ($node[\"Normalizar Entrada\"].json.texto || '').toLowerCase();\n} catch (e) {\n  userMsg = '';\n}\n\nconst residentialKeywords = [\n  \"apartamento\", \"apto\", \"minha casa\", \"residência\", \"residencial\", \n  \"chuveiro\", \"tomada\", \"disjuntor do meu apartamento\", \"casa\"\n];\nlet isResidential = false;\nfor (const keyword of residentialKeywords) {\n  if (userMsg.includes(keyword)) {\n    isResidential = true;\n    break;\n  }\n}\n\nlet result = {};\nif (isResidential) {\n  result = {\n    responder_cliente: true,\n    resposta_cliente: \"No momento, a DL Soluções Condominiais atende demandas técnicas voltadas a condomínios, escolas, empresas e suporte a equipamentos profissionais. Para esse tipo de solicitação residencial avulsa, não conseguimos seguir com atendimento.\",\n    intencao_atual: \"residencial_bloqueado\",\n    etapa_funil: \"bloqueado_residencial\",\n    segmento: \"residencial\",\n    dados_coletados: {},\n    lead_qualificado: false,\n    encaminhar_humano: false,\n    motivo_encaminhamento: null,\n    bloquear: true,\n    motivo_bloqueio: \"atendimento residencial avulsa\",\n    is_fallback: true,\n    error_details: JSON.stringify(err)\n  };\n} else {\n  result = {\n    responder_cliente: true,\n    resposta_cliente: \"Recebi sua mensagem. Para seguir com a Avaliação Técnica, me informe o nome do condomínio, bairro e o problema principal identificado.\",\n    intencao_atual: \"indefinido\",\n    etapa_funil: \"coletando_dados_condominio\",\n    segmento: \"indefinido\",\n    dados_coletados: {},\n    lead_qualificado: false,\n    encaminhar_humano: false,\n    motivo_encaminhamento: null,\n    bloquear: false,\n    motivo_bloqueio: null,\n    is_fallback: true,\n    error_details: JSON.stringify(err)\n  };\n}\n\nreturn [{ json: result }];"
+        "jsCode": "const err = $node[\"Aninha Atendimento\"].json.error || $node[\"Aninha Atendimento\"].json;\nlet userMsg = '';\ntry {\n  userMsg = ($node[\"Normalizar Entrada\"].json.texto || '').toLowerCase();\n} catch (e) {\n  userMsg = '';\n}\n\nconst residentialKeywords = [\n  \"apartamento\", \"apto\", \"minha casa\", \"resid\u00eancia\", \"residencial\", \n  \"chuveiro\", \"tomada\", \"disjuntor do meu apartamento\", \"casa\"\n];\nlet isResidential = false;\nfor (const keyword of residentialKeywords) {\n  if (userMsg.includes(keyword)) {\n    isResidential = true;\n    break;\n  }\n}\n\nlet result = {};\nif (isResidential) {\n  result = {\n    responder_cliente: true,\n    resposta_cliente: \"No momento, a DL Solu\u00e7\u00f5es Condominiais atende demandas t\u00e9cnicas voltadas a condom\u00ednios, escolas, empresas e suporte a equipamentos profissionais. Para esse tipo de solicita\u00e7\u00e3o residencial avulsa, n\u00e3o conseguimos seguir com atendimento.\",\n    intencao_atual: \"residencial_bloqueado\",\n    etapa_funil: \"bloqueado_residencial\",\n    segmento: \"residencial\",\n    dados_coletados: {},\n    lead_qualificado: false,\n    encaminhar_humano: false,\n    motivo_encaminhamento: null,\n    bloquear: true,\n    motivo_bloqueio: \"atendimento residencial avulsa\",\n    is_fallback: true,\n    error_details: JSON.stringify(err)\n  };\n} else {\n  result = {\n    responder_cliente: true,\n    resposta_cliente: \"Recebi sua mensagem. Para seguir com a Avalia\u00e7\u00e3o T\u00e9cnica, me informe o nome do condom\u00ednio, bairro e o problema principal identificado.\",\n    intencao_atual: \"indefinido\",\n    etapa_funil: \"coletando_dados_condominio\",\n    segmento: \"indefinido\",\n    dados_coletados: {},\n    lead_qualificado: false,\n    encaminhar_humano: false,\n    motivo_encaminhamento: null,\n    bloquear: false,\n    motivo_bloqueio: null,\n    is_fallback: true,\n    error_details: JSON.stringify(err)\n  };\n}\n\nreturn [{ json: result }];"
       },
       "id": "preparar_fallback_node",
       "name": "Preparar Fallback",
@@ -442,7 +442,7 @@
     {
       "parameters": {
         "chatId": "={{ $node[\"Normalizar Entrada\"].json.chat_id }}",
-        "text": "={{ $json.resposta_cliente || 'Recebi sua mensagem. Para seguir com a Avaliação Técnica, me informe o nome do condomínio, bairro e o problema principal identificado.' }}",
+        "text": "={{ $json.resposta_cliente || 'Recebi sua mensagem. Para seguir com a Avalia\u00e7\u00e3o T\u00e9cnica, me informe o nome do condom\u00ednio, bairro e o problema principal identificado.' }}",
         "additionalFields": {}
       },
       "id": "telegram_send_node",
@@ -518,7 +518,7 @@
     {
       "parameters": {
         "chatId": "8451974631",
-        "text": "=🔥 NOVO LEAD QUALIFICADO — Aninha DL Nexus\n\n📋 Segmento: {{ $node[\"ia_retornou_resposta_node\"].json.segmento }}\n👤 Nome: {{ $node[\"ia_retornou_resposta_node\"].json.dados_coletados.responsavel || $node[\"Normalizar Entrada\"].json.nome_usuario }}\n📍 Bairro: {{ $node[\"ia_retornou_resposta_node\"].json.dados_coletados.bairro || 'Não informado' }}\n📞 Telefone: {{ $node[\"ia_retornou_resposta_node\"].json.dados_coletados.telefone || $node[\"Normalizar Entrada\"].json.telefone }}\n🛠️ Serviço: {{ $node[\"ia_retornou_resposta_node\"].json.dados_coletados.servico || 'Não informado' }}\n💬 Problema: {{ $node[\"ia_retornou_resposta_node\"].json.dados_coletados.problema_relatado || 'Não informado' }}\n\n🎯 Ação recomendada: Contato humano para confirmar Avaliação Técnica.",
+        "text": "=\ud83d\udd25 NOVO LEAD QUALIFICADO \u2014 Aninha DL Nexus\n\n\ud83d\udccb Segmento: {{ $node[\"ia_retornou_resposta_node\"].json.segmento }}\n\ud83d\udc64 Nome: {{ $node[\"ia_retornou_resposta_node\"].json.dados_coletados.responsavel || $node[\"Normalizar Entrada\"].json.nome_usuario }}\n\ud83d\udccd Bairro: {{ $node[\"ia_retornou_resposta_node\"].json.dados_coletados.bairro || 'N\u00e3o informado' }}\n\ud83d\udcde Telefone: {{ $node[\"ia_retornou_resposta_node\"].json.dados_coletados.telefone || $node[\"Normalizar Entrada\"].json.telefone }}\n\ud83d\udee0\ufe0f Servi\u00e7o: {{ $node[\"ia_retornou_resposta_node\"].json.dados_coletados.servico || 'N\u00e3o informado' }}\n\ud83d\udcac Problema: {{ $node[\"ia_retornou_resposta_node\"].json.dados_coletados.problema_relatado || 'N\u00e3o informado' }}\n\n\ud83c\udfaf A\u00e7\u00e3o recomendada: Contato humano para confirmar Avalia\u00e7\u00e3o T\u00e9cnica.",
         "additionalFields": {}
       },
       "id": "notificar_diogo_node",
@@ -777,5 +777,6 @@
   },
   "settings": {
     "executionOrder": "v1"
-  }
+  },
+  "active": true
 }

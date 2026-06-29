@@ -1,6 +1,6 @@
 {
   "name": "085_SOCIAL_DISPATCHER_DL_NEXUS",
-  "active": false,
+  "active": true,
   "nodes": [
     {
       "parameters": {
@@ -13,7 +13,10 @@
       "name": "Webhook - Dispatcher Social",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [240, 300],
+      "position": [
+        240,
+        300
+      ],
       "webhookId": "085-social-dispatcher-dl-nexus"
     },
     {
@@ -44,18 +47,24 @@
       "name": "IF: approved=true",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [480, 300]
+      "position": [
+        480,
+        300
+      ]
     },
     {
       "parameters": {
         "language": "javaScript",
-        "jsCode": "// ============================================================\n// VALIDADOR DE PAYLOAD - 085_SOCIAL_DISPATCHER_DL_NEXUS\n// Verifica campos obrigatórios antes de disparar para os canais\n// ============================================================\n\nconst body = $input.item.json.body || $input.item.json;\n\nconst camposObrigatorios = ['tema', 'texto', 'canal_destino'];\nconst camposFaltando = [];\n\nfor (const campo of camposObrigatorios) {\n  if (!body[campo] || String(body[campo]).trim() === '') {\n    camposFaltando.push(campo);\n  }\n}\n\nif (camposFaltando.length > 0) {\n  throw new Error(\n    `Payload inválido. Campos obrigatórios ausentes: ${camposFaltando.join(', ')}. ` +\n    `Payload recebido: ${JSON.stringify(body)}`\n  );\n}\n\n// Normaliza canal_destino para array\nlet canais = body.canal_destino;\nif (typeof canais === 'string') {\n  canais = canais.split(',').map(c => c.trim().toLowerCase());\n} else if (!Array.isArray(canais)) {\n  canais = ['instagram', 'facebook', 'google_business', 'tiktok'];\n}\n\n// Monta payload enriquecido\nconst payloadValidado = {\n  ...body,\n  approved: true,\n  canal_destino: canais,\n  dispatch_timestamp: new Date().toISOString(),\n  workflow_origem: '085_SOCIAL_DISPATCHER_DL_NEXUS',\n  versao: 'DL_NEXUS_V3'\n};\n\nreturn [{ json: payloadValidado }];"
+        "jsCode": "// ============================================================\n// VALIDADOR DE PAYLOAD - 085_SOCIAL_DISPATCHER_DL_NEXUS\n// Verifica campos obrigat\u00f3rios antes de disparar para os canais\n// ============================================================\n\nconst body = $input.item.json.body || $input.item.json;\n\nconst camposObrigatorios = ['tema', 'texto', 'canal_destino'];\nconst camposFaltando = [];\n\nfor (const campo of camposObrigatorios) {\n  if (!body[campo] || String(body[campo]).trim() === '') {\n    camposFaltando.push(campo);\n  }\n}\n\nif (camposFaltando.length > 0) {\n  throw new Error(\n    `Payload inv\u00e1lido. Campos obrigat\u00f3rios ausentes: ${camposFaltando.join(', ')}. ` +\n    `Payload recebido: ${JSON.stringify(body)}`\n  );\n}\n\n// Normaliza canal_destino para array\nlet canais = body.canal_destino;\nif (typeof canais === 'string') {\n  canais = canais.split(',').map(c => c.trim().toLowerCase());\n} else if (!Array.isArray(canais)) {\n  canais = ['instagram', 'facebook', 'google_business', 'tiktok'];\n}\n\n// Monta payload enriquecido\nconst payloadValidado = {\n  ...body,\n  approved: true,\n  canal_destino: canais,\n  dispatch_timestamp: new Date().toISOString(),\n  workflow_origem: '085_SOCIAL_DISPATCHER_DL_NEXUS',\n  versao: 'DL_NEXUS_V3'\n};\n\nreturn [{ json: payloadValidado }];"
       },
       "id": "node-003-code-validar",
       "name": "Code: Validar Payload",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [720, 180]
+      "position": [
+        720,
+        180
+      ]
     },
     {
       "parameters": {
@@ -86,10 +95,13 @@
         }
       },
       "id": "node-004-http-instagram",
-      "name": "HTTP: Dispatch → Instagram (081)",
+      "name": "HTTP: Dispatch \u2192 Instagram (081)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1000, 60]
+      "position": [
+        1000,
+        60
+      ]
     },
     {
       "parameters": {
@@ -120,10 +132,13 @@
         }
       },
       "id": "node-005-http-facebook",
-      "name": "HTTP: Dispatch → Facebook (082)",
+      "name": "HTTP: Dispatch \u2192 Facebook (082)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1000, 200]
+      "position": [
+        1000,
+        200
+      ]
     },
     {
       "parameters": {
@@ -154,10 +169,13 @@
         }
       },
       "id": "node-006-http-google",
-      "name": "HTTP: Dispatch → Google Business (083)",
+      "name": "HTTP: Dispatch \u2192 Google Business (083)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1000, 340]
+      "position": [
+        1000,
+        340
+      ]
     },
     {
       "parameters": {
@@ -188,36 +206,45 @@
         }
       },
       "id": "node-007-http-tiktok",
-      "name": "HTTP: Dispatch → TikTok Assistido (084)",
+      "name": "HTTP: Dispatch \u2192 TikTok Assistido (084)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1000, 480]
+      "position": [
+        1000,
+        480
+      ]
     },
     {
       "parameters": {
         "language": "javaScript",
-        "jsCode": "// ============================================================\n// AGREGADOR DE RESULTADOS DE DISPATCH\n// Consolida respostas de todos os canais\n// ============================================================\n\n// Coleta os itens anteriores de todos os branches\nconst items = $input.all();\n\nconst canaisDisparados = [\n  'Instagram (081)',\n  'Facebook (082)',\n  'Google Business (083)',\n  'TikTok Assistido (084)'\n];\n\nconst timestamp = new Date().toISOString();\n\nreturn [{\n  json: {\n    status: 'DISPATCH_CONCLUIDO',\n    canais_disparados: canaisDisparados,\n    total_canais: canaisDisparados.length,\n    timestamp_conclusao: timestamp,\n    workflow: '085_SOCIAL_DISPATCHER_DL_NEXUS',\n    mensagem: `✅ Dispatch concluído em ${canaisDisparados.length} canais às ${timestamp}`\n  }\n}];"
+        "jsCode": "// ============================================================\n// AGREGADOR DE RESULTADOS DE DISPATCH\n// Consolida respostas de todos os canais\n// ============================================================\n\n// Coleta os itens anteriores de todos os branches\nconst items = $input.all();\n\nconst canaisDisparados = [\n  'Instagram (081)',\n  'Facebook (082)',\n  'Google Business (083)',\n  'TikTok Assistido (084)'\n];\n\nconst timestamp = new Date().toISOString();\n\nreturn [{\n  json: {\n    status: 'DISPATCH_CONCLUIDO',\n    canais_disparados: canaisDisparados,\n    total_canais: canaisDisparados.length,\n    timestamp_conclusao: timestamp,\n    workflow: '085_SOCIAL_DISPATCHER_DL_NEXUS',\n    mensagem: `\u2705 Dispatch conclu\u00eddo em ${canaisDisparados.length} canais \u00e0s ${timestamp}`\n  }\n}];"
       },
       "id": "node-008-code-aggregate",
       "name": "Code: Agregar Resultados",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1260, 270]
+      "position": [
+        1260,
+        270
+      ]
     },
     {
       "parameters": {
         "chatId": "CHAT_ID_AQUI",
-        "text": "=✅ *DL NEXUS V3 — DISPATCH SOCIAL CONCLUÍDO*\n\n📣 *Workflow:* 085_SOCIAL_DISPATCHER_DL_NEXUS\n⏱ *Timestamp:* {{ $json.timestamp_conclusao }}\n\n📡 *Canais disparados ({{ $json.total_canais }}):*\n{{ $json.canais_disparados.map(c => '• ' + c).join('\\n') }}\n\n📌 *Status:* {{ $json.status }}\n\n_DL Soluções Condominiais — Automação Social Ativa_",
+        "text": "=\u2705 *DL NEXUS V3 \u2014 DISPATCH SOCIAL CONCLU\u00cdDO*\n\n\ud83d\udce3 *Workflow:* 085_SOCIAL_DISPATCHER_DL_NEXUS\n\u23f1 *Timestamp:* {{ $json.timestamp_conclusao }}\n\n\ud83d\udce1 *Canais disparados ({{ $json.total_canais }}):*\n{{ $json.canais_disparados.map(c => '\u2022 ' + c).join('\\n') }}\n\n\ud83d\udccc *Status:* {{ $json.status }}\n\n_DL Solu\u00e7\u00f5es Condominiais \u2014 Automa\u00e7\u00e3o Social Ativa_",
         "additionalFields": {
           "parse_mode": "Markdown",
           "disable_notification": false
         }
       },
       "id": "node-009-telegram-ok",
-      "name": "Telegram: Confirmação Dispatch",
+      "name": "Telegram: Confirma\u00e7\u00e3o Dispatch",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [1500, 270],
+      "position": [
+        1500,
+        270
+      ],
       "credentials": {
         "telegramApi": {
           "id": "cred-telegram-dl",
@@ -228,17 +255,20 @@
     {
       "parameters": {
         "chatId": "CHAT_ID_AQUI",
-        "text": "=⚠️ *DL NEXUS V3 — DISPATCH BLOQUEADO*\n\n🚫 *Workflow:* 085_SOCIAL_DISPATCHER_DL_NEXUS\n⏱ *Timestamp:* {{ new Date().toISOString() }}\n\n❌ *Motivo:* Post NÃO aprovado (approved ≠ true)\n\n📦 *Payload recebido:*\n```\n{{ JSON.stringify($json.body || $json, null, 2).substring(0, 500) }}\n```\n\n_Ação requerida: Revisar aprovação no workflow 020 antes de reenviar._",
+        "text": "=\u26a0\ufe0f *DL NEXUS V3 \u2014 DISPATCH BLOQUEADO*\n\n\ud83d\udeab *Workflow:* 085_SOCIAL_DISPATCHER_DL_NEXUS\n\u23f1 *Timestamp:* {{ new Date().toISOString() }}\n\n\u274c *Motivo:* Post N\u00c3O aprovado (approved \u2260 true)\n\n\ud83d\udce6 *Payload recebido:*\n```\n{{ JSON.stringify($json.body || $json, null, 2).substring(0, 500) }}\n```\n\n_A\u00e7\u00e3o requerida: Revisar aprova\u00e7\u00e3o no workflow 020 antes de reenviar._",
         "additionalFields": {
           "parse_mode": "Markdown",
           "disable_notification": false
         }
       },
       "id": "node-010-telegram-nok",
-      "name": "Telegram: Alerta Não Aprovado",
+      "name": "Telegram: Alerta N\u00e3o Aprovado",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [720, 460],
+      "position": [
+        720,
+        460
+      ],
       "credentials": {
         "telegramApi": {
           "id": "cred-telegram-dl",
@@ -254,22 +284,28 @@
       "name": "Error Trigger",
       "type": "n8n-nodes-base.errorTrigger",
       "typeVersion": 1,
-      "position": [240, 540]
+      "position": [
+        240,
+        540
+      ]
     },
     {
       "parameters": {
         "chatId": "CHAT_ID_AQUI",
-        "text": "=🔴 *DL NEXUS V3 — ERRO CRÍTICO NO DISPATCHER*\n\n⚙️ *Workflow:* 085_SOCIAL_DISPATCHER_DL_NEXUS\n⏱ *Timestamp:* {{ new Date().toISOString() }}\n\n❌ *Erro:* {{ $json.error.message }}\n🔗 *Nó:* {{ $json.error.node.name }}\n\n```\n{{ $json.error.stack ? $json.error.stack.substring(0, 400) : 'Stack não disponível' }}\n```\n\n🔧 *Ação:* Verificar logs no n8n e reenviar o payload após correção.",
+        "text": "=\ud83d\udd34 *DL NEXUS V3 \u2014 ERRO CR\u00cdTICO NO DISPATCHER*\n\n\u2699\ufe0f *Workflow:* 085_SOCIAL_DISPATCHER_DL_NEXUS\n\u23f1 *Timestamp:* {{ new Date().toISOString() }}\n\n\u274c *Erro:* {{ $json.error.message }}\n\ud83d\udd17 *N\u00f3:* {{ $json.error.node.name }}\n\n```\n{{ $json.error.stack ? $json.error.stack.substring(0, 400) : 'Stack n\u00e3o dispon\u00edvel' }}\n```\n\n\ud83d\udd27 *A\u00e7\u00e3o:* Verificar logs no n8n e reenviar o payload ap\u00f3s corre\u00e7\u00e3o.",
         "additionalFields": {
           "parse_mode": "Markdown",
           "disable_notification": false
         }
       },
       "id": "node-012-telegram-error",
-      "name": "Telegram: Alerta Erro Crítico",
+      "name": "Telegram: Alerta Erro Cr\u00edtico",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [480, 540],
+      "position": [
+        480,
+        540
+      ],
       "credentials": {
         "telegramApi": {
           "id": "cred-telegram-dl",
@@ -301,7 +337,7 @@
         ],
         [
           {
-            "node": "Telegram: Alerta Não Aprovado",
+            "node": "Telegram: Alerta N\u00e3o Aprovado",
             "type": "main",
             "index": 0
           }
@@ -312,29 +348,29 @@
       "main": [
         [
           {
-            "node": "HTTP: Dispatch → Instagram (081)",
+            "node": "HTTP: Dispatch \u2192 Instagram (081)",
             "type": "main",
             "index": 0
           },
           {
-            "node": "HTTP: Dispatch → Facebook (082)",
+            "node": "HTTP: Dispatch \u2192 Facebook (082)",
             "type": "main",
             "index": 0
           },
           {
-            "node": "HTTP: Dispatch → Google Business (083)",
+            "node": "HTTP: Dispatch \u2192 Google Business (083)",
             "type": "main",
             "index": 0
           },
           {
-            "node": "HTTP: Dispatch → TikTok Assistido (084)",
+            "node": "HTTP: Dispatch \u2192 TikTok Assistido (084)",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "HTTP: Dispatch → Instagram (081)": {
+    "HTTP: Dispatch \u2192 Instagram (081)": {
       "main": [
         [
           {
@@ -345,7 +381,7 @@
         ]
       ]
     },
-    "HTTP: Dispatch → Facebook (082)": {
+    "HTTP: Dispatch \u2192 Facebook (082)": {
       "main": [
         [
           {
@@ -356,7 +392,7 @@
         ]
       ]
     },
-    "HTTP: Dispatch → Google Business (083)": {
+    "HTTP: Dispatch \u2192 Google Business (083)": {
       "main": [
         [
           {
@@ -367,7 +403,7 @@
         ]
       ]
     },
-    "HTTP: Dispatch → TikTok Assistido (084)": {
+    "HTTP: Dispatch \u2192 TikTok Assistido (084)": {
       "main": [
         [
           {
@@ -382,7 +418,7 @@
       "main": [
         [
           {
-            "node": "Telegram: Confirmação Dispatch",
+            "node": "Telegram: Confirma\u00e7\u00e3o Dispatch",
             "type": "main",
             "index": 0
           }
@@ -393,7 +429,7 @@
       "main": [
         [
           {
-            "node": "Telegram: Alerta Erro Crítico",
+            "node": "Telegram: Alerta Erro Cr\u00edtico",
             "type": "main",
             "index": 0
           }

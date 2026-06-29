@@ -128,7 +128,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"nvidia/nemotron-3-nano-omni-30b-a3b-reasoning\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Atue como Social Media e Designer especialista em Marketing Digital B2B. A empresa é a DL Soluções Condominiais (Especialista em automação, segurança eletrônica e elétrica. NUNCA hidráulica. Associada ABESE/CREA-RJ). Relacione a notícia fornecida com nossas atividades: Energia Solar, Recarga de Carros Elétricos, Portaria Autônoma, Manutenção Recorrente, AVCB, Prevenção de Incêndio, DL Guardião (assaltos), DL EcoVolt (valor de energia), DL Fortress (gestão de síndicos). Explique o significado e o impacto para o condomínio de forma técnica e comercial.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Notícia: {{$('Extrair Manchete Aleatoria').item.json.title}} - {{$('Extrair Manchete Aleatoria').item.json.content}}\"\n    }\n  ],\n  \"max_tokens\": 1024\n}",
+        "jsonBody": "={\n  \"model\": \"nvidia/nemotron-3-nano-omni-30b-a3b-reasoning\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Atue como Social Media e Designer especialista em Marketing Digital B2B. A empresa \u00e9 a DL Solu\u00e7\u00f5es Condominiais (Especialista em automa\u00e7\u00e3o, seguran\u00e7a eletr\u00f4nica e el\u00e9trica. NUNCA hidr\u00e1ulica. Associada ABESE/CREA-RJ). Relacione a not\u00edcia fornecida com nossas atividades: Energia Solar, Recarga de Carros El\u00e9tricos, Portaria Aut\u00f4noma, Manuten\u00e7\u00e3o Recorrente, AVCB, Preven\u00e7\u00e3o de Inc\u00eandio, DL Guardi\u00e3o (assaltos), DL EcoVolt (valor de energia), DL Fortress (gest\u00e3o de s\u00edndicos). Explique o significado e o impacto para o condom\u00ednio de forma t\u00e9cnica e comercial.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Not\u00edcia: {{$('Extrair Manchete Aleatoria').item.json.title}} - {{$('Extrair Manchete Aleatoria').item.json.content}}\"\n    }\n  ],\n  \"max_tokens\": 1024\n}",
         "options": {}
       },
       "id": "nvidia_news",
@@ -191,7 +191,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"nvidia/nemotron-3-nano-omni-30b-a3b-reasoning\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Atue como Social Media especialista em engenharia condominial. Escreva um post de bastidores de obra ressaltando a excelência técnica da DL Soluções Condominiais nas áreas de energia solar, infraestrutura elétrica ou segurança eletrônica. Foco em síndicos profissionais.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Crie uma postagem inspiradora e corporativa para acompanhar uma foto real de instalação de infraestrutura em um condomínio.\"\n    }\n  ],\n  \"max_tokens\": 1024\n}",
+        "jsonBody": "={\n  \"model\": \"nvidia/nemotron-3-nano-omni-30b-a3b-reasoning\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Atue como Social Media especialista em engenharia condominial. Escreva um post de bastidores de obra ressaltando a excel\u00eancia t\u00e9cnica da DL Solu\u00e7\u00f5es Condominiais nas \u00e1reas de energia solar, infraestrutura el\u00e9trica ou seguran\u00e7a eletr\u00f4nica. Foco em s\u00edndicos profissionais.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Crie uma postagem inspiradora e corporativa para acompanhar uma foto real de instala\u00e7\u00e3o de infraestrutura em um condom\u00ednio.\"\n    }\n  ],\n  \"max_tokens\": 1024\n}",
         "options": {}
       },
       "id": "nvidia_drive",
@@ -412,5 +412,6 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "pinData": {}
+  "pinData": {},
+  "active": true
 }

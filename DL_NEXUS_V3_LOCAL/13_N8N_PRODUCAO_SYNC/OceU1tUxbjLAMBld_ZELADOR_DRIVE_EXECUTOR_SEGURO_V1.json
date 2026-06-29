@@ -4,7 +4,7 @@
   "id": "OceU1tUxbjLAMBld",
   "name": "ZELADOR_DRIVE_EXECUTOR_SEGURO_V1",
   "description": null,
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -54,10 +54,10 @@
     },
     {
       "parameters": {
-        "jsCode": "const forbidden = ['delete', 'trash', 'remove', 'erase', 'destroy', 'rename', 'overwrite', 'permanently_delete'];\n\nreturn items.map(item => {\n  const action = String(item.json.acao_aprovada || '').toLowerCase();\n  const status = String(item.json.status || '').toLowerCase();\n  const dest_id = item.json.real_folder_id || item.json.pasta_destino_id;\n\n  if (forbidden.includes(action)) {\n    throw new Error(`Ação proibida bloqueada: ${action}`);\n  }\n  if (action !== 'mover') {\n    throw new Error(`Ação não autorizada para executor: ${action}`);\n  }\n  if (status !== 'aprovado_para_mover') {\n    throw new Error(`Status não autorizado para mover: ${status}`);\n  }\n  if (!dest_id) {\n    throw new Error('Sem pasta_destino_id real. Movimento bloqueado.');\n  }\n  if (item.json.precisa_revisao_humana === true) {\n    throw new Error('Arquivo marcado para revisão humana. Movimento bloqueado.');\n  }\n\n  item.json.safe_destination_id = dest_id;\n  return item;\n});"
+        "jsCode": "const forbidden = ['delete', 'trash', 'remove', 'erase', 'destroy', 'rename', 'overwrite', 'permanently_delete'];\n\nreturn items.map(item => {\n  const action = String(item.json.acao_aprovada || '').toLowerCase();\n  const status = String(item.json.status || '').toLowerCase();\n  const dest_id = item.json.real_folder_id || item.json.pasta_destino_id;\n\n  if (forbidden.includes(action)) {\n    throw new Error(`A\u00e7\u00e3o proibida bloqueada: ${action}`);\n  }\n  if (action !== 'mover') {\n    throw new Error(`A\u00e7\u00e3o n\u00e3o autorizada para executor: ${action}`);\n  }\n  if (status !== 'aprovado_para_mover') {\n    throw new Error(`Status n\u00e3o autorizado para mover: ${status}`);\n  }\n  if (!dest_id) {\n    throw new Error('Sem pasta_destino_id real. Movimento bloqueado.');\n  }\n  if (item.json.precisa_revisao_humana === true) {\n    throw new Error('Arquivo marcado para revis\u00e3o humana. Movimento bloqueado.');\n  }\n\n  item.json.safe_destination_id = dest_id;\n  return item;\n});"
       },
       "id": "code_bloqueio_seguranca",
-      "name": "Bloqueio de Segurança",
+      "name": "Bloqueio de Seguran\u00e7a",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
@@ -139,14 +139,14 @@
       "main": [
         [
           {
-            "node": "Bloqueio de Segurança",
+            "node": "Bloqueio de Seguran\u00e7a",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Bloqueio de Segurança": {
+    "Bloqueio de Seguran\u00e7a": {
       "main": [
         [
           {

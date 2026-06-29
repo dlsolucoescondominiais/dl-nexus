@@ -11,18 +11,24 @@
       "name": "Webhook_Entrada",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [ 250, 300 ],
+      "position": [
+        250,
+        300
+      ],
       "webhookId": "killcritic-webhook-176"
     },
     {
       "parameters": {
-        "jsCode": "const items = $input.all();\nconst result = [];\n\nfor (const item of items) {\n  let data = item.json;\n  let jsonString = JSON.stringify(data);\n\n  // REGRAS KILLCRITIC DE TEXTO\n  jsonString = jsonString.replace(/visita\\s*t[ée]cnica/gi, \"Avaliação Técnica\");\n  jsonString = jsonString.replace(/Condfy/gi, \"Fortress\");\n  jsonString = jsonString.replace(/\\bDiogo\\b/gi, \"Tecnólogo Responsável\");\n  jsonString = jsonString.replace(/\\bengenheiro\\b/gi, \"Tecnólogo Responsável\");\n\n  let parsed = JSON.parse(jsonString);\n\n  // REGRA DE RISCO CRÍTICO\n  if (parsed.risco && parsed.risco.toLowerCase() === 'crítico' && !parsed.aprovacao_diretoria) {\n     parsed.status_aprovacao = \"BLOQUEADO - Necessita Aprovação da Diretoria\";\n     parsed.bloqueio_geracao = true;\n  } else {\n     parsed.status_aprovacao = \"LIBERADO\";\n     parsed.bloqueio_geracao = false;\n  }\n\n  // REGRA DADOS FALTANTES E URGÊNCIA GASTRONÔMICA\n  if (parsed.faltam_dados_criticos === true || !parsed.dados_completos) {\n     parsed.precificacao_recomendada = \"Sob Avaliação Técnica\";\n     parsed.faixa_comercial = \"Sob Avaliação Técnica\";\n  }\n  \n  if (parsed.equipamentos_gastronomia && parsed.equipamentos_gastronomia.length > 0) {\n      parsed.fator_urgencia = 1.5; // Alta urgência\n  }\n\n  // PROTEÇÃO DE CUSTO INTERNO\n  if (parsed.custo_interno !== undefined) delete parsed.custo_interno;\n  if (parsed.lucro_bruto !== undefined) delete parsed.lucro_bruto;\n  if (parsed.margem_interna !== undefined) delete parsed.margem_interna;\n\n  // REGRA DE IMPOSTOS\n  if (parsed.imposto) {\n     parsed.imposto_estimado_percentual = parsed.imposto;\n     delete parsed.imposto;\n  }\n  parsed.nota_fiscal = \"Imposto baseado em imposto_estimado_percentual - pendente de validação contábil\";\n\n  result.push({ json: parsed });\n}\n\nreturn result;"
+        "jsCode": "const items = $input.all();\nconst result = [];\n\nfor (const item of items) {\n  let data = item.json;\n  let jsonString = JSON.stringify(data);\n\n  // REGRAS KILLCRITIC DE TEXTO\n  jsonString = jsonString.replace(/visita\\s*t[\u00e9e]cnica/gi, \"Avalia\u00e7\u00e3o T\u00e9cnica\");\n  jsonString = jsonString.replace(/Condfy/gi, \"Fortress\");\n  jsonString = jsonString.replace(/\\bDiogo\\b/gi, \"Tecn\u00f3logo Respons\u00e1vel\");\n  jsonString = jsonString.replace(/\\bengenheiro\\b/gi, \"Tecn\u00f3logo Respons\u00e1vel\");\n\n  let parsed = JSON.parse(jsonString);\n\n  // REGRA DE RISCO CR\u00cdTICO\n  if (parsed.risco && parsed.risco.toLowerCase() === 'cr\u00edtico' && !parsed.aprovacao_diretoria) {\n     parsed.status_aprovacao = \"BLOQUEADO - Necessita Aprova\u00e7\u00e3o da Diretoria\";\n     parsed.bloqueio_geracao = true;\n  } else {\n     parsed.status_aprovacao = \"LIBERADO\";\n     parsed.bloqueio_geracao = false;\n  }\n\n  // REGRA DADOS FALTANTES E URG\u00caNCIA GASTRON\u00d4MICA\n  if (parsed.faltam_dados_criticos === true || !parsed.dados_completos) {\n     parsed.precificacao_recomendada = \"Sob Avalia\u00e7\u00e3o T\u00e9cnica\";\n     parsed.faixa_comercial = \"Sob Avalia\u00e7\u00e3o T\u00e9cnica\";\n  }\n  \n  if (parsed.equipamentos_gastronomia && parsed.equipamentos_gastronomia.length > 0) {\n      parsed.fator_urgencia = 1.5; // Alta urg\u00eancia\n  }\n\n  // PROTE\u00c7\u00c3O DE CUSTO INTERNO\n  if (parsed.custo_interno !== undefined) delete parsed.custo_interno;\n  if (parsed.lucro_bruto !== undefined) delete parsed.lucro_bruto;\n  if (parsed.margem_interna !== undefined) delete parsed.margem_interna;\n\n  // REGRA DE IMPOSTOS\n  if (parsed.imposto) {\n     parsed.imposto_estimado_percentual = parsed.imposto;\n     delete parsed.imposto;\n  }\n  parsed.nota_fiscal = \"Imposto baseado em imposto_estimado_percentual - pendente de valida\u00e7\u00e3o cont\u00e1bil\";\n\n  result.push({ json: parsed });\n}\n\nreturn result;"
       },
       "id": "e43b12dc-4a66-4122-bd54-00b12345efgh",
       "name": "Auditoria_KillCritic",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [ 450, 300 ]
+      "position": [
+        450,
+        300
+      ]
     },
     {
       "parameters": {
@@ -39,11 +45,14 @@
       "name": "Verifica_Bloqueio",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [ 650, 300 ]
+      "position": [
+        650,
+        300
+      ]
     },
     {
       "parameters": {
-        "content": "## Workflow 176 - KILLCRITIC Precificação\n\nFiltra e bloqueia emissão automática se houver risco crítico sem aprovação. Também higieniza termos proibidos e protege margens internas de serem expostas na proposta.",
+        "content": "## Workflow 176 - KILLCRITIC Precifica\u00e7\u00e3o\n\nFiltra e bloqueia emiss\u00e3o autom\u00e1tica se houver risco cr\u00edtico sem aprova\u00e7\u00e3o. Tamb\u00e9m higieniza termos proibidos e protege margens internas de serem expostas na proposta.",
         "height": 250,
         "width": 600
       },
@@ -51,7 +60,10 @@
       "name": "Nota_Explicativa",
       "type": "n8n-nodes-base.stickyNote",
       "typeVersion": 1,
-      "position": [ 200, 100 ]
+      "position": [
+        200,
+        100
+      ]
     }
   ],
   "pinData": {},
@@ -79,7 +91,7 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "saveExecutionProgress": true,

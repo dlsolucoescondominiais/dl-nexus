@@ -18,7 +18,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const orcamento = $json.body || {};\nconst dados_conta = orcamento.dados_conta || {};\nlet consumo = dados_conta.consumo_mensal_kwh || 0;\n\n// Se houver histórico de 12 meses, calcular a média real\nif (dados_conta.historico_12_meses_kwh && dados_conta.historico_12_meses_kwh.length > 0) {\n  const soma = dados_conta.historico_12_meses_kwh.reduce((a, b) => a + b, 0);\n  consumo = Math.round(soma / dados_conta.historico_12_meses_kwh.length);\n}\n\nconst tarifa = dados_conta.tarifa || 1.15; // Tarifa média do RJ se não houver\nconst valor_estimado_conta = consumo * tarifa;\n\nreturn {\n  ...orcamento,\n  dados_conta: {\n    ...dados_conta,\n    consumo_mensal_kwh: consumo,\n    valor_medio_conta: dados_conta.valor_medio_conta || valor_estimado_conta,\n    tarifa: tarifa\n  },\n  status: 'analisado_conta'\n};"
+        "jsCode": "const orcamento = $json.body || {};\nconst dados_conta = orcamento.dados_conta || {};\nlet consumo = dados_conta.consumo_mensal_kwh || 0;\n\n// Se houver hist\u00f3rico de 12 meses, calcular a m\u00e9dia real\nif (dados_conta.historico_12_meses_kwh && dados_conta.historico_12_meses_kwh.length > 0) {\n  const soma = dados_conta.historico_12_meses_kwh.reduce((a, b) => a + b, 0);\n  consumo = Math.round(soma / dados_conta.historico_12_meses_kwh.length);\n}\n\nconst tarifa = dados_conta.tarifa || 1.15; // Tarifa m\u00e9dia do RJ se n\u00e3o houver\nconst valor_estimado_conta = consumo * tarifa;\n\nreturn {\n  ...orcamento,\n  dados_conta: {\n    ...dados_conta,\n    consumo_mensal_kwh: consumo,\n    valor_medio_conta: dados_conta.valor_medio_conta || valor_estimado_conta,\n    tarifa: tarifa\n  },\n  status: 'analisado_conta'\n};"
       },
       "id": "analisar_consumo",
       "name": "Processar Consumo e Tarifa",
@@ -90,6 +90,6 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {}
 }

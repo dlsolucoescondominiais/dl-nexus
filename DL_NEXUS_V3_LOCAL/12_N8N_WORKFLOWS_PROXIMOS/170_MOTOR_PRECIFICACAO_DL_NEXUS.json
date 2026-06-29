@@ -20,7 +20,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const payload = $input.item.json.body || $input.item.json;\n\n// Verificacao de dados criticos\nconst dadosCriticosPresentes = payload.escopo && payload.local && payload.clienteId;\n\nif (!dadosCriticosPresentes) {\n  return [{\n    json: {\n      status: \"Sob Avaliação Técnica\",\n      mensagem: \"Faltam dados críticos para precificação automática.\",\n      payloadOriginal: payload\n    }\n  }];\n}\n\n// Verifica se há gastronomia para urgência\nlet fatorUrgencia = 1.0;\nconst escopoStr = JSON.stringify(payload.escopo).toLowerCase();\nif (escopoStr.includes('chapa') || escopoStr.includes('fritadeira') || escopoStr.includes('gastronomia')) {\n  fatorUrgencia = 1.35; // Alta urgência\n}\n\nreturn [{\n  json: {\n    status: \"Processando\",\n    payload: payload,\n    fatorUrgencia: fatorUrgencia\n  }\n}];"
+        "jsCode": "const payload = $input.item.json.body || $input.item.json;\n\n// Verificacao de dados criticos\nconst dadosCriticosPresentes = payload.escopo && payload.local && payload.clienteId;\n\nif (!dadosCriticosPresentes) {\n  return [{\n    json: {\n      status: \"Sob Avalia\u00e7\u00e3o T\u00e9cnica\",\n      mensagem: \"Faltam dados cr\u00edticos para precifica\u00e7\u00e3o autom\u00e1tica.\",\n      payloadOriginal: payload\n    }\n  }];\n}\n\n// Verifica se h\u00e1 gastronomia para urg\u00eancia\nlet fatorUrgencia = 1.0;\nconst escopoStr = JSON.stringify(payload.escopo).toLowerCase();\nif (escopoStr.includes('chapa') || escopoStr.includes('fritadeira') || escopoStr.includes('gastronomia')) {\n  fatorUrgencia = 1.35; // Alta urg\u00eancia\n}\n\nreturn [{\n  json: {\n    status: \"Processando\",\n    payload: payload,\n    fatorUrgencia: fatorUrgencia\n  }\n}];"
       },
       "id": "e03be180-8772-4d04-bf7e-f83141fdebe2",
       "name": "Valida Payload",
@@ -37,7 +37,7 @@
           "string": [
             {
               "value1": "={{ $json.status }}",
-              "value2": "Sob Avaliação Técnica"
+              "value2": "Sob Avalia\u00e7\u00e3o T\u00e9cnica"
             }
           ]
         }
@@ -79,7 +79,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const data = $input.item.json;\nconst fatorUrgencia = data.fatorUrgencia || 1.0;\nconst imposto_estimado_percentual = 0.15;\nconst margem = 0.40;\n\n// O custo interno (data.custoMateriais + data.custoMaoDeObra) NUNCA deve ser exposto\nconst custoBase = data.custoMateriais + data.custoMaoDeObra;\nconst precoVendaBase = custoBase / (1 - margem - imposto_estimado_percentual);\nconst precoRecomendado = precoVendaBase * fatorUrgencia;\n\nconst faixaComercialMin = precoRecomendado * 0.90;\nconst faixaComercialMax = precoRecomendado * 1.15;\n\nreturn [{\n  json: {\n    status: \"Sucesso\",\n    faixaComercial: {\n      min: faixaComercialMin,\n      max: faixaComercialMax\n    },\n    precoRecomendado: precoRecomendado,\n    imposto: \"imposto_estimado_percentual (Pendente de validação contábil)\",\n    observacao: \"Valores não incluem eventuais custos de Avaliação Técnica presencial.\"\n  }\n}];"
+        "jsCode": "const data = $input.item.json;\nconst fatorUrgencia = data.fatorUrgencia || 1.0;\nconst imposto_estimado_percentual = 0.15;\nconst margem = 0.40;\n\n// O custo interno (data.custoMateriais + data.custoMaoDeObra) NUNCA deve ser exposto\nconst custoBase = data.custoMateriais + data.custoMaoDeObra;\nconst precoVendaBase = custoBase / (1 - margem - imposto_estimado_percentual);\nconst precoRecomendado = precoVendaBase * fatorUrgencia;\n\nconst faixaComercialMin = precoRecomendado * 0.90;\nconst faixaComercialMax = precoRecomendado * 1.15;\n\nreturn [{\n  json: {\n    status: \"Sucesso\",\n    faixaComercial: {\n      min: faixaComercialMin,\n      max: faixaComercialMax\n    },\n    precoRecomendado: precoRecomendado,\n    imposto: \"imposto_estimado_percentual (Pendente de valida\u00e7\u00e3o cont\u00e1bil)\",\n    observacao: \"Valores n\u00e3o incluem eventuais custos de Avalia\u00e7\u00e3o T\u00e9cnica presencial.\"\n  }\n}];"
       },
       "id": "b18b449b-7e4a-4e2a-a953-f72bcfb19902",
       "name": "Agrupa e Precifica",
@@ -93,7 +93,7 @@
     {
       "parameters": {},
       "id": "a3b90901-b847-4cf0-8809-548d795b5c73",
-      "name": "Merge Saídas",
+      "name": "Merge Sa\u00eddas",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
       "position": [
@@ -130,7 +130,7 @@
       "main": [
         [
           {
-            "node": "Merge Saídas",
+            "node": "Merge Sa\u00eddas",
             "type": "main",
             "index": 0
           }
@@ -170,7 +170,7 @@
       "main": [
         [
           {
-            "node": "Merge Saídas",
+            "node": "Merge Sa\u00eddas",
             "type": "main",
             "index": 1
           }
@@ -178,7 +178,7 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },

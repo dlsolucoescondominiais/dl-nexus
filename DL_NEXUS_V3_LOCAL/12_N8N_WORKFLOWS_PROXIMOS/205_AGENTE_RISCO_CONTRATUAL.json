@@ -53,7 +53,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\"model\": \"deepseek-chat\", \"response_format\": {\"type\": \"json_object\"}, \"messages\": [{\"role\": \"system\", \"content\": \"Você é o Agente de Risco Contratual. Analise os riscos operacionais da execução. Sugira cláusulas comerciais de proteção (ex: exclusão de danos pré-existentes) e condições de pagamento seguras.\"}, {\"role\": \"user\", \"content\": \"PAYLOAD DO AGENTE:\\n={{JSON.stringify($json)}}\"}]}",
+        "jsonBody": "{\"model\": \"deepseek-chat\", \"response_format\": {\"type\": \"json_object\"}, \"messages\": [{\"role\": \"system\", \"content\": \"Voc\u00ea \u00e9 o Agente de Risco Contratual. Analise os riscos operacionais da execu\u00e7\u00e3o. Sugira cl\u00e1usulas comerciais de prote\u00e7\u00e3o (ex: exclus\u00e3o de danos pr\u00e9-existentes) e condi\u00e7\u00f5es de pagamento seguras.\"}, {\"role\": \"user\", \"content\": \"PAYLOAD DO AGENTE:\\n={{JSON.stringify($json)}}\"}]}",
         "options": {}
       },
       "id": "api_llm",
@@ -114,6 +114,6 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {}
 }

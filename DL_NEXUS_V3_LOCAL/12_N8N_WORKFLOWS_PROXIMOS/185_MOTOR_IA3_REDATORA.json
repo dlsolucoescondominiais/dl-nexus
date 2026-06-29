@@ -7,7 +7,10 @@
       "name": "Execute Workflow Trigger",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
-      "position": [0, 0]
+      "position": [
+        0,
+        0
+      ]
     },
     {
       "parameters": {
@@ -28,14 +31,17 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Você é a IA Redatora da DL Soluções Condominiais. Usando o caso 'Sra. Carla' como referência estrutural, gere 2 textos em Markdown: 1) Proposta Cliente (defensável, limpa, sem nomes de fornecedores/hardware), e 2) Proposta Interna (com detalhes de hardware e custos para a equipe técnica). Adicione a identidade visual da DL (ex: ![Logo DL](/assets/logo-dl-solucoes.png)). Retorne um JSON ESTRITO com: { \\\"proposta_cliente\\\": \\\"...\\\", \\\"proposta_interna\\\": \\\"...\\\", \\\"resumo_whatsapp\\\": \\\"...\\\" }.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"DADOS TOTAIS:\\n\" + JSON.stringify($json)\n    }\n  ]\n}",
+        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Voc\u00ea \u00e9 a IA Redatora da DL Solu\u00e7\u00f5es Condominiais. Usando o caso 'Sra. Carla' como refer\u00eancia estrutural, gere 2 textos em Markdown: 1) Proposta Cliente (defens\u00e1vel, limpa, sem nomes de fornecedores/hardware), e 2) Proposta Interna (com detalhes de hardware e custos para a equipe t\u00e9cnica). Adicione a identidade visual da DL (ex: ![Logo DL](/assets/logo-dl-solucoes.png)). Retorne um JSON ESTRITO com: { \\\"proposta_cliente\\\": \\\"...\\\", \\\"proposta_interna\\\": \\\"...\\\", \\\"resumo_whatsapp\\\": \\\"...\\\" }.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"DADOS TOTAIS:\\n\" + JSON.stringify($json)\n    }\n  ]\n}",
         "options": {}
       },
       "id": "deepseek_redatora",
       "name": "DeepSeek: IA Redatora",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [200, 0]
+      "position": [
+        200,
+        0
+      ]
     },
     {
       "parameters": {
@@ -56,14 +62,17 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Você é o Agente Conferente de Sigilo da DL. Analise a 'proposta_cliente'. Se houver QUALQUER menção a nomes de fornecedores (Intelbras, Garen, HDL, etc) ou referências de hardware específicas que o cliente possa usar para 'fazer sozinho', REMOVA-AS ou substitua por 'Equipamento DL Homologado'. Retorne o JSON final corrigido: { \\\"proposta_cliente\\\": \\\"...\\\", \\\"proposta_interna\\\": \\\"...\\\", \\\"resumo_whatsapp\\\": \\\"...\\\" }.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"JSON DA REDATORA:\\n\" + $json.choices[0].message.content\n    }\n  ]\n}",
+        "jsonBody": "={\n  \"model\": \"deepseek-chat\",\n  \"response_format\": {\"type\": \"json_object\"},\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Voc\u00ea \u00e9 o Agente Conferente de Sigilo da DL. Analise a 'proposta_cliente'. Se houver QUALQUER men\u00e7\u00e3o a nomes de fornecedores (Intelbras, Garen, HDL, etc) ou refer\u00eancias de hardware espec\u00edficas que o cliente possa usar para 'fazer sozinho', REMOVA-AS ou substitua por 'Equipamento DL Homologado'. Retorne o JSON final corrigido: { \\\"proposta_cliente\\\": \\\"...\\\", \\\"proposta_interna\\\": \\\"...\\\", \\\"resumo_whatsapp\\\": \\\"...\\\" }.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"JSON DA REDATORA:\\n\" + $json.choices[0].message.content\n    }\n  ]\n}",
         "options": {}
       },
       "id": "deepseek_qa_sigilo",
       "name": "DeepSeek: Conferente Sigilo",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [400, 0]
+      "position": [
+        400,
+        0
+      ]
     },
     {
       "parameters": {
@@ -73,7 +82,10 @@
       "name": "Merge IA 3 Data",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [600, 0]
+      "position": [
+        600,
+        0
+      ]
     }
   ],
   "connections": {
@@ -111,6 +123,6 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {}
 }

@@ -7,7 +7,10 @@
       "name": "Execute Workflow Trigger",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
-      "position": [0, 0]
+      "position": [
+        0,
+        0
+      ]
     },
     {
       "parameters": {
@@ -17,7 +20,10 @@
       "name": "Extracao de Localidade",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [200, 0]
+      "position": [
+        200,
+        0
+      ]
     },
     {
       "parameters": {
@@ -43,14 +49,17 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"Você é o Orçamentista Comercial IA da DL Soluções Condominiais. Receba o escopo e o diagnóstico (já avaliado pela IA Técnica). Seu objetivo é: 1) Pesquisar e estimar prestadores/mão de obra baseados na localidade ('\" + $json.bairro_referencia + \"'). 2) Estimar materiais divididos em grupos. 3) Calcular deslocamento. 4) Aplicar margem de lucro (0.35 a 0.45). 5) Retornar um JSON ESTRITO contendo: { \\\"mao_obra\\\": [], \\\"materiais\\\": [], \\\"deslocamento\\\": 0, \\\"totais\\\": { \\\"total_servico\\\": 0, \\\"total_material\\\": 0, \\\"total_geral\\\": 0, \\\"valor_pix\\\": 0, \\\"valor_cartao\\\": 0 }, \\\"condicoes_comerciais\\\": {} }.\\n\\nDADOS DE ENTRADA:\\n\" + JSON.stringify($json) + \"\\n\\nRetorne APENAS o JSON válido sem formatação markdown extra.\"\n        }\n      ]\n    }\n  ],\n  \"generationConfig\": {\n    \"response_mime_type\": \"application/json\"\n  }\n}",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"Voc\u00ea \u00e9 o Or\u00e7amentista Comercial IA da DL Solu\u00e7\u00f5es Condominiais. Receba o escopo e o diagn\u00f3stico (j\u00e1 avaliado pela IA T\u00e9cnica). Seu objetivo \u00e9: 1) Pesquisar e estimar prestadores/m\u00e3o de obra baseados na localidade ('\" + $json.bairro_referencia + \"'). 2) Estimar materiais divididos em grupos. 3) Calcular deslocamento. 4) Aplicar margem de lucro (0.35 a 0.45). 5) Retornar um JSON ESTRITO contendo: { \\\"mao_obra\\\": [], \\\"materiais\\\": [], \\\"deslocamento\\\": 0, \\\"totais\\\": { \\\"total_servico\\\": 0, \\\"total_material\\\": 0, \\\"total_geral\\\": 0, \\\"valor_pix\\\": 0, \\\"valor_cartao\\\": 0 }, \\\"condicoes_comerciais\\\": {} }.\\n\\nDADOS DE ENTRADA:\\n\" + JSON.stringify($json) + \"\\n\\nRetorne APENAS o JSON v\u00e1lido sem formata\u00e7\u00e3o markdown extra.\"\n        }\n      ]\n    }\n  ],\n  \"generationConfig\": {\n    \"response_mime_type\": \"application/json\"\n  }\n}",
         "options": {}
       },
       "id": "gemini_orcamentista",
-      "name": "Gemini: Orçamentista Comercial",
+      "name": "Gemini: Or\u00e7amentista Comercial",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [400, 0]
+      "position": [
+        400,
+        0
+      ]
     },
     {
       "parameters": {
@@ -76,14 +85,17 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"Você é o Diretor Comercial (QA) da DL. Avalie o orçamento montado pelo Orçamentista Comercial. Regras: 1) O piso mínimo de visita/emergência não pode ser inferior a R$ 450. 2) O valor do Cartão deve ter +9% sobre o PIX. 3) O custo dos materiais deve estar coerente com mercado. Se houver falha matemática ou margem predatória, corrija os totais. Retorne O MESMO ESQUELETO DE JSON (com correções se necessário): { \\\"mao_obra\\\": [], \\\"materiais\\\": [], \\\"deslocamento\\\": 0, \\\"totais\\\": {}, \\\"condicoes_comerciais\\\": {} }.\\n\\nORÇAMENTO INICIAL:\\n\" + $json.candidates[0].content.parts[0].text + \"\\n\\nRetorne APENAS o JSON válido.\"\n        }\n      ]\n    }\n  ],\n  \"generationConfig\": {\n    \"response_mime_type\": \"application/json\"\n  }\n}",
+        "jsonBody": "={\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"Voc\u00ea \u00e9 o Diretor Comercial (QA) da DL. Avalie o or\u00e7amento montado pelo Or\u00e7amentista Comercial. Regras: 1) O piso m\u00ednimo de visita/emerg\u00eancia n\u00e3o pode ser inferior a R$ 450. 2) O valor do Cart\u00e3o deve ter +9% sobre o PIX. 3) O custo dos materiais deve estar coerente com mercado. Se houver falha matem\u00e1tica ou margem predat\u00f3ria, corrija os totais. Retorne O MESMO ESQUELETO DE JSON (com corre\u00e7\u00f5es se necess\u00e1rio): { \\\"mao_obra\\\": [], \\\"materiais\\\": [], \\\"deslocamento\\\": 0, \\\"totais\\\": {}, \\\"condicoes_comerciais\\\": {} }.\\n\\nOR\u00c7AMENTO INICIAL:\\n\" + $json.candidates[0].content.parts[0].text + \"\\n\\nRetorne APENAS o JSON v\u00e1lido.\"\n        }\n      ]\n    }\n  ],\n  \"generationConfig\": {\n    \"response_mime_type\": \"application/json\"\n  }\n}",
         "options": {}
       },
       "id": "gemini_qa",
       "name": "Gemini: Conferente Comercial",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [600, 0]
+      "position": [
+        600,
+        0
+      ]
     },
     {
       "parameters": {
@@ -93,7 +105,10 @@
       "name": "Merge IA 2 Data",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [800, 0]
+      "position": [
+        800,
+        0
+      ]
     }
   ],
   "connections": {
@@ -112,14 +127,14 @@
       "main": [
         [
           {
-            "node": "Gemini: Orçamentista Comercial",
+            "node": "Gemini: Or\u00e7amentista Comercial",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Gemini: Orçamentista Comercial": {
+    "Gemini: Or\u00e7amentista Comercial": {
       "main": [
         [
           {
@@ -142,6 +157,6 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {}
 }

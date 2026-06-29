@@ -4,7 +4,7 @@
   "id": "QdiDAcKazb5ADTBY",
   "name": "086_AGENTE_COMPLIANCE_SOCIAL",
   "description": null,
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -20,7 +20,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\n// Extrair texto do payload recebido do 020\nconst inputData = $input.all()[0].json;\nconst textoOriginal = inputData.post_texto || inputData.texto || \"Nenhum texto recebido\";\n\n// Regras pesadas de Compliance:\nconst shadowban_words = [\"compre\", \"venda\", \"preço\", \"orçamento\", \"clique no link\", \"arraste para cima\", \"promoção\", \"desconto\", \"urgente\", \"oferta\"];\n\nlet textoLimpo = textoOriginal;\nlet hasSpam = false;\n\nshadowban_words.forEach(word => {\n  const regex = new RegExp(word, \"gi\");\n  if (regex.test(textoLimpo)) {\n    hasSpam = true;\n    textoLimpo = textoLimpo.replace(regex, \"[termo orgânico ajustado]\"); \n    // OBS: Num cenário avencado, poderiamos chamar a IA aqui para reescrever de forma fluida.\n  }\n});\n\nlet target_channels = inputData.target_channels || [\"facebook\", \"instagram\", \"tiktok\"];\nconst formatoMidia = inputData.formato || \"imagem\";\n\n// O TikTok bloqueia imagens estaticas\nif (formatoMidia !== \"video\" && target_channels.includes(\"tiktok\")) {\n  target_channels = target_channels.filter(c => c !== \"tiktok\");\n}\n\nreturn {\n  json: {\n    texto_original: textoOriginal,\n    texto_compliance: textoLimpo,\n    shadowban_risk_detected: hasSpam,\n    formato_recebido: formatoMidia,\n    canais_aprovados: target_channels\n  }\n};\n"
+        "jsCode": "\n// Extrair texto do payload recebido do 020\nconst inputData = $input.all()[0].json;\nconst textoOriginal = inputData.post_texto || inputData.texto || \"Nenhum texto recebido\";\n\n// Regras pesadas de Compliance:\nconst shadowban_words = [\"compre\", \"venda\", \"pre\u00e7o\", \"or\u00e7amento\", \"clique no link\", \"arraste para cima\", \"promo\u00e7\u00e3o\", \"desconto\", \"urgente\", \"oferta\"];\n\nlet textoLimpo = textoOriginal;\nlet hasSpam = false;\n\nshadowban_words.forEach(word => {\n  const regex = new RegExp(word, \"gi\");\n  if (regex.test(textoLimpo)) {\n    hasSpam = true;\n    textoLimpo = textoLimpo.replace(regex, \"[termo org\u00e2nico ajustado]\"); \n    // OBS: Num cen\u00e1rio avencado, poderiamos chamar a IA aqui para reescrever de forma fluida.\n  }\n});\n\nlet target_channels = inputData.target_channels || [\"facebook\", \"instagram\", \"tiktok\"];\nconst formatoMidia = inputData.formato || \"imagem\";\n\n// O TikTok bloqueia imagens estaticas\nif (formatoMidia !== \"video\" && target_channels.includes(\"tiktok\")) {\n  target_channels = target_channels.filter(c => c !== \"tiktok\");\n}\n\nreturn {\n  json: {\n    texto_original: textoOriginal,\n    texto_compliance: textoLimpo,\n    shadowban_risk_detected: hasSpam,\n    formato_recebido: formatoMidia,\n    canais_aprovados: target_channels\n  }\n};\n"
       },
       "id": "compliance_engine",
       "name": "Motor de Regras Compliance",
@@ -40,7 +40,7 @@
           "messageValues": [
             {
               "role": "system",
-              "content": "Você é o Agente Anti-Shadowban da DL Nexus. Analise a legenda fornecida. Se houver linguagem muito agressiva comercialmente que algoritmos do TikTok punam, reescreva-a mantendo o sentido, mas orgânica. Se já estiver orgânica, retorne exatamente como está. Retorne apenas a legenda final, sem aspas adicionais."
+              "content": "Voc\u00ea \u00e9 o Agente Anti-Shadowban da DL Nexus. Analise a legenda fornecida. Se houver linguagem muito agressiva comercialmente que algoritmos do TikTok punam, reescreva-a mantendo o sentido, mas org\u00e2nica. Se j\u00e1 estiver org\u00e2nica, retorne exatamente como est\u00e1. Retorne apenas a legenda final, sem aspas adicionais."
             },
             {
               "role": "user",

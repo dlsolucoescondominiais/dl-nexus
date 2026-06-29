@@ -152,5 +152,5 @@
   "settings": {
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "active": false
+  "active": true
 }

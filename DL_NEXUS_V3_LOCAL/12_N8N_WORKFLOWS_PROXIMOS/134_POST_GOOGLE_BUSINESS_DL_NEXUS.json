@@ -10,7 +10,10 @@
       "name": "Webhook Recebe Pedido",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [0, 0],
+      "position": [
+        0,
+        0
+      ],
       "webhookId": "webhookPostGoogleBusiness134DlNexus20260523"
     },
     {
@@ -27,16 +30,22 @@
       "name": "IF Aprovado",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [200, 0]
+      "position": [
+        200,
+        0
+      ]
     },
     {
       "parameters": {
-        "jsCode": "const baseText = 'A DL Soluções Condominiais é especialista em modernização para o seu condomínio!\\n\\nDescubra nossos principais produtos:\\n🛡️ DL Guardião: Segurança inteligente e controle de acesso.\\n💧 DL Acqua: Gestão de recursos hídricos e automação de bombas.\\n\\nAgende hoje mesmo uma Avaliação Técnica com nosso Responsável Técnico.\\n\\nSaiba mais: dlsolucoescondominiais.com\\nAvalie-nos no Google: share.google/NGEzAoHXg890EjyiR';\n\nreturn [{\n  json: {\n    postContent: baseText,\n    locationId: 'LOCATION_ID_AQUI'\n  }\n}];"
+        "jsCode": "const baseText = 'A DL Solu\u00e7\u00f5es Condominiais \u00e9 especialista em moderniza\u00e7\u00e3o para o seu condom\u00ednio!\\n\\nDescubra nossos principais produtos:\\n\ud83d\udee1\ufe0f DL Guardi\u00e3o: Seguran\u00e7a inteligente e controle de acesso.\\n\ud83d\udca7 DL Acqua: Gest\u00e3o de recursos h\u00eddricos e automa\u00e7\u00e3o de bombas.\\n\\nAgende hoje mesmo uma Avalia\u00e7\u00e3o T\u00e9cnica com nosso Respons\u00e1vel T\u00e9cnico.\\n\\nSaiba mais: dlsolucoescondominiais.com\\nAvalie-nos no Google: share.google/NGEzAoHXg890EjyiR';\n\nreturn [{\n  json: {\n    postContent: baseText,\n    locationId: 'LOCATION_ID_AQUI'\n  }\n}];"
       },
       "name": "Gera Texto Produtos",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [400, -100]
+      "position": [
+        400,
+        -100
+      ]
     },
     {
       "parameters": {
@@ -60,7 +69,10 @@
       "name": "Publicar no Google Business",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4,
-      "position": [600, -100],
+      "position": [
+        600,
+        -100
+      ],
       "credentials": {
         "googleApi": {
           "id": "OAuth2 Google Business Profile",
@@ -71,13 +83,16 @@
     {
       "parameters": {
         "chatId": "CHAT_ID_AQUI",
-        "text": "=Postagem no Google Business realizada com sucesso!\n\nConteúdo:\n{{ $json.postContent }}",
+        "text": "=Postagem no Google Business realizada com sucesso!\n\nConte\u00fado:\n{{ $json.postContent }}",
         "additionalFields": {}
       },
       "name": "Telegram Confirmacao",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
-      "position": [800, -100],
+      "position": [
+        800,
+        -100
+      ],
       "credentials": {
         "telegramApi": {
           "id": "Conta do Telegram",
@@ -132,7 +147,7 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },

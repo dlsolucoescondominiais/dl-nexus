@@ -12,7 +12,10 @@
       "name": "Webhook Trigger",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1.1,
-      "position": [0, 0],
+      "position": [
+        0,
+        0
+      ],
       "webhookId": "084-tiktok-assistido-dl-nexus"
     },
     {
@@ -31,19 +34,25 @@
       "name": "IF: approved=true",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [240, 0]
+      "position": [
+        240,
+        0
+      ]
     },
     {
       "parameters": {
         "chatId": "CHAT_ID_AQUI",
-        "text": "={{ '⛔ [084] Requisição bloqueada: campo approved não é true.\\nPayload recebido: ' + JSON.stringify($json.body) }}",
+        "text": "={{ '\u26d4 [084] Requisi\u00e7\u00e3o bloqueada: campo approved n\u00e3o \u00e9 true.\\nPayload recebido: ' + JSON.stringify($json.body) }}",
         "additionalFields": {}
       },
       "id": "telegram_nao_aprovado",
-      "name": "Telegram: Não Aprovado",
+      "name": "Telegram: N\u00e3o Aprovado",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.1,
-      "position": [480, 200],
+      "position": [
+        480,
+        200
+      ],
       "credentials": {
         "telegramApi": {
           "id": "Conta do Telegram",
@@ -53,13 +62,16 @@
     },
     {
       "parameters": {
-        "jsCode": "// ─────────────────────────────────────────────\n// KILLCRITIC 084 - TikTok Assistido DL Nexus V3\n// Valida termos proibidos e presença do CTA obrigatório\n// ─────────────────────────────────────────────\nconst payload = $json.body || {};\nconst texto = JSON.stringify(payload).toLowerCase();\n\nconst termos_proibidos = [\n  'visita técnica', 'visita tecnica',\n  'garantia vitalícia', 'garantia vitalicia',\n  'engenheiro diogo', 'preço final', 'preco final',\n  'preço fechado', 'preco fechado',\n  'canaleta plástica', 'canaleta plastica',\n  'hidráulica pura', 'hidraulica pura',\n  'preço fechado automático', 'preco fechado automatico'\n];\n\nconst termos_obrigatorios = [\n  'avaliação técnica', 'avaliacao tecnica',\n  'tecnólogo', 'tecnologo'\n];\n\nconst violacoes = termos_proibidos.filter(t => texto.includes(t));\nconst possui_obrigatorio = termos_obrigatorios.some(t => texto.includes(t));\n\nlet status_killcritic = 'APROVADO';\nlet motivo = 'Nenhuma violação detectada.';\n\nif (violacoes.length > 0) {\n  status_killcritic = 'REPROVADO_TERMOS_PROIBIDOS';\n  motivo = 'Termos proibidos encontrados: ' + violacoes.join(', ');\n}\n\nif (!possui_obrigatorio) {\n  status_killcritic = 'REPROVADO_SEM_CTA_OBRIGATORIO';\n  motivo = (motivo === 'Nenhuma violação detectada.'\n    ? ''\n    : motivo + ' | ') + 'CTA obrigatório ausente (avaliação técnica / tecnólogo).';\n}\n\nreturn {\n  json: {\n    ...payload,\n    status_killcritic,\n    killcritic_violacoes: violacoes,\n    killcritic_motivo: motivo,\n    killcritic_timestamp: new Date().toISOString()\n  }\n};"
+        "jsCode": "// \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n// KILLCRITIC 084 - TikTok Assistido DL Nexus V3\n// Valida termos proibidos e presen\u00e7a do CTA obrigat\u00f3rio\n// \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nconst payload = $json.body || {};\nconst texto = JSON.stringify(payload).toLowerCase();\n\nconst termos_proibidos = [\n  'visita t\u00e9cnica', 'visita tecnica',\n  'garantia vital\u00edcia', 'garantia vitalicia',\n  'engenheiro diogo', 'pre\u00e7o final', 'preco final',\n  'pre\u00e7o fechado', 'preco fechado',\n  'canaleta pl\u00e1stica', 'canaleta plastica',\n  'hidr\u00e1ulica pura', 'hidraulica pura',\n  'pre\u00e7o fechado autom\u00e1tico', 'preco fechado automatico'\n];\n\nconst termos_obrigatorios = [\n  'avalia\u00e7\u00e3o t\u00e9cnica', 'avaliacao tecnica',\n  'tecn\u00f3logo', 'tecnologo'\n];\n\nconst violacoes = termos_proibidos.filter(t => texto.includes(t));\nconst possui_obrigatorio = termos_obrigatorios.some(t => texto.includes(t));\n\nlet status_killcritic = 'APROVADO';\nlet motivo = 'Nenhuma viola\u00e7\u00e3o detectada.';\n\nif (violacoes.length > 0) {\n  status_killcritic = 'REPROVADO_TERMOS_PROIBIDOS';\n  motivo = 'Termos proibidos encontrados: ' + violacoes.join(', ');\n}\n\nif (!possui_obrigatorio) {\n  status_killcritic = 'REPROVADO_SEM_CTA_OBRIGATORIO';\n  motivo = (motivo === 'Nenhuma viola\u00e7\u00e3o detectada.'\n    ? ''\n    : motivo + ' | ') + 'CTA obrigat\u00f3rio ausente (avalia\u00e7\u00e3o t\u00e9cnica / tecn\u00f3logo).';\n}\n\nreturn {\n  json: {\n    ...payload,\n    status_killcritic,\n    killcritic_violacoes: violacoes,\n    killcritic_motivo: motivo,\n    killcritic_timestamp: new Date().toISOString()\n  }\n};"
       },
       "id": "code_killcritic",
       "name": "Code KILLCRITIC",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [480, 0]
+      "position": [
+        480,
+        0
+      ]
     },
     {
       "parameters": {
@@ -77,19 +89,25 @@
       "name": "IF: KILLCRITIC aprovado",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [720, 0]
+      "position": [
+        720,
+        0
+      ]
     },
     {
       "parameters": {
         "chatId": "CHAT_ID_AQUI",
-        "text": "={{ '🚫 [KILLCRITIC 084] Pacote TikTok BLOQUEADO.\\n\\nMotivo: ' + $json.killcritic_motivo + '\\nViolações: ' + ($json.killcritic_violacoes.length > 0 ? $json.killcritic_violacoes.join(', ') : 'Nenhuma') + '\\nTimestamp: ' + $json.killcritic_timestamp }}",
+        "text": "={{ '\ud83d\udeab [KILLCRITIC 084] Pacote TikTok BLOQUEADO.\\n\\nMotivo: ' + $json.killcritic_motivo + '\\nViola\u00e7\u00f5es: ' + ($json.killcritic_violacoes.length > 0 ? $json.killcritic_violacoes.join(', ') : 'Nenhuma') + '\\nTimestamp: ' + $json.killcritic_timestamp }}",
         "additionalFields": {}
       },
       "id": "telegram_killcritic_bloqueado",
       "name": "Telegram: KILLCRITIC Bloqueado",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.1,
-      "position": [960, 200],
+      "position": [
+        960,
+        200
+      ],
       "credentials": {
         "telegramApi": {
           "id": "Conta do Telegram",
@@ -99,13 +117,16 @@
     },
     {
       "parameters": {
-        "jsCode": "// ─────────────────────────────────────────────\n// Code: Gerar Pacote TikTok - DL Nexus V3\n// Gera roteiro, legenda e hashtags para postagem MANUAL\n// ─────────────────────────────────────────────\nconst tema = $json.tema || 'N/A';\nconst produto = $json.produto || 'N/A';\nconst legenda = $json.texto || '';\n\nconst roteiro = '🎬 ROTEIRO TIKTOK DL SOLUÇÕES\\n\\n[0-3s] Hook: Mostre o problema do condomínio\\n[3-10s] Apresente a solução: ' + produto + '\\n[10-25s] Demonstre o resultado da Avaliação Técnica\\n[25-30s] CTA: Fale com o Tecnólogo Responsável';\n\nconst hashtags = '#DLSolucoes #Condominio #Sindico #AvaliacaoTecnica #EngenhariaCondominal #RiodeJaneiro';\n\nreturn {\n  json: {\n    roteiro,\n    legenda_sugerida: legenda,\n    hashtags,\n    tema,\n    produto,\n    instrucao: 'Grave o vídeo seguindo o roteiro acima e poste manualmente no TikTok com a legenda e hashtags fornecidas.',\n    pacote_gerado_em: new Date().toISOString(),\n    workflow: '084_PUBLICADOR_TIKTOK_ASSISTIDO',\n    status_killcritic: $json.status_killcritic\n  }\n};"
+        "jsCode": "// \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n// Code: Gerar Pacote TikTok - DL Nexus V3\n// Gera roteiro, legenda e hashtags para postagem MANUAL\n// \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\nconst tema = $json.tema || 'N/A';\nconst produto = $json.produto || 'N/A';\nconst legenda = $json.texto || '';\n\nconst roteiro = '\ud83c\udfac ROTEIRO TIKTOK DL SOLU\u00c7\u00d5ES\\n\\n[0-3s] Hook: Mostre o problema do condom\u00ednio\\n[3-10s] Apresente a solu\u00e7\u00e3o: ' + produto + '\\n[10-25s] Demonstre o resultado da Avalia\u00e7\u00e3o T\u00e9cnica\\n[25-30s] CTA: Fale com o Tecn\u00f3logo Respons\u00e1vel';\n\nconst hashtags = '#DLSolucoes #Condominio #Sindico #AvaliacaoTecnica #EngenhariaCondominal #RiodeJaneiro';\n\nreturn {\n  json: {\n    roteiro,\n    legenda_sugerida: legenda,\n    hashtags,\n    tema,\n    produto,\n    instrucao: 'Grave o v\u00eddeo seguindo o roteiro acima e poste manualmente no TikTok com a legenda e hashtags fornecidas.',\n    pacote_gerado_em: new Date().toISOString(),\n    workflow: '084_PUBLICADOR_TIKTOK_ASSISTIDO',\n    status_killcritic: $json.status_killcritic\n  }\n};"
       },
       "id": "code_gerar_pacote",
       "name": "Code: Gerar Pacote TikTok",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [960, 0]
+      "position": [
+        960,
+        0
+      ]
     },
     {
       "parameters": {
@@ -167,7 +188,10 @@
       "name": "Set: salvar tiktok_pacote",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
-      "position": [1200, 0]
+      "position": [
+        1200,
+        0
+      ]
     },
     {
       "parameters": {
@@ -177,7 +201,10 @@
       "name": "Execute Command: Post TikTok Autonomo",
       "type": "n8n-nodes-base.executeCommand",
       "typeVersion": 1,
-      "position": [1440, 0]
+      "position": [
+        1440,
+        0
+      ]
     },
     {
       "parameters": {
@@ -191,7 +218,10 @@
       "name": "Respond: Pacote Publicado OK",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [1680, 0]
+      "position": [
+        1680,
+        0
+      ]
     },
     {
       "parameters": {
@@ -205,21 +235,27 @@
       "name": "Respond: KILLCRITIC Bloqueado",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [1200, 200]
+      "position": [
+        1200,
+        200
+      ]
     },
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ JSON.stringify({ status: 'REJEITADO', workflow: '084_PUBLICADOR_TIKTOK_ASSISTIDO', motivo: 'Campo approved não é true. Requisição rejeitada.' }) }}",
+        "responseBody": "={{ JSON.stringify({ status: 'REJEITADO', workflow: '084_PUBLICADOR_TIKTOK_ASSISTIDO', motivo: 'Campo approved n\u00e3o \u00e9 true. Requisi\u00e7\u00e3o rejeitada.' }) }}",
         "options": {
           "responseCode": 403
         }
       },
       "id": "respond_webhook_nao_aprovado",
-      "name": "Respond: Não Aprovado",
+      "name": "Respond: N\u00e3o Aprovado",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [720, 200]
+      "position": [
+        720,
+        200
+      ]
     }
   ],
   "connections": {
@@ -245,18 +281,18 @@
         ],
         [
           {
-            "node": "Telegram: Não Aprovado",
+            "node": "Telegram: N\u00e3o Aprovado",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Telegram: Não Aprovado": {
+    "Telegram: N\u00e3o Aprovado": {
       "main": [
         [
           {
-            "node": "Respond: Não Aprovado",
+            "node": "Respond: N\u00e3o Aprovado",
             "type": "main",
             "index": 0
           }
@@ -337,7 +373,7 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
@@ -359,10 +395,10 @@
     }
   ],
   "meta": {
-    "description": "Workflow 100% autônomo para TikTok via CLI. Publica automaticamente ignorando API oficial.",
+    "description": "Workflow 100% aut\u00f4nomo para TikTok via CLI. Publica automaticamente ignorando API oficial.",
     "version": "2.0.0",
     "criado_em": "2026-05-30",
-    "autor": "DL Nexus V3 - Arquiteto de Automação (AI)",
-    "nota": "Alterado para postagem automática com Execute Command via Python."
+    "autor": "DL Nexus V3 - Arquiteto de Automa\u00e7\u00e3o (AI)",
+    "nota": "Alterado para postagem autom\u00e1tica com Execute Command via Python."
   }
 }

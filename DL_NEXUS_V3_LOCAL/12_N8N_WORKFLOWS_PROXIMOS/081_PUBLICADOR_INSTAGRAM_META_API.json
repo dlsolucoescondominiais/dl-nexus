@@ -31,7 +31,7 @@
             {
               "id": "cond-approved",
               "leftValue": "={{ $json.body.approved }}",
-              "rightValue": "true",
+              "rightValue": "={{ $json.body.approved }}",
               "operator": {
                 "type": "string",
                 "operation": "equals"
@@ -85,7 +85,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// ============================================================\n// KILLCRITIC - Verificação de Termos Proibidos e Conformidade\n// DL Nexus V3 - Publicador Instagram Meta API\n// ============================================================\n\nconst body = $input.first().json.body || {};\n\nconst caption = (body.caption || '').toLowerCase();\nconst legendaOriginal = body.caption || '';\n\n// Termos explicitamente proibidos\nconst termosProibidos = [\n  'visita técnica',\n  'visita tecnica',\n  'canaleta plástica',\n  'canaleta plastica',\n  'garantia vitalícia',\n  'garantia vitalicia',\n  'engenheiro diogo',\n  'preço final',\n  'preco final'\n];\n\n// Exige presença do termo estratégico\nconst termoObrigatorio = 'avaliação técnica';\nconst termoObrigatorioAlt = 'avaliacao tecnica';\n\nconst termosEncontrados = termosProibidos.filter(termo => caption.includes(termo));\n\nconst temTermoObrigatorio =\n  caption.includes(termoObrigatorio) || caption.includes(termoObrigatorioAlt);\n\nlet statusKillcritic = 'APROVADO';\nconst motivos = [];\n\nif (termosEncontrados.length > 0) {\n  statusKillcritic = 'REPROVADO';\n  motivos.push(`Termos proibidos encontrados: [${termosEncontrados.join(', ')}]`);\n}\n\nif (!temTermoObrigatorio) {\n  statusKillcritic = 'REPROVADO';\n  motivos.push(`Termo obrigatório ausente: '${termoObrigatorio}'`);\n}\n\n// Validações adicionais de segurança\nif (!body.image_url || body.image_url.trim() === '') {\n  statusKillcritic = 'REPROVADO';\n  motivos.push('image_url ausente ou vazia');\n}\n\nif (!body.approved || String(body.approved).toLowerCase() !== 'true') {\n  statusKillcritic = 'REPROVADO';\n  motivos.push('Campo approved não está setado como true');\n}\n\nconst resultado = {\n  status_killcritic: statusKillcritic,\n  motivos_reprovacao: motivos,\n  termos_proibidos_encontrados: termosEncontrados,\n  termo_obrigatorio_presente: temTermoObrigatorio,\n  caption_auditado: legendaOriginal,\n  image_url: body.image_url || '',\n  caption: body.caption || '',\n  aprovado_pelo_usuario: body.approved,\n  timestamp_killcritic: new Date().toISOString(),\n  workflow: '081_PUBLICADOR_INSTAGRAM_META_API',\n  versao_killcritic: '1.0.0'\n};\n\nreturn [{ json: resultado }];"
+        "jsCode": "// ============================================================\n// KILLCRITIC - Verifica\u00e7\u00e3o de Termos Proibidos e Conformidade\n// DL Nexus V3 - Publicador Instagram Meta API\n// ============================================================\n\nconst body = $input.first().json.body || {};\n\nconst caption = (body.caption || '').toLowerCase();\nconst legendaOriginal = body.caption || '';\n\n// Termos explicitamente proibidos\nconst termosProibidos = [\n  'visita t\u00e9cnica',\n  'visita tecnica',\n  'canaleta pl\u00e1stica',\n  'canaleta plastica',\n  'garantia vital\u00edcia',\n  'garantia vitalicia',\n  'engenheiro diogo',\n  'pre\u00e7o final',\n  'preco final'\n];\n\n// Exige presen\u00e7a do termo estrat\u00e9gico\nconst termoObrigatorio = 'avalia\u00e7\u00e3o t\u00e9cnica';\nconst termoObrigatorioAlt = 'avaliacao tecnica';\n\nconst termosEncontrados = termosProibidos.filter(termo => caption.includes(termo));\n\nconst temTermoObrigatorio =\n  caption.includes(termoObrigatorio) || caption.includes(termoObrigatorioAlt);\n\nlet statusKillcritic = 'APROVADO';\nconst motivos = [];\n\nif (termosEncontrados.length > 0) {\n  statusKillcritic = 'REPROVADO';\n  motivos.push(`Termos proibidos encontrados: [${termosEncontrados.join(', ')}]`);\n}\n\nif (!temTermoObrigatorio) {\n  statusKillcritic = 'REPROVADO';\n  motivos.push(`Termo obrigat\u00f3rio ausente: '${termoObrigatorio}'`);\n}\n\n// Valida\u00e7\u00f5es adicionais de seguran\u00e7a\nif (!body.image_url || body.image_url.trim() === '') {\n  statusKillcritic = 'REPROVADO';\n  motivos.push('image_url ausente ou vazia');\n}\n\nif (!body.approved || String(body.approved).toLowerCase() !== 'true') {\n  statusKillcritic = 'REPROVADO';\n  motivos.push('Campo approved n\u00e3o est\u00e1 setado como true');\n}\n\nconst resultado = {\n  status_killcritic: statusKillcritic,\n  motivos_reprovacao: motivos,\n  termos_proibidos_encontrados: termosEncontrados,\n  termo_obrigatorio_presente: temTermoObrigatorio,\n  caption_auditado: legendaOriginal,\n  image_url: body.image_url || '',\n  caption: body.caption || '',\n  aprovado_pelo_usuario: body.approved,\n  timestamp_killcritic: new Date().toISOString(),\n  workflow: '081_PUBLICADOR_INSTAGRAM_META_API',\n  versao_killcritic: '1.0.0'\n};\n\nreturn [{ json: resultado }];"
       },
       "id": "node-004-killcritic",
       "name": "Code KILLCRITIC",
@@ -108,7 +108,7 @@
             {
               "id": "cond-killcritic-aprovado",
               "leftValue": "={{ $json.status_killcritic }}",
-              "rightValue": "APROVADO",
+              "rightValue": "={{ $json.status_killcritic }}",
               "operator": {
                 "type": "string",
                 "operation": "equals"
@@ -165,7 +165,7 @@
         "jsonBody": "={\n  \"caption\": \"{{$json.legenda_instagram}}\",\n  \"image_url\": \"{{$json.image_url}}\"\n}"
       },
       "id": "node-006-create-media-container",
-      "name": "HTTP: Criar Container de Mídia",
+      "name": "HTTP: Criar Container de M\u00eddia",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
@@ -212,13 +212,13 @@
     {
       "parameters": {
         "chatId": "-1002012015091",
-        "text": "={{ '✅ *DL Nexus V3 | Instagram Publicado com Sucesso!*\\n\\n📸 *Post ID:* ' + $json.id + '\\n🕒 *Horário:* ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n\\n🔗 *Caption (início):* ' + ($node[\"Code KILLCRITIC\"].json.caption || '').substring(0, 100) + '...' + '\\n\\n🏢 _DL Soluções Condominiais | Workflow 081_' }}",
+        "text": "={{ '\u2705 *DL Nexus V3 | Instagram Publicado com Sucesso!*\\n\\n\ud83d\udcf8 *Post ID:* ' + $json.id + '\\n\ud83d\udd52 *Hor\u00e1rio:* ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n\\n\ud83d\udd17 *Caption (in\u00edcio):* ' + ($node[\"Code KILLCRITIC\"].json.caption || '').substring(0, 100) + '...' + '\\n\\n\ud83c\udfe2 _DL Solu\u00e7\u00f5es Condominiais | Workflow 081_' }}",
         "additionalFields": {
           "parse_mode": "Markdown"
         }
       },
       "id": "node-008-telegram-confirmacao",
-      "name": "Telegram: Confirmação de Publicação",
+      "name": "Telegram: Confirma\u00e7\u00e3o de Publica\u00e7\u00e3o",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
@@ -235,7 +235,7 @@
     {
       "parameters": {
         "chatId": "-1002012015091",
-        "text": "={{ '🚫 *DL Nexus V3 | Post BLOQUEADO pelo KILLCRITIC*\\n\\n⚠️ *Motivos de Reprovação:*\\n' + ($json.motivos_reprovacao || []).map(m => '• ' + m).join('\\n') + '\\n\\n🔍 *Termos Proibidos:* ' + (($json.termos_proibidos_encontrados || []).length > 0 ? ($json.termos_proibidos_encontrados || []).join(', ') : 'Nenhum') + '\\n✅ *Termo Obrigatório:* ' + ($json.termo_obrigatorio_presente ? 'PRESENTE' : 'AUSENTE') + '\\n\\n🕒 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n🏢 _DL Soluções Condominiais | Workflow 081_' }}",
+        "text": "={{ '\ud83d\udeab *DL Nexus V3 | Post BLOQUEADO pelo KILLCRITIC*\\n\\n\u26a0\ufe0f *Motivos de Reprova\u00e7\u00e3o:*\\n' + ($json.motivos_reprovacao || []).map(m => '\u2022 ' + m).join('\\n') + '\\n\\n\ud83d\udd0d *Termos Proibidos:* ' + (($json.termos_proibidos_encontrados || []).length > 0 ? ($json.termos_proibidos_encontrados || []).join(', ') : 'Nenhum') + '\\n\u2705 *Termo Obrigat\u00f3rio:* ' + ($json.termo_obrigatorio_presente ? 'PRESENTE' : 'AUSENTE') + '\\n\\n\ud83d\udd52 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n\ud83c\udfe2 _DL Solu\u00e7\u00f5es Condominiais | Workflow 081_' }}",
         "additionalFields": {
           "parse_mode": "Markdown"
         }
@@ -258,13 +258,13 @@
     {
       "parameters": {
         "chatId": "-1002012015091",
-        "text": "={{ '🚫 *DL Nexus V3 | Post NÃO APROVADO*\\n\\n❌ O campo *approved* não está definido como *true*.\\nNenhuma publicação foi realizada.\\n\\n🕒 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n🏢 _DL Soluções Condominiais | Workflow 081_' }}",
+        "text": "={{ '\ud83d\udeab *DL Nexus V3 | Post N\u00c3O APROVADO*\\n\\n\u274c O campo *approved* n\u00e3o est\u00e1 definido como *true*.\\nNenhuma publica\u00e7\u00e3o foi realizada.\\n\\n\ud83d\udd52 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n\ud83c\udfe2 _DL Solu\u00e7\u00f5es Condominiais | Workflow 081_' }}",
         "additionalFields": {
           "parse_mode": "Markdown"
         }
       },
       "id": "node-010-telegram-nao-aprovado",
-      "name": "Telegram: Alerta Não Aprovado",
+      "name": "Telegram: Alerta N\u00e3o Aprovado",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
@@ -281,7 +281,7 @@
     {
       "parameters": {
         "chatId": "-1002012015091",
-        "text": "={{ '⚠️ *DL Nexus V3 | image_url ausente*\\n\\nO payload recebido não contém uma URL de imagem válida.\\nPublicação cancelada.\\n\\n🕒 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n🏢 _DL Soluções Condominiais | Workflow 081_' }}",
+        "text": "={{ '\u26a0\ufe0f *DL Nexus V3 | image_url ausente*\\n\\nO payload recebido n\u00e3o cont\u00e9m uma URL de imagem v\u00e1lida.\\nPublica\u00e7\u00e3o cancelada.\\n\\n\ud83d\udd52 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n\ud83c\udfe2 _DL Solu\u00e7\u00f5es Condominiais | Workflow 081_' }}",
         "additionalFields": {
           "parse_mode": "Markdown"
         }
@@ -319,7 +319,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ JSON.stringify({ success: false, status_killcritic: $json.status_killcritic || 'REPROVADO', motivos: $json.motivos_reprovacao || ['Aprovação negada ou imagem ausente'], workflow: '081_PUBLICADOR_INSTAGRAM_META_API', timestamp: new Date().toISOString() }) }}",
+        "responseBody": "={{ JSON.stringify({ success: false, status_killcritic: $json.status_killcritic || 'REPROVADO', motivos: $json.motivos_reprovacao || ['Aprova\u00e7\u00e3o negada ou imagem ausente'], workflow: '081_PUBLICADOR_INSTAGRAM_META_API', timestamp: new Date().toISOString() }) }}",
         "options": {
           "responseCode": 422
         }
@@ -349,13 +349,13 @@
     {
       "parameters": {
         "chatId": "-1002012015091",
-        "text": "={{ '🔴 *DL Nexus V3 | ERRO CRÍTICO - Workflow 081*\\n\\n💥 *Erro:* ' + ($json.error?.message || 'Erro desconhecido') + '\\n📍 *Nó:* ' + ($json.execution?.lastNodeExecuted || 'N/A') + '\\n🆔 *Execução:* ' + ($json.execution?.id || 'N/A') + '\\n\\n🕒 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n🏢 _DL Soluções Condominiais | Workflow 081_' }}",
+        "text": "={{ '\ud83d\udd34 *DL Nexus V3 | ERRO CR\u00cdTICO - Workflow 081*\\n\\n\ud83d\udca5 *Erro:* ' + ($json.error?.message || 'Erro desconhecido') + '\\n\ud83d\udccd *N\u00f3:* ' + ($json.execution?.lastNodeExecuted || 'N/A') + '\\n\ud83c\udd94 *Execu\u00e7\u00e3o:* ' + ($json.execution?.id || 'N/A') + '\\n\\n\ud83d\udd52 ' + new Date().toLocaleString('pt-BR', {timeZone: 'America/Sao_Paulo'}) + '\\n\ud83c\udfe2 _DL Solu\u00e7\u00f5es Condominiais | Workflow 081_' }}",
         "additionalFields": {
           "parse_mode": "Markdown"
         }
       },
       "id": "node-015-telegram-erro-critico",
-      "name": "Telegram: Erro Crítico",
+      "name": "Telegram: Erro Cr\u00edtico",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
@@ -393,7 +393,7 @@
         ],
         [
           {
-            "node": "Telegram: Alerta Não Aprovado",
+            "node": "Telegram: Alerta N\u00e3o Aprovado",
             "type": "main",
             "index": 0
           }
@@ -433,7 +433,7 @@
       "main": [
         [
           {
-            "node": "HTTP: Criar Container de Mídia",
+            "node": "HTTP: Criar Container de M\u00eddia",
             "type": "main",
             "index": 0
           }
@@ -447,7 +447,7 @@
         ]
       ]
     },
-    "HTTP: Criar Container de Mídia": {
+    "HTTP: Criar Container de M\u00eddia": {
       "main": [
         [
           {
@@ -462,14 +462,14 @@
       "main": [
         [
           {
-            "node": "Telegram: Confirmação de Publicação",
+            "node": "Telegram: Confirma\u00e7\u00e3o de Publica\u00e7\u00e3o",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Telegram: Confirmação de Publicação": {
+    "Telegram: Confirma\u00e7\u00e3o de Publica\u00e7\u00e3o": {
       "main": [
         [
           {
@@ -491,7 +491,7 @@
         ]
       ]
     },
-    "Telegram: Alerta Não Aprovado": {
+    "Telegram: Alerta N\u00e3o Aprovado": {
       "main": [
         [
           {
@@ -517,7 +517,7 @@
       "main": [
         [
           {
-            "node": "Telegram: Erro Crítico",
+            "node": "Telegram: Erro Cr\u00edtico",
             "type": "main",
             "index": 0
           }

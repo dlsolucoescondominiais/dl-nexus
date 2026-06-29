@@ -15,7 +15,10 @@
       "name": "Schedule Trigger (Hourly)",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1,
-      "position": [0, 304]
+      "position": [
+        0,
+        304
+      ]
     },
     {
       "parameters": {
@@ -25,7 +28,10 @@
       "name": "Preparar Lista de Pastas",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [208, 304]
+      "position": [
+        208,
+        304
+      ]
     },
     {
       "parameters": {
@@ -48,7 +54,10 @@
       "name": "Listar Arquivos da Pasta",
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 2,
-      "position": [416, 304],
+      "position": [
+        416,
+        304
+      ],
       "credentials": {
         "googleDriveOAuth2Api": {
           "id": "vDUp3ZKxazIKho51",
@@ -64,7 +73,10 @@
       "name": "Classificar Midias",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [624, 304]
+      "position": [
+        624,
+        304
+      ]
     },
     {
       "parameters": {
@@ -84,7 +96,10 @@
       "name": "Check Configured",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 1,
-      "position": [832, 304]
+      "position": [
+        832,
+        304
+      ]
     },
     {
       "parameters": {
@@ -97,7 +112,10 @@
       "name": "Mover Arquivo Fisicamente",
       "type": "n8n-nodes-base.googleDrive",
       "typeVersion": 2,
-      "position": [1040, 208],
+      "position": [
+        1040,
+        208
+      ],
       "credentials": {
         "googleDriveOAuth2Api": {
           "id": "vDUp3ZKxazIKho51",
@@ -164,6 +182,6 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {}
 }

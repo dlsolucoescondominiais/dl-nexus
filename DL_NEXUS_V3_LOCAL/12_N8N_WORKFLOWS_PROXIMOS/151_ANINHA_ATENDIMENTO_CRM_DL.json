@@ -77,7 +77,7 @@
       "parameters": {
         "model": "gemini-1.5-pro",
         "options": {
-          "systemMessage": "Você é a Aninha, atendente B2B da DL Soluções Condominiais. Se apresente e peça de forma clara: Nome, Empresa/Condomínio, Bairro, Serviço Desejado e Urgência. Se o usuário já informou tudo, responda com JSON de qualificação do lead.",
+          "systemMessage": "Voc\u00ea \u00e9 a Aninha, atendente B2B da DL Solu\u00e7\u00f5es Condominiais. Se apresente e pe\u00e7a de forma clara: Nome, Empresa/Condom\u00ednio, Bairro, Servi\u00e7o Desejado e Urg\u00eancia. Se o usu\u00e1rio j\u00e1 informou tudo, responda com JSON de qualifica\u00e7\u00e3o do lead.",
           "temperature": 0.5
         }
       },
@@ -152,7 +152,7 @@
     {
       "parameters": {
         "chatId": "YOUR_TELEGRAM_CHAT_ID",
-        "text": "=🚀 *NOVO LEAD QUALIFICADO (SOCIAL)*\n\nNome: {{$json.lead_data.nome}}\nEmpresa/Cond: {{$json.lead_data.empresa_condominio}}\nBairro: {{$json.lead_data.bairro}}\nServiço: {{$json.lead_data.servico}}\nUrgência: {{$json.lead_data.urgencia}}"
+        "text": "=\ud83d\ude80 *NOVO LEAD QUALIFICADO (SOCIAL)*\n\nNome: {{$json.lead_data.nome}}\nEmpresa/Cond: {{$json.lead_data.empresa_condominio}}\nBairro: {{$json.lead_data.bairro}}\nServi\u00e7o: {{$json.lead_data.servico}}\nUrg\u00eancia: {{$json.lead_data.urgencia}}"
       },
       "id": "telegram_alert",
       "name": "Alerta Diogo Telegram",
@@ -267,7 +267,7 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   }

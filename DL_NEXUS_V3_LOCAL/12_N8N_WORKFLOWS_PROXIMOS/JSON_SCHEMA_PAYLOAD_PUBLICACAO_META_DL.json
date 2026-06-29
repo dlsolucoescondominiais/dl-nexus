@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://dlsolucoes.com.br/schemas/payload-publicacao-meta-dl-v3.json",
-  "title": "Payload de Publicação Meta — DL Nexus V3",
-  "description": "Schema canônico para payloads de publicação no Facebook e Instagram da DL Soluções Condominiais. Utilizado pelos workflows n8n de geração, revisão (KillCritic) e publicação automatizada.",
+  "title": "Payload de Publica\u00e7\u00e3o Meta \u2014 DL Nexus V3",
+  "description": "Schema can\u00f4nico para payloads de publica\u00e7\u00e3o no Facebook e Instagram da DL Solu\u00e7\u00f5es Condominiais. Utilizado pelos workflows n8n de gera\u00e7\u00e3o, revis\u00e3o (KillCritic) e publica\u00e7\u00e3o automatizada.",
   "type": "object",
   "required": [
     "canal",
@@ -41,13 +41,17 @@
   "properties": {
     "canal": {
       "type": "string",
-      "enum": ["facebook", "instagram", "ambos"],
-      "description": "Canal de destino da publicação."
+      "enum": [
+        "facebook",
+        "instagram",
+        "ambos"
+      ],
+      "description": "Canal de destino da publica\u00e7\u00e3o."
     },
     "linha_dl": {
       "type": "string",
       "enum": [
-        "DL Guardião",
+        "DL Guardi\u00e3o",
         "DL Fortress",
         "DL Volt",
         "DL Acqua",
@@ -57,27 +61,32 @@
         "DL Partner",
         "DL Express"
       ],
-      "description": "Linha de serviço da DL Soluções associada ao conteúdo."
+      "description": "Linha de servi\u00e7o da DL Solu\u00e7\u00f5es associada ao conte\u00fado."
     },
     "publico": {
       "type": "string",
       "minLength": 1,
-      "description": "Descrição do público-alvo da publicação (ex: síndicos de condomínios médios no RJ)."
+      "description": "Descri\u00e7\u00e3o do p\u00fablico-alvo da publica\u00e7\u00e3o (ex: s\u00edndicos de condom\u00ednios m\u00e9dios no RJ)."
     },
     "formato": {
       "type": "string",
-      "enum": ["feed", "stories", "reels", "carrossel"],
-      "description": "Formato da publicação na plataforma Meta."
+      "enum": [
+        "feed",
+        "stories",
+        "reels",
+        "carrossel"
+      ],
+      "description": "Formato da publica\u00e7\u00e3o na plataforma Meta."
     },
     "tema": {
       "type": "string",
       "minLength": 1,
-      "description": "Tema central do conteúdo em Português Brasileiro."
+      "description": "Tema central do conte\u00fado em Portugu\u00eas Brasileiro."
     },
     "objetivo": {
       "type": "string",
       "minLength": 1,
-      "description": "Objetivo de negócio da publicação (ex: gerar demanda para Avaliação Técnica)."
+      "description": "Objetivo de neg\u00f3cio da publica\u00e7\u00e3o (ex: gerar demanda para Avalia\u00e7\u00e3o T\u00e9cnica)."
     },
     "legenda_facebook": {
       "type": "string",
@@ -92,7 +101,7 @@
     "cta": {
       "type": "string",
       "minLength": 1,
-      "description": "Call-to-action principal da publicação em Português Brasileiro."
+      "description": "Call-to-action principal da publica\u00e7\u00e3o em Portugu\u00eas Brasileiro."
     },
     "hashtags": {
       "type": "array",
@@ -101,12 +110,12 @@
         "pattern": "^#\\S+"
       },
       "minItems": 1,
-      "description": "Lista de hashtags da publicação. Cada item deve iniciar com #."
+      "description": "Lista de hashtags da publica\u00e7\u00e3o. Cada item deve iniciar com #."
     },
     "image_prompt_en": {
       "type": "string",
       "minLength": 1,
-      "description": "Prompt de geração de imagem em inglês para ferramentas de IA generativa."
+      "description": "Prompt de gera\u00e7\u00e3o de imagem em ingl\u00eas para ferramentas de IA generativa."
     },
     "alt_text": {
       "type": "string",
@@ -114,29 +123,37 @@
     },
     "risco_meta": {
       "type": "string",
-      "enum": ["baixo", "medio", "alto"],
-      "description": "Nível de risco de violação das políticas de publicidade do Meta."
+      "enum": [
+        "baixo",
+        "medio",
+        "alto"
+      ],
+      "description": "N\u00edvel de risco de viola\u00e7\u00e3o das pol\u00edticas de publicidade do Meta."
     },
     "precisa_aprovacao_humana": {
       "type": "boolean",
-      "description": "Indica se o conteúdo requer revisão humana antes da publicação."
+      "description": "Indica se o conte\u00fado requer revis\u00e3o humana antes da publica\u00e7\u00e3o."
     },
     "motivo_aprovacao_humana": {
       "type": "string",
-      "description": "Justificativa para a necessidade de aprovação humana, se aplicável."
+      "description": "Justificativa para a necessidade de aprova\u00e7\u00e3o humana, se aplic\u00e1vel."
     },
     "aprovado_pre_killcritic": {
       "type": "boolean",
-      "description": "Flag de pré-aprovação antes da passagem pelo agente KillCritic."
+      "description": "Flag de pr\u00e9-aprova\u00e7\u00e3o antes da passagem pelo agente KillCritic."
     },
     "aprovado_killcritic": {
       "type": "boolean",
-      "description": "Flag de aprovação final pelo agente KillCritic."
+      "description": "Flag de aprova\u00e7\u00e3o final pelo agente KillCritic."
     },
     "status_killcritic": {
       "type": "string",
-      "enum": ["APROVADO", "APROVADO_COM_RESSALVAS", "BLOQUEADO"],
-      "description": "Status de revisão retornado pelo agente KillCritic."
+      "enum": [
+        "APROVADO",
+        "APROVADO_COM_RESSALVAS",
+        "BLOQUEADO"
+      ],
+      "description": "Status de revis\u00e3o retornado pelo agente KillCritic."
     },
     "motivos_bloqueio": {
       "type": "array",
@@ -150,12 +167,12 @@
       "items": {
         "type": "string"
       },
-      "description": "Lista de ajustes recomendados pelo KillCritic para aprovação condicional."
+      "description": "Lista de ajustes recomendados pelo KillCritic para aprova\u00e7\u00e3o condicional."
     },
     "image_url_publica_meta": {
       "type": "string",
       "format": "uri",
-      "description": "URL pública da imagem hospedada, acessível pela API do Meta para publicação."
+      "description": "URL p\u00fablica da imagem hospedada, acess\u00edvel pela API do Meta para publica\u00e7\u00e3o."
     },
     "google_drive_file_id": {
       "type": "string",
@@ -163,24 +180,29 @@
     },
     "google_drive_web_view_link": {
       "type": "string",
-      "description": "Link de visualização web do arquivo no Google Drive."
+      "description": "Link de visualiza\u00e7\u00e3o web do arquivo no Google Drive."
     },
     "tem_direito_uso_midia": {
       "type": "boolean",
-      "description": "Confirmação de que a DL possui direito de uso da mídia (imagem gerada por IA ou banco próprio)."
+      "description": "Confirma\u00e7\u00e3o de que a DL possui direito de uso da m\u00eddia (imagem gerada por IA ou banco pr\u00f3prio)."
     },
     "status_publicacao": {
       "type": "string",
-      "enum": ["pendente", "publicado", "falha", "bloqueado"],
-      "description": "Status atual da publicação no pipeline de publicação."
+      "enum": [
+        "pendente",
+        "publicado",
+        "falha",
+        "bloqueado"
+      ],
+      "description": "Status atual da publica\u00e7\u00e3o no pipeline de publica\u00e7\u00e3o."
     },
     "post_id": {
       "type": "string",
-      "description": "ID do post retornado pela API do Meta após publicação bem-sucedida."
+      "description": "ID do post retornado pela API do Meta ap\u00f3s publica\u00e7\u00e3o bem-sucedida."
     },
     "media_id": {
       "type": "string",
-      "description": "ID da mídia retornado pela API do Meta (container de imagem/vídeo)."
+      "description": "ID da m\u00eddia retornado pela API do Meta (container de imagem/v\u00eddeo)."
     },
     "permalink": {
       "type": "string",
@@ -188,21 +210,26 @@
     },
     "erro_meta": {
       "type": "string",
-      "description": "Mensagem de erro retornada pela API do Meta em caso de falha na publicação."
+      "description": "Mensagem de erro retornada pela API do Meta em caso de falha na publica\u00e7\u00e3o."
     },
     "id_execucao_n8n": {
       "type": "string",
-      "description": "ID da execução do workflow n8n que processou este payload."
+      "description": "ID da execu\u00e7\u00e3o do workflow n8n que processou este payload."
     },
     "fonte_noticia": {
       "type": "string",
-      "description": "Fonte da notícia ou referência utilizada para gerar o conteúdo, se aplicável."
+      "description": "Fonte da not\u00edcia ou refer\u00eancia utilizada para gerar o conte\u00fado, se aplic\u00e1vel."
     },
     "carrossel_slides": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["legenda", "image_prompt_en", "image_url", "alt_text"],
+        "required": [
+          "legenda",
+          "image_prompt_en",
+          "image_url",
+          "alt_text"
+        ],
         "properties": {
           "legenda": {
             "type": "string",
@@ -210,11 +237,11 @@
           },
           "image_prompt_en": {
             "type": "string",
-            "description": "Prompt de geração de imagem em inglês para o slide."
+            "description": "Prompt de gera\u00e7\u00e3o de imagem em ingl\u00eas para o slide."
           },
           "image_url": {
             "type": "string",
-            "description": "URL pública da imagem do slide para publicação via API."
+            "description": "URL p\u00fablica da imagem do slide para publica\u00e7\u00e3o via API."
           },
           "alt_text": {
             "type": "string",
@@ -223,8 +250,9 @@
         },
         "additionalProperties": false
       },
-      "description": "Array de slides para publicações no formato carrossel. Vazio para formatos não-carrossel."
+      "description": "Array de slides para publica\u00e7\u00f5es no formato carrossel. Vazio para formatos n\u00e3o-carrossel."
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "active": true
 }

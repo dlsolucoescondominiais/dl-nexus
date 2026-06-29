@@ -4,7 +4,7 @@
   "id": "IZ2CwPBvAEGpiWHt",
   "name": "148_LOG_E_MEMORIA_SOCIAL",
   "description": null,
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -20,10 +20,10 @@
     },
     {
       "parameters": {
-        "jsCode": "// Registrar mídias, status e classificações\nreturn items;"
+        "jsCode": "// Registrar m\u00eddias, status e classifica\u00e7\u00f5es\nreturn items;"
       },
       "id": "2",
-      "name": "Salvar Memória",
+      "name": "Salvar Mem\u00f3ria",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
@@ -37,7 +37,7 @@
       "main": [
         [
           {
-            "node": "Salvar Memória",
+            "node": "Salvar Mem\u00f3ria",
             "type": "main",
             "index": 0
           }

@@ -7,17 +7,23 @@
       "name": "Schedule Trigger",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1,
-      "position": [250, 300]
+      "position": [
+        250,
+        300
+      ]
     },
     {
       "parameters": {
-        "jsCode": "// Gerar relatório diário\nreturn items;"
+        "jsCode": "// Gerar relat\u00f3rio di\u00e1rio\nreturn items;"
       },
       "id": "2",
-      "name": "Gerar Relatório",
+      "name": "Gerar Relat\u00f3rio",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [450, 300]
+      "position": [
+        450,
+        300
+      ]
     }
   ],
   "connections": {
@@ -25,7 +31,7 @@
       "main": [
         [
           {
-            "node": "Gerar Relatório",
+            "node": "Gerar Relat\u00f3rio",
             "type": "main",
             "index": 0
           }
@@ -33,9 +39,16 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "tags": [{"name": "Relatório"}, {"name": "Social Media"}]
+  "tags": [
+    {
+      "name": "Relat\u00f3rio"
+    },
+    {
+      "name": "Social Media"
+    }
+  ]
 }

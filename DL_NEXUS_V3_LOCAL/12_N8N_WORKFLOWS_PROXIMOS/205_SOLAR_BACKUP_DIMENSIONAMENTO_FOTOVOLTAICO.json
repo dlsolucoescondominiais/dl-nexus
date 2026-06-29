@@ -18,7 +18,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const orcamento = $json.body || {};\nconst dados_conta = orcamento.dados_conta || {};\nconst consumo = dados_conta.consumo_mensal_kwh || 0;\n\n// Geração estimada média por kWp no Rio de Janeiro = 115 kWh/mês por kWp instalado\n// Baseado em 4.2h médias de sol pleno diário corrigido por perdas de sistema (18%)\nconst geracao_mensal_estimada_por_kwp = 115;\n\nconst sistema_solar_kwp_preliminar = Number((consumo / geracao_mensal_estimada_por_kwp).toFixed(2));\nconst geracao_mensal_estimada_kwh = Math.round(sistema_solar_kwp_preliminar * geracao_mensal_estimada_por_kwp);\n\nreturn {\n  ...orcamento,\n  dimensionamento_solar_calculado: {\n    sistema_solar_kwp_preliminar,\n    geracao_mensal_estimada_kwh,\n    irradiacao_regiao_kwh_m2_dia: 4.86 // Média anual do Rio de Janeiro\n  },\n  status: 'calculado_solar'\n};"
+        "jsCode": "const orcamento = $json.body || {};\nconst dados_conta = orcamento.dados_conta || {};\nconst consumo = dados_conta.consumo_mensal_kwh || 0;\n\n// Gera\u00e7\u00e3o estimada m\u00e9dia por kWp no Rio de Janeiro = 115 kWh/m\u00eas por kWp instalado\n// Baseado em 4.2h m\u00e9dias de sol pleno di\u00e1rio corrigido por perdas de sistema (18%)\nconst geracao_mensal_estimada_por_kwp = 115;\n\nconst sistema_solar_kwp_preliminar = Number((consumo / geracao_mensal_estimada_por_kwp).toFixed(2));\nconst geracao_mensal_estimada_kwh = Math.round(sistema_solar_kwp_preliminar * geracao_mensal_estimada_por_kwp);\n\nreturn {\n  ...orcamento,\n  dimensionamento_solar_calculado: {\n    sistema_solar_kwp_preliminar,\n    geracao_mensal_estimada_kwh,\n    irradiacao_regiao_kwh_m2_dia: 4.86 // M\u00e9dia anual do Rio de Janeiro\n  },\n  status: 'calculado_solar'\n};"
       },
       "id": "calcular_solar",
       "name": "Calcular Arranjo Fotovoltaico",
@@ -90,6 +90,6 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {}
 }

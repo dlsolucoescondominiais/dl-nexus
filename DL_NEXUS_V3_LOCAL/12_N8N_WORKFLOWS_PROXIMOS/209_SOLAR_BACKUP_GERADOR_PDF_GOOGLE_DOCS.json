@@ -20,7 +20,7 @@
       "parameters": {
         "resource": "document",
         "operation": "create",
-        "title": "=Orçamento EcoVolt - {{ $json.body.protocolo }}",
+        "title": "=Or\u00e7amento EcoVolt - {{ $json.body.protocolo }}",
         "options": {}
       },
       "id": "criar_gdoc",
@@ -31,7 +31,7 @@
         300,
         300
       ],
-      "notes": "Homologação: Criará um novo arquivo Google Doc no Drive utilizando a conta de serviço configurada."
+      "notes": "Homologa\u00e7\u00e3o: Criar\u00e1 um novo arquivo Google Doc no Drive utilizando a conta de servi\u00e7o configurada."
     },
     {
       "parameters": {
@@ -48,14 +48,14 @@
         }
       },
       "id": "preencher_gdoc",
-      "name": "Preencher Conteúdo Proposta",
+      "name": "Preencher Conte\u00fado Proposta",
       "type": "n8n-nodes-base.googleDocs",
       "typeVersion": 2,
       "position": [
         500,
         300
       ],
-      "notes": "Homologação: Insere o corpo do Markdown do cliente renderizado no arquivo Google Doc."
+      "notes": "Homologa\u00e7\u00e3o: Insere o corpo do Markdown do cliente renderizado no arquivo Google Doc."
     },
     {
       "parameters": {
@@ -81,7 +81,7 @@
         700,
         300
       ],
-      "notes": "Homologação: Exporta o Google Doc como PDF. Requer token OAuth com escopo de leitura do Google Drive."
+      "notes": "Homologa\u00e7\u00e3o: Exporta o Google Doc como PDF. Requer token OAuth com escopo de leitura do Google Drive."
     },
     {
       "parameters": {
@@ -136,14 +136,14 @@
       "main": [
         [
           {
-            "node": "Preencher Conteúdo Proposta",
+            "node": "Preencher Conte\u00fado Proposta",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Preencher Conteúdo Proposta": {
+    "Preencher Conte\u00fado Proposta": {
       "main": [
         [
           {
@@ -166,6 +166,6 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {}
 }

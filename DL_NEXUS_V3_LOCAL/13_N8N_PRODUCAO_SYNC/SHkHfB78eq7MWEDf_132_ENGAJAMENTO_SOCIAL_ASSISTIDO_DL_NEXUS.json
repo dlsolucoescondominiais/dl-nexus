@@ -4,7 +4,7 @@
   "id": "SHkHfB78eq7MWEDf",
   "name": "132_ENGAJAMENTO_SOCIAL_ASSISTIDO_DL_NEXUS",
   "description": null,
-  "active": false,
+  "active": true,
   "isArchived": false,
   "nodes": [
     {
@@ -24,7 +24,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const inputData = $input.item.json.body || $input.item.json;\nconst leadId = inputData.lead_id || 'LEAD_PLACEHOLDER';\nconst canal = inputData.canal || 'LinkedIn';\n\nconst promptIA = `Você é um especialista em prospecção B2B focado em condomínios.\\nObjetivo: Sugerir um comentário autêntico ou DM (sem vender diretamente) que agregue valor ao síndico.\\nNunca use 'visita técnica', use sempre 'Avaliação Técnica'.\\nNunca use 'Engenheiro Diogo', use sempre 'Tecnólogo Responsável'.\\nAnalise o contexto: ${JSON.stringify(inputData.contexto || 'Sem contexto adicional')}`;\n\nreturn {\n  lead_id: leadId,\n  canal_sugerido: canal,\n  acao_sugerida: 'Comentar Post',\n  comentario_sugerido: 'Excelente ponto sobre manutenção predial! A automação e CFTV integrados trazem muito mais tranquilidade para a gestão.',\n  mensagem_sugerida: 'Olá! Acompanho sua gestão e notei a preocupação com eficiência. Gostaria de sugerir uma Avaliação Técnica rápida com nosso Tecnólogo Responsável, focada em otimizar a segurança e energia do condomínio.',\n  risco_spam: 'baixo',\n  precisa_aprovacao_humana: true\n};"
+        "jsCode": "const inputData = $input.item.json.body || $input.item.json;\nconst leadId = inputData.lead_id || 'LEAD_PLACEHOLDER';\nconst canal = inputData.canal || 'LinkedIn';\n\nconst promptIA = `Voc\u00ea \u00e9 um especialista em prospec\u00e7\u00e3o B2B focado em condom\u00ednios.\\nObjetivo: Sugerir um coment\u00e1rio aut\u00eantico ou DM (sem vender diretamente) que agregue valor ao s\u00edndico.\\nNunca use 'visita t\u00e9cnica', use sempre 'Avalia\u00e7\u00e3o T\u00e9cnica'.\\nNunca use 'Engenheiro Diogo', use sempre 'Tecn\u00f3logo Respons\u00e1vel'.\\nAnalise o contexto: ${JSON.stringify(inputData.contexto || 'Sem contexto adicional')}`;\n\nreturn {\n  lead_id: leadId,\n  canal_sugerido: canal,\n  acao_sugerida: 'Comentar Post',\n  comentario_sugerido: 'Excelente ponto sobre manuten\u00e7\u00e3o predial! A automa\u00e7\u00e3o e CFTV integrados trazem muito mais tranquilidade para a gest\u00e3o.',\n  mensagem_sugerida: 'Ol\u00e1! Acompanho sua gest\u00e3o e notei a preocupa\u00e7\u00e3o com efici\u00eancia. Gostaria de sugerir uma Avalia\u00e7\u00e3o T\u00e9cnica r\u00e1pida com nosso Tecn\u00f3logo Respons\u00e1vel, focada em otimizar a seguran\u00e7a e energia do condom\u00ednio.',\n  risco_spam: 'baixo',\n  precisa_aprovacao_humana: true\n};"
       },
       "id": "2",
       "name": "Analisador de IA - Sugestao e Risco",

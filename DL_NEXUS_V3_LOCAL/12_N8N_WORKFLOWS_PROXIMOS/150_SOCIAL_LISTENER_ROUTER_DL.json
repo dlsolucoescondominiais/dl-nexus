@@ -19,7 +19,7 @@
     },
     {
       "parameters": {
-        "jsCode": "\nconst payload = $input.item.json;\nlet canal = 'unknown';\nlet origem = 'unknown';\nlet usuario_nome = 'Desconhecido';\nlet usuario_id = '0';\nlet mensagem = '';\nlet keyword = null;\n\n// Mock logic for Meta Graph API / Evolution Webhook Extraction\nif (payload.entry && payload.entry[0].messaging) {\n    canal = 'facebook_instagram';\n    origem = 'direct';\n    usuario_id = payload.entry[0].messaging[0].sender.id;\n    mensagem = payload.entry[0].messaging[0].message.text;\n} else if (payload.data && payload.data.message) {\n    canal = 'whatsapp';\n    origem = 'whatsapp_api';\n    usuario_id = payload.data.sender;\n    usuario_nome = payload.data.pushName || 'Desconhecido';\n    mensagem = payload.data.message;\n}\n\nif (mensagem.toLowerCase().includes('avaliacao') || mensagem.toLowerCase().includes('avaliação')) {\n    keyword = 'AVALIAÇÃO';\n}\n\nreturn [{\n  json: {\n    canal,\n    origem,\n    usuario_id,\n    usuario_nome,\n    mensagem,\n    palavra_chave_detectada: keyword,\n    tipo_evento: keyword ? 'orcamento' : 'duvida'\n  }\n}];\n"
+        "jsCode": "\nconst payload = $input.item.json;\nlet canal = 'unknown';\nlet origem = 'unknown';\nlet usuario_nome = 'Desconhecido';\nlet usuario_id = '0';\nlet mensagem = '';\nlet keyword = null;\n\n// Mock logic for Meta Graph API / Evolution Webhook Extraction\nif (payload.entry && payload.entry[0].messaging) {\n    canal = 'facebook_instagram';\n    origem = 'direct';\n    usuario_id = payload.entry[0].messaging[0].sender.id;\n    mensagem = payload.entry[0].messaging[0].message.text;\n} else if (payload.data && payload.data.message) {\n    canal = 'whatsapp';\n    origem = 'whatsapp_api';\n    usuario_id = payload.data.sender;\n    usuario_nome = payload.data.pushName || 'Desconhecido';\n    mensagem = payload.data.message;\n}\n\nif (mensagem.toLowerCase().includes('avaliacao') || mensagem.toLowerCase().includes('avalia\u00e7\u00e3o')) {\n    keyword = 'AVALIA\u00c7\u00c3O';\n}\n\nreturn [{\n  json: {\n    canal,\n    origem,\n    usuario_id,\n    usuario_nome,\n    mensagem,\n    palavra_chave_detectada: keyword,\n    tipo_evento: keyword ? 'orcamento' : 'duvida'\n  }\n}];\n"
       },
       "id": "extract_data",
       "name": "Extrair Dados e Normalizar",
@@ -131,7 +131,7 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   }

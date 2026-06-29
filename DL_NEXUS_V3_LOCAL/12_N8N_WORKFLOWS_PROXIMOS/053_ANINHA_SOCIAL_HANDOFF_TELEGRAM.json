@@ -15,7 +15,7 @@
     {
       "parameters": {
         "chatId": "={{ $env['TELEGRAM_DIOGO_CHAT_ID'] }}",
-        "text": "=🔔 [HANDOFF SDR SOCIAL]\n\nCanal: {{ $json.canal_origem }}\nLead ID: {{ $json.sender_id }}\n\nMotivo: {{ $json.motivo_humano }}\n\nHistórico:\n{{ $json.historico }}"
+        "text": "=\ud83d\udd14 [HANDOFF SDR SOCIAL]\n\nCanal: {{ $json.canal_origem }}\nLead ID: {{ $json.sender_id }}\n\nMotivo: {{ $json.motivo_humano }}\n\nHist\u00f3rico:\n{{ $json.historico }}"
       },
       "id": "t1",
       "name": "ENVIAR_TELEGRAM_HANDOFF",
@@ -105,5 +105,5 @@
   "settings": {
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "active": false
+  "active": true
 }

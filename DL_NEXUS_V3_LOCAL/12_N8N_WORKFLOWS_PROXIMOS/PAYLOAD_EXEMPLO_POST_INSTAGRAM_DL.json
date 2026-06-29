@@ -1,13 +1,13 @@
 {
   "canal": "instagram",
   "linha_dl": "DL Volt",
-  "publico": "administradoras de condomínios no Rio de Janeiro",
+  "publico": "administradoras de condom\u00ednios no Rio de Janeiro",
   "formato": "feed",
-  "tema": "Manutenção preventiva de quadros elétricos em condomínios",
-  "objetivo": "Gerar demanda para Avaliação Técnica de infraestrutura elétrica",
+  "tema": "Manuten\u00e7\u00e3o preventiva de quadros el\u00e9tricos em condom\u00ednios",
+  "objetivo": "Gerar demanda para Avalia\u00e7\u00e3o T\u00e9cnica de infraestrutura el\u00e9trica",
   "legenda_facebook": "",
-  "legenda_instagram": "Seu condomínio apresenta disjuntores que desarmam com frequência, fios com coloração alterada ou ruídos estranhos no quadro elétrico? Esses podem ser sinais de que a infraestrutura elétrica precisa de atenção.\n\nEm edificações com mais de 15 anos, é comum que os quadros de distribuição operem fora das normas atuais. Componentes envelhecidos, conexões oxidadas e dimensionamento inadequado para a demanda atual podem representar riscos reais para a segurança dos moradores e para o patrimônio.\n\nA manutenção preventiva é a abordagem mais inteligente: identifica problemas antes que se tornem emergências, evita interrupções no fornecimento de energia e mantém o condomínio em conformidade com as normas técnicas vigentes.\n\nA DL Volt, linha de infraestrutura elétrica da DL Soluções Condominiais, realiza avaliações técnicas completas dos quadros elétricos e da infraestrutura de distribuição do seu condomínio.\n\n⚡ Envie uma mensagem para a DL e agende a Avaliação Técnica do quadro elétrico do seu condomínio.\n\n#DLVolt #EletricaCondominial #ManutencaoPreventiva #QuadroEletrico #SindicosRJ #DLSolucoes",
-  "cta": "Envie uma mensagem para a DL e agende a Avaliação Técnica do quadro elétrico do seu condomínio.",
+  "legenda_instagram": "Seu condom\u00ednio apresenta disjuntores que desarmam com frequ\u00eancia, fios com colora\u00e7\u00e3o alterada ou ru\u00eddos estranhos no quadro el\u00e9trico? Esses podem ser sinais de que a infraestrutura el\u00e9trica precisa de aten\u00e7\u00e3o.\n\nEm edifica\u00e7\u00f5es com mais de 15 anos, \u00e9 comum que os quadros de distribui\u00e7\u00e3o operem fora das normas atuais. Componentes envelhecidos, conex\u00f5es oxidadas e dimensionamento inadequado para a demanda atual podem representar riscos reais para a seguran\u00e7a dos moradores e para o patrim\u00f4nio.\n\nA manuten\u00e7\u00e3o preventiva \u00e9 a abordagem mais inteligente: identifica problemas antes que se tornem emerg\u00eancias, evita interrup\u00e7\u00f5es no fornecimento de energia e mant\u00e9m o condom\u00ednio em conformidade com as normas t\u00e9cnicas vigentes.\n\nA DL Volt, linha de infraestrutura el\u00e9trica da DL Solu\u00e7\u00f5es Condominiais, realiza avalia\u00e7\u00f5es t\u00e9cnicas completas dos quadros el\u00e9tricos e da infraestrutura de distribui\u00e7\u00e3o do seu condom\u00ednio.\n\n\u26a1 Envie uma mensagem para a DL e agende a Avalia\u00e7\u00e3o T\u00e9cnica do quadro el\u00e9trico do seu condom\u00ednio.\n\n#DLVolt #EletricaCondominial #ManutencaoPreventiva #QuadroEletrico #SindicosRJ #DLSolucoes",
+  "cta": "Envie uma mensagem para a DL e agende a Avalia\u00e7\u00e3o T\u00e9cnica do quadro el\u00e9trico do seu condom\u00ednio.",
   "hashtags": [
     "#DLVolt",
     "#EletricaCondominial",
@@ -17,7 +17,7 @@
     "#DLSolucoes"
   ],
   "image_prompt_en": "Photorealistic vertical 9:16 image of a modern well-organized electrical panel in a condominium utility room, clean wiring with proper labeling, professional electrician tools nearby, bright fluorescent lighting, industrial clean aesthetic, no visible faces, no readable personal information, Canon R5, 24mm wide angle, sharp focus, professional documentation photography",
-  "alt_text": "Quadro elétrico moderno e organizado em sala técnica de condomínio, com fiação limpa e identificada e ferramentas profissionais de eletricista ao lado.",
+  "alt_text": "Quadro el\u00e9trico moderno e organizado em sala t\u00e9cnica de condom\u00ednio, com fia\u00e7\u00e3o limpa e identificada e ferramentas profissionais de eletricista ao lado.",
   "risco_meta": "baixo",
   "precisa_aprovacao_humana": false,
   "motivo_aprovacao_humana": "",
@@ -37,5 +37,6 @@
   "erro_meta": "",
   "id_execucao_n8n": "",
   "fonte_noticia": "",
-  "carrossel_slides": []
+  "carrossel_slides": [],
+  "active": true
 }

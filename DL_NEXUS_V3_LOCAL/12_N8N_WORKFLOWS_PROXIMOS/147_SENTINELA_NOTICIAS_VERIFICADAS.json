@@ -7,17 +7,23 @@
       "name": "Schedule Trigger",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1,
-      "position": [250, 300]
+      "position": [
+        250,
+        300
+      ]
     },
     {
       "parameters": {
-        "jsCode": "// Buscar notícias verificadas sobre incidentes de infraestrutura\nreturn items;"
+        "jsCode": "// Buscar not\u00edcias verificadas sobre incidentes de infraestrutura\nreturn items;"
       },
       "id": "2",
-      "name": "Buscar Notícias",
+      "name": "Buscar Not\u00edcias",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [450, 300]
+      "position": [
+        450,
+        300
+      ]
     }
   ],
   "connections": {
@@ -25,7 +31,7 @@
       "main": [
         [
           {
-            "node": "Buscar Notícias",
+            "node": "Buscar Not\u00edcias",
             "type": "main",
             "index": 0
           }
@@ -33,9 +39,16 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1"
   },
-  "tags": [{"name": "Sentinela"}, {"name": "Notícias"}]
+  "tags": [
+    {
+      "name": "Sentinela"
+    },
+    {
+      "name": "Not\u00edcias"
+    }
+  ]
 }

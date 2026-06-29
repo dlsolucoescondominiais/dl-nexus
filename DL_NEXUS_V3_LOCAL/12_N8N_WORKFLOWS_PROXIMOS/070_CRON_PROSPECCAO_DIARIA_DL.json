@@ -1,6 +1,6 @@
 {
   "name": "070_CRON_PROSPECCAO_DIARIA_DL",
-  "active": false,
+  "active": true,
   "nodes": [
     {
       "parameters": {
@@ -25,10 +25,10 @@
     },
     {
       "parameters": {
-        "jsCode": "const d = new Date().toLocaleDateString(\"pt-BR\");\n\nconst prompt = `Você é Manus AI, o Diretor de Marketing B2B da DL Soluções Condominiais.\nHoje é dia ${d}. Sua missão: gerar a estratégia do dia de postagem para o Agente MarkSolar (Copywriter).\n\nPRODUTOS OFICIAIS DA DL (usar exatamente esses nomes):\n- DL Guardião: segurança eletrônica, CFTV, câmeras, proteção patrimonial\n- DL Fortress: portaria autônoma, gestão de acesso\n- DL GateKeeper: automação de portões\n- DL Acqua: cisternas, caixas d'água, bombas, automação hídrica\n- DL Volt: elétrica condominial, quadros, painéis, infraestrutura elétrica\n- DL EcoVolt: energia solar on-grid, híbrida, off-grid\n- DL Alerta: prevenção de incêndio, centrais, detectores\n- DL Partner: manutenção continuada Basic/Master/Premium\n- DL Suporte Grill's: atendimento técnico para equipamentos da linha Mult•Grill Express e similares\n\nFOCO COMERCIAL PRIORITÁRIO:\n- Receita recorrente rápida via DL Partner\n- Condomínios verticais pequenos e médios (até 400 unidades)\n- Condomínios antigos com infraestrutura defasada\n- Condomínios de baixa e média renda, populares, Minha Casa Minha Vida\n- Administradoras pequenas e médias\n- Restaurantes, hamburguerias e lanchonetes para DL Suporte Grill's\n\nREGIÕES: Rio de Janeiro — Zona Sul, Zona Norte, Zona Oeste, Barra, Recreio, Jacarepaguá, Tijuca, Centro, Niterói, São Gonçalo, Duque de Caxias, Nova Iguaçu.\n\nREGRAS ABSOLUTAS:\n- Nunca usar \"visita técnica\". Usar \"Avaliação Técnica\".\n- Nunca citar Condfy.\n- Nunca chamar Diogo de engenheiro. Usar \"Tecnólogo Responsável\".\n- CTA principal: https://dlsolucoescondominiais.com\n- CTA WhatsApp: https://wa.me/5521964742458\n\nOBJETIVO FINAL: Gerar lead para Avaliação Técnica.\n\nRetorne JSON com os campos: modo, estrategia_texto, produto, publico_alvo, perfil_condominio, bairro, dor_principal, oferta, angulo_comercial, canal_destino, objetivo, nivel_de_urgencia, cta.`;\n\nreturn { json: { prompt: prompt } };"
+        "jsCode": "const d = new Date().toLocaleDateString(\"pt-BR\");\n\nconst prompt = `Voc\u00ea \u00e9 Manus AI, o Diretor de Marketing B2B da DL Solu\u00e7\u00f5es Condominiais.\nHoje \u00e9 dia ${d}. Sua miss\u00e3o: gerar a estrat\u00e9gia do dia de postagem para o Agente MarkSolar (Copywriter).\n\nPRODUTOS OFICIAIS DA DL (usar exatamente esses nomes):\n- DL Guardi\u00e3o: seguran\u00e7a eletr\u00f4nica, CFTV, c\u00e2meras, prote\u00e7\u00e3o patrimonial\n- DL Fortress: portaria aut\u00f4noma, gest\u00e3o de acesso\n- DL GateKeeper: automa\u00e7\u00e3o de port\u00f5es\n- DL Acqua: cisternas, caixas d'\u00e1gua, bombas, automa\u00e7\u00e3o h\u00eddrica\n- DL Volt: el\u00e9trica condominial, quadros, pain\u00e9is, infraestrutura el\u00e9trica\n- DL EcoVolt: energia solar on-grid, h\u00edbrida, off-grid\n- DL Alerta: preven\u00e7\u00e3o de inc\u00eandio, centrais, detectores\n- DL Partner: manuten\u00e7\u00e3o continuada Basic/Master/Premium\n- DL Suporte Grill's: atendimento t\u00e9cnico para equipamentos da linha Mult\u2022Grill Express e similares\n\nFOCO COMERCIAL PRIORIT\u00c1RIO:\n- Receita recorrente r\u00e1pida via DL Partner\n- Condom\u00ednios verticais pequenos e m\u00e9dios (at\u00e9 400 unidades)\n- Condom\u00ednios antigos com infraestrutura defasada\n- Condom\u00ednios de baixa e m\u00e9dia renda, populares, Minha Casa Minha Vida\n- Administradoras pequenas e m\u00e9dias\n- Restaurantes, hamburguerias e lanchonetes para DL Suporte Grill's\n\nREGI\u00d5ES: Rio de Janeiro \u2014 Zona Sul, Zona Norte, Zona Oeste, Barra, Recreio, Jacarepagu\u00e1, Tijuca, Centro, Niter\u00f3i, S\u00e3o Gon\u00e7alo, Duque de Caxias, Nova Igua\u00e7u.\n\nREGRAS ABSOLUTAS:\n- Nunca usar \"visita t\u00e9cnica\". Usar \"Avalia\u00e7\u00e3o T\u00e9cnica\".\n- Nunca citar Condfy.\n- Nunca chamar Diogo de engenheiro. Usar \"Tecn\u00f3logo Respons\u00e1vel\".\n- CTA principal: https://dlsolucoescondominiais.com\n- CTA WhatsApp: https://wa.me/5521964742458\n\nOBJETIVO FINAL: Gerar lead para Avalia\u00e7\u00e3o T\u00e9cnica.\n\nRetorne JSON com os campos: modo, estrategia_texto, produto, publico_alvo, perfil_condominio, bairro, dor_principal, oferta, angulo_comercial, canal_destino, objetivo, nivel_de_urgencia, cta.`;\n\nreturn { json: { prompt: prompt } };"
       },
       "id": "prepare_prompt",
-      "name": "Preparar Prompt Diário",
+      "name": "Preparar Prompt Di\u00e1rio",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
@@ -52,7 +52,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "{\"prompt\": \"={{$json.prompt}}\", \"agent_profile\": \"manus-1.6-lite\", \"interactive_mode\": false, \"structured_output_schema\": {\"type\": \"object\", \"properties\": {\"modo\": {\"type\": \"string\", \"description\": \"economico\"}, \"estrategia_texto\": {\"type\": \"string\", \"description\": \"Descreva o gancho, a dor do público e o tom que o MarkSolar deve usar no post.\"}, \"produto\": {\"type\": \"string\", \"description\": \"Nome do produto foco (ex: DL Partner, DL Guardião, DL Volt)\"}, \"publico_alvo\": {\"type\": \"string\", \"description\": \"Ex: Síndicos de pequenos condomínios\"}, \"perfil_condominio\": {\"type\": \"string\", \"description\": \"Ex: Vertical até 100 unidades, antigo, baixa renda\"}, \"bairro\": {\"type\": \"string\", \"description\": \"Ex: Zona Sul, Barra ou Tijuca\"}, \"dor_principal\": {\"type\": \"string\", \"description\": \"Ex: Fiação antiga, câmeras paradas, portaria cara\"}, \"oferta\": {\"type\": \"string\", \"description\": \"Ex: Avaliação Técnica gratuita + plano DL Partner Basic\"}, \"angulo_comercial\": {\"type\": \"string\", \"description\": \"Ex: Economia, segurança, valorização do imóvel\"}, \"canal_destino\": {\"type\": \"string\", \"description\": \"Instagram, Facebook e TikTok\"}, \"objetivo\": {\"type\": \"string\", \"description\": \"Gerar lead para Avaliação Técnica\"}, \"nivel_de_urgencia\": {\"type\": \"string\", \"description\": \"Ex: alto, médio, baixo\"}, \"cta\": {\"type\": \"string\", \"description\": \"Solicite uma Avaliação Técnica pelo WhatsApp da DL\"}}, \"required\": [\"modo\", \"estrategia_texto\", \"produto\", \"publico_alvo\", \"perfil_condominio\", \"bairro\", \"dor_principal\", \"oferta\", \"angulo_comercial\", \"canal_destino\", \"objetivo\", \"nivel_de_urgencia\", \"cta\"]}}",
+        "jsonBody": "{\"prompt\": \"={{$json.prompt}}\", \"agent_profile\": \"manus-1.6-lite\", \"interactive_mode\": false, \"structured_output_schema\": {\"type\": \"object\", \"properties\": {\"modo\": {\"type\": \"string\", \"description\": \"economico\"}, \"estrategia_texto\": {\"type\": \"string\", \"description\": \"Descreva o gancho, a dor do p\u00fablico e o tom que o MarkSolar deve usar no post.\"}, \"produto\": {\"type\": \"string\", \"description\": \"Nome do produto foco (ex: DL Partner, DL Guardi\u00e3o, DL Volt)\"}, \"publico_alvo\": {\"type\": \"string\", \"description\": \"Ex: S\u00edndicos de pequenos condom\u00ednios\"}, \"perfil_condominio\": {\"type\": \"string\", \"description\": \"Ex: Vertical at\u00e9 100 unidades, antigo, baixa renda\"}, \"bairro\": {\"type\": \"string\", \"description\": \"Ex: Zona Sul, Barra ou Tijuca\"}, \"dor_principal\": {\"type\": \"string\", \"description\": \"Ex: Fia\u00e7\u00e3o antiga, c\u00e2meras paradas, portaria cara\"}, \"oferta\": {\"type\": \"string\", \"description\": \"Ex: Avalia\u00e7\u00e3o T\u00e9cnica gratuita + plano DL Partner Basic\"}, \"angulo_comercial\": {\"type\": \"string\", \"description\": \"Ex: Economia, seguran\u00e7a, valoriza\u00e7\u00e3o do im\u00f3vel\"}, \"canal_destino\": {\"type\": \"string\", \"description\": \"Instagram, Facebook e TikTok\"}, \"objetivo\": {\"type\": \"string\", \"description\": \"Gerar lead para Avalia\u00e7\u00e3o T\u00e9cnica\"}, \"nivel_de_urgencia\": {\"type\": \"string\", \"description\": \"Ex: alto, m\u00e9dio, baixo\"}, \"cta\": {\"type\": \"string\", \"description\": \"Solicite uma Avalia\u00e7\u00e3o T\u00e9cnica pelo WhatsApp da DL\"}}, \"required\": [\"modo\", \"estrategia_texto\", \"produto\", \"publico_alvo\", \"perfil_condominio\", \"bairro\", \"dor_principal\", \"oferta\", \"angulo_comercial\", \"canal_destino\", \"objetivo\", \"nivel_de_urgencia\", \"cta\"]}}",
         "options": {
           "response": {
             "response": {
@@ -73,7 +73,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const task = $json.task || $json.data || $json;\nconst task_id = task.task_id || task.id || $json.task_id || $json.id;\n\nif (!task_id) {\n  throw new Error(\"Manus não retornou task_id. Verificar payload ou endpoint task.create.\");\n}\n\nreturn {\n  json: {\n    task_id: task_id,\n    attempt: 0,\n    max_attempts: 30\n  }\n};"
+        "jsCode": "const task = $json.task || $json.data || $json;\nconst task_id = task.task_id || task.id || $json.task_id || $json.id;\n\nif (!task_id) {\n  throw new Error(\"Manus n\u00e3o retornou task_id. Verificar payload ou endpoint task.create.\");\n}\n\nreturn {\n  json: {\n    task_id: task_id,\n    attempt: 0,\n    max_attempts: 30\n  }\n};"
       },
       "id": "extract_task_id",
       "name": "Extrair Task ID",
@@ -157,7 +157,7 @@
         }
       },
       "id": "if_done",
-      "name": "IF DeepSeek_Gemini concluído?",
+      "name": "IF DeepSeek_Gemini conclu\u00eddo?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
       "position": [
@@ -168,7 +168,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const attempt = ($json.attempt || 0) + 1;\nconst max_attempts = $json.max_attempts || 30;\n\nif (attempt >= max_attempts) {\n  throw new Error(\"Timeout Manus: tarefa não concluiu em 15 minutos (\" + max_attempts + \" tentativas x 30s).\");\n}\n\nreturn {\n  json: {\n    task_id: $json.task_id,\n    attempt: attempt,\n    max_attempts: max_attempts\n  }\n};"
+        "jsCode": "const attempt = ($json.attempt || 0) + 1;\nconst max_attempts = $json.max_attempts || 30;\n\nif (attempt >= max_attempts) {\n  throw new Error(\"Timeout Manus: tarefa n\u00e3o concluiu em 15 minutos (\" + max_attempts + \" tentativas x 30s).\");\n}\n\nreturn {\n  json: {\n    task_id: $json.task_id,\n    attempt: attempt,\n    max_attempts: max_attempts\n  }\n};"
       },
       "id": "increment_attempt",
       "name": "Incrementar Tentativa",
@@ -228,7 +228,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const events = $input.all()[0].json.data || [];\n\n// 1. Buscar structured_output_result\nconst resultEvent = events.find(e => e.type === 'structured_output_result');\n\nif (\n  resultEvent &&\n  resultEvent.structured_output_result &&\n  resultEvent.structured_output_result.success\n) {\n  const value = resultEvent.structured_output_result.value;\n\n  if (typeof value === 'string') {\n    return { json: JSON.parse(value) };\n  }\n\n  return { json: value };\n}\n\n// 2. Fallback: buscar assistant_message com JSON\nconst assistantEvent = events.find(e =>\n  e.type === 'assistant_message' &&\n  e.assistant_message &&\n  e.assistant_message.content\n);\n\nif (assistantEvent) {\n  const content = assistantEvent.assistant_message.content;\n  const match = content.match(/\\{[\\s\\S]*\\}/);\n\n  if (match) {\n    const parsed = JSON.parse(match[0]);\n\n    if (!parsed.estrategia_texto || !parsed.produto) {\n      throw new Error('JSON do Manus incompleto.');\n    }\n\n    return { json: parsed };\n  }\n}\n\nthrow new Error('Resultado estruturado do Manus não encontrado em task.listMessages.');"
+        "jsCode": "const events = $input.all()[0].json.data || [];\n\n// 1. Buscar structured_output_result\nconst resultEvent = events.find(e => e.type === 'structured_output_result');\n\nif (\n  resultEvent &&\n  resultEvent.structured_output_result &&\n  resultEvent.structured_output_result.success\n) {\n  const value = resultEvent.structured_output_result.value;\n\n  if (typeof value === 'string') {\n    return { json: JSON.parse(value) };\n  }\n\n  return { json: value };\n}\n\n// 2. Fallback: buscar assistant_message com JSON\nconst assistantEvent = events.find(e =>\n  e.type === 'assistant_message' &&\n  e.assistant_message &&\n  e.assistant_message.content\n);\n\nif (assistantEvent) {\n  const content = assistantEvent.assistant_message.content;\n  const match = content.match(/\\{[\\s\\S]*\\}/);\n\n  if (match) {\n    const parsed = JSON.parse(match[0]);\n\n    if (!parsed.estrategia_texto || !parsed.produto) {\n      throw new Error('JSON do Manus incompleto.');\n    }\n\n    return { json: parsed };\n  }\n}\n\nthrow new Error('Resultado estruturado do Manus n\u00e3o encontrado em task.listMessages.');"
       },
       "id": "clean_json",
       "name": "Limpar JSON do DeepSeek_Gemini",
@@ -257,7 +257,7 @@
     {
       "parameters": {
         "chatId": "-1002012015091",
-        "text": "={{ \"🎯 DIRETRIZ MANUS B2B\\n\\nPúblico: \" + $json.publico_alvo + \"\\nProduto: \" + $json.produto + \"\\nRegião: \" + $json.bairro + \"\\nEstratégia: \" + $json.estrategia_texto }}",
+        "text": "={{ \"\ud83c\udfaf DIRETRIZ MANUS B2B\\n\\nP\u00fablico: \" + $json.publico_alvo + \"\\nProduto: \" + $json.produto + \"\\nRegi\u00e3o: \" + $json.bairro + \"\\nEstrat\u00e9gia: \" + $json.estrategia_texto }}",
         "additionalFields": {
           "parse_mode": "Markdown"
         }
@@ -279,14 +279,14 @@
       "main": [
         [
           {
-            "node": "Preparar Prompt Diário",
+            "node": "Preparar Prompt Di\u00e1rio",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Preparar Prompt Diário": {
+    "Preparar Prompt Di\u00e1rio": {
       "main": [
         [
           {
@@ -345,14 +345,14 @@
       "main": [
         [
           {
-            "node": "IF Manus concluído?",
+            "node": "IF Manus conclu\u00eddo?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "IF Manus concluído?": {
+    "IF Manus conclu\u00eddo?": {
       "main": [
         [
           {

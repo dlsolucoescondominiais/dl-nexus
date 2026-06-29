@@ -15,7 +15,7 @@
     {
       "parameters": {
         "chatId": "-1002012015091",
-        "text": "={{ '🚨 ERRO DE POSTAGEM SOCIAL! 🚨\\nWorkflow: ' + $json.workflow.name + '\\nNode que falhou: ' + $json.execution.error.node + '\\nErro: ' + $json.execution.error.message }}",
+        "text": "={{ '\ud83d\udea8 ERRO DE POSTAGEM SOCIAL! \ud83d\udea8\\nWorkflow: ' + $json.workflow.name + '\\nNode que falhou: ' + $json.execution.error.node + '\\nErro: ' + $json.execution.error.message }}",
         "additionalFields": {}
       },
       "id": "2",
@@ -67,6 +67,6 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {}
 }

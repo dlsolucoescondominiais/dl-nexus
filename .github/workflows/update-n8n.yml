@@ -17,4 +17,4 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.N8N_API_KEY }}" \
             -H "Content-Type: application/json" \
             -d '{"action":"pull"}' \
-            https://n8n.example.com/api/v1/webhook/nexus-update
+            https://seu-n8n-production.com/webhook/nexus-update

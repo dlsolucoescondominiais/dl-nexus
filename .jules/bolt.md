@@ -1,0 +1,5 @@
+## 2024-05-15 - Loop Fusion in Dashboard KPIs
+
+**Learning:** I noticed an anti-pattern in the frontend KPI calculation where multiple metrics were aggregated using iterative `.filter()` passes (`.filter(...).length`) on the same `leadsData` array. While functional, this leads to O(3*N) complexity. In a performance-conscious context, consolidating multiple iterative aggregation passes into a single loop pass (O(N) loop fusion) via `.reduce()` significantly reduces redundant array traversal overhead. This is a common performance pattern that applies globally to this codebase whenever we aggregate multiple data points from a collection.
+
+**Action:** Whenever computing multiple metrics on the same collection (e.g., in a dashboard or data summary), use a single pass approach like `.reduce()` or a single `for...of` loop instead of sequential filter, map, or map-reduce calls.

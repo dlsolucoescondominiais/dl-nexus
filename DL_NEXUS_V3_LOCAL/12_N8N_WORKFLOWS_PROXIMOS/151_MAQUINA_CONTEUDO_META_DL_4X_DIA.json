@@ -274,8 +274,8 @@
         "operation": "appendOrUpdate",
         "documentId": {
           "__rl": true,
-          "mode": "list",
-          "value": "1bH2Jk3L4mN5oP6qR7sT8uV9wX0yZ1aB2cD3eF4gH5i"
+          "mode": "id",
+          "value": "1EqT_yGjPUmxfzluX3bmzXxYu6XcT3J2F"
         },
         "sheetName": {
           "__rl": true,
@@ -661,8 +661,8 @@
         "operation": "appendOrUpdate",
         "documentId": {
           "__rl": true,
-          "mode": "list",
-          "value": "1bH2Jk3L4mN5oP6qR7sT8uV9wX0yZ1aB2cD3eF4gH5i"
+          "mode": "id",
+          "value": "1EqT_yGjPUmxfzluX3bmzXxYu6XcT3J2F"
         },
         "sheetName": {
           "__rl": true,

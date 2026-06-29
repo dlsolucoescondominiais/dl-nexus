@@ -13,8 +13,8 @@ jobs:
       
       - name: Activate workflows
         run: |
-          curl -X POST \
+          curl -k -X POST \
             -H "Authorization: Bearer ${{ secrets.N8N_API_KEY }}" \
             -H "Content-Type: application/json" \
             -d '{"action":"pull"}' \
-            https://seu-n8n-production.com/webhook/nexus-update
+            https://n8n.dlsolucoescondominiais.com.br/api/v1/webhook/nexus-update

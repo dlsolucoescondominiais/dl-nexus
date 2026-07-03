@@ -1,0 +1,3 @@
+## 2024-03-24 - [Derived Metrics Loop Fusion in Real-Time Components]
+**Learning:** In React components consuming real-time data streams (like Supabase Realtime), manually syncing derived metrics into a separate `useState` using multiple sequential array passes (e.g., `.filter()`) creates two problems: it causes redundant component re-renders (state desync risk) and is O(k*N) inefficient.
+**Action:** Always use `useMemo` combined with a single `.reduce()` pass (O(N) loop fusion) to calculate all derived metrics simultaneously directly from the primary data source, establishing a single source of truth and preventing unnecessary render cycles.

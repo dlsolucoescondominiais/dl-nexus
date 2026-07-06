@@ -1,0 +1,3 @@
+## 2024-07-06 - FastAPI Event Loop Blocking I/O
+**Learning:** In FastAPI, endpoint handlers that perform synchronous, blocking I/O operations (like `requests.post()` or synchronous `openai` SDK calls) must be declared with `def` instead of `async def`. Using `async def` for these operations blocks the main event loop, severely degrading performance under load. Using `def` allows FastAPI to automatically offload the execution to an external threadpool.
+**Action:** Always verify if a route handler performs blocking I/O. If it does and it cannot be easily converted to use an async client, ensure it is defined using `def` rather than `async def`.

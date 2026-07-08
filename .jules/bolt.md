@@ -1,0 +1,3 @@
+## 2024-07-08 - [React Dashboard: O(N) Loop Fusion & Derived Metrics]
+**Learning:** Found a performance bottleneck where real-time WebSocket data from Supabase was redundantly synchronizing a secondary `useState` for derived KPIs. Moreover, the KPI calculation was executing multiple `O(N)` array traversal passes (`filter().length`) over the same data set.
+**Action:** Replaced the secondary state sync with `useMemo` dependent on the primary dataset. Applied O(N) loop fusion to consolidate the aggregation into a single loop, establishing a single source of truth and preventing unnecessary React re-renders.

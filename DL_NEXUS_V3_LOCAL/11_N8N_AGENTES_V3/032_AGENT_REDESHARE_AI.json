@@ -1,0 +1,88 @@
+{
+  "name": "032_AGENT_REDESHARE_AI",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "agent-redeshare-ai",
+        "httpMethod": "POST",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook",
+      "name": "Webhook RedeShare AI",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst body = $json.body || $json;\nconst msg = String(body.mensagem || body.message || body.text || \"\").toLowerCase();\nconst solicitante = body.solicitante || \"Diego\";\n\nlet acao = \"analisar\";\nlet ferramentas_sugeridas = [];\nlet diagnostico = \"\";\n\nif (msg.includes(\"impressora\") || msg.includes(\"spooler\") || msg.includes(\"0x0000011b\") || msg.includes(\"0x00000709\")) {\n  acao = \"diagnostico_impressao\";\n  ferramentas_sugeridas = [\"Get-Printer\", \"Get-Service Spooler\", \"printui\"];\n  diagnostico = \"Problema relacionado a compartilhamento de impressora ou Point and Print detectado. Recomenda-se verificação de Spooler, atualizações de segurança (RPC) ou permissões SMB.\";\n} else if (msg.includes(\"pasta\") || msg.includes(\"arquivo\") || msg.includes(\"smb\") || msg.includes(\"acesso negado\")) {\n  acao = \"diagnostico_compartilhamento\";\n  ferramentas_sugeridas = [\"Get-SmbShare\", \"net share\", \"net view\"];\n  diagnostico = \"Problema de compartilhamento de arquivos ou SMB. Verificar permissões NTFS e compartilhamento, bem como versões SMB ativas.\";\n} else if (msg.includes(\"ip \") || msg.includes(\"internet\") || msg.includes(\"dhcp\") || msg.includes(\"dns\")) {\n  acao = \"diagnostico_rede\";\n  ferramentas_sugeridas = [\"ipconfig /all\", \"Resolve-DnsName\", \"ping\", \"tracert\", \"Get-NetIPAddress\"];\n  diagnostico = \"Problema de conectividade (TCP/IP, DHCP, DNS) ou configuração de rede física/lógica.\";\n} else if (msg.includes(\"inventário\") || msg.includes(\"inventario\") || msg.includes(\"mapear\")) {\n  acao = \"inventario_rede\";\n  ferramentas_sugeridas = [\"arp -a\", \"Get-NetNeighbor\", \"Get-NetAdapter\"];\n  diagnostico = \"Solicitação de inventário e mapeamento de rede. Requer varredura de dispositivos via ARP, WMI ou SNMP.\";\n} else {\n  diagnostico = \"Análise preliminar de infraestrutura solicitada. Aguardando diretrizes e parâmetros específicos do Diego.\";\n}\n\nconst relatorio_template = `\n### Relatório Técnico Preliminar - DL RedeShare AI\n**Solicitante:** ${solicitante}\n**Diagnóstico Inicial:** ${diagnostico}\n**Ferramentas Recomendadas:** ${ferramentas_sugeridas.join(', ')}\n\n**Atenção de Segurança:** Nenhuma alteração em AD, VLAN, Firewall, DHCP, DNS, Gateway, Switches ou Mikrotik deve ser executada sem autorização explícita do Diego.\n`;\n\nreturn [{\n  json: {\n    agente: \"DL RedeShare AI\",\n    papel: \"Subagente Especialista em Infraestrutura e Redes\",\n    supervisor: \"Diego\",\n    acao_requerida: acao,\n    ferramentas_sugeridas: ferramentas_sugeridas,\n    relatorio_preliminar: relatorio_template,\n    proxima_acao: \"enviar_para_revisao_diego\",\n    status: \"diagnostico_concluido\"\n  }\n}];\n"
+      },
+      "id": "code",
+      "name": "RedeShare Analise de Infra",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        520,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "id": "respond",
+      "name": "Responder RedeShare",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        800,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook RedeShare AI": {
+      "main": [
+        [
+          {
+            "node": "RedeShare Analise de Infra",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RedeShare Analise de Infra": {
+      "main": [
+        [
+          {
+            "node": "Responder RedeShare",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": [
+    {
+      "name": "DL_NEXUS_V3"
+    },
+    {
+      "name": "REDESHARE"
+    },
+    {
+      "name": "INFRAESTRUTURA"
+    }
+  ]
+}

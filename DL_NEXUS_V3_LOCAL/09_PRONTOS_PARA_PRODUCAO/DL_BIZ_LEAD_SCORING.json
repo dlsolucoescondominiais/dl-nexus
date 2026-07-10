@@ -1,0 +1,193 @@
+{
+  "name": "DL_BIZ_LEAD_SCORING_v8.1",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-biz-lead-scoring",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "name": "Webhook Lead Input",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        100,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT enabled FROM dl_feature_flags WHERE flag_name = 'ENABLE_LEAD_SCORING';"
+      },
+      "name": "Check Feature Flag",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        300,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.enabled}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "If Enabled",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        500,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst input = $('Webhook Lead Input').first().json.body || {};\nconst weights = {\"DOR\": 0.25, \"POTENCIAL_RECORRENCIA\": 0.25, \"FACILIDADE_OPERACIONAL\": 0.2, \"POTENCIAL_EXPANSAO\": 0.15, \"LOCALIZACAO\": 0.1, \"TICKET\": 0.05};\nconst segments = {\"CONDOMINIO_POPULAR\": {\"peso\": 15, \"descricao\": \"MCMV, habitacional popular\"}, \"CONDOMINIO_ECONOMICO\": {\"peso\": 20, \"descricao\": \"Compactos, antigos, <R$1200\"}, \"CONDOMINIO_COMPACTO\": {\"peso\": 18, \"descricao\": \"8-20 unidades\"}, \"CONDOMINIO_TRADICIONAL\": {\"peso\": 25, \"descricao\": \"20-80 unidades, R$800-2000\"}, \"CONDOMINIO_PEQUENO_PORTE\": {\"peso\": 17, \"descricao\": \"<30 unidades\"}};\n\nlet dor = input.dor_score || 0;\nlet rec = input.recorrencia_score || 0;\nlet op = input.operacional_score || 0;\nlet exp = input.expansao_score || 0;\nlet loc = input.localizacao_score || 0;\nlet tkt = input.ticket_score || 0;\n\nlet final_score = (dor * weights.DOR) + \n                  (rec * weights.POTENCIAL_RECORRENCIA) + \n                  (op * weights.FACILIDADE_OPERACIONAL) + \n                  (exp * weights.POTENCIAL_EXPANSAO) + \n                  (loc * weights.LOCALIZACAO) + \n                  (tkt * weights.TICKET);\n\nlet segment = input.segmento || 'CONDOMINIO_TRADICIONAL';\nif (segments[segment]) {\n   final_score += segments[segment].peso;\n}\n\nfinal_score = Math.min(100, final_score);\n\nreturn { final_score, segment, calculated_at: new Date().toISOString(), id: input.lead_id };\n"
+      },
+      "name": "Calculate Score Engine",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        700,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "schema": "public",
+        "table": "dl_crm_leads",
+        "updateKey": "id",
+        "columns": "score_comercial",
+        "mappingMode": "defineBelow",
+        "assignments": {
+          "score_comercial": "={{$json.final_score}}"
+        }
+      },
+      "name": "Update Supabase dl_crm_leads",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        900,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "dl_nexus_logs",
+        "mappingMode": "defineBelow",
+        "assignments": {
+          "workflow_name": "DL_BIZ_LEAD_SCORING",
+          "message": "Lead score updated successfully",
+          "details": "={{JSON.stringify($json)}}"
+        }
+      },
+      "name": "Log Success",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "dl_nexus_logs",
+        "mappingMode": "defineBelow",
+        "assignments": {
+          "workflow_name": "DL_BIZ_LEAD_SCORING",
+          "message": "Execution skipped - Feature Flag Disabled"
+        }
+      },
+      "name": "Log Skipped",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        700,
+        400
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Lead Input": {
+      "main": [
+        [
+          {
+            "node": "Check Feature Flag",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Feature Flag": {
+      "main": [
+        [
+          {
+            "node": "If Enabled",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Enabled": {
+      "main": [
+        [
+          {
+            "node": "Calculate Score Engine",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Skipped",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Score Engine": {
+      "main": [
+        [
+          {
+            "node": "Update Supabase dl_crm_leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Supabase dl_crm_leads": {
+      "main": [
+        [
+          {
+            "node": "Log Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveManualExecutions": false,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "dl_nexus_error_handler"
+  }
+}

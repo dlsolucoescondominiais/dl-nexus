@@ -1,0 +1,66 @@
+{
+  "name": "DL_BIZ_QUICK_QUOTE",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Workflow: DL_BIZ_QUICK_QUOTE\n\n**CONTRATOS:**\nINPUT_SCHEMA: Valid JSON\nOUTPUT_SCHEMA: Valid JSON\n\n**SLA:**\nDuration: < 500ms\n\n**ARQUITETURA:**\nThis workflow handles DL_BIZ_QUICK_QUOTE logic as per MVP 8.1 specifications.\n\n**MODULARIDADE:**\nBase logic module. Extend if nodes > 50.",
+        "height": 250,
+        "width": 600
+      },
+      "id": "a32320e8-2b8f-42d5-94b8-9619e3b13143",
+      "name": "Documentation & Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -100
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "78ca01c9-c6b8-4c0d-bbac-0920e03872b1",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return { feature_flags: { enabled: true } };"
+      },
+      "id": "645ea574-3e17-4910-9fa9-f58a1bcf969c",
+      "name": "Feature Flags (Code)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "console.log('Event bus logger initialized'); return $input.all();"
+      },
+      "id": "f4faca31-34b6-45da-8853-3e22081bde65",
+      "name": "Event Bus & Logger",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        200
+      ]
+    }
+  ],
+  "connections": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "tags": []
+}

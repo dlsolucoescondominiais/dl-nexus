@@ -1,0 +1,66 @@
+{
+  "name": "DL_BIZ_SINDICO_TRACKER",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Workflow: DL_BIZ_SINDICO_TRACKER\n\n**CONTRATOS:**\nINPUT_SCHEMA: Valid JSON\nOUTPUT_SCHEMA: Valid JSON\n\n**SLA:**\nDuration: < 500ms\n\n**ARQUITETURA:**\nThis workflow handles DL_BIZ_SINDICO_TRACKER logic as per MVP 8.1 specifications.\n\n**MODULARIDADE:**\nBase logic module. Extend if nodes > 50.",
+        "height": 250,
+        "width": 600
+      },
+      "id": "807b80da-79ff-4dea-a4f0-ad098780358f",
+      "name": "Documentation & Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -100
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "90d9a935-ed97-4733-9ae6-45c36916883c",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return { feature_flags: { enabled: true } };"
+      },
+      "id": "1d903177-e372-4262-95f3-c3b3a11ae8a2",
+      "name": "Feature Flags (Code)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "console.log('Event bus logger initialized'); return $input.all();"
+      },
+      "id": "731ac4a5-e312-47b0-9ecd-77b5b0a0c49f",
+      "name": "Event Bus & Logger",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        200
+      ]
+    }
+  ],
+  "connections": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "tags": []
+}

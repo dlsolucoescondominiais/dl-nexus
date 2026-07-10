@@ -1,0 +1,66 @@
+{
+  "name": "DL_BIZ_LEAD_SCORING",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Workflow: DL_BIZ_LEAD_SCORING\n\n**CONTRATOS:**\nINPUT_SCHEMA: Valid JSON\nOUTPUT_SCHEMA: Valid JSON\n\n**SLA:**\nDuration: < 500ms\n\n**ARQUITETURA:**\nThis workflow handles DL_BIZ_LEAD_SCORING logic as per MVP 8.1 specifications.\n\n**MODULARIDADE:**\nBase logic module. Extend if nodes > 50.",
+        "height": 250,
+        "width": 600
+      },
+      "id": "a3779e89-ff72-43a4-af4b-875d29c44cbc",
+      "name": "Documentation & Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -100
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "29bbd8be-8df0-4679-80cb-fe17f0949936",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return { feature_flags: { enabled: true } };"
+      },
+      "id": "a75ee8db-db00-49e8-ba0f-e4dd7a4eed74",
+      "name": "Feature Flags (Code)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "console.log('Event bus logger initialized'); return $input.all();"
+      },
+      "id": "0cf6437f-986f-47f2-a091-dacc72d3735c",
+      "name": "Event Bus & Logger",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        200
+      ]
+    }
+  ],
+  "connections": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "tags": []
+}

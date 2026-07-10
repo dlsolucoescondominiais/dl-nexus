@@ -6,7 +6,10 @@
       "name": "Error Trigger",
       "type": "n8n-nodes-base.errorTrigger",
       "typeVersion": 1,
-      "position": [250, 300]
+      "position": [
+        250,
+        300
+      ]
     },
     {
       "parameters": {
@@ -24,7 +27,10 @@
       "name": "Log to DLQ",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.1,
-      "position": [450, 300],
+      "position": [
+        450,
+        300
+      ],
       "credentials": {
         "postgres": {
           "id": "supabase_db",
@@ -35,13 +41,16 @@
     {
       "parameters": {
         "chatId": "ADMIN_CHAT_ID",
-        "text": "={{ '🚨 ERRO CRÍTICO NO DL NEXUS\\n\\nWorkflow: ' + $json.workflow.name + '\\nErro: ' + $json.execution.error.message }}",
+        "text": "={{ '\ud83d\udea8 ERRO CR\u00cdTICO NO DL NEXUS\\n\\nWorkflow: ' + $json.workflow.name + '\\nErro: ' + $json.execution.error.message }}",
         "additionalFields": {}
       },
       "name": "Alert Telegram",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
-      "position": [650, 300],
+      "position": [
+        650,
+        300
+      ],
       "credentials": {
         "telegramApi": {
           "id": "telegram_bot",
@@ -76,6 +85,9 @@
   },
   "settings": {
     "timezone": "America/Sao_Paulo",
-    "saveExecutionProgress": true
-  }
+    "saveExecutionProgress": true,
+    "versionId": "1.0.0",
+    "errorWorkflow": "DL_GLOBAL_ERROR_HANDLER"
+  },
+  "notes": "Workflow automagicamente gerado. Idempotente (Upsert), versionamento semver ativado."
 }

@@ -306,6 +306,18 @@
           "name": "Telegram Bot"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "return { json: { data: [{ workflowId: $json.args, error: { message: 'MANUAL_FIX' } }] } };"
+      },
+      "name": "Map Fix Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        750,
+        400
+      ]
     }
   ],
   "connections": {
@@ -349,7 +361,7 @@
         ],
         [
           {
-            "node": "Force Fix Workflow",
+            "node": "Map Fix Payload",
             "type": "main",
             "index": 0
           }
@@ -363,7 +375,7 @@
         ],
         [
           {
-            "node": "Confirm Backup",
+            "node": "Fetch Workflows Backup",
             "type": "main",
             "index": 0
           }
@@ -441,6 +453,17 @@
         [
           {
             "node": "Notify Backup Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map Fix Payload": {
+      "main": [
+        [
+          {
+            "node": "Force Fix Workflow",
             "type": "main",
             "index": 0
           }

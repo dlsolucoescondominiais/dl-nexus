@@ -1,0 +1,53 @@
+{
+  "name": "DL_UPSELL_ENGINE",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "DL_GLOBAL_LOGGER"
+      },
+      "name": "Log Start",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "supabase_db",
+          "name": "Supabase DB"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Log Start",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "errorWorkflow": "DL_GLOBAL_ERROR_HANDLER",
+    "timezone": "America/Sao_Paulo",
+    "saveExecutionProgress": true,
+    "versionId": "1.0.0"
+  },
+  "notes": "Workflow automagicamente gerado. Idempotente (Upsert), versionamento semver ativado."
+}

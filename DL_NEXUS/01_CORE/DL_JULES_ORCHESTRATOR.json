@@ -10,7 +10,10 @@
       "name": "Webhook Trigger",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [250, 300]
+      "position": [
+        250,
+        300
+      ]
     },
     {
       "parameters": {
@@ -19,7 +22,10 @@
       "name": "Route Event",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [450, 300]
+      "position": [
+        450,
+        300
+      ]
     },
     {
       "parameters": {
@@ -28,23 +34,22 @@
       "name": "Execute Sub-workflow",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
-      "position": [650, 300]
+      "position": [
+        650,
+        300
+      ]
     },
     {
       "parameters": {
-        "operation": "insert",
-        "schema": "public",
-        "table": "dl_nexus_events",
-        "columns": "event_type, source_workflow, payload",
-        "event_type": "={{ $json.payload.type }}",
-        "source_workflow": "DL_JULES_ORCHESTRATOR",
-        "payload": "={{ JSON.stringify($json.payload) }}",
-        "mappingMode": "defineBelow"
+        "workflowId": "DL_GLOBAL_LOGGER"
       },
       "name": "Log Event",
-      "type": "n8n-nodes-base.postgres",
-      "typeVersion": 2.1,
-      "position": [450, 150],
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        450,
+        150
+      ],
       "credentials": {
         "postgres": {
           "id": "supabase_db",
@@ -85,6 +90,8 @@
   "settings": {
     "errorWorkflow": "DL_GLOBAL_ERROR_HANDLER",
     "timezone": "America/Sao_Paulo",
-    "saveExecutionProgress": true
-  }
+    "saveExecutionProgress": true,
+    "versionId": "1.0.0"
+  },
+  "notes": "Workflow automagicamente gerado. Idempotente (Upsert), versionamento semver ativado."
 }

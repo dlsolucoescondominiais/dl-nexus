@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 
@@ -17,12 +17,6 @@ interface Lead {
 export default function Dashboard() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
-  const [kpis, setKpis] = useState({
-    total_leads: 0,
-    em_negociacao: 0,
-    fechado_ganho: 0,
-    contratos_ativos: 0
-  });
 
   const navigate = useNavigate();
 
@@ -54,22 +48,31 @@ export default function Dashboard() {
     if (leadsError) console.error('Erro ao buscar leads:', leadsError);
 
     setLeads(leadsData || []);
-
-    // Calcula KPIs do Funil
-    const total = leadsData?.length || 0;
-    const negociando = leadsData?.filter(l => l.pipeline_stage === 'negociacao').length || 0;
-    const ganhos = leadsData?.filter(l => l.pipeline_stage === 'fechado_ganho').length || 0;
-    const recorrentes = leadsData?.filter(l => l.pipeline_stage === 'contrato_recorrente').length || 0;
-
-    setKpis({
-      total_leads: total,
-      em_negociacao: negociando,
-      fechado_ganho: ganhos,
-      contratos_ativos: recorrentes
-    });
-
     setLoading(false);
   };
+
+  // ⚡ Bolt Performance Optimization:
+  // Calculate derived KPIs using useMemo instead of manual sync with a secondary useState.
+  // Combines 3 O(N) array passes (filter) into a single O(N) loop fusion for efficiency.
+  const kpis = useMemo(() => {
+    let em_negociacao = 0;
+    let fechado_ganho = 0;
+    let contratos_ativos = 0;
+
+    for (let i = 0; i < leads.length; i++) {
+      const stage = leads[i].pipeline_stage;
+      if (stage === 'negociacao') em_negociacao++;
+      else if (stage === 'fechado_ganho') fechado_ganho++;
+      else if (stage === 'contrato_recorrente') contratos_ativos++;
+    }
+
+    return {
+      total_leads: leads.length,
+      em_negociacao,
+      fechado_ganho,
+      contratos_ativos
+    };
+  }, [leads]);
 
   if (loading && leads.length === 0) {
     return <div className="p-8 text-center text-slate-500">Inicializando DL Commander...</div>;

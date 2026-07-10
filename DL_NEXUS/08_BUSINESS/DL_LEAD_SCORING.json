@@ -6,7 +6,10 @@
       "name": "Execute Workflow Trigger",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
-      "position": [250, 300]
+      "position": [
+        250,
+        300
+      ]
     },
     {
       "parameters": {
@@ -15,16 +18,22 @@
       "name": "Log Start",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
-      "position": [450, 300]
+      "position": [
+        450,
+        300
+      ]
     },
     {
       "parameters": {
-        "jsCode": "const lead = $input.all()[0].json;\n\nconst AREA_ATUACAO = {\n  PRIORIDADE_1: {\n    descricao: 'Todo o município do Rio de Janeiro',\n    peso_score: 25,\n    bairros: [\n      'zona norte', 'zona sul', 'zona oeste', 'centro', 'barra',\n      'tijuca', 'méier', 'madureira', 'campo grande', 'bangu',\n      'copacabana', 'botafogo', 'flamengo', 'catete', 'laranjeiras',\n      'santa cruz', 'realengo', 'jacarepaguá', 'recreio', 'ilha',\n      'penha', 'vicente de carvalho', 'vila isabel', 'andaraí',\n      'grajaú', 'todos os santos', 'cachambi', 'piedade',\n      'cascadura', 'quintino', 'engenho novo', 'riachuelo'\n    ]\n  },\n  PRIORIDADE_2: {\n    descricao: 'Baixada Fluminense (apenas com viabilidade operacional)',\n    peso_score: 15,\n    municipios: ['nova iguaçu', 'duque de caxias', 'são joão de meriti', 'nilópolis', 'belford roxo', 'mesquita']\n  },\n  PRIORIDADE_3: {\n    descricao: 'Niterói e São Gonçalo (apenas projetos específicos)',\n    peso_score: 8,\n    municipios: ['niterói', 'são gonçalo']\n  }\n};\n\nlet score = 0;\nconst location = (lead.bairro || lead.cidade || '').toLowerCase();\n\nif (AREA_ATUACAO.PRIORIDADE_1.bairros.some(b => location.includes(b))) {\n    score += AREA_ATUACAO.PRIORIDADE_1.peso_score;\n} else if (AREA_ATUACAO.PRIORIDADE_2.municipios.some(m => location.includes(m))) {\n    score += AREA_ATUACAO.PRIORIDADE_2.peso_score;\n} else if (AREA_ATUACAO.PRIORIDADE_3.municipios.some(m => location.includes(m))) {\n    score += AREA_ATUACAO.PRIORIDADE_3.peso_score;\n}\n\nlead.score = score;\nreturn { json: lead };"
+        "jsCode": "const lead = $input.all()[0].json;\n\nconst AREA_ATUACAO = {\n  PRIORIDADE_1: {\n    descricao: 'Todo o munic\u00edpio do Rio de Janeiro',\n    peso_score: 25,\n    bairros: [\n      'zona norte', 'zona sul', 'zona oeste', 'centro', 'barra',\n      'tijuca', 'm\u00e9ier', 'madureira', 'campo grande', 'bangu',\n      'copacabana', 'botafogo', 'flamengo', 'catete', 'laranjeiras',\n      'santa cruz', 'realengo', 'jacarepagu\u00e1', 'recreio', 'ilha',\n      'penha', 'vicente de carvalho', 'vila isabel', 'andara\u00ed',\n      'graja\u00fa', 'todos os santos', 'cachambi', 'piedade',\n      'cascadura', 'quintino', 'engenho novo', 'riachuelo'\n    ]\n  },\n  PRIORIDADE_2: {\n    descricao: 'Baixada Fluminense (apenas com viabilidade operacional)',\n    peso_score: 15,\n    municipios: ['nova igua\u00e7u', 'duque de caxias', 's\u00e3o jo\u00e3o de meriti', 'nil\u00f3polis', 'belford roxo', 'mesquita']\n  },\n  PRIORIDADE_3: {\n    descricao: 'Niter\u00f3i e S\u00e3o Gon\u00e7alo (apenas projetos espec\u00edficos)',\n    peso_score: 8,\n    municipios: ['niter\u00f3i', 's\u00e3o gon\u00e7alo']\n  }\n};\n\nlet score = 0;\nconst location = (lead.bairro || lead.cidade || '').toLowerCase();\n\nif (AREA_ATUACAO.PRIORIDADE_1.bairros.some(b => location.includes(b))) {\n    score += AREA_ATUACAO.PRIORIDADE_1.peso_score;\n} else if (AREA_ATUACAO.PRIORIDADE_2.municipios.some(m => location.includes(m))) {\n    score += AREA_ATUACAO.PRIORIDADE_2.peso_score;\n} else if (AREA_ATUACAO.PRIORIDADE_3.municipios.some(m => location.includes(m))) {\n    score += AREA_ATUACAO.PRIORIDADE_3.peso_score;\n}\n\nlead.score = score;\nreturn { json: lead };"
       },
       "name": "Calculate Geographic Score",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [650, 300]
+      "position": [
+        650,
+        300
+      ]
     }
   ],
   "connections": {
@@ -57,5 +66,6 @@
     "saveExecutionProgress": true,
     "versionId": "1.0.0"
   },
-  "notes": "Workflow automagicamente gerado. Idempotente (Upsert), versionamento semver ativado. Inclui regras de foco geográfico (Ajuste 1 da v7.2)."
+  "notes": "Workflow automagicamente gerado. Idempotente (Upsert), versionamento semver ativado. Inclui regras de foco geogr\u00e1fico (Ajuste 1 da v7.2).",
+  "active": false
 }

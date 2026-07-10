@@ -15,7 +15,10 @@
       "name": "Schedule Trigger",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1,
-      "position": [250, 300]
+      "position": [
+        250,
+        300
+      ]
     },
     {
       "parameters": {
@@ -29,10 +32,13 @@
       "name": "Get Workflows",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 3,
-      "position": [450, 300],
+      "position": [
+        450,
+        300
+      ],
       "credentials": {
         "n8nApi": {
-          "id": "n8nApi",
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
           "name": "n8n API"
         }
       },
@@ -45,7 +51,10 @@
       "name": "Filter Active",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [650, 300]
+      "position": [
+        650,
+        300
+      ]
     },
     {
       "parameters": {
@@ -59,10 +68,13 @@
       "name": "Check Last Execution",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 3,
-      "position": [850, 300],
+      "position": [
+        850,
+        300
+      ],
       "credentials": {
         "n8nApi": {
-          "id": "n8nApi",
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
           "name": "n8n API"
         }
       }
@@ -81,7 +93,10 @@
       "name": "If Error",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [1050, 300]
+      "position": [
+        1050,
+        300
+      ]
     },
     {
       "parameters": {
@@ -90,7 +105,10 @@
       "name": "Trigger Self Healing",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
-      "position": [1250, 200]
+      "position": [
+        1250,
+        200
+      ]
     },
     {
       "parameters": {
@@ -100,10 +118,13 @@
       "name": "Check Credentials Expiring",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.1,
-      "position": [450, 500],
+      "position": [
+        450,
+        500
+      ],
       "credentials": {
         "postgres": {
-          "id": "supabase_db",
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
           "name": "Supabase DB"
         }
       }
@@ -122,7 +143,10 @@
       "name": "If Credentials Expiring",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [650, 500]
+      "position": [
+        650,
+        500
+      ]
     },
     {
       "parameters": {
@@ -131,7 +155,10 @@
       "name": "Trigger Self Healing for Creds",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
-      "position": [850, 400]
+      "position": [
+        850,
+        400
+      ]
     }
   ],
   "connections": {

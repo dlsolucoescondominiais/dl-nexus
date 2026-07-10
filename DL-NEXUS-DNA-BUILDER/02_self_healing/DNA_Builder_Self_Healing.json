@@ -76,7 +76,7 @@
       ],
       "credentials": {
         "postgres": {
-          "id": "supabase_db",
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
           "name": "Supabase DB"
         }
       }
@@ -96,7 +96,7 @@
       ],
       "credentials": {
         "telegramApi": {
-          "id": "telegram_bot",
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
           "name": "Telegram Bot"
         }
       }
@@ -122,7 +122,7 @@
       ],
       "credentials": {
         "postgres": {
-          "id": "supabase_db",
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
           "name": "Supabase DB"
         }
       }
@@ -163,7 +163,7 @@
       ],
       "credentials": {
         "n8nApi": {
-          "id": "n8nApi",
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
           "name": "n8n API"
         }
       }
@@ -189,7 +189,7 @@
       ],
       "credentials": {
         "postgres": {
-          "id": "supabase_db",
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
           "name": "Supabase DB"
         }
       }
@@ -230,7 +230,7 @@
       ],
       "credentials": {
         "n8nApi": {
-          "id": "n8nApi",
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
           "name": "n8n API"
         }
       }
@@ -256,7 +256,7 @@
       ],
       "credentials": {
         "postgres": {
-          "id": "supabase_db",
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
           "name": "Supabase DB"
         }
       }
@@ -276,7 +276,7 @@
       ],
       "credentials": {
         "telegramApi": {
-          "id": "telegram_bot",
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
           "name": "Telegram Bot"
         }
       }
@@ -302,7 +302,7 @@
       ],
       "credentials": {
         "postgres": {
-          "id": "supabase_db",
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
           "name": "Supabase DB"
         }
       }
@@ -335,7 +335,7 @@
       ],
       "credentials": {
         "n8nApi": {
-          "id": "n8nApi",
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
           "name": "n8n API"
         }
       }
@@ -355,7 +355,7 @@
       ],
       "credentials": {
         "telegramApi": {
-          "id": "telegram_bot",
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
           "name": "Telegram Bot"
         }
       }

@@ -33,7 +33,7 @@
       ],
       "credentials": {
         "postgres": {
-          "id": "supabase_db",
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
           "name": "Supabase DB"
         }
       }
@@ -53,7 +53,7 @@
       ],
       "credentials": {
         "telegramApi": {
-          "id": "telegram_bot",
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
           "name": "Telegram Bot"
         }
       }
@@ -89,5 +89,6 @@
     "versionId": "1.0.0",
     "errorWorkflow": "DL_GLOBAL_ERROR_HANDLER"
   },
-  "notes": "Workflow automagicamente gerado. Idempotente (Upsert), versionamento semver ativado."
+  "notes": "Workflow automagicamente gerado. Idempotente (Upsert), versionamento semver ativado.",
+  "active": false
 }

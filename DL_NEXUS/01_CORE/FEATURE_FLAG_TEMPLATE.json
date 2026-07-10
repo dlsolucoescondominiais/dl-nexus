@@ -1,0 +1,107 @@
+{
+  "name": "FEATURE_FLAG_TEMPLATE",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT enabled FROM dl_feature_flags WHERE flag_name = $1;",
+        "additionalFields": {
+          "queryParams": "ENABLE_FEATURE_NAME"
+        }
+      },
+      "name": "Check Feature Flag",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        450,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
+          "name": "Supabase DB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.enabled }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "If Enabled",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return { json: { status: 'skipped', reason: 'Feature flag disabled' } };"
+      },
+      "name": "Return Early (Skipped)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        850,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Workflow core logic continues here\nreturn { json: { status: 'executing' } };"
+      },
+      "name": "Continue Execution",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        850,
+        150
+      ]
+    }
+  ],
+  "connections": {
+    "Check Feature Flag": {
+      "main": [
+        [
+          {
+            "node": "If Enabled",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Enabled": {
+      "main": [
+        [
+          {
+            "node": "Continue Execution",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Return Early (Skipped)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "errorWorkflow": "DL_GLOBAL_ERROR_HANDLER",
+    "timezone": "America/Sao_Paulo",
+    "saveExecutionProgress": true
+  },
+  "active": false
+}

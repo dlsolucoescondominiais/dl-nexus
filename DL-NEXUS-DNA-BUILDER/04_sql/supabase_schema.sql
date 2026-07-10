@@ -72,3 +72,18 @@ CREATE TABLE IF NOT EXISTS dl_dead_letter_queue (
   resolved_at TIMESTAMP,
   resolution_notes TEXT
 );
+
+CREATE TABLE IF NOT EXISTS dl_feature_flags (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  flag_name TEXT UNIQUE NOT NULL,
+  enabled BOOLEAN DEFAULT false,
+  description TEXT,
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+INSERT INTO dl_feature_flags (flag_name, enabled, description)
+VALUES
+  ('ENABLE_RAG', false, 'Ativa motor RAG global'),
+  ('ENABLE_VIDEO', false, 'Ativa gerador de video para mkt'),
+  ('ENABLE_LINKEDIN', false, 'Ativa publicacao automatica linkedin')
+ON CONFLICT (flag_name) DO NOTHING;

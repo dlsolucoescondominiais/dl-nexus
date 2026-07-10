@@ -52,7 +52,7 @@
       ],
       "credentials": {
         "postgres": {
-          "id": "supabase_db",
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
           "name": "Supabase DB"
         }
       }
@@ -93,5 +93,6 @@
     "saveExecutionProgress": true,
     "versionId": "1.0.0"
   },
-  "notes": "Workflow automagicamente gerado. Idempotente (Upsert), versionamento semver ativado."
+  "notes": "Workflow automagicamente gerado. Idempotente (Upsert), versionamento semver ativado.",
+  "active": false
 }

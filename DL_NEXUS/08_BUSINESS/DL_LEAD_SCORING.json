@@ -6,10 +6,7 @@
       "name": "Execute Workflow Trigger",
       "type": "n8n-nodes-base.executeWorkflowTrigger",
       "typeVersion": 1,
-      "position": [
-        250,
-        300
-      ]
+      "position": [250, 300]
     },
     {
       "parameters": {
@@ -18,16 +15,16 @@
       "name": "Log Start",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
-      "position": [
-        450,
-        300
-      ],
-      "credentials": {
-        "postgres": {
-          "id": "supabase_db",
-          "name": "Supabase DB"
-        }
-      }
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const lead = $input.all()[0].json;\n\nconst AREA_ATUACAO = {\n  PRIORIDADE_1: {\n    descricao: 'Todo o município do Rio de Janeiro',\n    peso_score: 25,\n    bairros: [\n      'zona norte', 'zona sul', 'zona oeste', 'centro', 'barra',\n      'tijuca', 'méier', 'madureira', 'campo grande', 'bangu',\n      'copacabana', 'botafogo', 'flamengo', 'catete', 'laranjeiras',\n      'santa cruz', 'realengo', 'jacarepaguá', 'recreio', 'ilha',\n      'penha', 'vicente de carvalho', 'vila isabel', 'andaraí',\n      'grajaú', 'todos os santos', 'cachambi', 'piedade',\n      'cascadura', 'quintino', 'engenho novo', 'riachuelo'\n    ]\n  },\n  PRIORIDADE_2: {\n    descricao: 'Baixada Fluminense (apenas com viabilidade operacional)',\n    peso_score: 15,\n    municipios: ['nova iguaçu', 'duque de caxias', 'são joão de meriti', 'nilópolis', 'belford roxo', 'mesquita']\n  },\n  PRIORIDADE_3: {\n    descricao: 'Niterói e São Gonçalo (apenas projetos específicos)',\n    peso_score: 8,\n    municipios: ['niterói', 'são gonçalo']\n  }\n};\n\nlet score = 0;\nconst location = (lead.bairro || lead.cidade || '').toLowerCase();\n\nif (AREA_ATUACAO.PRIORIDADE_1.bairros.some(b => location.includes(b))) {\n    score += AREA_ATUACAO.PRIORIDADE_1.peso_score;\n} else if (AREA_ATUACAO.PRIORIDADE_2.municipios.some(m => location.includes(m))) {\n    score += AREA_ATUACAO.PRIORIDADE_2.peso_score;\n} else if (AREA_ATUACAO.PRIORIDADE_3.municipios.some(m => location.includes(m))) {\n    score += AREA_ATUACAO.PRIORIDADE_3.peso_score;\n}\n\nlead.score = score;\nreturn { json: lead };"
+      },
+      "name": "Calculate Geographic Score",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [650, 300]
     }
   ],
   "connections": {
@@ -41,6 +38,17 @@
           }
         ]
       ]
+    },
+    "Log Start": {
+      "main": [
+        [
+          {
+            "node": "Calculate Geographic Score",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -49,5 +57,5 @@
     "saveExecutionProgress": true,
     "versionId": "1.0.0"
   },
-  "notes": "Workflow automagicamente gerado. Idempotente (Upsert), versionamento semver ativado."
+  "notes": "Workflow automagicamente gerado. Idempotente (Upsert), versionamento semver ativado. Inclui regras de foco geográfico (Ajuste 1 da v7.2)."
 }

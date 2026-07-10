@@ -1,0 +1,66 @@
+{
+  "name": "DL_BIZ_PROPOSAL_ENGINE",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Workflow: DL_BIZ_PROPOSAL_ENGINE\n\n**CONTRATOS:**\nINPUT_SCHEMA: Valid JSON\nOUTPUT_SCHEMA: Valid JSON\n\n**SLA:**\nDuration: < 500ms\n\n**ARQUITETURA:**\nThis workflow handles DL_BIZ_PROPOSAL_ENGINE logic as per MVP 8.1 specifications.\n\n**MODULARIDADE:**\nBase logic module. Extend if nodes > 50.",
+        "height": 250,
+        "width": 600
+      },
+      "id": "51ea8259-2f3f-42b3-be69-004ad47d0598",
+      "name": "Documentation & Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -100
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "af1d5734-b9e7-4300-af33-52c34ec1e2cc",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return { feature_flags: { enabled: true } };"
+      },
+      "id": "0ae45e53-a50f-4a2c-9ca8-45d116f9f4ad",
+      "name": "Feature Flags (Code)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "console.log('Event bus logger initialized'); return $input.all();"
+      },
+      "id": "ebac3607-c1d5-4d3b-87cd-02c99c0e6a24",
+      "name": "Event Bus & Logger",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        200
+      ]
+    }
+  ],
+  "connections": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "tags": []
+}

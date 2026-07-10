@@ -1,0 +1,66 @@
+{
+  "name": "DL_BIZ_REGULATORY_ALERTS",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Workflow: DL_BIZ_REGULATORY_ALERTS\n\n**CONTRATOS:**\nINPUT_SCHEMA: Valid JSON\nOUTPUT_SCHEMA: Valid JSON\n\n**SLA:**\nDuration: < 500ms\n\n**ARQUITETURA:**\nThis workflow handles DL_BIZ_REGULATORY_ALERTS logic as per MVP 8.1 specifications.\n\n**MODULARIDADE:**\nBase logic module. Extend if nodes > 50.",
+        "height": 250,
+        "width": 600
+      },
+      "id": "1fd10c92-69c4-4fbb-85e4-163e72c06daf",
+      "name": "Documentation & Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        -100
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "4fca9fca-4019-479b-8ae3-f023d98f7fed",
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return { feature_flags: { enabled: true } };"
+      },
+      "id": "f1837a87-003a-4019-8e87-b2db0b91f505",
+      "name": "Feature Flags (Code)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        200,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "console.log('Event bus logger initialized'); return $input.all();"
+      },
+      "id": "516baaa3-2a25-4581-88ce-05331246d921",
+      "name": "Event Bus & Logger",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        200
+      ]
+    }
+  ],
+  "connections": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "tags": []
+}

@@ -1,0 +1,326 @@
+{
+  "name": "DNA_Builder_Telegram_Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ]
+      },
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram_bot",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.all()[0].json.message.text || '';\nlet command = '';\nlet args = '';\n\nif (text.startsWith('/')) {\n  const parts = text.split(' ');\n  command = parts[0];\n  args = parts.slice(1).join(' ');\n}\n\nreturn { json: { command: command, args: args, chat_id: $input.all()[0].json.message.chat.id } };"
+      },
+      "name": "Parse Command",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.command }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "/status"
+            },
+            {
+              "value2": "/build"
+            },
+            {
+              "value2": "/fix"
+            },
+            {
+              "value2": "/logs"
+            },
+            {
+              "value2": "/backup"
+            }
+          ]
+        }
+      },
+      "name": "Switch Command",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(*) as active_count FROM dl_nexus_workflows WHERE active = true; SELECT COUNT(*) as error_count FROM dl_nexus_agent_logs WHERE status = 'ATTEMPTED' AND created_at > NOW() - INTERVAL '1 day';"
+      },
+      "name": "Get DB Status",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [850, 100],
+      "credentials": {
+        "postgres": {
+          "id": "supabase_db",
+          "name": "Supabase DB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ 'DNA-Builder Status:\\nWorkflows Ativos: ' + $json.active_count + '\\nErros nas últimas 24h: ' + $json.error_count }}",
+        "additionalFields": {}
+      },
+      "name": "Send Status",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1050, 100],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram_bot",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:5678/webhook/workflows/build",
+        "method": "POST",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "n8nApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "instruction",
+              "value": "={{ $json.args }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "name": "Call Builder Engine",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [850, 250],
+      "credentials": {
+        "n8nApi": {
+          "id": "n8nApi",
+          "name": "n8n API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ 'Solicitação de build enviada para processamento. Aguarde a resposta do engine.' }}",
+        "additionalFields": {}
+      },
+      "name": "Confirm Build",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1050, 250],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram_bot",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": "DNA_Builder_Self_Healing"
+      },
+      "name": "Force Fix Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [850, 400]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ 'Processo de autocura forçado iniciado para o workflow. Acompanhe os logs.' }}",
+        "additionalFields": {}
+      },
+      "name": "Confirm Fix",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1050, 400],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram_bot",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "={{ 'SELECT action, status, error_details, created_at FROM dl_nexus_agent_logs WHERE workflow_id = \\'' + $json.args + '\\' ORDER BY created_at DESC LIMIT 10' }}"
+      },
+      "name": "Get DB Logs",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [850, 550],
+      "credentials": {
+        "postgres": {
+          "id": "supabase_db",
+          "name": "Supabase DB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ 'Últimos logs do workflow ' + $json.args + ':\\n' + JSON.stringify($json) }}",
+        "additionalFields": {}
+      },
+      "name": "Send Logs",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1050, 550],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram_bot",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ 'Iniciando backup manual de todos os workflows ativos... (Processo agendado).' }}",
+        "additionalFields": {}
+      },
+      "name": "Confirm Backup",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [850, 700],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram_bot",
+          "name": "Telegram Bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Parse Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Command": {
+      "main": [
+        [
+          {
+            "node": "Switch Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Command": {
+      "main": [
+        [
+          {
+            "node": "Get DB Status",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call Builder Engine",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Force Fix Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get DB Logs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Confirm Backup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get DB Status": {
+      "main": [
+        [
+          {
+            "node": "Send Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Builder Engine": {
+      "main": [
+        [
+          {
+            "node": "Confirm Build",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Force Fix Workflow": {
+      "main": [
+        [
+          {
+            "node": "Confirm Fix",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get DB Logs": {
+      "main": [
+        [
+          {
+            "node": "Send Logs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "errorWorkflow": "DNA_Builder_Self_Healing"
+  }
+}

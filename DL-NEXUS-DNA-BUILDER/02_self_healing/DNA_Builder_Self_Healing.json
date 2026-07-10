@@ -1,0 +1,494 @@
+{
+  "name": "DNA_Builder_Self_Healing",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const execution = $input.all()[0].json.data ? $input.all()[0].json.data[0] : $input.all()[0].json;\nconst errorMsg = execution?.data?.resultData?.error?.message || execution?.error?.message || (execution?.credential_name ? 'CREDENCIAL_EXPIRANDO' : 'Unknown error');\nlet type = 'UNKNOWN';\n\nif (errorMsg === 'CREDENCIAL_EXPIRANDO' || errorMsg.includes('credentials') || errorMsg.includes('expired') || errorMsg.includes('unauthorized') || errorMsg.includes('401')) type = 'CREDENCIAL_EXPIRADA';\nelse if (errorMsg.includes('rate limit') || errorMsg.includes('429')) type = 'API_RATE_LIMIT';\nelse if (errorMsg.includes('timeout') || errorMsg.includes('ESOCKETTIMEDOUT')) type = 'TIMEOUT';\nelse if (errorMsg.includes('permission') || errorMsg.includes('forbidden') || errorMsg.includes('403')) type = 'PERMISSAO_NEGADA';\nelse type = 'NODE_QUEBRADO';\n\nreturn { json: { workflow_id: execution.workflowId || execution.id || 'N/A', error_message: errorMsg, type: type, credential_name: execution?.credential_name } };"
+      },
+      "name": "Classify Error",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.type }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "CREDENCIAL_EXPIRADA"
+            },
+            {
+              "value2": "API_RATE_LIMIT"
+            },
+            {
+              "value2": "TIMEOUT"
+            },
+            {
+              "value2": "PERMISSAO_NEGADA"
+            },
+            {
+              "value2": "NODE_QUEBRADO"
+            }
+          ]
+        }
+      },
+      "name": "Switch Type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "dl_nexus_agent_logs",
+        "columns": "workflow_id, action, status, error_details",
+        "workflow_id": "={{ $json.workflow_id }}",
+        "action": "={{ 'HEAL_' + $json.type }}",
+        "status": "ATTEMPTED",
+        "error_details": "={{ JSON.stringify({ message: $json.error_message }) }}",
+        "mappingMode": "defineBelow"
+      },
+      "name": "Log Action Credential",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        850,
+        100
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "supabase_db",
+          "name": "Supabase DB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "ADMIN_CHAT_ID_AQUI",
+        "text": "={{ 'Autocura - Credencial expirada/expirando. Renove via painel ou API. Credencial: ' + $json.credential_name + '\\nWorkflow ID: ' + $json.workflow_id }}",
+        "additionalFields": {}
+      },
+      "name": "Alert Telegram Creds",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        100
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram_bot",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "dl_nexus_agent_logs",
+        "columns": "workflow_id, action, status, error_details",
+        "workflow_id": "={{ $json.workflow_id }}",
+        "action": "={{ 'HEAL_' + $json.type }}",
+        "status": "ATTEMPTED",
+        "error_details": "={{ JSON.stringify({ message: $json.error_message }) }}",
+        "mappingMode": "defineBelow"
+      },
+      "name": "Log Action Rate Limit",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        850,
+        250
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "supabase_db",
+          "name": "Supabase DB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ 'http://localhost:5678/api/v1/workflows/' + $json.workflow_id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "n8nApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "settings.retryOnFail",
+              "value": true
+            },
+            {
+              "name": "settings.maxTries",
+              "value": 3
+            },
+            {
+              "name": "settings.waitBetweenTries",
+              "value": 30000
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "name": "Apply Backoff",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1050,
+        250
+      ],
+      "credentials": {
+        "n8nApi": {
+          "id": "n8nApi",
+          "name": "n8n API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "dl_nexus_agent_logs",
+        "columns": "workflow_id, action, status, error_details",
+        "workflow_id": "={{ $json.workflow_id }}",
+        "action": "={{ 'HEAL_' + $json.type }}",
+        "status": "ATTEMPTED",
+        "error_details": "={{ JSON.stringify({ message: $json.error_message }) }}",
+        "mappingMode": "defineBelow"
+      },
+      "name": "Log Action Timeout",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        850,
+        400
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "supabase_db",
+          "name": "Supabase DB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ 'http://localhost:5678/api/v1/workflows/' + $json.workflow_id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "n8nApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "settings.retryOnFail",
+              "value": true
+            },
+            {
+              "name": "settings.maxTries",
+              "value": 3
+            },
+            {
+              "name": "settings.waitBetweenTries",
+              "value": 30000
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "name": "Increase Timeout Retry",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1050,
+        400
+      ],
+      "credentials": {
+        "n8nApi": {
+          "id": "n8nApi",
+          "name": "n8n API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "dl_nexus_agent_logs",
+        "columns": "workflow_id, action, status, error_details",
+        "workflow_id": "={{ $json.workflow_id }}",
+        "action": "={{ 'HEAL_' + $json.type }}",
+        "status": "ATTEMPTED",
+        "error_details": "={{ JSON.stringify({ message: $json.error_message }) }}",
+        "mappingMode": "defineBelow"
+      },
+      "name": "Log Action Permission",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        850,
+        550
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "supabase_db",
+          "name": "Supabase DB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "ADMIN_CHAT_ID_AQUI",
+        "text": "={{ 'Autocura - Falha de permiss\u00e3o detectada (403/Forbidden). Reautoriza\u00e7\u00e3o necess\u00e1ria.\\nWorkflow ID: ' + $json.workflow_id }}",
+        "additionalFields": {}
+      },
+      "name": "Alert Telegram Permission",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        550
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram_bot",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "dl_nexus_agent_logs",
+        "columns": "workflow_id, action, status, error_details",
+        "workflow_id": "={{ $json.workflow_id }}",
+        "action": "={{ 'HEAL_' + $json.type }}",
+        "status": "ATTEMPTED",
+        "error_details": "={{ JSON.stringify({ message: $json.error_message }) }}",
+        "mappingMode": "defineBelow"
+      },
+      "name": "Log Action Broken Node",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        850,
+        700
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "supabase_db",
+          "name": "Supabase DB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ 'http://localhost:5678/api/v1/workflows/' + $json.workflow_id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "n8nApi",
+        "options": {
+          "timeout": 30000
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "active",
+              "value": false
+            }
+          ]
+        }
+      },
+      "name": "Deactivate Broken Node",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1050,
+        700
+      ],
+      "credentials": {
+        "n8nApi": {
+          "id": "n8nApi",
+          "name": "n8n API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "ADMIN_CHAT_ID_AQUI",
+        "text": "={{ 'Autocura - Node quebrado detectado. Workflow desativado temporariamente para manuten\u00e7\u00e3o.\\nWorkflow ID: ' + $json.workflow_id }}",
+        "additionalFields": {}
+      },
+      "name": "Alert Telegram Broken Node",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1250,
+        700
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram_bot",
+          "name": "Telegram Bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Classify Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classify Error": {
+      "main": [
+        [
+          {
+            "node": "Switch Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Type": {
+      "main": [
+        [
+          {
+            "node": "Log Action Credential",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Action Rate Limit",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Action Timeout",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Action Permission",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Action Broken Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Action Credential": {
+      "main": [
+        [
+          {
+            "node": "Alert Telegram Creds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Action Rate Limit": {
+      "main": [
+        [
+          {
+            "node": "Apply Backoff",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Action Timeout": {
+      "main": [
+        [
+          {
+            "node": "Increase Timeout Retry",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Action Permission": {
+      "main": [
+        [
+          {
+            "node": "Alert Telegram Permission",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Action Broken Node": {
+      "main": [
+        [
+          {
+            "node": "Deactivate Broken Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deactivate Broken Node": {
+      "main": [
+        [
+          {
+            "node": "Alert Telegram Broken Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

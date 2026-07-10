@@ -1,0 +1,98 @@
+{
+  "name": "DNA_Builder_Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "workflows/build",
+        "options": {}
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const instruction = $input.all()[0].json.body.instruction;\nconst workflowName = 'Generated_Workflow_' + Math.floor(Math.random() * 10000);\n\n// Basic parser for demonstration (would use LLM in real scenario)\nconst nodes = [\n  {\n    \"parameters\": {},\n    \"name\": \"Start\",\n    \"type\": \"n8n-nodes-base.start\",\n    \"typeVersion\": 1,\n    \"position\": [250, 300]\n  }\n];\n\nconst connections = {};\n\nif (instruction.includes('http')) {\n  nodes.push({\n    \"parameters\": { \"url\": \"https://example.com\", \"options\": { \"timeout\": 30000 } },\n    \"name\": \"HTTP Request\",\n    \"type\": \"n8n-nodes-base.httpRequest\",\n    \"typeVersion\": 3,\n    \"position\": [450, 300]\n  });\n  connections[\"Start\"] = { \"main\": [ [ { \"node\": \"HTTP Request\", \"type\": \"main\", \"index\": 0 } ] ] };\n}\n\nreturn { json: { name: workflowName, nodes: nodes, connections: connections, active: false, settings: { errorWorkflow: \"DNA_Builder_Self_Healing\" } } };"
+      },
+      "name": "Parse Instruction",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:5678/api/v1/workflows",
+        "method": "POST",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "n8nApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "={{ $json.name }}"
+            },
+            {
+              "name": "nodes",
+              "value": "={{ JSON.stringify($json.nodes) }}"
+            },
+            {
+              "name": "connections",
+              "value": "={{ JSON.stringify($json.connections) }}"
+            },
+            {
+              "name": "active",
+              "value": false
+            },
+            {
+              "name": "settings",
+              "value": "={{ JSON.stringify($json.settings) }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "name": "Create Workflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [650, 300],
+      "credentials": {
+        "n8nApi": {
+          "id": "n8nApi",
+          "name": "n8n API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Parse Instruction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Instruction": {
+      "main": [
+        [
+          {
+            "node": "Create Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "errorWorkflow": "DNA_Builder_Self_Healing"
+  }
+}

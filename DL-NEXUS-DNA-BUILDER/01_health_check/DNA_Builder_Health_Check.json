@@ -1,0 +1,224 @@
+{
+  "name": "DNA_Builder_Health_Check",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:5678/api/v1/workflows",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "n8nApi",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "name": "Get Workflows",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [450, 300],
+      "credentials": {
+        "n8nApi": {
+          "id": "n8nApi",
+          "name": "n8n API"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const activeWorkflows = $input.all()[0].json.data.filter(w => w.active === true);\nreturn activeWorkflows.map(w => ({ json: w }));"
+      },
+      "name": "Filter Active",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ 'http://localhost:5678/api/v1/executions?workflowId=' + $json.id + '&limit=1' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "n8nApi",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "name": "Check Last Execution",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [850, 300],
+      "credentials": {
+        "n8nApi": {
+          "id": "n8nApi",
+          "name": "n8n API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.data && $json.data.length > 0 ? $json.data[0].status : 'success' }}",
+              "value2": "error"
+            }
+          ]
+        }
+      },
+      "name": "If Error",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "workflowId": "DNA_Builder_Self_Healing"
+      },
+      "name": "Trigger Self Healing",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [1250, 200]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM dl_nexus_credentials WHERE expiration_date < NOW() + INTERVAL '7 days'"
+      },
+      "name": "Check Credentials Expiring",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [450, 500],
+      "credentials": {
+        "postgres": {
+          "id": "supabase_db",
+          "name": "Supabase DB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.credential_name !== undefined }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "If Credentials Expiring",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [650, 500]
+    },
+    {
+      "parameters": {
+        "workflowId": "DNA_Builder_Self_Healing"
+      },
+      "name": "Trigger Self Healing for Creds",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [850, 400]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Workflows",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check Credentials Expiring",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Workflows": {
+      "main": [
+        [
+          {
+            "node": "Filter Active",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Active": {
+      "main": [
+        [
+          {
+            "node": "Check Last Execution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Last Execution": {
+      "main": [
+        [
+          {
+            "node": "If Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Error": {
+      "main": [
+        [
+          {
+            "node": "Trigger Self Healing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Credentials Expiring": {
+      "main": [
+        [
+          {
+            "node": "If Credentials Expiring",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Credentials Expiring": {
+      "main": [
+        [
+          {
+            "node": "Trigger Self Healing for Creds",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "errorWorkflow": "DNA_Builder_Self_Healing"
+  }
+}

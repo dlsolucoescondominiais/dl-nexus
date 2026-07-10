@@ -1,0 +1,90 @@
+{
+  "name": "DL_JULES_ORCHESTRATOR",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "orchestrate",
+        "options": {}
+      },
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const event = $input.all()[0].json.body;\nlet targetWorkflow = '';\n\nif (event.type.includes('lead')) targetWorkflow = 'DL_CRM_LEADS';\nelse if (event.type.includes('social')) targetWorkflow = 'DL_MKT_SOCIAL_PUBLISHER';\nelse if (event.type.includes('diagnostic')) targetWorkflow = 'DL_DIEGO_DIAGNOSTIC';\nelse targetWorkflow = 'DL_ANINHA_CHATBOT';\n\nreturn { json: { target: targetWorkflow, payload: event } };"
+      },
+      "name": "Route Event",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "workflowId": "={{ $json.target }}"
+      },
+      "name": "Execute Sub-workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "dl_nexus_events",
+        "columns": "event_type, source_workflow, payload",
+        "event_type": "={{ $json.payload.type }}",
+        "source_workflow": "DL_JULES_ORCHESTRATOR",
+        "payload": "={{ JSON.stringify($json.payload) }}",
+        "mappingMode": "defineBelow"
+      },
+      "name": "Log Event",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [450, 150],
+      "credentials": {
+        "postgres": {
+          "id": "supabase_db",
+          "name": "Supabase DB"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Route Event",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Event": {
+      "main": [
+        [
+          {
+            "node": "Execute Sub-workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "errorWorkflow": "DL_GLOBAL_ERROR_HANDLER",
+    "timezone": "America/Sao_Paulo",
+    "saveExecutionProgress": true
+  }
+}

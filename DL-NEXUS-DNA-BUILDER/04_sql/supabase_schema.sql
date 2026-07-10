@@ -47,3 +47,28 @@ CREATE TABLE IF NOT EXISTS dl_nexus_execution_state (
 
 CREATE INDEX IF NOT EXISTS idx_workflow_step ON dl_nexus_execution_state(workflow_id, step_name);
 CREATE INDEX IF NOT EXISTS idx_input_hash ON dl_nexus_execution_state(input_hash);
+
+CREATE TABLE IF NOT EXISTS dl_nexus_metrics (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  workflow_name TEXT NOT NULL,
+  execution_id TEXT,
+  metric_type TEXT NOT NULL,
+  metric_value NUMERIC NOT NULL,
+  unit TEXT,
+  timestamp TIMESTAMP DEFAULT NOW(),
+  tags JSONB
+);
+
+CREATE TABLE IF NOT EXISTS dl_dead_letter_queue (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  source_workflow TEXT NOT NULL,
+  execution_id TEXT,
+  error_message TEXT NOT NULL,
+  error_stack TEXT,
+  input_payload JSONB,
+  retry_count INTEGER DEFAULT 0,
+  max_retries INTEGER DEFAULT 3,
+  created_at TIMESTAMP DEFAULT NOW(),
+  resolved_at TIMESTAMP,
+  resolution_notes TEXT
+);

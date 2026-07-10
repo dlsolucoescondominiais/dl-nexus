@@ -1,0 +1,81 @@
+{
+  "name": "DL_GLOBAL_ERROR_HANDLER",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "dl_dead_letter_queue",
+        "columns": "source_workflow, execution_id, error_message, error_stack, input_payload",
+        "source_workflow": "={{ $json.workflow.id }}",
+        "execution_id": "={{ $json.execution.id }}",
+        "error_message": "={{ $json.execution.error.message }}",
+        "error_stack": "={{ $json.execution.error.stack }}",
+        "input_payload": "={{ JSON.stringify($json.execution.data) }}",
+        "mappingMode": "defineBelow"
+      },
+      "name": "Log to DLQ",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [450, 300],
+      "credentials": {
+        "postgres": {
+          "id": "supabase_db",
+          "name": "Supabase DB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "ADMIN_CHAT_ID",
+        "text": "={{ '🚨 ERRO CRÍTICO NO DL NEXUS\\n\\nWorkflow: ' + $json.workflow.name + '\\nErro: ' + $json.execution.error.message }}",
+        "additionalFields": {}
+      },
+      "name": "Alert Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [650, 300],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram_bot",
+          "name": "Telegram Bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Log to DLQ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log to DLQ": {
+      "main": [
+        [
+          {
+            "node": "Alert Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "timezone": "America/Sao_Paulo",
+    "saveExecutionProgress": true
+  }
+}

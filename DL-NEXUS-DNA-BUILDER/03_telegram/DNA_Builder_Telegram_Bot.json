@@ -10,7 +10,10 @@
       "name": "Telegram Trigger",
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1,
-      "position": [250, 300],
+      "position": [
+        250,
+        300
+      ],
       "credentials": {
         "telegramApi": {
           "id": "telegram_bot",
@@ -25,7 +28,10 @@
       "name": "Parse Command",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [450, 300]
+      "position": [
+        450,
+        300
+      ]
     },
     {
       "parameters": {
@@ -54,7 +60,10 @@
       "name": "Switch Command",
       "type": "n8n-nodes-base.switch",
       "typeVersion": 1,
-      "position": [650, 300]
+      "position": [
+        650,
+        300
+      ]
     },
     {
       "parameters": {
@@ -64,7 +73,10 @@
       "name": "Get DB Status",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.1,
-      "position": [850, 100],
+      "position": [
+        850,
+        100
+      ],
       "credentials": {
         "postgres": {
           "id": "supabase_db",
@@ -75,13 +87,16 @@
     {
       "parameters": {
         "chatId": "={{ $json.chat_id }}",
-        "text": "={{ 'DNA-Builder Status:\\nWorkflows Ativos: ' + $json.active_count + '\\nErros nas últimas 24h: ' + $json.error_count }}",
+        "text": "={{ 'DNA-Builder Status:\\nWorkflows Ativos: ' + $json.active_count + '\\nErros nas \u00faltimas 24h: ' + $json.error_count }}",
         "additionalFields": {}
       },
       "name": "Send Status",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
-      "position": [1050, 100],
+      "position": [
+        1050,
+        100
+      ],
       "credentials": {
         "telegramApi": {
           "id": "telegram_bot",
@@ -111,7 +126,10 @@
       "name": "Call Builder Engine",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 3,
-      "position": [850, 250],
+      "position": [
+        850,
+        250
+      ],
       "credentials": {
         "n8nApi": {
           "id": "n8nApi",
@@ -122,13 +140,16 @@
     {
       "parameters": {
         "chatId": "={{ $json.chat_id }}",
-        "text": "={{ 'Solicitação de build enviada para processamento. Aguarde a resposta do engine.' }}",
+        "text": "={{ 'Solicita\u00e7\u00e3o de build enviada para processamento. Aguarde a resposta do engine.' }}",
         "additionalFields": {}
       },
       "name": "Confirm Build",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
-      "position": [1050, 250],
+      "position": [
+        1050,
+        250
+      ],
       "credentials": {
         "telegramApi": {
           "id": "telegram_bot",
@@ -143,18 +164,24 @@
       "name": "Force Fix Workflow",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
-      "position": [850, 400]
+      "position": [
+        850,
+        400
+      ]
     },
     {
       "parameters": {
         "chatId": "={{ $json.chat_id }}",
-        "text": "={{ 'Processo de autocura forçado iniciado para o workflow. Acompanhe os logs.' }}",
+        "text": "={{ 'Processo de autocura for\u00e7ado iniciado para o workflow. Acompanhe os logs.' }}",
         "additionalFields": {}
       },
       "name": "Confirm Fix",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
-      "position": [1050, 400],
+      "position": [
+        1050,
+        400
+      ],
       "credentials": {
         "telegramApi": {
           "id": "telegram_bot",
@@ -165,12 +192,18 @@
     {
       "parameters": {
         "operation": "executeQuery",
-        "query": "={{ 'SELECT action, status, error_details, created_at FROM dl_nexus_agent_logs WHERE workflow_id = \\'' + $json.args + '\\' ORDER BY created_at DESC LIMIT 10' }}"
+        "query": "SELECT action, status, error_details, created_at FROM dl_nexus_agent_logs WHERE workflow_id = $1 ORDER BY created_at DESC LIMIT 10",
+        "additionalFields": {
+          "queryParams": "={{ $json.args }}"
+        }
       },
       "name": "Get DB Logs",
       "type": "n8n-nodes-base.postgres",
       "typeVersion": 2.1,
-      "position": [850, 550],
+      "position": [
+        850,
+        550
+      ],
       "credentials": {
         "postgres": {
           "id": "supabase_db",
@@ -181,13 +214,16 @@
     {
       "parameters": {
         "chatId": "={{ $json.chat_id }}",
-        "text": "={{ 'Últimos logs do workflow ' + $json.args + ':\\n' + JSON.stringify($json) }}",
+        "text": "={{ '\u00daltimos logs do workflow ' + $json.args + ':\\n' + JSON.stringify($json) }}",
         "additionalFields": {}
       },
       "name": "Send Logs",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
-      "position": [1050, 550],
+      "position": [
+        1050,
+        550
+      ],
       "credentials": {
         "telegramApi": {
           "id": "telegram_bot",
@@ -197,14 +233,73 @@
     },
     {
       "parameters": {
-        "chatId": "={{ $json.chat_id }}",
-        "text": "={{ 'Iniciando backup manual de todos os workflows ativos... (Processo agendado).' }}",
+        "url": "http://localhost:5678/api/v1/workflows",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "n8nApi",
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "name": "Fetch Workflows Backup",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        850,
+        700
+      ],
+      "credentials": {
+        "n8nApi": {
+          "id": "n8nApi",
+          "name": "n8n API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.message.chat.id }}",
+              "value2": "ADMIN_CHAT_ID_AQUI"
+            }
+          ]
+        }
+      },
+      "name": "Check Admin Auth",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        350,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fileName": "=/tmp/backup_workflows.json",
+        "fileContent": "={{ JSON.stringify($json.data) }}",
+        "options": {}
+      },
+      "name": "Write Backup File",
+      "type": "n8n-nodes-base.writeToDisk",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Parse Command').item.json.chat_id }}",
+        "text": "Backup finalizado com sucesso no disco local do container (/tmp/backup_workflows.json).",
         "additionalFields": {}
       },
-      "name": "Confirm Backup",
+      "name": "Notify Backup Success",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
-      "position": [850, 700],
+      "position": [
+        1250,
+        700
+      ],
       "credentials": {
         "telegramApi": {
           "id": "telegram_bot",
@@ -218,7 +313,7 @@
       "main": [
         [
           {
-            "node": "Parse Command",
+            "node": "Check Admin Auth",
             "type": "main",
             "index": 0
           }
@@ -313,6 +408,39 @@
         [
           {
             "node": "Send Logs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Admin Auth": {
+      "main": [
+        [
+          {
+            "node": "Parse Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Workflows Backup": {
+      "main": [
+        [
+          {
+            "node": "Write Backup File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Backup File": {
+      "main": [
+        [
+          {
+            "node": "Notify Backup Success",
             "type": "main",
             "index": 0
           }

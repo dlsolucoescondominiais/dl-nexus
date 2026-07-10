@@ -31,3 +31,19 @@ CREATE TABLE IF NOT EXISTS dl_nexus_credentials (
 
 CREATE INDEX IF NOT EXISTS idx_dl_nexus_workflows_id ON dl_nexus_workflows(workflow_id);
 CREATE INDEX IF NOT EXISTS idx_dl_nexus_agent_logs_workflow ON dl_nexus_agent_logs(workflow_id);
+
+CREATE TABLE IF NOT EXISTS dl_nexus_execution_state (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  workflow_id TEXT NOT NULL,
+  step_name TEXT NOT NULL,
+  status TEXT NOT NULL, -- 'pending', 'in_progress', 'completed', 'failed'
+  input_hash TEXT, -- MD5 do input para detectar mudancas
+  output_data JSONB,
+  tokens_used INTEGER DEFAULT 0,
+  execution_time_ms INTEGER,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_workflow_step ON dl_nexus_execution_state(workflow_id, step_name);
+CREATE INDEX IF NOT EXISTS idx_input_hash ON dl_nexus_execution_state(input_hash);

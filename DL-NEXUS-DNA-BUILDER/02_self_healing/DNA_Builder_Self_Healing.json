@@ -359,6 +359,16 @@
           "name": "Telegram Bot"
         }
       }
+    },
+    {
+      "parameters": {},
+      "name": "Error Trigger",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        100
+      ]
     }
   ],
   "connections": {
@@ -483,6 +493,17 @@
         [
           {
             "node": "Alert Telegram Broken Node",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Classify Error",
             "type": "main",
             "index": 0
           }

@@ -10,7 +10,10 @@
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [250, 300]
+      "position": [
+        250,
+        300
+      ]
     },
     {
       "parameters": {
@@ -19,7 +22,10 @@
       "name": "Parse Instruction",
       "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [450, 300]
+      "position": [
+        450,
+        300
+      ]
     },
     {
       "parameters": {
@@ -59,11 +65,91 @@
       "name": "Create Workflow",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 3,
-      "position": [650, 300],
+      "position": [
+        650,
+        300
+      ],
       "credentials": {
         "n8nApi": {
           "id": "n8nApi",
           "name": "n8n API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ 'http://localhost:5678/api/v1/workflows/' + $json.id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "n8nApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "active",
+              "value": true
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "name": "Activate Workflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        850,
+        300
+      ],
+      "credentials": {
+        "n8nApi": {
+          "id": "n8nApi",
+          "name": "n8n API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ 'http://localhost:5678/api/v1/workflows/' + $json.id + '/run' }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "n8nApi",
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "name": "Test Workflow",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1050,
+        300
+      ],
+      "credentials": {
+        "n8nApi": {
+          "id": "n8nApi",
+          "name": "n8n API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "ADMIN_CHAT_ID_AQUI",
+        "text": "={{ 'Novo workflow gerado e ativado com sucesso!\\nID: ' + $json.data.id }}",
+        "additionalFields": {}
+      },
+      "name": "Notify Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1250,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram_bot",
+          "name": "Telegram Bot"
         }
       }
     }
@@ -85,6 +171,39 @@
         [
           {
             "node": "Create Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Workflow": {
+      "main": [
+        [
+          {
+            "node": "Activate Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Activate Workflow": {
+      "main": [
+        [
+          {
+            "node": "Test Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Test Workflow": {
+      "main": [
+        [
+          {
+            "node": "Notify Telegram",
             "type": "main",
             "index": 0
           }

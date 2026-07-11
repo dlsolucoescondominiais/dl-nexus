@@ -4,9 +4,22 @@ import json
 import glob
 import time
 
-N8N_HOST = "https://n8n.dlsolucoescondominiais.com.br/api/v1"
-N8N_API_KEY = "N8N_API_KEY_HERE"
-OPENAI_API_KEY = "OPENAI_API_KEY_HERE"
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
+N8N_HOST = os.getenv("N8N_HOST", "https://n8n.dlsolucoescondominiais.com.br/api/v1")
+if N8N_HOST.endswith('/'):
+    N8N_HOST = N8N_HOST[:-1]
+N8N_API_KEY = os.getenv("N8N_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+if not N8N_API_KEY:
+    raise ValueError("N8N_API_KEY environment variable is not set")
+if not OPENAI_API_KEY:
+    raise ValueError("OPENAI_API_KEY environment variable is not set")
 
 headers = {
     'X-N8N-API-KEY': N8N_API_KEY,

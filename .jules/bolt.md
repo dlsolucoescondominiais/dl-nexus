@@ -1,0 +1,3 @@
+## 2024-07-11 - [Supabase Realtime Derived State Optimization]
+**Learning:** In React components consuming real-time data (e.g., Supabase websockets), maintaining a secondary `useState` for metrics derived from the primary dataset causes redundant re-renders and risks state desynchronization.
+**Action:** Always use `useMemo` to calculate derived metrics dependent on the primary dataset. This establishes a single source of truth and prevents unnecessary re-renders.

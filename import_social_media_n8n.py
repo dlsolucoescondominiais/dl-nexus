@@ -9,7 +9,7 @@ ctx.check_hostname = False
 ctx.verify_mode = ssl.CERT_NONE
 
 # Load N8N API credentials from .env
-n8n_api_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwNzdmNjJhYS1jNWRkLTQzMWMtYTM5Ny0zZWIwODc0NWQ1MzkiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwianRpIjoiZTc5OTEzYTQtYmU3NC00MGM1LWE4ZWEtZGZjZDM0Yjk1YmMzIiwiaWF0IjoxNzc0MDYyNjkwfQ.Y9foixG4yeuezhSgZ_6iZYvHGLkKw2sjRR1Eyy6sWXw"
+n8n_api_key = os.environ.get('N8N_API_KEY')
 n8n_host = "https://n8n.dlsolucoescondominiais.com.br/api/v1"
 
 if not n8n_host.endswith('/'):

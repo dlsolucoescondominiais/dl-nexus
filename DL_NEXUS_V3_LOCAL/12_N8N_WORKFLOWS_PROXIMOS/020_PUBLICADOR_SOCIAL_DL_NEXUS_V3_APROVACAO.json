@@ -142,8 +142,8 @@
       ],
       "credentials": {
         "telegramApi": {
-          "id": "telegram_credential_id",
-          "name": "Conta do Telegram"
+          "id": "4sGUaygxQklSMa3Z",
+          "name": "Aninha Telegram Bot (DL Nexus)"
         }
       }
     },
@@ -163,8 +163,8 @@
       ],
       "credentials": {
         "telegramApi": {
-          "id": "telegram_credential_id",
-          "name": "Conta do Telegram"
+          "id": "4sGUaygxQklSMa3Z",
+          "name": "Aninha Telegram Bot (DL Nexus)"
         }
       }
     },
@@ -346,8 +346,8 @@
       ],
       "credentials": {
         "telegramApi": {
-          "id": "telegram_credential_id",
-          "name": "Conta do Telegram"
+          "id": "4sGUaygxQklSMa3Z",
+          "name": "Aninha Telegram Bot (DL Nexus)"
         }
       }
     },

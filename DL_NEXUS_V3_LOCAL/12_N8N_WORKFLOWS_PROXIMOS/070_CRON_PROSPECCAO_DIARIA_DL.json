@@ -271,7 +271,13 @@
         0
       ],
       "continueOnFail": true,
-      "notes": ""
+      "notes": "",
+      "credentials": {
+        "telegramApi": {
+          "id": "4sGUaygxQklSMa3Z",
+          "name": "Aninha Telegram Bot (DL Nexus)"
+        }
+      }
     }
   ],
   "connections": {

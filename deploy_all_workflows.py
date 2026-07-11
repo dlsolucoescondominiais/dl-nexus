@@ -12,16 +12,17 @@ ctx.verify_mode = ssl.CERT_NONE
 
 # Carregar credenciais do .env local
 ENV_FILE = ".env"
-n8n_api_key = ""
-n8n_host = ""
+n8n_api_key = os.getenv("N8N_API_KEY", "")
+n8n_host = os.getenv("N8N_HOST", "")
 
-if os.path.exists(ENV_FILE):
-    with open(ENV_FILE, 'r', encoding='utf-8') as f:
-        for line in f:
-            if line.startswith("N8N_API_KEY="):
-                n8n_api_key = line.split("=", 1)[1].strip()
-            elif line.startswith("N8N_HOST="):
-                n8n_host = line.split("=", 1)[1].strip()
+if not n8n_api_key or not n8n_host:
+    if os.path.exists(ENV_FILE):
+        with open(ENV_FILE, 'r', encoding='utf-8') as f:
+            for line in f:
+                if line.startswith("N8N_API_KEY=") and not n8n_api_key:
+                    n8n_api_key = line.split("=", 1)[1].strip()
+                elif line.startswith("N8N_HOST=") and not n8n_host:
+                    n8n_host = line.split("=", 1)[1].strip()
 
 if not n8n_host.endswith('/'):
     n8n_host += '/'

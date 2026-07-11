@@ -5,6 +5,7 @@ import datetime
 import urllib.request
 import urllib.error
 import ssl
+from n8n_utils import load_n8n_config, n8n_request as n8n_request_alias
 
 # Configs
 ENV_FILE = r"d:\AntiGravity\projeto_01\.env"
@@ -21,40 +22,11 @@ REQUIRED_IDS = {
 }
 
 # --- 1. Load API Key ---
-n8n_api_key = ""
-n8n_host = ""
 
-with open(ENV_FILE, 'r', encoding='utf-8') as f:
-    for line in f:
-        if line.startswith("N8N_API_KEY="):
-            n8n_api_key = line.split("=", 1)[1].strip()
-        elif line.startswith("N8N_HOST="):
-            n8n_host = line.split("=", 1)[1].strip()
+n8n_host, n8n_api_key = load_n8n_config(ENV_FILE)
 
-if not n8n_host.endswith("/"):
-    n8n_host += "/"
-
-def n8n_request(endpoint, method="GET", data=None):
-    url = n8n_host + endpoint
-    headers = {
-        "X-N8N-API-KEY": n8n_api_key,
-        "Accept": "application/json"
-    }
-    if data is not None:
-        data = json.dumps(data).encode('utf-8')
-        headers["Content-Type"] = "application/json"
-    
-    req = urllib.request.Request(url, data=data, headers=headers, method=method)
-    ctx = ssl.create_default_context()
-    ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE
-    try:
-        with urllib.request.urlopen(req, context=ctx) as response:
-            return json.loads(response.read().decode('utf-8')), None
-    except urllib.error.HTTPError as e:
-        return None, f"HTTP {e.code}: {e.read().decode('utf-8')}"
-    except Exception as e:
-        return None, str(e)
+def n8n_request(endpoint, method="GET", data=None, timeout=None):
+    return n8n_request_alias(endpoint, n8n_host, n8n_api_key, method, data, timeout=timeout)
 
 # --- 2. Inventory Real State ---
 print("Validando acesso à API n8n...")

@@ -3,6 +3,7 @@ import json
 import urllib.request
 import urllib.error
 import ssl
+from n8n_utils import load_n8n_config, n8n_request as n8n_request_alias
 
 ENV_FILE = r"d:\AntiGravity\projeto_01\.env"
 n8n_api_key = ""
@@ -15,22 +16,10 @@ with open(ENV_FILE, 'r', encoding='utf-8') as f:
 
 if not n8n_host.endswith("/"): n8n_host += "/"
 
-def n8n_request(endpoint, method="GET", data=None):
-    url = n8n_host + endpoint
-    headers = {"X-N8N-API-KEY": n8n_api_key, "Accept": "application/json"}
-    if data is not None:
-        data = json.dumps(data).encode('utf-8')
-        headers["Content-Type"] = "application/json"
-    
-    req = urllib.request.Request(url, data=data, headers=headers, method=method)
-    ctx = ssl.create_default_context()
-    ctx.check_hostname = False; ctx.verify_mode = ssl.CERT_NONE
-    try:
-        with urllib.request.urlopen(req, context=ctx, timeout=15) as response:
-            res_body = response.read().decode('utf-8')
-            return json.loads(res_body) if res_body else {}, None
-    except urllib.error.HTTPError as e: return None, f"HTTP {e.code}: {e.read().decode('utf-8')}"
-    except Exception as e: return None, str(e)
+n8n_host, n8n_api_key = load_n8n_config(ENV_FILE)
+
+def n8n_request(endpoint, method="GET", data=None, timeout=None):
+    return n8n_request_alias(endpoint, n8n_host, n8n_api_key, method, data, timeout=timeout)
 
 file_path = r"d:\AntiGravity\projeto_01\DL_NEXUS_V3_LOCAL\12_N8N_WORKFLOWS_PROXIMOS\020_PUBLICADOR_SOCIAL_DL_NEXUS_V3_APROVACAO.json"
 with open(file_path, 'r', encoding='utf-8') as f: w20 = json.load(f)

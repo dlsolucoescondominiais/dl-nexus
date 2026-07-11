@@ -1,0 +1,12 @@
+🎯 What:
+The code health linter incorrectly flagged a line containing the Portuguese word 'todo' (meaning 'all'/'every') in the docstring 'Regras KILLCRITIC aplicadas em todo output' as an incomplete 'TODO' task.
+
+💡 Why:
+Fixing this false positive cleans up automated issue reporting and ensures that code health dashboards are not distracted by valid local language use in docstrings, improving maintainability by allowing developers to focus on actual TODOs.
+
+✅ Verification:
+1. Checked via `grep` that 'TODO' issues are gone.
+2. Ran `python3 03_gerar_prospeccao_condominios_dl.py` successfully and verified that the output generation (file writes and directory creation) is unaffected.
+
+✨ Result:
+The docstring has been safely adjusted to 'Regras KILLCRITIC aplicadas integralmente no output', eliminating the false positive while preserving the original technical meaning.

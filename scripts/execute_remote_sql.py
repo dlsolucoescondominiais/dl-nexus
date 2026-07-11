@@ -8,42 +8,10 @@ import time
 ENV_FILE = r"d:\AntiGravity\projeto_01\.env"
 SQL_FILE = r"d:\AntiGravity\projeto_01\backend\supabase\MIGRATIONS_DL_NEXUS_V8_ANINHA_MEMORIA.sql"
 
-n8n_api_key = ""
-n8n_host = ""
-
-# Load from .env
-with open(ENV_FILE, 'r', encoding='utf-8') as f:
-    for line in f:
-        if line.startswith("N8N_API_KEY="):
-            n8n_api_key = line.split("=", 1)[1].strip()
-        elif line.startswith("N8N_HOST="):
-            n8n_host = line.split("=", 1)[1].strip()
-
-if not n8n_host.endswith("/"):
-    n8n_host += "/"
-
-def n8n_request(endpoint, method="GET", data=None):
-    url = n8n_host + endpoint
-    headers = {
-        "X-N8N-API-KEY": n8n_api_key,
-        "Accept": "application/json"
-    }
-    if data is not None:
-        data = json.dumps(data).encode('utf-8')
-        headers["Content-Type"] = "application/json"
-    
-    req = urllib.request.Request(url, data=data, headers=headers, method=method)
-    ctx = ssl.create_default_context()
-    ctx.check_hostname = False
-    ctx.verify_mode = ssl.CERT_NONE
-    try:
-        with urllib.request.urlopen(req, context=ctx) as response:
-            return json.loads(response.read().decode('utf-8')), None
-    except urllib.error.HTTPError as e:
-        return None, f"HTTP {e.code}: {e.read().decode('utf-8')}"
-    except Exception as e:
-        return None, str(e)
-
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from shared_utils.n8n_api import n8n_request, n8n_host, n8n_api_key
 # 1. Read SQL migration
 with open(SQL_FILE, "r", encoding="utf-8") as f:
     sql_query = f.read()

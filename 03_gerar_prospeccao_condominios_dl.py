@@ -11,7 +11,7 @@ Gera relatório diário de inteligência comercial com:
 - 1 argumento de venda DL Partner
 - Prompt Manus diário
 
-Regras KILLCRITIC aplicadas em todo output.
+Regras KILLCRITIC aplicadas integralmente no output.
 """
 
 from pathlib import Path

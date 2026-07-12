@@ -1,0 +1,3 @@
+## 2024-05-18 - Optimized React KPI Derived State
+**Learning:** In the React frontend, deriving complex state (KPI metrics) through multiple independent `.filter()` loops and storing them in an explicitly synchronized `useState` hook triggered unnecessary re-renders and O(N*4) iterations over real-time data arrays.
+**Action:** When working with derived metrics from real-time data sources (like Supabase websockets), always use `useMemo` combined with a single `.reduce()` pass. This establishes a single source of truth, eliminates the need for manual `setState` synchronization, and collapses multiple `O(N)` loops into a single pass.

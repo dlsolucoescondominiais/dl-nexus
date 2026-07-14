@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 
@@ -17,12 +17,6 @@ interface Lead {
 export default function Dashboard() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
-  const [kpis, setKpis] = useState({
-    total_leads: 0,
-    em_negociacao: 0,
-    fechado_ganho: 0,
-    contratos_ativos: 0
-  });
 
   const navigate = useNavigate();
 
@@ -54,22 +48,25 @@ export default function Dashboard() {
     if (leadsError) console.error('Erro ao buscar leads:', leadsError);
 
     setLeads(leadsData || []);
-
-    // Calcula KPIs do Funil
-    const total = leadsData?.length || 0;
-    const negociando = leadsData?.filter(l => l.pipeline_stage === 'negociacao').length || 0;
-    const ganhos = leadsData?.filter(l => l.pipeline_stage === 'fechado_ganho').length || 0;
-    const recorrentes = leadsData?.filter(l => l.pipeline_stage === 'contrato_recorrente').length || 0;
-
-    setKpis({
-      total_leads: total,
-      em_negociacao: negociando,
-      fechado_ganho: ganhos,
-      contratos_ativos: recorrentes
-    });
-
     setLoading(false);
   };
+
+  // ⚡ Bolt: Optimize KPI calculation and eliminate redundant re-renders
+  // Derived state with useMemo avoids multiple O(N) filters and a separate state synchronization
+  const kpis = useMemo(() => {
+    return leads.reduce((acc, lead) => {
+      acc.total_leads++;
+      if (lead.pipeline_stage === 'negociacao') acc.em_negociacao++;
+      if (lead.pipeline_stage === 'fechado_ganho') acc.fechado_ganho++;
+      if (lead.pipeline_stage === 'contrato_recorrente') acc.contratos_ativos++;
+      return acc;
+    }, {
+      total_leads: 0,
+      em_negociacao: 0,
+      fechado_ganho: 0,
+      contratos_ativos: 0
+    });
+  }, [leads]);
 
   if (loading && leads.length === 0) {
     return <div className="p-8 text-center text-slate-500">Inicializando DL Commander...</div>;

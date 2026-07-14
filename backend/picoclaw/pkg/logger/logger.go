@@ -50,9 +50,14 @@ func init() {
 
 		isTTY := term.IsTerminal(int(os.Stdout.Fd()))
 
+		timeFormat := os.Getenv("PICOCLAW_LOG_TIME_FORMAT")
+		if timeFormat == "" {
+			timeFormat = "15:04:05"
+		}
+
 		consoleWriter = zerolog.ConsoleWriter{
 			Out:        os.Stdout,
-			TimeFormat: "15:04:05", // TODO: make it configurable???
+			TimeFormat: timeFormat,
 
 			// Custom formatter to handle multiline strings and JSON objects
 			FormatFieldValue: formatFieldValue,

@@ -1,0 +1,85 @@
+{
+  "name": "DL_QUEUE_MANAGER",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const queueData = $input.all()[0].json;\n// Emulate pushing to a Redis or Supabase queue table\nreturn { json: { status: 'queued', data: queueData, timestamp: new Date().toISOString() } };"
+      },
+      "name": "Push to Queue",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "dl_nexus_events",
+        "columns": "event_type, source_workflow, payload, metadata",
+        "event_type": "queue.push",
+        "source_workflow": "DL_QUEUE_MANAGER",
+        "payload": "={{ JSON.stringify($json.data) }}",
+        "metadata": "={{ JSON.stringify({ status: $json.status }) }}",
+        "mappingMode": "defineBelow"
+      },
+      "name": "Persist Queue State",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        650,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
+          "name": "Supabase DB"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Push to Queue",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Push to Queue": {
+      "main": [
+        [
+          {
+            "node": "Persist Queue State",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "errorWorkflow": "DL_GLOBAL_ERROR_HANDLER",
+    "timezone": "America/Sao_Paulo",
+    "saveExecutionProgress": true,
+    "versionId": "1.0.0"
+  },
+  "notes": "Workflow automagicamente gerado. Idempotente (Upsert), versionamento semver ativado.",
+  "active": false
+}

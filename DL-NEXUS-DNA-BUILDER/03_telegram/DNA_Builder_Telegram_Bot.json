@@ -1,0 +1,477 @@
+{
+  "name": "DNA_Builder_Telegram_Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ]
+      },
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $input.all()[0].json.message.text || '';\nlet command = '';\nlet args = '';\n\nif (text.startsWith('/')) {\n  const parts = text.split(' ');\n  command = parts[0];\n  args = parts.slice(1).join(' ');\n}\n\nreturn { json: { command: command, args: args, chat_id: $input.all()[0].json.message.chat.id } };"
+      },
+      "name": "Parse Command",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value1": "={{ $json.command }}",
+        "rules": {
+          "rules": [
+            {
+              "value2": "/status"
+            },
+            {
+              "value2": "/build"
+            },
+            {
+              "value2": "/fix"
+            },
+            {
+              "value2": "/logs"
+            },
+            {
+              "value2": "/backup"
+            }
+          ]
+        }
+      },
+      "name": "Switch Command",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(*) as active_count FROM dl_nexus_workflows WHERE active = true; SELECT COUNT(*) as error_count FROM dl_nexus_agent_logs WHERE status = 'ATTEMPTED' AND created_at > NOW() - INTERVAL '1 day';"
+      },
+      "name": "Get DB Status",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        850,
+        100
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
+          "name": "Supabase DB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ 'DNA-Builder Status:\\nWorkflows Ativos: ' + $json.active_count + '\\nErros nas \u00faltimas 24h: ' + $json.error_count }}",
+        "additionalFields": {}
+      },
+      "name": "Send Status",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        100
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:5678/webhook/workflows/build",
+        "method": "POST",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "n8nApi",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "instruction",
+              "value": "={{ $json.args }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "name": "Call Builder Engine",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        850,
+        250
+      ],
+      "credentials": {
+        "n8nApi": {
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
+          "name": "n8n API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ 'Solicita\u00e7\u00e3o de build enviada para processamento. Aguarde a resposta do engine.' }}",
+        "additionalFields": {}
+      },
+      "name": "Confirm Build",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        250
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": "DNA_Builder_Self_Healing"
+      },
+      "name": "Force Fix Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        850,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ 'Processo de autocura for\u00e7ado iniciado para o workflow. Acompanhe os logs.' }}",
+        "additionalFields": {}
+      },
+      "name": "Confirm Fix",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        400
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT action, status, error_details, created_at FROM dl_nexus_agent_logs WHERE workflow_id = $1 ORDER BY created_at DESC LIMIT 10",
+        "additionalFields": {
+          "queryParams": "={{ $json.args }}"
+        }
+      },
+      "name": "Get DB Logs",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        850,
+        550
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
+          "name": "Supabase DB"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "text": "={{ '\u00daltimos logs do workflow ' + $json.args + ':\\n' + JSON.stringify($json) }}",
+        "additionalFields": {}
+      },
+      "name": "Send Logs",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        550
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:5678/api/v1/workflows",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "n8nApi",
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "name": "Fetch Workflows Backup",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        850,
+        700
+      ],
+      "credentials": {
+        "n8nApi": {
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
+          "name": "n8n API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.message.chat.id }}",
+              "value2": "ADMIN_CHAT_ID_AQUI"
+            }
+          ]
+        }
+      },
+      "name": "Check Admin Auth",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        350,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "fileName": "=/tmp/backup_workflows.json",
+        "fileContent": "={{ JSON.stringify($json.data) }}",
+        "options": {}
+      },
+      "name": "Write Backup File",
+      "type": "n8n-nodes-base.writeToDisk",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        700
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Parse Command').item.json.chat_id }}",
+        "text": "Backup finalizado com sucesso no disco local do container (/tmp/backup_workflows.json).",
+        "additionalFields": {}
+      },
+      "name": "Notify Backup Success",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1250,
+        700
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "PLACEHOLDER_CREDENTIAL_ID",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return { json: { data: [{ workflowId: $json.args, error: { message: 'MANUAL_FIX' } }] } };"
+      },
+      "name": "Map Fix Payload",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        750,
+        400
+      ]
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Check Admin Auth",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Command": {
+      "main": [
+        [
+          {
+            "node": "Switch Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch Command": {
+      "main": [
+        [
+          {
+            "node": "Get DB Status",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call Builder Engine",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Map Fix Payload",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get DB Logs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fetch Workflows Backup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get DB Status": {
+      "main": [
+        [
+          {
+            "node": "Send Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Builder Engine": {
+      "main": [
+        [
+          {
+            "node": "Confirm Build",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Force Fix Workflow": {
+      "main": [
+        [
+          {
+            "node": "Confirm Fix",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get DB Logs": {
+      "main": [
+        [
+          {
+            "node": "Send Logs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Admin Auth": {
+      "main": [
+        [
+          {
+            "node": "Parse Command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Workflows Backup": {
+      "main": [
+        [
+          {
+            "node": "Write Backup File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Backup File": {
+      "main": [
+        [
+          {
+            "node": "Notify Backup Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Map Fix Payload": {
+      "main": [
+        [
+          {
+            "node": "Force Fix Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "errorWorkflow": "DNA_Builder_Self_Healing"
+  }
+}

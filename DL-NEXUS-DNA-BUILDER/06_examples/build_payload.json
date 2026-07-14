@@ -1,0 +1,18 @@
+{
+  "trigger": "webhook",
+  "nodes": [
+    "http_request",
+    "postgres"
+  ],
+  "credentials": [
+    "api_key_system_x"
+  ],
+  "connections": {
+    "webhook": [
+      "http_request"
+    ],
+    "http_request": [
+      "postgres"
+    ]
+  }
+}

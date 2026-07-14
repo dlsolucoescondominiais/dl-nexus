@@ -1,0 +1,184 @@
+{
+  "name": "ZELADOR_DRIVE_EXECUTOR_SEGURO_V1",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger_manual",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT file_id, current_folder_id, pasta_destino_sugerida as pasta_destino_id, acao_sugerida as acao_aprovada, status, precisa_revisao_humana FROM drive_zelador_inventory WHERE status = 'aprovado_para_mover' LIMIT 50;",
+        "tableId": "=drive_zelador_inventory"
+      },
+      "id": "supabase_fetch_approved",
+      "name": "Supabase Fetch Approved",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "DvL5tQffR4DcPaUb",
+          "name": "Supabase account V3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "split_in_batches_executor",
+      "name": "Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 2,
+      "position": [
+        400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const forbidden = ['delete', 'trash', 'remove', 'erase', 'destroy', 'rename', 'overwrite', 'permanently_delete'];\n\nreturn items.map(item => {\n  const action = String(item.json.acao_aprovada || '').toLowerCase();\n  const status = String(item.json.status || '').toLowerCase();\n  const dest_id = item.json.real_folder_id || item.json.pasta_destino_id;\n\n  if (forbidden.includes(action)) {\n    throw new Error(`Ação proibida bloqueada: ${action}`);\n  }\n  if (action !== 'mover') {\n    throw new Error(`Ação não autorizada para executor: ${action}`);\n  }\n  if (status !== 'aprovado_para_mover') {\n    throw new Error(`Status não autorizado para mover: ${status}`);\n  }\n  if (!dest_id) {\n    throw new Error('Sem pasta_destino_id real. Movimento bloqueado.');\n  }\n  if (item.json.precisa_revisao_humana === true) {\n    throw new Error('Arquivo marcado para revisão humana. Movimento bloqueado.');\n  }\n\n  item.json.safe_destination_id = dest_id;\n  return item;\n});"
+      },
+      "id": "code_bloqueio_seguranca",
+      "name": "Bloqueio de Segurança",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        608,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": "={{ $json.file_id }}",
+        "updateFields": {
+          "addParents": "={{ $json.safe_destination_id }}",
+          "removeParents": "={{ $json.current_folder_id }}"
+        },
+        "options": {}
+      },
+      "id": "drive_move",
+      "name": "Google Drive Move",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "position": [
+        800,
+        0
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "vDUp3ZKxazIKho51",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE drive_zelador_inventory SET status = 'processado', dt_processado = NOW() WHERE file_id = '{{ $json.file_id }}';",
+        "tableId": "=drive_zelador_inventory"
+      },
+      "id": "supabase_update_moved",
+      "name": "Supabase Update Status",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 2,
+      "position": [
+        1056,
+        0
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "DvL5tQffR4DcPaUb",
+          "name": "Supabase account V3"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Supabase Fetch Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Fetch Approved": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split In Batches": {
+      "main": [
+        [
+          {
+            "node": "Bloqueio de Segurança",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bloqueio de Segurança": {
+      "main": [
+        [
+          {
+            "node": "Google Drive Move",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Move": {
+      "main": [
+        [
+          {
+            "node": "Supabase Update Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Update Status": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionOrder": "v1"
+  }
+}

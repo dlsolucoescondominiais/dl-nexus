@@ -1,6 +1,5 @@
 {
   "name": "083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE",
-  "active": true,
   "nodes": [
     {
       "parameters": {
@@ -53,7 +52,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// ============================================================\n// KILLCRITIC - DL NEXUS V3\n// Workflow: 083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE\n// ============================================================\n\nconst payload = $input.first().json;\nconst body = payload.body || {};\n\n// --- CAMPOS OBRIGAT\u00d3RIOS ---\nconst camposObrigatorios = ['texto', 'approved'];\nconst camposFaltantes = camposObrigatorios.filter(c => !body[c]);\n\nif (camposFaltantes.length > 0) {\n  return [{\n    json: {\n      killcritic_aprovado: false,\n      motivo: `Campos obrigat\u00f3rios ausentes: ${camposFaltantes.join(', ')}`,\n      workflow: '083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE',\n      timestamp: new Date().toISOString()\n    }\n  }];\n}\n\n// --- VALIDA\u00c7\u00c3O DE CONTE\u00daDO ---\nconst texto = String(body.texto || '').trim();\n\nif (texto.length < 10) {\n  return [{\n    json: {\n      killcritic_aprovado: false,\n      motivo: 'Texto da publica\u00e7\u00e3o muito curto (m\u00ednimo 10 caracteres).',\n      workflow: '083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE',\n      timestamp: new Date().toISOString()\n    }\n  }];\n}\n\nif (texto.length > 1500) {\n  return [{\n    json: {\n      killcritic_aprovado: false,\n      motivo: 'Texto excede 1500 caracteres (limite do Google Business Profile).',\n      workflow: '083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE',\n      timestamp: new Date().toISOString()\n    }\n  }];\n}\n\n// --- BLOCKLIST DE CONTE\u00daDO PROIBIDO ---\nconst blocklist = [\n  'whatsapp.com', 'wa.me', 't.me/joinchat',\n  'spam', 'fake', 'promo\u00e7\u00e3o ilegal'\n];\nconst textoLower = texto.toLowerCase();\nconst bloqueio = blocklist.find(termo => textoLower.includes(termo));\n\nif (bloqueio) {\n  return [{\n    json: {\n      killcritic_aprovado: false,\n      motivo: `Conte\u00fado bloqueado pelo KILLCRITIC: termo proibido detectado \u2014 \"${bloqueio}\".`,\n      workflow: '083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE',\n      timestamp: new Date().toISOString()\n    }\n  }];\n}\n\n// --- APROVA\u00c7\u00c3O ---\nreturn [{\n  json: {\n    killcritic_aprovado: true,\n    texto_validado: texto,\n    url_cta: body.url_cta || 'https://dlsolucoescondominiais.com',\n    motivo: 'Conte\u00fado aprovado pelo KILLCRITIC.',\n    workflow: '083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE',\n    timestamp: new Date().toISOString()\n  }\n}];"
+        "jsCode": "// ============================================================\n// KILLCRITIC - DL NEXUS V3\n// Workflow: 083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE\n// ============================================================\n\nconst payload = $input.first().json;\nconst body = payload.body || {};\n\n// --- CAMPOS OBRIGATÓRIOS ---\nconst camposObrigatorios = ['texto', 'approved'];\nconst camposFaltantes = camposObrigatorios.filter(c => !body[c]);\n\nif (camposFaltantes.length > 0) {\n  return [{\n    json: {\n      killcritic_aprovado: false,\n      motivo: `Campos obrigatórios ausentes: ${camposFaltantes.join(', ')}`,\n      workflow: '083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE',\n      timestamp: new Date().toISOString()\n    }\n  }];\n}\n\n// --- VALIDAÇÃO DE CONTEÚDO ---\nconst texto = String(body.texto || '').trim();\n\nif (texto.length < 10) {\n  return [{\n    json: {\n      killcritic_aprovado: false,\n      motivo: 'Texto da publicação muito curto (mínimo 10 caracteres).',\n      workflow: '083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE',\n      timestamp: new Date().toISOString()\n    }\n  }];\n}\n\nif (texto.length > 1500) {\n  return [{\n    json: {\n      killcritic_aprovado: false,\n      motivo: 'Texto excede 1500 caracteres (limite do Google Business Profile).',\n      workflow: '083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE',\n      timestamp: new Date().toISOString()\n    }\n  }];\n}\n\n// --- BLOCKLIST DE CONTEÚDO PROIBIDO ---\nconst blocklist = [\n  'whatsapp.com', 'wa.me', 't.me/joinchat',\n  'spam', 'fake', 'promoção ilegal'\n];\nconst textoLower = texto.toLowerCase();\nconst bloqueio = blocklist.find(termo => textoLower.includes(termo));\n\nif (bloqueio) {\n  return [{\n    json: {\n      killcritic_aprovado: false,\n      motivo: `Conteúdo bloqueado pelo KILLCRITIC: termo proibido detectado — \"${bloqueio}\".`,\n      workflow: '083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE',\n      timestamp: new Date().toISOString()\n    }\n  }];\n}\n\n// --- APROVAÇÃO ---\nreturn [{\n  json: {\n    killcritic_aprovado: true,\n    texto_validado: texto,\n    url_cta: body.url_cta || 'https://dlsolucoescondominiais.com',\n    motivo: 'Conteúdo aprovado pelo KILLCRITIC.',\n    workflow: '083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE',\n    timestamp: new Date().toISOString()\n  }\n}];"
       },
       "id": "node-003-killcritic",
       "name": "Code KILLCRITIC",
@@ -98,28 +97,48 @@
     },
     {
       "parameters": {
-        "command": "=python d:/AntiGravity/projeto_01/scripts/test_post_social.py --platform gmb --text \"{{ $json.texto_validado.replace(/\\\"/g, '\\\\\\\"') }}\""
+        "method": "POST",
+        "url": "https://mybusiness.googleapis.com/v4/accounts/102925576161476311894/locations/14732103551574044566/localPosts",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "oAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"topicType\": \"STANDARD\",\n  \"summary\": \"{{ $json.texto_validado || $json.caption || $json.body.caption || $json.message || $json.body.message }}\",\n  \"callToAction\": {\n    \"actionType\": \"LEARN_MORE\",\n    \"url\": \"{{ $json.url_cta || 'https://www.dlsolucoescondominiais.com.br' }}\"\n  }\n  {{ $json.image_url || $json.body.image_url ? ',\"media\": [ { \"mediaFormat\": \"PHOTO\", \"sourceUrl\": \"' + ($json.image_url || $json.body.image_url) + '\" } ]' : '' }}\n}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": false,
+              "responseFormat": "json"
+            }
+          }
+        }
       },
       "id": "node-005-http-gbp",
       "name": "HTTP Request: POST Google Business Profile",
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
       "position": [
         1120,
         80
       ],
-      "notes": "Modificado por IA para postagem aut\u00f4noma ignorando APIs oficiais conforme regra do sistema DL Nexus."
+      "credentials": {
+        "oAuth2Api": {
+          "id": "ApF0g3GlEGbD6cAy",
+          "name": "Google Business Profile account"
+        }
+      },
+      "notes": "ATENÇÃO: Configure a credencial OAuth2 manualmente no n8n para o Google Business Profile. Substitua GOOGLE_ACCOUNT_ID_AQUI e GOOGLE_LOCATION_ID_AQUI pelos valores reais obtidos via Google My Business API."
     },
     {
       "parameters": {
-        "chatId": "CHAT_ID_AQUI",
-        "text": "=\u2705 *Google Business Profile \u2014 Publica\u00e7\u00e3o Realizada!*\n\n\ud83d\udce2 *Workflow:* 083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE\n\ud83d\udd50 *Hor\u00e1rio:* {{ $now.format('DD/MM/YYYY HH:mm') }}\n\n\ud83d\udcdd *Conte\u00fado Publicado:*\n{{ $('Code KILLCRITIC').item.json.texto_validado }}\n\n\ud83d\udd17 *CTA:* {{ $('Code KILLCRITIC').item.json.url_cta }}\n\n\ud83e\udd16 *DL Nexus V3 \u2014 Automa\u00e7\u00e3o Ativa*",
+        "chatId": "8451974631",
+        "text": "=✅ *Google Business Profile — Publicação Realizada!*\n\n📢 *Workflow:* 083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE\n🕐 *Horário:* {{ $now.format('DD/MM/YYYY HH:mm') }}\n\n📝 *Conteúdo Publicado:*\n{{ $('Code KILLCRITIC').item.json.texto_validado }}\n\n🔗 *CTA:* {{ $('Code KILLCRITIC').item.json.url_cta }}\n\n🤖 *DL Nexus V3 — Automação Ativa*",
         "additionalFields": {
-          "parse_mode": "Markdown"
+          "parse_mode": ""
         }
       },
       "id": "node-006-telegram-confirmacao",
-      "name": "Telegram: Confirma\u00e7\u00e3o Publica\u00e7\u00e3o",
+      "name": "Telegram: Confirmação Publicação",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
@@ -128,17 +147,17 @@
       ],
       "credentials": {
         "telegramApi": {
-          "id": "CREDENCIAL_TELEGRAM",
-          "name": "Conta do Telegram"
+          "id": "sUl1HnDTJ1eOyU4S",
+          "name": "Telegram account"
         }
       }
     },
     {
       "parameters": {
-        "chatId": "CHAT_ID_AQUI",
-        "text": "=\u26d4 *Google Business Profile \u2014 Publica\u00e7\u00e3o BLOQUEADA!*\n\n\ud83d\udccb *Workflow:* 083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE\n\ud83d\udd50 *Hor\u00e1rio:* {{ $now.format('DD/MM/YYYY HH:mm') }}\n\n\ud83d\udeab *Motivo do Bloqueio:*\n{{ $json.motivo }}\n\n\u26a0\ufe0f Verifique o payload e corrija antes de reenviar.\n\n\ud83e\udd16 *DL Nexus V3 \u2014 KILLCRITIC Ativo*",
+        "chatId": "8451974631",
+        "text": "=⛔ *Google Business Profile — Publicação BLOQUEADA!*\n\n📋 *Workflow:* 083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE\n🕐 *Horário:* {{ $now.format('DD/MM/YYYY HH:mm') }}\n\n🚫 *Motivo do Bloqueio:*\n{{ $json.motivo }}\n\n⚠️ Verifique o payload e corrija antes de reenviar.\n\n🤖 *DL Nexus V3 — KILLCRITIC Ativo*",
         "additionalFields": {
-          "parse_mode": "Markdown"
+          "parse_mode": ""
         }
       },
       "id": "node-007-telegram-bloqueio",
@@ -151,21 +170,21 @@
       ],
       "credentials": {
         "telegramApi": {
-          "id": "CREDENCIAL_TELEGRAM",
-          "name": "Conta do Telegram"
+          "id": "sUl1HnDTJ1eOyU4S",
+          "name": "Telegram account"
         }
       }
     },
     {
       "parameters": {
-        "chatId": "CHAT_ID_AQUI",
-        "text": "=\ud83d\udd34 *Google Business Profile \u2014 Aprova\u00e7\u00e3o Negada!*\n\n\ud83d\udccb *Workflow:* 083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE\n\ud83d\udd50 *Hor\u00e1rio:* {{ $now.format('DD/MM/YYYY HH:mm') }}\n\n\u274c *Status:* Payload recebido sem `approved=true`.\n\nO campo `approved` deve ser `true` para autorizar a publica\u00e7\u00e3o.\n\n\ud83e\udd16 *DL Nexus V3 \u2014 Seguran\u00e7a Ativa*",
+        "chatId": "8451974631",
+        "text": "=🔴 *Google Business Profile — Aprovação Negada!*\n\n📋 *Workflow:* 083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE\n🕐 *Horário:* {{ $now.format('DD/MM/YYYY HH:mm') }}\n\n❌ *Status:* Payload recebido sem `approved=true`.\n\nO campo `approved` deve ser `true` para autorizar a publicação.\n\n🤖 *DL Nexus V3 — Segurança Ativa*",
         "additionalFields": {
-          "parse_mode": "Markdown"
+          "parse_mode": ""
         }
       },
       "id": "node-008-telegram-nao-aprovado",
-      "name": "Telegram: Aviso N\u00e3o Aprovado",
+      "name": "Telegram: Aviso Não Aprovado",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
@@ -174,15 +193,15 @@
       ],
       "credentials": {
         "telegramApi": {
-          "id": "CREDENCIAL_TELEGRAM",
-          "name": "Conta do Telegram"
+          "id": "sUl1HnDTJ1eOyU4S",
+          "name": "Telegram account"
         }
       }
     },
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"status\": \"success\",\n  \"mensagem\": \"Publica\u00e7\u00e3o enviada ao Google Business Profile com sucesso.\",\n  \"workflow\": \"083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE\",\n  \"timestamp\": \"{{ $now.toISO() }}\"\n}",
+        "responseBody": "={\n  \"status\": \"success\",\n  \"mensagem\": \"Publicação enviada ao Google Business Profile com sucesso.\",\n  \"workflow\": \"083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE\",\n  \"timestamp\": \"{{ $now.toISO() }}\"\n}",
         "options": {}
       },
       "id": "node-009-respond-sucesso",
@@ -197,7 +216,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"status\": \"blocked\",\n  \"mensagem\": \"Publica\u00e7\u00e3o bloqueada pelo KILLCRITIC ou por falta de aprova\u00e7\u00e3o.\",\n  \"motivo\": \"{{ $json.motivo }}\",\n  \"workflow\": \"083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE\",\n  \"timestamp\": \"{{ $now.toISO() }}\"\n}",
+        "responseBody": "={\n  \"status\": \"blocked\",\n  \"mensagem\": \"Publicação bloqueada pelo KILLCRITIC ou por falta de aprovação.\",\n  \"motivo\": \"{{ $json.motivo }}\",\n  \"workflow\": \"083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE\",\n  \"timestamp\": \"{{ $now.toISO() }}\"\n}",
         "options": {}
       },
       "id": "node-010-respond-bloqueio",
@@ -224,14 +243,14 @@
     },
     {
       "parameters": {
-        "chatId": "CHAT_ID_AQUI",
-        "text": "=\ud83c\udd98 *ERRO CR\u00cdTICO \u2014 Google Business Profile*\n\n\ud83d\udccb *Workflow:* 083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE\n\ud83d\udd50 *Hor\u00e1rio:* {{ $now.format('DD/MM/YYYY HH:mm') }}\n\n\u26a0\ufe0f *Erro:* {{ $json.error.message }}\n\ud83d\udccd *N\u00f3:* {{ $json.execution.lastNodeExecuted }}\n\nVerifique as credenciais OAuth2 e os IDs de conta/localiza\u00e7\u00e3o.\n\n\ud83e\udd16 *DL Nexus V3 \u2014 Monitor de Erros*",
+        "chatId": "8451974631",
+        "text": "=🆘 *ERRO CRÍTICO — Google Business Profile*\n\n📋 *Workflow:* 083_PUBLICADOR_GOOGLE_BUSINESS_PROFILE\n🕐 *Horário:* {{ $now.format('DD/MM/YYYY HH:mm') }}\n\n⚠️ *Erro:* {{ $json.error.message }}\n📍 *Nó:* {{ $json.execution.lastNodeExecuted }}\n\nVerifique as credenciais OAuth2 e os IDs de conta/localização.\n\n🤖 *DL Nexus V3 — Monitor de Erros*",
         "additionalFields": {
-          "parse_mode": "Markdown"
+          "parse_mode": ""
         }
       },
       "id": "node-012-telegram-erro",
-      "name": "Telegram: Alerta Erro Cr\u00edtico",
+      "name": "Telegram: Alerta Erro Crítico",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
@@ -240,8 +259,8 @@
       ],
       "credentials": {
         "telegramApi": {
-          "id": "CREDENCIAL_TELEGRAM",
-          "name": "Conta do Telegram"
+          "id": "sUl1HnDTJ1eOyU4S",
+          "name": "Telegram account"
         }
       }
     }
@@ -269,7 +288,7 @@
         ],
         [
           {
-            "node": "Telegram: Aviso N\u00e3o Aprovado",
+            "node": "Telegram: Aviso Não Aprovado",
             "type": "main",
             "index": 0
           }
@@ -309,14 +328,14 @@
       "main": [
         [
           {
-            "node": "Telegram: Confirma\u00e7\u00e3o Publica\u00e7\u00e3o",
+            "node": "Telegram: Confirmação Publicação",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Telegram: Confirma\u00e7\u00e3o Publica\u00e7\u00e3o": {
+    "Telegram: Confirmação Publicação": {
       "main": [
         [
           {
@@ -338,7 +357,7 @@
         ]
       ]
     },
-    "Telegram: Aviso N\u00e3o Aprovado": {
+    "Telegram: Aviso Não Aprovado": {
       "main": [
         [
           {
@@ -353,7 +372,7 @@
       "main": [
         [
           {
-            "node": "Telegram: Alerta Erro Cr\u00edtico",
+            "node": "Telegram: Alerta Erro Crítico",
             "type": "main",
             "index": 0
           }
@@ -363,32 +382,8 @@
   },
   "settings": {
     "executionOrder": "v1",
-    "saveManualExecutions": true,
     "callerPolicy": "workflowsFromSameOwner",
-    "errorWorkflow": ""
-  },
-  "staticData": null,
-  "tags": [
-    {
-      "createdAt": "2026-05-22T23:02:00.000Z",
-      "updatedAt": "2026-05-22T23:02:00.000Z",
-      "id": "tag-google-business",
-      "name": "google-business-profile"
-    },
-    {
-      "createdAt": "2026-05-22T23:02:00.000Z",
-      "updatedAt": "2026-05-22T23:02:00.000Z",
-      "id": "tag-dl-nexus-v3",
-      "name": "dl-nexus-v3"
-    },
-    {
-      "createdAt": "2026-05-22T23:02:00.000Z",
-      "updatedAt": "2026-05-22T23:02:00.000Z",
-      "id": "tag-marketing",
-      "name": "marketing"
-    }
-  ],
-  "triggerCount": 1,
-  "updatedAt": "2026-05-22T23:02:00.000Z",
-  "versionId": "083-v1-2026-05-22"
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true
+  }
 }

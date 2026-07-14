@@ -1,0 +1,180 @@
+{
+  "name": "SCRIPT_INVENTARIO_DRIVE_V1",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 3 * * *"
+            }
+          ]
+        }
+      },
+      "id": "trigger",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "folderId": "1TR_gRh_JLODCyhf3SK4BWKunzA_h7Mo-",
+        "limit": 100,
+        "options": {}
+      },
+      "id": "list_files",
+      "name": "Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "position": [
+        200,
+        0
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "vDUp3ZKxazIKho51",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 10,
+        "options": {}
+      },
+      "id": "split_in_batches",
+      "name": "Split In Batches",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 2,
+      "position": [
+        400,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const f = item.json;\n  const name = String(f.name || '').toLowerCase();\n  const mime = String(f.mimeType || '').toLowerCase();\n  const ext = name.includes('.') ? name.split('.').pop().toLowerCase() : '';\n\n  let categoria = null;\n  let pasta = null;\n  let confianca = 0;\n  let motivo = '';\n\n  if (mime.startsWith('audio/') || ['mp3', 'm4a', 'ogg', 'wav', 'opus'].includes(ext)) {\n    categoria = 'AUDIOS';\n    pasta = 'AUDIOS';\n    confianca = 0.95;\n    motivo = 'Arquivo identificado como áudio por MIME ou extensão.';\n  } else if (mime.startsWith('image/') || mime.startsWith('video/') || ['jpg', 'jpeg', 'png', 'webp', 'mp4', 'mov', 'avi'].includes(ext)) {\n    categoria = 'FOTOS_VIDEOS';\n    pasta = 'FOTOS_VIDEOS';\n    confianca = 0.9;\n    motivo = 'Arquivo identificado como foto ou vídeo por MIME ou extensão.';\n  } else if (name.includes('contrato') || name.includes('proposta') || name.includes('orçamento') || name.includes('orcamento') || name.includes('termo') || name.includes('recibo') || name.includes('nota fiscal') || name.includes('nf') || name.includes('boleto') || name.includes('pix')) {\n    categoria = 'CONTRATOS_DOCUMENTOS';\n    pasta = 'CONTRATOS_DOCUMENTOS';\n    confianca = 0.85;\n    motivo = 'Nome indica documento comercial, financeiro ou contratual.';\n  } else if (name.includes('fritadeira') || name.includes('chapa') || name.includes('multgrill') || name.includes('mult•grill') || name.includes('hamburgueria') || name.includes('lanchonete') || name.includes('restaurante')) {\n    categoria = 'FOOD_SERVICE_MULTGRILL';\n    pasta = 'FOOD_SERVICE_MULTGRILL';\n    confianca = 0.88;\n    motivo = 'Nome indica atendimento Food Service / Mult•Grill.';\n  } else if (name.includes('condominio') || name.includes('condomínio') || name.includes('sindico') || name.includes('síndico') || name.includes('colegio') || name.includes('colégio') || name.includes('escola')) {\n    categoria = 'CONDOMINIOS_COLEGIOS';\n    pasta = 'CONDOMINIOS_COLEGIOS';\n    confianca = 0.88;\n    motivo = 'Nome indica atendimento de condomínio, síndico, colégio ou escola.';\n  } else {\n    categoria = 'TRIAGEM_HUMANA';\n    pasta = 'TRIAGEM_HUMANA';\n    confianca = 0.3;\n    motivo = 'Classificação incerta. Encaminhar para revisão humana.';\n  }\n\n  return {\n    json: {\n      file_id: f.id,\n      file_name: f.name || '',\n      file_extension: ext,\n      mime_type: f.mimeType || null,\n      file_size: f.size ? Number(f.size) : null,\n      current_folder_id: f.parents?.[0] || null,\n      web_view_link: f.webViewLink || null,\n      md5_checksum: f.md5Checksum || null,\n      created_time: f.createdTime || null,\n      modified_time: f.modifiedTime || null,\n      status: confianca >= 0.75 ? 'classificado' : 'revisao_humana',\n      acao_sugerida: 'classificar',\n      categoria_detectada: categoria,\n      categoria_sugerida: categoria,\n      pasta_destino_sugerida: pasta,\n      confianca: confianca,\n      motivo_classificacao: motivo,\n      precisa_revisao_humana: confianca < 0.75\n    }\n  };\n});"
+      },
+      "id": "extract_metadata",
+      "name": "Extrair Metadados",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        600,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "tableId": "=drive_zelador_inventory",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "file_id": "={{ $json.file_id }}",
+            "file_name": "={{ $json.file_name }}",
+            "file_extension": "={{ $json.file_extension }}",
+            "mime_type": "={{ $json.mime_type }}",
+            "file_size": "={{ $json.file_size }}",
+            "current_folder_id": "={{ $json.current_folder_id }}",
+            "web_view_link": "={{ $json.web_view_link }}",
+            "md5_checksum": "={{ $json.md5_checksum }}",
+            "created_time": "={{ $json.created_time }}",
+            "modified_time": "={{ $json.modified_time }}",
+            "status": "={{ $json.status }}",
+            "acao_sugerida": "={{ $json.acao_sugerida }}",
+            "categoria_detectada": "={{ $json.categoria_detectada }}",
+            "categoria_sugerida": "={{ $json.categoria_sugerida }}",
+            "pasta_destino_sugerida": "={{ $json.pasta_destino_sugerida }}",
+            "confianca": "={{ $json.confianca }}",
+            "motivo_classificacao": "={{ $json.motivo_classificacao }}",
+            "precisa_revisao_humana": "={{ $json.precisa_revisao_humana }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "supabase_upsert",
+      "name": "Supabase Upsert",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 2,
+      "position": [
+        800,
+        0
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "DvL5tQffR4DcPaUb",
+          "name": "Supabase account V3"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split In Batches": {
+      "main": [
+        [
+          {
+            "node": "Extrair Metadados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extrair Metadados": {
+      "main": [
+        [
+          {
+            "node": "Supabase Upsert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Upsert": {
+      "main": [
+        [
+          {
+            "node": "Split In Batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  }
+}

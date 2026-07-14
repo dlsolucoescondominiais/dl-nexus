@@ -1,0 +1,71 @@
+{
+  "name": "DL_NEXUS_WORKFLOW_HEALTH_MONITOR",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://seu-n8n.com/api/v1/executions?limit=50&status=error",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "id": "check-errors",
+      "name": "Check n8n Errors",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "workflowId": "DL_NEXUS_GPT_ENGINEER_ID",
+        "mode": "fireAndForget",
+        "options": {}
+      },
+      "id": "dispatch-gpt",
+      "name": "Dispatch GPT Engineer",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [650, 300]
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Check n8n Errors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check n8n Errors": {
+      "main": [
+        [
+          {
+            "node": "Dispatch GPT Engineer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {}
+}

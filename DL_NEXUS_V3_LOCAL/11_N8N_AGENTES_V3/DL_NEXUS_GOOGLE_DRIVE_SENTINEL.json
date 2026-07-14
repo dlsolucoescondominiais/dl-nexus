@@ -1,0 +1,176 @@
+{
+  "name": "DL_NEXUS_GOOGLE_DRIVE_SENTINEL",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Schedule (Every Hour)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "resource": "folder",
+        "limit": 5
+      },
+      "id": "drive-ping",
+      "name": "Google Drive (Auth Test)",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [460, 300],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "GOOGLE_DRIVE_CREDENTIAL_ID",
+          "name": "DL Nexus — Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://storage.googleapis.com/dl-nexus-meta-assets/instagram/.keep",
+        "method": "GET",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "bucket-ping",
+      "name": "HTTP (Test Public Bucket)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [460, 500]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{$json.statusCode}}",
+              "operation": "notEqual",
+              "value2": 200
+            }
+          ]
+        }
+      },
+      "id": "if-bucket-fail",
+      "name": "IF Bucket Failed?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [680, 500]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "schema": "public",
+        "table": "dl_nexus_agent_memory",
+        "columns": "agent_name, action_type, problem_description, metadata",
+        "additionalFields": {}
+      },
+      "id": "log-supabase",
+      "name": "Log (Supabase)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [900, 300],
+      "credentials": {
+        "postgres": {
+          "id": "SUPABASE_CREDENTIAL_ID",
+          "name": "DL Nexus — Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "TELEGRAM_CHAT_ID",
+        "text": "=⚠️ *DL Nexus — Google Drive Sentinel*\n\n❌ FALHA DETECTADA:\n{{$json.problem}}\n\n🕐 {{new Date().toISOString()}}\n\nVerifique credenciais e autenticação Google.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "telegram-alert",
+      "name": "Telegram (Alert)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [900, 500],
+      "credentials": {
+        "telegramApi": {
+          "id": "TELEGRAM_CREDENTIAL_ID",
+          "name": "DL Nexus — Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "list",
+        "resource": "file",
+        "driveId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "FOLDER_ID_02_CONTEUDO"
+        },
+        "limit": 1
+      },
+      "id": "check-content-folder",
+      "name": "Verify Content Folder",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [680, 300],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "GOOGLE_DRIVE_CREDENTIAL_ID",
+          "name": "DL Nexus — Google Drive OAuth2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule (Every Hour)": {
+      "main": [
+        [
+          {"node": "Google Drive (Auth Test)", "type": "main", "index": 0},
+          {"node": "HTTP (Test Public Bucket)", "type": "main", "index": 0}
+        ]
+      ]
+    },
+    "Google Drive (Auth Test)": {
+      "main": [
+        [{"node": "Verify Content Folder", "type": "main", "index": 0}]
+      ]
+    },
+    "Verify Content Folder": {
+      "main": [
+        [{"node": "Log (Supabase)", "type": "main", "index": 0}]
+      ]
+    },
+    "HTTP (Test Public Bucket)": {
+      "main": [
+        [{"node": "IF Bucket Failed?", "type": "main", "index": 0}]
+      ]
+    },
+    "IF Bucket Failed?": {
+      "main": [
+        [],
+        [{"node": "Telegram (Alert)", "type": "main", "index": 0}]
+      ]
+    }
+  },
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "errorWorkflow": "DL_NEXUS_WORKFLOW_HEALTH_MONITOR_ID"
+  }
+}

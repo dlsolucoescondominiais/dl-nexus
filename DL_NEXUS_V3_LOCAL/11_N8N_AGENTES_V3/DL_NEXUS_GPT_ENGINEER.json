@@ -1,0 +1,155 @@
+{
+  "name": "DL_NEXUS_GPT_ENGINEER",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-nexus-gpt-engineer",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook (Receive Task)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM dl_nexus_agent_memory WHERE workflow_id = '{{$json.body.workflow_id}}' ORDER BY created_at DESC LIMIT 5;"
+      },
+      "id": "supabase-memory-read",
+      "name": "Read History (Supabase)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        450,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "SUPABASE_CREDENTIAL_ID",
+          "name": "DL Nexus — Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "gpt-4-turbo",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Você é o DL_NEXUS_GPT_ENGINEER. Analise o erro: {{$node[\"Webhook (Receive Task)\"].json[\"body\"][\"error\"]}} no workflow {{$node[\"Webhook (Receive Task)\"].json[\"body\"][\"workflow_id\"]}}. Histórico: {{$json.data}}"
+            }
+          ]
+        }
+      },
+      "id": "openai-analyze",
+      "name": "OpenAI (Analyze & Patch)",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "3qLmNTIyyFgIGSHq",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "table": "dl_nexus_agent_memory",
+        "columns": "agent_name, workflow_id, action_type, problem_description, solution_applied",
+        "values": "DL_NEXUS_GPT_ENGINEER, {{$node[\"Webhook (Receive Task)\"].json[\"body\"][\"workflow_id\"]}}, patch_generation, {{$node[\"Webhook (Receive Task)\"].json[\"body\"][\"error\"]}}, {{$json.choices[0].message.content}}"
+      },
+      "id": "supabase-memory-write",
+      "name": "Log Patch (Supabase)",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        850,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "SUPABASE_CREDENTIAL_ID",
+          "name": "DL Nexus — Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": "DL_NEXUS_GEMINI_AUDITOR_ID",
+        "mode": "wait",
+        "options": {}
+      },
+      "id": "execute-auditor",
+      "name": "Execute Auditor Workflow",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook (Receive Task)": {
+      "main": [
+        [
+          {
+            "node": "Read History (Supabase)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read History (Supabase)": {
+      "main": [
+        [
+          {
+            "node": "OpenAI (Analyze & Patch)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI (Analyze & Patch)": {
+      "main": [
+        [
+          {
+            "node": "Log Patch (Supabase)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Patch (Supabase)": {
+      "main": [
+        [
+          {
+            "node": "Execute Auditor Workflow",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "DL_NEXUS_WORKFLOW_HEALTH_MONITOR_ID"
+  }
+}

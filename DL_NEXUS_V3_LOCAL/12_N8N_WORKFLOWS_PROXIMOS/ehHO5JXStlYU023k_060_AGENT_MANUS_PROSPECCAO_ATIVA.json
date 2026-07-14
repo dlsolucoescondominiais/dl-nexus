@@ -1,0 +1,437 @@
+{
+  "updatedAt": "2026-07-11T16:22:08.575Z",
+  "createdAt": "2026-05-25T22:02:56.993Z",
+  "id": "ehHO5JXStlYU023k",
+  "name": "060_AGENT_MANUS_PROSPECCAO_ATIVA",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "manus-outbound-trigger",
+        "httpMethod": "POST",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "webhook_manus",
+      "name": "Receber Lead do Google Maps",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst lead = $json.body || $json;\n\nconst nome_condominio = lead.nome || \"Condomínio\";\nconst bairro = lead.bairro || \"Rio de Janeiro\";\nconst foco_produto = lead.produto_foco || \"Fortress\"; // Pode ser Fortress, DL Acqua ou Gatekeeper\n\nlet contexto_produto = \"\";\nif(foco_produto === \"Fortress\") contexto_produto = \"gestão de acesso, portaria autônoma e controle de entrada via Condfy\";\nif(foco_produto === \"DL Acqua\") contexto_produto = \"monitoramento de cisternas, prevenção de transbordamento e automação de bombas via Metabo\";\nif(foco_produto === \"Gatekeeper\") contexto_produto = \"automação de portões e acesso bluetooth/wireless via Mobgate\";\n\nconst system_prompt = `Você é o Agente Manus, o SDR (Representante de Desenvolvimento de Vendas) da DL Soluções Condominiais.\\nSua missão é escrever UMA mensagem de WhatsApp de prospecção (outbound) para o síndico ou gestor do ${nome_condominio}, localizado em ${bairro}.\\n\\nREGRAS RÍGIDAS (KILLCRITIC):\\n1. A mensagem deve ser curta, amigável e extremamente profissional. Não pareça um robô de spam.\\n2. Não tente vender o produto de cara. O objetivo é iniciar uma conversa.\\n3. Mencione sutilmente que a DL Soluções é especialista em ${contexto_produto}.\\n4. O Call to Action (CTA) final deve ser um convite para uma \"Avaliação Técnica\" sem compromisso para entender a infraestrutura atual deles.\\n5. NUNCA use a expressão \"visita técnica\". Use apenas \"Avaliação Técnica\".\\n6. NUNCA cite preços ou fale sobre \"canaleta plástica\".\\n7. Formate com espaçamento para facilitar a leitura no WhatsApp e use no máximo 2 emojis.`;\n\nreturn [{\n  json: {\n    telefone_destino: lead.telefone,\n    system_prompt: system_prompt,\n    prompt_usuario: `Escreva a mensagem de abordagem inicial para o ${nome_condominio}.`\n  }\n}];\n"
+      },
+      "id": "preparar_prompt",
+      "name": "Preparar Abordagem (SDR)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        460,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {SUA_CHAVE_OPENAI_AQUI}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "gpt-4o-mini"
+            },
+            {
+              "name": "messages",
+              "value": "={{ [\n  {\n    \"role\": \"system\",\n    \"content\": $json.system_prompt\n  },\n  {\n    \"role\": \"user\",\n    \"content\": $json.prompt_usuario\n  }\n] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "gerar_texto_ia",
+      "name": "IA Escreve a Mensagem",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        720,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://graph.facebook.com/v19.0/{SEU_PHONE_NUMBER_ID}/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {SEU_ACCESS_TOKEN_PERMANENTE}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "messaging_product",
+              "value": "whatsapp"
+            },
+            {
+              "name": "recipient_type",
+              "value": "individual"
+            },
+            {
+              "name": "to",
+              "value": "={{ $('Preparar Abordagem (SDR)').item.json.telefone_destino }}"
+            },
+            {
+              "name": "type",
+              "value": "text"
+            },
+            {
+              "name": "text",
+              "value": "={{ { \"body\": $json.choices[0].message.content } }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "disparo_meta_api",
+      "name": "Disparar WhatsApp (Meta API)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        980,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Receber Lead do Google Maps": {
+      "main": [
+        [
+          {
+            "node": "Preparar Abordagem (SDR)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Abordagem (SDR)": {
+      "main": [
+        [
+          {
+            "node": "IA Escreve a Mensagem",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA Escreve a Mensagem": {
+      "main": [
+        [
+          {
+            "node": "Disparar WhatsApp (Meta API)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": true
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": null,
+  "versionId": "5ea1e72c-1dbc-4896-9cb6-d03cd50286ea",
+  "activeVersionId": "5ea1e72c-1dbc-4896-9cb6-d03cd50286ea",
+  "versionCounter": 76,
+  "triggerCount": 1,
+  "shared": [
+    {
+      "updatedAt": "2026-05-25T22:02:56.993Z",
+      "createdAt": "2026-05-25T22:02:56.993Z",
+      "role": "workflow:owner",
+      "workflowId": "ehHO5JXStlYU023k",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-05-26T03:55:27.563Z",
+    "createdAt": "2026-05-26T03:55:27.563Z",
+    "versionId": "5ea1e72c-1dbc-4896-9cb6-d03cd50286ea",
+    "workflowId": "ehHO5JXStlYU023k",
+    "nodes": [
+      {
+        "parameters": {
+          "path": "manus-outbound-trigger",
+          "httpMethod": "POST",
+          "responseMode": "onReceived",
+          "options": {}
+        },
+        "id": "webhook_manus",
+        "name": "Receber Lead do Google Maps",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          200,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "\nconst lead = $json.body || $json;\n\nconst nome_condominio = lead.nome || \"Condomínio\";\nconst bairro = lead.bairro || \"Rio de Janeiro\";\nconst foco_produto = lead.produto_foco || \"Fortress\"; // Pode ser Fortress, DL Acqua ou Gatekeeper\n\nlet contexto_produto = \"\";\nif(foco_produto === \"Fortress\") contexto_produto = \"gestão de acesso, portaria autônoma e controle de entrada via Condfy\";\nif(foco_produto === \"DL Acqua\") contexto_produto = \"monitoramento de cisternas, prevenção de transbordamento e automação de bombas via Metabo\";\nif(foco_produto === \"Gatekeeper\") contexto_produto = \"automação de portões e acesso bluetooth/wireless via Mobgate\";\n\nconst system_prompt = `Você é o Agente Manus, o SDR (Representante de Desenvolvimento de Vendas) da DL Soluções Condominiais.\\nSua missão é escrever UMA mensagem de WhatsApp de prospecção (outbound) para o síndico ou gestor do ${nome_condominio}, localizado em ${bairro}.\\n\\nREGRAS RÍGIDAS (KILLCRITIC):\\n1. A mensagem deve ser curta, amigável e extremamente profissional. Não pareça um robô de spam.\\n2. Não tente vender o produto de cara. O objetivo é iniciar uma conversa.\\n3. Mencione sutilmente que a DL Soluções é especialista em ${contexto_produto}.\\n4. O Call to Action (CTA) final deve ser um convite para uma \"Avaliação Técnica\" sem compromisso para entender a infraestrutura atual deles.\\n5. NUNCA use a expressão \"visita técnica\". Use apenas \"Avaliação Técnica\".\\n6. NUNCA cite preços ou fale sobre \"canaleta plástica\".\\n7. Formate com espaçamento para facilitar a leitura no WhatsApp e use no máximo 2 emojis.`;\n\nreturn [{\n  json: {\n    telefone_destino: lead.telefone,\n    system_prompt: system_prompt,\n    prompt_usuario: `Escreva a mensagem de abordagem inicial para o ${nome_condominio}.`\n  }\n}];\n"
+        },
+        "id": "preparar_prompt",
+        "name": "Preparar Abordagem (SDR)",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          460,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.openai.com/v1/chat/completions",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {SUA_CHAVE_OPENAI_AQUI}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "model",
+                "value": "gpt-4o-mini"
+              },
+              {
+                "name": "messages",
+                "value": "={{ [\n  {\n    \"role\": \"system\",\n    \"content\": $json.system_prompt\n  },\n  {\n    \"role\": \"user\",\n    \"content\": $json.prompt_usuario\n  }\n] }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "gerar_texto_ia",
+        "name": "IA Escreve a Mensagem",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          720,
+          300
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://graph.facebook.com/v19.0/{SEU_PHONE_NUMBER_ID}/messages",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {SEU_ACCESS_TOKEN_PERMANENTE}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          },
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "messaging_product",
+                "value": "whatsapp"
+              },
+              {
+                "name": "recipient_type",
+                "value": "individual"
+              },
+              {
+                "name": "to",
+                "value": "={{ $('Preparar Abordagem (SDR)').item.json.telefone_destino }}"
+              },
+              {
+                "name": "type",
+                "value": "text"
+              },
+              {
+                "name": "text",
+                "value": "={{ { \"body\": $json.choices[0].message.content } }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "disparo_meta_api",
+        "name": "Disparar WhatsApp (Meta API)",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.1,
+        "position": [
+          980,
+          300
+        ]
+      }
+    ],
+    "connections": {
+      "Receber Lead do Google Maps": {
+        "main": [
+          [
+            {
+              "node": "Preparar Abordagem (SDR)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Preparar Abordagem (SDR)": {
+        "main": [
+          [
+            {
+              "node": "IA Escreve a Mensagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IA Escreve a Mensagem": {
+        "main": [
+          [
+            {
+              "node": "Disparar WhatsApp (Meta API)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-07-11T16:22:08.604Z",
+        "id": 2513,
+        "workflowId": "ehHO5JXStlYU023k",
+        "versionId": "5ea1e72c-1dbc-4896-9cb6-d03cd50286ea",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-07-11T16:22:08.618Z",
+        "id": 2514,
+        "workflowId": "ehHO5JXStlYU023k",
+        "versionId": "5ea1e72c-1dbc-4896-9cb6-d03cd50286ea",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:27.663Z",
+        "id": 1711,
+        "workflowId": "ehHO5JXStlYU023k",
+        "versionId": "5ea1e72c-1dbc-4896-9cb6-d03cd50286ea",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:27.716Z",
+        "id": 1712,
+        "workflowId": "ehHO5JXStlYU023k",
+        "versionId": "5ea1e72c-1dbc-4896-9cb6-d03cd50286ea",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:27.864Z",
+        "id": 1713,
+        "workflowId": "ehHO5JXStlYU023k",
+        "versionId": "5ea1e72c-1dbc-4896-9cb6-d03cd50286ea",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-05-26T03:55:27.873Z",
+        "id": 1714,
+        "workflowId": "ehHO5JXStlYU023k",
+        "versionId": "5ea1e72c-1dbc-4896-9cb6-d03cd50286ea",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:24.211Z",
+        "id": 2431,
+        "workflowId": "ehHO5JXStlYU023k",
+        "versionId": "5ea1e72c-1dbc-4896-9cb6-d03cd50286ea",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-06-15T03:48:24.219Z",
+        "id": 2432,
+        "workflowId": "ehHO5JXStlYU023k",
+        "versionId": "5ea1e72c-1dbc-4896-9cb6-d03cd50286ea",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
+}

@@ -1,131 +1,82 @@
 {
+  "updatedAt": "2026-07-13T14:10:28.751Z",
+  "createdAt": "2026-06-23T17:04:24.312Z",
+  "id": "B9XUWs7kT21FVQeo",
   "name": "151_MAQUINA_CONTEUDO_META_DL_4X_DIA",
+  "description": null,
   "active": true,
-  "meta": {
-    "instanceId": "dl-nexus-v3",
-    "templateCredsSetupCompleted": false
-  },
-  "tags": [
-    {
-      "name": "DL_NEXUS_V3"
-    },
-    {
-      "name": "CONTEUDO"
-    },
-    {
-      "name": "META_API"
-    },
-    {
-      "name": "MARKETING"
-    },
-    {
-      "name": "KILLCRITIC"
-    },
-    {
-      "name": "MAQUINA_CONTEUDO"
-    }
-  ],
+  "isArchived": false,
   "nodes": [
     {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            },
+            {
+              "triggerAtHour": 12
+            },
+            {
+              "triggerAtHour": 18
+            },
+            {
+              "triggerAtHour": 20
+            }
+          ]
+        }
+      },
       "id": "node_schedule_trigger",
       "name": "Schedule 4x Dia",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.2,
       "position": [
-        200,
-        300
-      ],
-      "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "triggerAtHour": 7,
-              "triggerAtMinute": 45
-            },
-            {
-              "triggerAtHour": 11,
-              "triggerAtMinute": 30
-            },
-            {
-              "triggerAtHour": 15,
-              "triggerAtMinute": 30
-            },
-            {
-              "triggerAtHour": 18,
-              "triggerAtMinute": 30
-            }
-          ]
-        }
-      }
+        -1648,
+        224
+      ]
     },
     {
-      "id": "node_webhook_trigger",
-      "name": "Webhook Manual",
-      "type": "n8n-nodes-base.webhook",
-      "typeVersion": 2,
-      "position": [
-        200,
-        600
-      ],
-      "webhookId": "gerar-post-dl-meta",
       "parameters": {
         "httpMethod": "POST",
         "path": "gerar-post-dl-meta",
         "responseMode": "lastNode",
         "options": {}
-      }
-    },
-    {
-      "id": "node_merge_triggers",
-      "name": "Merge Triggers",
-      "type": "n8n-nodes-base.merge",
-      "typeVersion": 3,
+      },
+      "id": "node_webhook_trigger",
+      "name": "Webhook Manual",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
       "position": [
-        500,
-        400
+        -1648,
+        528
       ],
-      "parameters": {
-        "mode": "chooseBranch",
-        "output": "empty"
-      }
+      "webhookId": "gerar-post-dl-meta"
     },
     {
+      "parameters": {
+        "jsCode": "// Matriz semanal de pautas DL Nexus\nconst webhookData = $input.first()?.json || {};\n\n// Se veio do webhook com tema definido, usar\nif (webhookData.tema_base) {\n  return [{\n    json: {\n      origem: 'webhook',\n      linha_dl: webhookData.linha_dl || 'DL Guardião',\n      publico: webhookData.publico || 'síndicos de condomínios pequenos e médios no Rio de Janeiro',\n      canal: webhookData.canal || 'ambos',\n      formato: webhookData.formato || 'feed',\n      tema_base: webhookData.tema_base,\n      prioridade: webhookData.prioridade || 'normal',\n      usar_noticia: webhookData.usar_noticia || false,\n      fonte_noticia: webhookData.fonte_noticia || '',\n      horario: new Date().toISOString()\n    }\n  }];\n}\n\n// Matriz semanal automática\nconst diaSemana = new Date().getDay(); // 0=dom, 1=seg...\nconst hora = new Date().getHours();\n\nconst matriz = {\n  1: { // Segunda\n    linha_dl: 'DL Guardião',\n    temas: [\n      'Revisão de pontos cegos em sistemas CFTV condominiais',\n      'Falhas comuns em gravação de câmeras: como identificar antes do problema',\n      'Acesso remoto ao CFTV: o que o síndico precisa saber',\n      'Manutenção preventiva de câmeras em áreas externas de condomínios'\n    ],\n    publicos: ['síndicos de condomínios pequenos e médios no Rio de Janeiro', 'administradoras de condomínios no RJ']\n  },\n  2: { // Terça\n    linha_dl: 'DL Volt',\n    temas: [\n      'Sinais de que o quadro elétrico do condomínio precisa de revisão',\n      'Iluminação de emergência em condomínios: obrigatoriedade e manutenção',\n      'Bombas de recalque: manutenção preventiva para evitar desabastecimento',\n      'Comandos elétricos de portões: manutenção e segurança operacional'\n    ],\n    publicos: ['síndicos de condomínios no Rio de Janeiro', 'administradoras de condomínios no RJ']\n  },\n  3: { // Quarta\n    linha_dl: 'DL Fortress',\n    temas: [\n      'Controle de acesso: quando a tecnologia atual não atende mais',\n      'Portaria autônoma: como funciona e quando considerar',\n      'Biometria condominial: vantagens e cuidados na implementação',\n      'Interfones e videoporteiros: sinais de obsolescência'\n    ],\n    publicos: ['síndicos profissionais no Rio de Janeiro', 'condomínios de médio porte no RJ']\n  },\n  4: { // Quinta\n    linha_dl: 'DL Express',\n    temas: [\n      'Manutenção preventiva de chapas e grills em cozinhas profissionais',\n      'Fritadeiras industriais: cuidados elétricos e de segurança',\n      'Eficiência energética em cozinhas de restaurantes e lanchonetes',\n      'Fornos combinados: instalação elétrica correta para operação segura'\n    ],\n    publicos: ['restaurantes e lanchonetes no Rio de Janeiro', 'confeitarias e padarias no RJ']\n  },\n  5: { // Sexta\n    linha_dl: 'DL EcoVolt',\n    temas: [\n      'Energia solar em condomínios: o que muda com a Lei 14.300',\n      'Sistemas de backup com baterias: proteção contra apagões',\n      'Carregadores para veículos elétricos em condomínios: planejamento elétrico',\n      'Geração distribuída solar: economia real vs expectativa'\n    ],\n    publicos: ['síndicos de condomínios no Rio de Janeiro', 'pessoa física interessada em energia solar no RJ']\n  },\n  6: { // Sábado\n    linha_dl: 'DL Alerta',\n    temas: [\n      'Prevenção de incêndio em condomínios: checklist técnico',\n      'Bombas de água e cisternas: manutenção para garantir abastecimento',\n      'Sistemas de alarme condominial: quando revisar',\n      'Detecção de vazamentos e monitoramento de consumo hídrico'\n    ],\n    publicos: ['síndicos de condomínios pequenos e médios no Rio de Janeiro', 'administradoras de condomínios no RJ']\n  },\n  0: { // Domingo\n    linha_dl: 'DL Partner',\n    temas: [\n      'Manutenção continuada: por que contratos recorrentes reduzem chamados emergenciais',\n      'Tempo de resposta para chamados: o diferencial de ter um parceiro técnico',\n      'Checklist de manutenção predial mensal para síndicos',\n      'Como organizar a rotina de manutenções técnicas do condomínio'\n    ],\n    publicos: ['síndicos de condomínios no Rio de Janeiro', 'administradoras de condomínios no RJ']\n  }\n};\n\nconst config = matriz[diaSemana];\n\n// Selecionar tema baseado na hora (índice 0-3 para 08/12/18/20)\nconst horaIndices = { 8: 0, 12: 1, 18: 2, 20: 3 };\nconst temaIndex = horaIndices[hora] !== undefined ? horaIndices[hora] : Math.floor(Math.random() * config.temas.length);\nconst publicoIndex = Math.floor(Math.random() * config.publicos.length);\n\n// Decidir formato: ao menos 1 carrossel por dia (horário das 12:00)\nconst formato = (hora === 12) ? 'carrossel' : 'feed';\n\nreturn [{\n  json: {\n    origem: 'schedule',\n    linha_dl: config.linha_dl,\n    publico: config.publicos[publicoIndex],\n    canal: 'ambos',\n    formato: formato,\n    tema_base: config.temas[temaIndex],\n    prioridade: 'normal',\n    usar_noticia: false,\n    fonte_noticia: '',\n    horario: new Date().toISOString()\n  }\n}];"
+      },
       "id": "node_definir_pauta",
       "name": "Definir Pauta",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        750,
-        400
-      ],
-      "parameters": {
-        "jsCode": "// Matriz semanal de pautas DL Nexus\nconst webhookData = $input.first()?.json || {};\n\n// Se veio do webhook com tema definido, usar\nif (webhookData.tema_base) {\n  return [{\n    json: {\n      origem: 'webhook',\n      linha_dl: webhookData.linha_dl || 'DL Guardião',\n      publico: webhookData.publico || 'síndicos de condomínios pequenos e médios no Rio de Janeiro',\n      canal: webhookData.canal || 'ambos',\n      formato: webhookData.formato || 'feed',\n      tema_base: webhookData.tema_base,\n      prioridade: webhookData.prioridade || 'normal',\n      usar_noticia: webhookData.usar_noticia || false,\n      fonte_noticia: webhookData.fonte_noticia || '',\n      horario: new Date().toISOString()\n    }\n  }];\n}\n\n// Matriz semanal automática\nconst diaSemana = new Date().getDay(); // 0=dom, 1=seg...\nconst hora = new Date().getHours();\n\nconst matriz = {\n  1: { // Segunda\n    linha_dl: 'DL Guardião',\n    temas: [\n      'Revisão de pontos cegos em sistemas CFTV condominiais',\n      'Falhas comuns em gravação de câmeras: como identificar antes do problema',\n      'Acesso remoto ao CFTV: o que o síndico precisa saber',\n      'Manutenção preventiva de câmeras em áreas externas de condomínios'\n    ],\n    publicos: ['síndicos de condomínios pequenos e médios no Rio de Janeiro', 'administradoras de condomínios no RJ']\n  },\n  2: { // Terça\n    linha_dl: 'DL Volt',\n    temas: [\n      'Sinais de que o quadro elétrico do condomínio precisa de revisão',\n      'Iluminação de emergência em condomínios: obrigatoriedade e manutenção',\n      'Bombas de recalque: manutenção preventiva para evitar desabastecimento',\n      'Comandos elétricos de portões: manutenção e segurança operacional'\n    ],\n    publicos: ['síndicos de condomínios no Rio de Janeiro', 'administradoras de condomínios no RJ']\n  },\n  3: { // Quarta\n    linha_dl: 'DL Fortress',\n    temas: [\n      'Controle de acesso: quando a tecnologia atual não atende mais',\n      'Portaria autônoma: como funciona e quando considerar',\n      'Biometria condominial: vantagens e cuidados na implementação',\n      'Interfones e videoporteiros: sinais de obsolescência'\n    ],\n    publicos: ['síndicos profissionais no Rio de Janeiro', 'condomínios de médio porte no RJ']\n  },\n  4: { // Quinta\n    linha_dl: 'DL Express',\n    temas: [\n      'Manutenção preventiva de chapas e grills em cozinhas profissionais',\n      'Fritadeiras industriais: cuidados elétricos e de segurança',\n      'Eficiência energética em cozinhas de restaurantes e lanchonetes',\n      'Fornos combinados: instalação elétrica correta para operação segura'\n    ],\n    publicos: ['restaurantes e lanchonetes no Rio de Janeiro', 'confeitarias e padarias no RJ']\n  },\n  5: { // Sexta\n    linha_dl: 'DL EcoVolt',\n    temas: [\n      'Energia solar em condomínios: o que muda com a Lei 14.300',\n      'Sistemas de backup com baterias: proteção contra apagões',\n      'Carregadores para veículos elétricos em condomínios: planejamento elétrico',\n      'Geração distribuída solar: economia real vs expectativa'\n    ],\n    publicos: ['síndicos de condomínios no Rio de Janeiro', 'pessoa física interessada em energia solar no RJ']\n  },\n  6: { // Sábado\n    linha_dl: 'DL Alerta',\n    temas: [\n      'Prevenção de incêndio em condomínios: checklist técnico',\n      'Bombas de água e cisternas: manutenção para garantir abastecimento',\n      'Sistemas de alarme condominial: quando revisar',\n      'Detecção de vazamentos e monitoramento de consumo hídrico'\n    ],\n    publicos: ['síndicos de condomínios pequenos e médios no Rio de Janeiro', 'administradoras de condomínios no RJ']\n  },\n  0: { // Domingo\n    linha_dl: 'DL Partner',\n    temas: [\n      'Manutenção continuada: por que contratos recorrentes reduzem chamados emergenciais',\n      'Tempo de resposta para chamados: o diferencial de ter um parceiro técnico',\n      'Checklist de manutenção predial mensal para síndicos',\n      'Como organizar a rotina de manutenções técnicas do condomínio'\n    ],\n    publicos: ['síndicos de condomínios no Rio de Janeiro', 'administradoras de condomínios no RJ']\n  }\n};\n\nconst config = matriz[diaSemana];\n\n// Selecionar tema baseado na hora (índice 0-3 para 08/12/18/20)\nconst horaIndices = { 7: 0, 11: 1, 15: 2, 18: 3 };\nconst temaIndex = horaIndices[hora] !== undefined ? horaIndices[hora] : Math.floor(Math.random() * config.temas.length);\nconst publicoIndex = Math.floor(Math.random() * config.publicos.length);\n\n// Decidir formato: ao menos 1 carrossel por dia (horário das 12:00)\nconst formato = (hora === 12) ? 'carrossel' : 'feed';\n\nreturn [{\n  json: {\n    origem: 'schedule',\n    linha_dl: config.linha_dl,\n    publico: config.publicos[publicoIndex],\n    canal: 'ambos',\n    formato: formato,\n    tema_base: config.temas[temaIndex],\n    prioridade: 'normal',\n    usar_noticia: false,\n    fonte_noticia: '',\n    horario: new Date().toISOString()\n  }\n}];"
-      }
+        -1104,
+        320
+      ]
     },
     {
+      "parameters": {
+        "resource": "chat"
+      },
       "id": "node_gerador_conteudo",
       "name": "IA Gerador Conteúdo Seguro",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
       "position": [
-        1050,
-        400
+        -800,
+        320
       ],
-      "parameters": {
-        "resource": "chat",
-        "model": "={{$env.AI_MODEL || 'gpt-4o-mini'}}",
-        "messages": {
-          "values": [
-            {
-              "content": "Você é o Redator Sênior de Conteúdo da DL Soluções Condominiais LTDA, empresa de engenharia elétrica, energia solar, CFTV, automação e segurança predial focada em condomínios e empresas no Rio de Janeiro.\n\nGere um JSON puro (sem markdown, sem explicação, sem ```json) para uma publicação nas redes sociais.\n\nDados da pauta:\n- Linha DL: {{$json.linha_dl}}\n- Público: {{$json.publico}}\n- Canal: {{$json.canal}}\n- Formato: {{$json.formato}}\n- Tema: {{$json.tema_base}}\n- Usar notícia como base editorial: {{$json.usar_noticia}}\n- Fonte da notícia (se aplicável): {{$json.fonte_noticia}}\n\nREGRAS OBRIGATÓRIAS DE TEXTO:\n1. NÃO usar acusação direta ao público.\n2. EVITAR \"você\", \"seu\", \"sua\" quando ligado a risco, falha, insegurança, problema financeiro ou atributo pessoal.\n3. NÃO prometer resultado, economia, segurança total ou prazo sem avaliação.\n4. NÃO usar \"blindado 24h\", \"nunca mais terá problema\", \"risco de morte\", \"tragédia\", \"perigo total\".\n5. NÃO usar sensacionalismo. NÃO copiar notícia textualmente.\n6. NÃO dizer que a DL é parceira da Meta.\n7. NÃO usar \"B2B\" em texto público.\n8. Usar \"Avaliação Técnica\" (nunca \"visita técnica\").\n9. Usar \"tempo de resposta para chamados\" ao falar de SLA.\n10. Tom: técnico, preventivo e comercial moderado.\n11. NÃO inventar convênio com Guarda Municipal, integração oficial com órgãos públicos, compatibilidades não comprovadas ou garantia de prevenção total.\n12. Se usar notícia como base editorial: abrir com fato noticioso SEM sensacionalismo, explicar que o caso reforça a necessidade de revisar acesso/monitoramento/segurança, conectar com linhas DL relevantes, mencionar analíticos e aproveitamento de infraestrutura existente quando aplicável, e chamar para Avaliação Técnica.\n13. Observações de enquadramento legal ou técnico devem ser DISCRETAS e PEQUENAS.\n\nCTA PERMITIDO: \"Solicite uma Avaliação Técnica\", \"Chame no direct\", \"Envie uma mensagem\", \"Fale com a DL para análise do caso\".\n\nREGRAS DE IMAGEM (image_prompt_en):\n- Fotográfica, realista, profissional.\n- Sem texto dentro da imagem. Sem logotipo da Meta/Facebook/Instagram/WhatsApp.\n- Sem pessoas identificáveis. Sem rosto em destaque. Sem placa de carro. Sem número de apartamento.\n- Sem fachada identificável. Sem uniforme com marca falsa.\n- Sem pânico, incêndio real, acidente, vítima ou tragédia.\n- Sem videogame, 3D genérico ou render artificial.\n- Formato: 1:1 para feed, 9:16 para reels/stories.\n- Estilo: fotografia documental profissional.\n\nSe formato=carrossel, incluir campo \"carrossel_slides\" com array de 3 a 5 slides, cada um com: legenda (pt-BR), image_prompt_en (en), alt_text (pt-BR).\n\nRetorne EXATAMENTE este JSON (sem markdown):\n{\n  \"linha_dl\": \"...\",\n  \"publico\": \"...\",\n  \"canal\": \"...\",\n  \"formato\": \"...\",\n  \"tema\": \"...\",\n  \"objetivo\": \"...\",\n  \"legenda_facebook\": \"...\",\n  \"legenda_instagram\": \"...\",\n  \"cta\": \"...\",\n  \"hashtags\": [\"...\"],\n  \"image_prompt_en\": \"...\",\n  \"alt_text\": \"...\",\n  \"risco_meta\": \"baixo|medio|alto\",\n  \"precisa_aprovacao_humana\": false,\n  \"motivo_aprovacao_humana\": \"\",\n  \"aprovado_pre_killcritic\": true,\n  \"carrossel_slides\": []\n}"
-            }
-          ]
-        },
-        "options": {
-          "temperature": 0.7,
-          "maxTokens": 3000
-        }
-      },
       "credentials": {
         "openAiApi": {
           "id": "openai_credential",
@@ -134,27 +85,19 @@
       }
     },
     {
+      "parameters": {
+        "jsCode": "const rawOutput = $input.first().json.message?.content || $input.first().json.text || JSON.stringify($input.first().json);\n\nlet parsed = null;\nlet tentativa = 0;\n\n// Tentativa 1: parse direto\ntry {\n  // Remover possíveis marcadores markdown\n  let cleaned = rawOutput.replace(/```json\\n?/g, '').replace(/```\\n?/g, '').trim();\n  parsed = JSON.parse(cleaned);\n  tentativa = 1;\n} catch (e1) {\n  // Tentativa 2: extrair JSON do texto\n  try {\n    const match = rawOutput.match(/\\{[\\s\\S]*\\}/);\n    if (match) {\n      parsed = JSON.parse(match[0]);\n      tentativa = 2;\n    }\n  } catch (e2) {\n    // Falha total\n  }\n}\n\nif (!parsed) {\n  return [{\n    json: {\n      erro: 'JSON inválido após 2 tentativas',\n      raw_output: rawOutput.substring(0, 500),\n      status_validacao: 'FALHA_JSON',\n      bloquear: true\n    }\n  }];\n}\n\n// Garantir campos obrigatórios\nconst camposObrigatorios = ['linha_dl', 'publico', 'canal', 'formato', 'tema', 'legenda_facebook', 'legenda_instagram', 'cta', 'hashtags', 'image_prompt_en'];\nconst faltando = camposObrigatorios.filter(c => !parsed[c]);\n\nif (faltando.length > 0) {\n  parsed.campos_faltando = faltando;\n  parsed.status_validacao = 'INCOMPLETO';\n  parsed.bloquear = true;\n} else {\n  parsed.status_validacao = 'OK';\n  parsed.bloquear = false;\n}\n\nparsed.tentativa_parse = tentativa;\nparsed.id_execucao_n8n = $execution.id;\n\nreturn [{ json: parsed }];"
+      },
       "id": "node_validar_json",
       "name": "Validar JSON IA",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1350,
-        400
-      ],
-      "parameters": {
-        "jsCode": "const rawOutput = $input.first().json.message?.content || $input.first().json.text || JSON.stringify($input.first().json);\n\nlet parsed = null;\nlet tentativa = 0;\n\n// Tentativa 1: parse direto\ntry {\n  // Remover possíveis marcadores markdown\n  let cleaned = rawOutput.replace(/```json\\n?/g, '').replace(/```\\n?/g, '').trim();\n  parsed = JSON.parse(cleaned);\n  tentativa = 1;\n} catch (e1) {\n  // Tentativa 2: extrair JSON do texto\n  try {\n    const match = rawOutput.match(/\\{[\\s\\S]*\\}/);\n    if (match) {\n      parsed = JSON.parse(match[0]);\n      tentativa = 2;\n    }\n  } catch (e2) {\n    // Falha total\n  }\n}\n\nif (!parsed) {\n  return [{\n    json: {\n      erro: 'JSON inválido após 2 tentativas',\n      raw_output: rawOutput.substring(0, 500),\n      status_validacao: 'FALHA_JSON',\n      bloquear: true\n    }\n  }];\n}\n\n// Garantir campos obrigatórios\nconst camposObrigatorios = ['linha_dl', 'publico', 'canal', 'formato', 'tema', 'legenda_facebook', 'legenda_instagram', 'cta', 'hashtags', 'image_prompt_en'];\nconst faltando = camposObrigatorios.filter(c => !parsed[c]);\n\nif (faltando.length > 0) {\n  parsed.campos_faltando = faltando;\n  parsed.status_validacao = 'INCOMPLETO';\n  parsed.bloquear = true;\n} else {\n  parsed.status_validacao = 'OK';\n  parsed.bloquear = false;\n}\n\nparsed.tentativa_parse = tentativa;\nparsed.id_execucao_n8n = $execution.id;\n\nreturn [{ json: parsed }];"
-      }
+        -496,
+        320
+      ]
     },
     {
-      "id": "node_if_json_valido",
-      "name": "IF JSON Válido",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2,
-      "position": [
-        1600,
-        400
-      ],
       "parameters": {
         "conditions": {
           "options": {
@@ -171,18 +114,19 @@
               }
             }
           ]
-        }
-      }
+        },
+        "options": {}
+      },
+      "id": "node_if_json_valido",
+      "name": "IF JSON Válido",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -256,
+        320
+      ]
     },
     {
-      "id": "node_telegram_erro_json",
-      "name": "Telegram Erro JSON",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        1850,
-        600
-      ],
       "parameters": {
         "chatId": "={{$env.TELEGRAM_CHAT_ID_DL}}",
         "text": "🔴 MÁQUINA 151 - ERRO JSON\n\nO conteúdo gerado pela IA não retornou JSON válido.\nStatus: {{$json.status_validacao}}\nCampos faltando: {{$json.campos_faltando}}\nExecução: {{$json.id_execucao_n8n}}\n\nRevisão manual necessária.",
@@ -190,6 +134,15 @@
           "parse_mode": "HTML"
         }
       },
+      "id": "node_telegram_erro_json",
+      "name": "Telegram Erro JSON",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        528
+      ],
+      "webhookId": "756eb410-0ee5-401d-bfdf-0009a00a0632",
       "credentials": {
         "telegramApi": {
           "id": "telegram_credential",
@@ -198,27 +151,19 @@
       }
     },
     {
+      "parameters": {
+        "jsCode": "const post = $input.first().json;\nconst motivos = [];\nconst ajustes = [];\n\nconst legendaFB = (post.legenda_facebook || '').toLowerCase();\nconst legendaIG = (post.legenda_instagram || '').toLowerCase();\nconst cta = (post.cta || '').toLowerCase();\nconst allText = legendaFB + ' ' + legendaIG + ' ' + cta;\n\n// --- VERIFICAÇÕES DE TEXTO ---\n\n// 1. Acusação direta com pronome + atributo sensível\nconst padroesSensiveis = [\n  /\\b(seu|sua|seus|suas|voc[eê])\\b.{0,30}(insegur|risco|falha|problem|perigo|preju[ií]z|d[ií]vida|inadimpl|ameaç)/i,\n  /\\b(seu|sua)\\s+(condom[ií]nio|pr[eé]dio|empresa).{0,20}(est[aá]\\s+insegur|est[aá]\\s+em\\s+risco|pode\\s+sofrer)/i\n];\nfor (const p of padroesSensiveis) {\n  if (p.test(allText)) {\n    motivos.push('Texto usa pronome pessoal ligado a atributo sensível (risco/falha/insegurança)');\n    break;\n  }\n}\n\n// 2. Promessas proibidas\nconst promessas = [\n  /garant(e|imos|ia|ido)/i,\n  /nunca\\s+mais/i,\n  /blindado\\s+24/i,\n  /seguran[cç]a\\s+total/i,\n  /economia\\s+garantida/i,\n  /risco\\s+de\\s+morte/i,\n  /trag[eé]dia/i,\n  /perigo\\s+total/i,\n  /zero\\s+risco/i,\n  /100%\\s+segur/i,\n  /elimina(r|mos)?\\s+(todo|qualquer)\\s+(risco|problema)/i\n];\nfor (const p of promessas) {\n  if (p.test(allText)) {\n    motivos.push(`Texto contém promessa proibida: ${p.source}`);\n  }\n}\n\n// 3. Sensacionalismo\nconst sensacionalismo = [\n  /urg[eê]nt[eí]ssimo/i,\n  /alerta\\s+(m[aá]ximo|vermelho|total)/i,\n  /bomba!|exclusivo!/i,\n  /chocante/i,\n  /inacredit[aá]vel/i\n];\nfor (const p of sensacionalismo) {\n  if (p.test(allText)) {\n    motivos.push(`Texto contém sensacionalismo: ${p.source}`);\n  }\n}\n\n// 4. Termos proibidos\nconst proibidos = [\n  /\\bb2b\\b/i,\n  /visita\\s+t[eé]cnica/i,\n  /parceiro?\\s+(da\\s+)?meta/i,\n  /parceiro?\\s+(do\\s+)?facebook/i,\n  /parceiro?\\s+(do\\s+)?instagram/i,\n  /conv[eê]nio\\s+.{0,15}(guarda|pol[ií]cia|municipal|prefeitura)/i,\n  /integra[cç][aã]o\\s+oficial\\s+com\\s+[oó]rg[aã]o/i\n];\nfor (const p of proibidos) {\n  if (p.test(allText)) {\n    motivos.push(`Texto contém termo proibido: ${p.source}`);\n  }\n}\n\n// 5. CTA seguro\nconst ctasPermitidos = [\n  /avalia[cç][aã]o\\s+t[eé]cnica/i,\n  /chame?\\s+(no\\s+)?direct/i,\n  /envie?\\s+(uma\\s+)?mensagem/i,\n  /fale?\\s+com\\s+a\\s+dl/i,\n  /entre\\s+em\\s+contato/i,\n  /agende/i,\n  /solicite/i\n];\nconst ctaSeguro = ctasPermitidos.some(p => p.test(cta));\nif (!ctaSeguro && cta.length > 5) {\n  ajustes.push('CTA pode não estar alinhado com os padrões permitidos. Revisar.');\n}\n\n// 6. Image prompt check\nconst imgPrompt = (post.image_prompt_en || '').toLowerCase();\nconst imgProibido = [\n  /face\\b/i, /portrait/i, /panic/i, /fire.*real/i, /accident/i,\n  /victim/i, /tragedy/i, /blood/i, /weapon/i, /gun/i,\n  /license\\s*plate/i, /car\\s*plate/i, /apartment\\s*number/i,\n  /facebook\\s*logo/i, /instagram\\s*logo/i, /meta\\s*logo/i,\n  /whatsapp\\s*logo/i, /videogame/i, /3d\\s*render/i\n];\nfor (const p of imgProibido) {\n  if (p.test(imgPrompt)) {\n    motivos.push(`Image prompt contém elemento proibido: ${p.source}`);\n  }\n}\n\n// 7. Gramática básica (check para legenda vazia)\nif (legendaFB.length < 50) {\n  motivos.push('Legenda Facebook muito curta (< 50 caracteres)');\n}\nif (legendaIG.length < 50) {\n  motivos.push('Legenda Instagram muito curta (< 50 caracteres)');\n}\n\n// --- RESULTADO ---\nlet status_killcritic = 'APROVADO';\nlet aprovado = true;\nlet precisa_humano = false;\n\nif (motivos.length > 0) {\n  status_killcritic = 'BLOQUEADO';\n  aprovado = false;\n} else if (ajustes.length > 0) {\n  status_killcritic = 'APROVADO_COM_RESSALVAS';\n  aprovado = true;\n}\n\nconst resultado = {\n  ...post,\n  aprovado_killcritic: aprovado,\n  status_killcritic: status_killcritic,\n  motivos_bloqueio: motivos,\n  ajustes_recomendados: ajustes,\n  precisa_aprovacao_humana: precisa_humano\n};\n\nreturn [{ json: resultado }];"
+      },
       "id": "node_killcritic",
       "name": "KILLCRITIC Conteúdo Meta",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        1850,
-        300
-      ],
-      "parameters": {
-        "jsCode": "const post = $input.first().json;\nconst motivos = [];\nconst ajustes = [];\n\nconst legendaFB = (post.legenda_facebook || '').toLowerCase();\nconst legendaIG = (post.legenda_instagram || '').toLowerCase();\nconst cta = (post.cta || '').toLowerCase();\nconst allText = legendaFB + ' ' + legendaIG + ' ' + cta;\n\n// --- VERIFICAÇÕES DE TEXTO ---\n\n// 1. Acusação direta com pronome + atributo sensível\nconst padroesSensiveis = [\n  /\\b(seu|sua|seus|suas|voc[eê])\\b.{0,30}(insegur|risco|falha|problem|perigo|preju[ií]z|d[ií]vida|inadimpl|ameaç)/i,\n  /\\b(seu|sua)\\s+(condom[ií]nio|pr[eé]dio|empresa).{0,20}(est[aá]\\s+insegur|est[aá]\\s+em\\s+risco|pode\\s+sofrer)/i\n];\nfor (const p of padroesSensiveis) {\n  if (p.test(allText)) {\n    motivos.push('Texto usa pronome pessoal ligado a atributo sensível (risco/falha/insegurança)');\n    break;\n  }\n}\n\n// 2. Promessas proibidas\nconst promessas = [\n  /garant(e|imos|ia|ido)/i,\n  /nunca\\s+mais/i,\n  /blindado\\s+24/i,\n  /seguran[cç]a\\s+total/i,\n  /economia\\s+garantida/i,\n  /risco\\s+de\\s+morte/i,\n  /trag[eé]dia/i,\n  /perigo\\s+total/i,\n  /zero\\s+risco/i,\n  /100%\\s+segur/i,\n  /elimina(r|mos)?\\s+(todo|qualquer)\\s+(risco|problema)/i\n];\nfor (const p of promessas) {\n  if (p.test(allText)) {\n    motivos.push(`Texto contém promessa proibida: ${p.source}`);\n  }\n}\n\n// 3. Sensacionalismo\nconst sensacionalismo = [\n  /urg[eê]nt[eí]ssimo/i,\n  /alerta\\s+(m[aá]ximo|vermelho|total)/i,\n  /bomba!|exclusivo!/i,\n  /chocante/i,\n  /inacredit[aá]vel/i\n];\nfor (const p of sensacionalismo) {\n  if (p.test(allText)) {\n    motivos.push(`Texto contém sensacionalismo: ${p.source}`);\n  }\n}\n\n// 4. Termos proibidos\nconst proibidos = [\n  /\\bb2b\\b/i,\n  /visita\\s+t[eé]cnica/i,\n  /parceiro?\\s+(da\\s+)?meta/i,\n  /parceiro?\\s+(do\\s+)?facebook/i,\n  /parceiro?\\s+(do\\s+)?instagram/i,\n  /conv[eê]nio\\s+.{0,15}(guarda|pol[ií]cia|municipal|prefeitura)/i,\n  /integra[cç][aã]o\\s+oficial\\s+com\\s+[oó]rg[aã]o/i\n];\nfor (const p of proibidos) {\n  if (p.test(allText)) {\n    motivos.push(`Texto contém termo proibido: ${p.source}`);\n  }\n}\n\n// 5. CTA seguro\nconst ctasPermitidos = [\n  /avalia[cç][aã]o\\s+t[eé]cnica/i,\n  /chame?\\s+(no\\s+)?direct/i,\n  /envie?\\s+(uma\\s+)?mensagem/i,\n  /fale?\\s+com\\s+a\\s+dl/i,\n  /entre\\s+em\\s+contato/i,\n  /agende/i,\n  /solicite/i\n];\nconst ctaSeguro = ctasPermitidos.some(p => p.test(cta));\nif (!ctaSeguro && cta.length > 5) {\n  ajustes.push('CTA pode não estar alinhado com os padrões permitidos. Revisar.');\n}\n\n// 6. Image prompt check\nconst imgPrompt = (post.image_prompt_en || '').toLowerCase();\nconst imgProibido = [\n  /face\\b/i, /portrait/i, /panic/i, /fire.*real/i, /accident/i,\n  /victim/i, /tragedy/i, /blood/i, /weapon/i, /gun/i,\n  /license\\s*plate/i, /car\\s*plate/i, /apartment\\s*number/i,\n  /facebook\\s*logo/i, /instagram\\s*logo/i, /meta\\s*logo/i,\n  /whatsapp\\s*logo/i, /videogame/i, /3d\\s*render/i\n];\nfor (const p of imgProibido) {\n  if (p.test(imgPrompt)) {\n    motivos.push(`Image prompt contém elemento proibido: ${p.source}`);\n  }\n}\n\n// 7. Gramática básica (check para legenda vazia)\nif (legendaFB.length < 50) {\n  motivos.push('Legenda Facebook muito curta (< 50 caracteres)');\n}\nif (legendaIG.length < 50) {\n  motivos.push('Legenda Instagram muito curta (< 50 caracteres)');\n}\n\n// --- RESULTADO ---\nlet status_killcritic = 'APROVADO';\nlet aprovado = true;\nlet precisa_humano = false;\n\nif (motivos.length > 0) {\n  status_killcritic = 'BLOQUEADO';\n  aprovado = false;\n} else if (ajustes.length > 0) {\n  status_killcritic = 'APROVADO_COM_RESSALVAS';\n  aprovado = true;\n}\n\nconst resultado = {\n  ...post,\n  aprovado_killcritic: aprovado,\n  status_killcritic: status_killcritic,\n  motivos_bloqueio: motivos,\n  ajustes_recomendados: ajustes,\n  precisa_aprovacao_humana: precisa_humano\n};\n\nreturn [{ json: resultado }];"
-      }
+        0,
+        224
+      ]
     },
     {
-      "id": "node_if_killcritic_aprovado",
-      "name": "IF KILLCRITIC Aprovado",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2,
-      "position": [
-        2150,
-        300
-      ],
       "parameters": {
         "conditions": {
           "options": {
@@ -235,18 +180,19 @@
               }
             }
           ]
-        }
-      }
+        },
+        "options": {}
+      },
+      "id": "node_if_killcritic_aprovado",
+      "name": "IF KILLCRITIC Aprovado",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        304,
+        224
+      ]
     },
     {
-      "id": "node_telegram_bloqueado",
-      "name": "Telegram KILLCRITIC Bloqueou",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        2400,
-        550
-      ],
       "parameters": {
         "chatId": "={{$env.TELEGRAM_CHAT_ID_DL}}",
         "text": "🔴 MÁQUINA 151 - BLOQUEADO PELO KILLCRITIC\n\nLinha: {{$json.linha_dl}}\nTema: {{$json.tema}}\nMotivos: {{$json.motivos_bloqueio}}\nExecução: {{$json.id_execucao_n8n}}",
@@ -254,6 +200,15 @@
           "parse_mode": "HTML"
         }
       },
+      "id": "node_telegram_bloqueado",
+      "name": "Telegram KILLCRITIC Bloqueou",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        544,
+        480
+      ],
+      "webhookId": "ea627a95-42b4-437a-8bdf-e93ca3f1ad2b",
       "credentials": {
         "telegramApi": {
           "id": "telegram_credential",
@@ -262,14 +217,6 @@
       }
     },
     {
-      "id": "node_registro_bloqueado",
-      "name": "Registro Bloqueado Sheets",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        2650,
-        550
-      ],
       "parameters": {
         "operation": "appendOrUpdate",
         "documentId": {
@@ -287,6 +234,14 @@
         },
         "options": {}
       },
+      "id": "node_registro_bloqueado",
+      "name": "Registro Bloqueado Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        800,
+        480
+      ],
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "google_sheets_credential",
@@ -295,14 +250,6 @@
       }
     },
     {
-      "id": "node_gerar_imagem",
-      "name": "Gerar Imagem IA",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        2400,
-        200
-      ],
       "parameters": {
         "method": "POST",
         "url": "={{$env.IMAGE_PROVIDER === 'openai' ? 'https://api.openai.com/v1/images/generations' : $env.IMAGE_PROVIDER === 'stability' ? 'https://api.stability.ai/v2beta/stable-image/generate/sd3' : 'https://api.openai.com/v1/images/generations'}}",
@@ -315,6 +262,14 @@
           "timeout": 120000
         }
       },
+      "id": "node_gerar_imagem",
+      "name": "Gerar Imagem IA",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        544,
+        128
+      ],
       "credentials": {
         "httpHeaderAuth": {
           "id": "image_api_credential",
@@ -323,29 +278,20 @@
       }
     },
     {
+      "parameters": {
+        "jsCode": "const imageResponse = $input.first().json;\nconst prevData = $('KILLCRITIC Conteúdo Meta').first().json;\n\nlet imageUrl = '';\n\n// OpenAI format\nif (imageResponse.data && imageResponse.data[0]) {\n  imageUrl = imageResponse.data[0].url || imageResponse.data[0].b64_json || '';\n}\n// Stability format\nelse if (imageResponse.artifacts && imageResponse.artifacts[0]) {\n  imageUrl = imageResponse.artifacts[0].base64 ? 'base64' : '';\n}\n// Direct URL\nelse if (imageResponse.url) {\n  imageUrl = imageResponse.url;\n}\n\nreturn [{\n  json: {\n    ...prevData,\n    image_url_temporaria: imageUrl,\n    image_gerada: imageUrl.length > 0,\n    provider: $env.IMAGE_PROVIDER || 'openai'\n  }\n}];"
+      },
       "id": "node_extrair_image_url",
       "name": "Extrair Image URL",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        2650,
-        200
-      ],
-      "parameters": {
-        "jsCode": "const imageResponse = $input.first().json;\nconst prevData = $('KILLCRITIC Conteúdo Meta').first().json;\n\nlet imageUrl = '';\n\n// OpenAI format\nif (imageResponse.data && imageResponse.data[0]) {\n  imageUrl = imageResponse.data[0].url || imageResponse.data[0].b64_json || '';\n}\n// Stability format\nelse if (imageResponse.artifacts && imageResponse.artifacts[0]) {\n  imageUrl = imageResponse.artifacts[0].base64 ? 'base64' : '';\n}\n// Direct URL\nelse if (imageResponse.url) {\n  imageUrl = imageResponse.url;\n}\n\nreturn [{\n  json: {\n    ...prevData,\n    image_url_temporaria: imageUrl,\n    image_gerada: imageUrl.length > 0,\n    provider: $env.IMAGE_PROVIDER || 'openai'\n  }\n}];"
-      }
+        800,
+        128
+      ]
     },
     {
-      "id": "node_download_imagem",
-      "name": "Download Imagem",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        2900,
-        200
-      ],
       "parameters": {
-        "method": "GET",
         "url": "={{$json.image_url_temporaria}}",
         "options": {
           "response": {
@@ -355,20 +301,24 @@
           },
           "timeout": 60000
         }
-      }
+      },
+      "id": "node_download_imagem",
+      "name": "Download Imagem",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1056,
+        128
+      ]
     },
     {
-      "id": "node_gdrive_upload",
-      "name": "Google Drive Upload Acervo",
-      "type": "n8n-nodes-base.googleDrive",
-      "typeVersion": 3,
-      "position": [
-        3150,
-        200
-      ],
       "parameters": {
-        "operation": "upload",
         "name": "=post_{{$('KILLCRITIC Conteúdo Meta').first().json.linha_dl.replace(/\\s/g,'_')}}_{{$now.format('yyyy-MM-dd_HH-mm')}}_{{$('KILLCRITIC Conteúdo Meta').first().json.publico.substring(0,20).replace(/\\s/g,'_')}}.jpg",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
         "folderId": {
           "__rl": true,
           "mode": "id",
@@ -376,6 +326,14 @@
         },
         "options": {}
       },
+      "id": "node_gdrive_upload",
+      "name": "Google Drive Upload Acervo",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1360,
+        208
+      ],
       "credentials": {
         "googleDriveOAuth2Api": {
           "id": "google_drive_credential",
@@ -384,32 +342,23 @@
       }
     },
     {
+      "parameters": {
+        "jsCode": "const conteudo = $('KILLCRITIC Conteúdo Meta').first().json;\nconst gdrive = $input.first().json;\n\n// Montar URL pública do Google Drive\nconst gdriveFileId = gdrive.id || gdrive.fileId || '';\nlet imageUrlPublica = '';\nif (gdriveFileId) {\n  // Tentar URL pública direta do Google Drive\n  imageUrlPublica = `https://drive.google.com/uc?export=view&id=${gdriveFileId}`;\n}\n\nconst payload = {\n  canal: conteudo.canal || 'ambos',\n  linha_dl: conteudo.linha_dl,\n  publico: conteudo.publico,\n  formato: conteudo.formato,\n  tema: conteudo.tema,\n  objetivo: conteudo.objetivo || '',\n  legenda_facebook: conteudo.legenda_facebook,\n  legenda_instagram: conteudo.legenda_instagram,\n  cta: conteudo.cta,\n  hashtags: conteudo.hashtags || [],\n  image_prompt_en: conteudo.image_prompt_en,\n  alt_text: conteudo.alt_text || '',\n  image_url_publica_meta: imageUrlPublica,\n  google_drive_file_id: gdriveFileId,\n  google_drive_web_view_link: gdrive.webViewLink || '',\n  tem_direito_uso_midia: true,\n  aprovado_killcritic: conteudo.aprovado_killcritic,\n  status_killcritic: conteudo.status_killcritic,\n  precisa_aprovacao_humana: false,\n  aprovador: 'KILLCRITIC_AUTO',\n  status_publicacao: 'pendente',\n  fonte_noticia: conteudo.fonte_noticia || '',\n  post_id: '',\n  media_id: '',\n  permalink: '',\n  erro_meta: '',\n  id_execucao_n8n: $execution.id,\n  carrossel_slides: conteudo.carrossel_slides || [],\n  data_hora: new Date().toISOString()\n};\n\nreturn [{ json: payload }];"
+      },
       "id": "node_montar_payload",
       "name": "Montar Payload Publicação",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        3400,
-        200
-      ],
-      "parameters": {
-        "jsCode": "const conteudo = $('KILLCRITIC Conteúdo Meta').first().json;\nconst gdrive = $input.first().json;\n\n// Montar URL pública do Google Drive\nconst gdriveFileId = gdrive.id || gdrive.fileId || '';\nlet imageUrlPublica = '';\nif (gdriveFileId) {\n  // Tentar URL pública direta do Google Drive\n  imageUrlPublica = `https://drive.google.com/uc?export=view&id=${gdriveFileId}`;\n}\n\nconst payload = {\n  canal: conteudo.canal || 'ambos',\n  linha_dl: conteudo.linha_dl,\n  publico: conteudo.publico,\n  formato: conteudo.formato,\n  tema: conteudo.tema,\n  objetivo: conteudo.objetivo || '',\n  legenda_facebook: conteudo.legenda_facebook,\n  legenda_instagram: conteudo.legenda_instagram,\n  cta: conteudo.cta,\n  hashtags: conteudo.hashtags || [],\n  image_prompt_en: conteudo.image_prompt_en,\n  alt_text: conteudo.alt_text || '',\n  image_url_publica_meta: imageUrlPublica,\n  google_drive_file_id: gdriveFileId,\n  google_drive_web_view_link: gdrive.webViewLink || '',\n  tem_direito_uso_midia: true,\n  aprovado_killcritic: conteudo.aprovado_killcritic,\n  status_killcritic: conteudo.status_killcritic,\n  precisa_aprovacao_humana: false,\n  aprovador: 'KILLCRITIC_AUTO',\n  status_publicacao: 'pendente',\n  fonte_noticia: conteudo.fonte_noticia || '',\n  post_id: '',\n  media_id: '',\n  permalink: '',\n  erro_meta: '',\n  id_execucao_n8n: $execution.id,\n  carrossel_slides: conteudo.carrossel_slides || [],\n  data_hora: new Date().toISOString()\n};\n\nreturn [{ json: payload }];"
-      }
+        1616,
+        208
+      ]
     },
     {
-      "id": "node_switch_canal",
-      "name": "Switch Canal Publicação",
-      "type": "n8n-nodes-base.switch",
-      "typeVersion": 3,
-      "position": [
-        3650,
-        200
-      ],
       "parameters": {
         "rules": {
           "values": [
             {
-              "outputKey": "facebook",
               "conditions": {
                 "combinator": "or",
                 "conditions": [
@@ -433,7 +382,6 @@
               }
             },
             {
-              "outputKey": "instagram",
               "conditions": {
                 "combinator": "or",
                 "conditions": [
@@ -461,17 +409,17 @@
         "options": {
           "allMatchingOutputs": true
         }
-      }
+      },
+      "id": "node_switch_canal",
+      "name": "Switch Canal Publicação",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        1872,
+        208
+      ]
     },
     {
-      "id": "node_publicar_facebook",
-      "name": "Publicar Facebook 082",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        3950,
-        100
-      ],
       "parameters": {
         "method": "POST",
         "url": "=https://graph.facebook.com/v25.0/{{$env.META_PAGE_ID_DL || '100166804716824'}}/feed",
@@ -491,30 +439,30 @@
         "options": {
           "timeout": 30000
         }
-      }
+      },
+      "id": "node_publicar_facebook",
+      "name": "Publicar Facebook 082",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2160,
+        112
+      ]
     },
     {
+      "parameters": {
+        "jsCode": "const fbResult = $input.first().json;\nconst payload = $('Montar Payload Publicação').first().json;\n\nconst postId = fbResult.id || '';\nlet permalink = '';\nif (postId && postId.includes('_')) {\n  const parts = postId.split('_');\n  permalink = `https://www.facebook.com/${parts[0]}/posts/${parts[1]}`;\n}\n\nreturn [{\n  json: {\n    ...payload,\n    canal_executado: 'facebook',\n    post_id: postId,\n    permalink: permalink,\n    status_publicacao: postId ? 'publicado' : 'falha',\n    erro_meta: postId ? '' : JSON.stringify(fbResult).substring(0, 300)\n  }\n}];"
+      },
       "id": "node_salvar_facebook_result",
       "name": "Salvar Resultado Facebook",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4200,
-        100
-      ],
-      "parameters": {
-        "jsCode": "const fbResult = $input.first().json;\nconst payload = $('Montar Payload Publicação').first().json;\n\nconst postId = fbResult.id || '';\nlet permalink = '';\nif (postId && postId.includes('_')) {\n  const parts = postId.split('_');\n  permalink = `https://www.facebook.com/${parts[0]}/posts/${parts[1]}`;\n}\n\nreturn [{\n  json: {\n    ...payload,\n    canal_executado: 'facebook',\n    post_id: postId,\n    permalink: permalink,\n    status_publicacao: postId ? 'publicado' : 'falha',\n    erro_meta: postId ? '' : JSON.stringify(fbResult).substring(0, 300)\n  }\n}];"
-      }
+        2416,
+        112
+      ]
     },
     {
-      "id": "node_if_instagram_image_valida",
-      "name": "IF Instagram Tem Image URL",
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2,
-      "position": [
-        3950,
-        350
-      ],
       "parameters": {
         "conditions": {
           "options": {
@@ -531,18 +479,19 @@
               }
             }
           ]
-        }
-      }
+        },
+        "options": {}
+      },
+      "id": "node_if_instagram_image_valida",
+      "name": "IF Instagram Tem Image URL",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        352
+      ]
     },
     {
-      "id": "node_publicar_instagram_media",
-      "name": "Instagram Criar Media Container",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.2,
-      "position": [
-        4200,
-        300
-      ],
       "parameters": {
         "method": "POST",
         "url": "=https://graph.facebook.com/v25.0/{{$env.META_IG_BUSINESS_ID_DL || '17841403185822108'}}/media",
@@ -566,17 +515,17 @@
         "options": {
           "timeout": 60000
         }
-      }
-    },
-    {
-      "id": "node_publicar_instagram_publish",
-      "name": "Instagram Publicar Media",
+      },
+      "id": "node_publicar_instagram_media",
+      "name": "Instagram Criar Media Container",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        4450,
-        300
-      ],
+        2416,
+        304
+      ]
+    },
+    {
       "parameters": {
         "method": "POST",
         "url": "=https://graph.facebook.com/v25.0/{{$env.META_IG_BUSINESS_ID_DL || '17841403185822108'}}/media_publish",
@@ -596,30 +545,30 @@
         "options": {
           "timeout": 30000
         }
-      }
+      },
+      "id": "node_publicar_instagram_publish",
+      "name": "Instagram Publicar Media",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2672,
+        304
+      ]
     },
     {
+      "parameters": {
+        "jsCode": "const igResult = $input.first().json;\nconst payload = $('Montar Payload Publicação').first().json;\n\nconst mediaId = igResult.id || '';\n\nreturn [{\n  json: {\n    ...payload,\n    canal_executado: 'instagram',\n    media_id: mediaId,\n    status_publicacao: mediaId ? 'publicado' : 'falha',\n    erro_meta: mediaId ? '' : JSON.stringify(igResult).substring(0, 300)\n  }\n}];"
+      },
       "id": "node_salvar_instagram_result",
       "name": "Salvar Resultado Instagram",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        4700,
-        300
-      ],
-      "parameters": {
-        "jsCode": "const igResult = $input.first().json;\nconst payload = $('Montar Payload Publicação').first().json;\n\nconst mediaId = igResult.id || '';\n\nreturn [{\n  json: {\n    ...payload,\n    canal_executado: 'instagram',\n    media_id: mediaId,\n    status_publicacao: mediaId ? 'publicado' : 'falha',\n    erro_meta: mediaId ? '' : JSON.stringify(igResult).substring(0, 300)\n  }\n}];"
-      }
+        2912,
+        304
+      ]
     },
     {
-      "id": "node_telegram_ig_bloqueado",
-      "name": "Telegram IG Sem Image URL",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        4200,
-        500
-      ],
       "parameters": {
         "chatId": "={{$env.TELEGRAM_CHAT_ID_DL}}",
         "text": "⚠️ MÁQUINA 151 - Instagram BLOQUEADO\n\nMotivo: Sem image_url pública HTTPS válida.\nLinha: {{$json.linha_dl}}\nTema: {{$json.tema}}\nFacebook pode ter publicado normalmente.\nExecução: {{$json.id_execucao_n8n}}",
@@ -627,6 +576,15 @@
           "parse_mode": "HTML"
         }
       },
+      "id": "node_telegram_ig_bloqueado",
+      "name": "Telegram IG Sem Image URL",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2416,
+        512
+      ],
+      "webhookId": "84d253bf-355f-45fc-86e5-fa616b03c4bd",
       "credentials": {
         "telegramApi": {
           "id": "telegram_credential",
@@ -635,28 +593,20 @@
       }
     },
     {
+      "parameters": {
+        "mode": "chooseBranch",
+        "output": "empty"
+      },
       "id": "node_merge_resultados",
       "name": "Merge Resultados",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3,
       "position": [
-        4950,
-        200
-      ],
-      "parameters": {
-        "mode": "chooseBranch",
-        "output": "empty"
-      }
+        3168,
+        208
+      ]
     },
     {
-      "id": "node_registro_final",
-      "name": "Registro Final Google Sheets",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.5,
-      "position": [
-        5200,
-        200
-      ],
       "parameters": {
         "operation": "appendOrUpdate",
         "documentId": {
@@ -674,6 +624,14 @@
         },
         "options": {}
       },
+      "id": "node_registro_final",
+      "name": "Registro Final Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        3408,
+        208
+      ],
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "google_sheets_credential",
@@ -682,14 +640,6 @@
       }
     },
     {
-      "id": "node_telegram_sucesso",
-      "name": "Telegram Resultado Final",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        5450,
-        200
-      ],
       "parameters": {
         "chatId": "={{$env.TELEGRAM_CHAT_ID_DL}}",
         "text": "={{$json.status_publicacao === 'publicado' ? '✅' : '🔴'}} MÁQUINA 151 - {{$json.canal_executado?.toUpperCase()}}\n\nLinha: {{$json.linha_dl}}\nTema: {{$json.tema}}\nStatus: {{$json.status_publicacao}}\n{{$json.post_id ? 'Post ID: ' + $json.post_id : ''}}{{$json.media_id ? 'Media ID: ' + $json.media_id : ''}}\n{{$json.permalink ? 'Link: ' + $json.permalink : ''}}\n{{$json.erro_meta ? 'Erro: ' + $json.erro_meta : ''}}\nExecução: {{$json.id_execucao_n8n}}",
@@ -697,12 +647,76 @@
           "parse_mode": "HTML"
         }
       },
+      "id": "node_telegram_sucesso",
+      "name": "Telegram Resultado Final",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        3664,
+        208
+      ],
+      "webhookId": "1c5eb379-e472-4c59-81db-942857346202",
       "credentials": {
         "telegramApi": {
           "id": "telegram_credential",
           "name": "Telegram Bot DL"
         }
       }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false
+          },
+          "combinator": "or",
+          "conditions": [
+            {
+              "leftValue": "={{ $json.canal }}",
+              "rightValue": "ambos",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "leftValue": "={{ $json.canal }}",
+              "rightValue": "google_business",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node_if_gmb",
+      "name": "IF: Postar no GMB?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        2900,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/publicar-google-business-dl-nexus",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"approved\": true,\n  \"texto\": \"{{ ($json.legenda_facebook || $json.legenda_instagram || '').replace(/#[a-zA-Z0-9_]+/g, '').trim() }}\",\n  \"image_url\": \"{{ $json.image_url_publica_meta }}\",\n  \"url_cta\": \"{{ $json.cta || 'https://www.dlsolucoescondominiais.com.br' }}\"\n}",
+        "options": {}
+      },
+      "id": "node_http_gbp_webhook",
+      "name": "HTTP: Publicar Google Business",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3150,
+        100
+      ]
     }
   ],
   "connections": {
@@ -710,7 +724,7 @@
       "main": [
         [
           {
-            "node": "Merge Triggers",
+            "node": "Definir Pauta",
             "type": "main",
             "index": 0
           }
@@ -718,17 +732,6 @@
       ]
     },
     "Webhook Manual": {
-      "main": [
-        [
-          {
-            "node": "Merge Triggers",
-            "type": "main",
-            "index": 1
-          }
-        ]
-      ]
-    },
-    "Merge Triggers": {
       "main": [
         [
           {
@@ -980,7 +983,7 @@
       "main": [
         [
           {
-            "node": "Registro Final Google Sheets",
+            "node": "IF: Postar no GMB?",
             "type": "main",
             "index": 0
           }
@@ -997,6 +1000,35 @@
           }
         ]
       ]
+    },
+    "IF: Postar no GMB?": {
+      "main": [
+        [
+          {
+            "node": "HTTP: Publicar Google Business",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Registro Final Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: Publicar Google Business": {
+      "main": [
+        [
+          {
+            "node": "Registro Final Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
@@ -1005,7 +1037,1150 @@
     "saveExecutionProgress": true,
     "saveManualExecutions": true,
     "saveDataSuccessExecution": "all",
-    "saveDataErrorExecution": "all"
+    "saveDataErrorExecution": "all",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "binaryMode": "separate"
   },
-  "pinData": {}
+  "staticData": {
+    "node:Schedule 4x Dia": {
+      "recurrenceRules": []
+    }
+  },
+  "meta": null,
+  "pinData": {},
+  "versionId": "6fda3651-0594-4857-8878-6467b688cd4f",
+  "activeVersionId": "6fda3651-0594-4857-8878-6467b688cd4f",
+  "versionCounter": 19,
+  "triggerCount": 2,
+  "shared": [
+    {
+      "updatedAt": "2026-06-23T17:04:24.312Z",
+      "createdAt": "2026-06-23T17:04:24.312Z",
+      "role": "workflow:owner",
+      "workflowId": "B9XUWs7kT21FVQeo",
+      "projectId": "npvXjSqnZp7zDylg",
+      "project": {
+        "updatedAt": "2026-05-01T21:22:35.619Z",
+        "createdAt": "2026-03-21T02:47:43.581Z",
+        "id": "npvXjSqnZp7zDylg",
+        "name": "Diogo Oliveira <admin@dlsolucoescondominiais.com.br>",
+        "type": "personal",
+        "icon": null,
+        "description": null,
+        "creatorId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    }
+  ],
+  "tags": [],
+  "activeVersion": {
+    "updatedAt": "2026-07-13T14:10:12.236Z",
+    "createdAt": "2026-07-13T14:10:12.236Z",
+    "versionId": "6fda3651-0594-4857-8878-6467b688cd4f",
+    "workflowId": "B9XUWs7kT21FVQeo",
+    "nodes": [
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 8
+              },
+              {
+                "triggerAtHour": 12
+              },
+              {
+                "triggerAtHour": 18
+              },
+              {
+                "triggerAtHour": 20
+              }
+            ]
+          }
+        },
+        "id": "node_schedule_trigger",
+        "name": "Schedule 4x Dia",
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          -1648,
+          224
+        ]
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "gerar-post-dl-meta",
+          "responseMode": "lastNode",
+          "options": {}
+        },
+        "id": "node_webhook_trigger",
+        "name": "Webhook Manual",
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -1648,
+          528
+        ],
+        "webhookId": "gerar-post-dl-meta"
+      },
+      {
+        "parameters": {
+          "mode": "chooseBranch",
+          "output": "empty"
+        },
+        "id": "node_merge_triggers",
+        "name": "Merge Triggers",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3,
+        "position": [
+          -1344,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "// Matriz semanal de pautas DL Nexus\nconst webhookData = $input.first()?.json || {};\n\n// Se veio do webhook com tema definido, usar\nif (webhookData.tema_base) {\n  return [{\n    json: {\n      origem: 'webhook',\n      linha_dl: webhookData.linha_dl || 'DL Guardião',\n      publico: webhookData.publico || 'síndicos de condomínios pequenos e médios no Rio de Janeiro',\n      canal: webhookData.canal || 'ambos',\n      formato: webhookData.formato || 'feed',\n      tema_base: webhookData.tema_base,\n      prioridade: webhookData.prioridade || 'normal',\n      usar_noticia: webhookData.usar_noticia || false,\n      fonte_noticia: webhookData.fonte_noticia || '',\n      horario: new Date().toISOString()\n    }\n  }];\n}\n\n// Matriz semanal automática\nconst diaSemana = new Date().getDay(); // 0=dom, 1=seg...\nconst hora = new Date().getHours();\n\nconst matriz = {\n  1: { // Segunda\n    linha_dl: 'DL Guardião',\n    temas: [\n      'Revisão de pontos cegos em sistemas CFTV condominiais',\n      'Falhas comuns em gravação de câmeras: como identificar antes do problema',\n      'Acesso remoto ao CFTV: o que o síndico precisa saber',\n      'Manutenção preventiva de câmeras em áreas externas de condomínios'\n    ],\n    publicos: ['síndicos de condomínios pequenos e médios no Rio de Janeiro', 'administradoras de condomínios no RJ']\n  },\n  2: { // Terça\n    linha_dl: 'DL Volt',\n    temas: [\n      'Sinais de que o quadro elétrico do condomínio precisa de revisão',\n      'Iluminação de emergência em condomínios: obrigatoriedade e manutenção',\n      'Bombas de recalque: manutenção preventiva para evitar desabastecimento',\n      'Comandos elétricos de portões: manutenção e segurança operacional'\n    ],\n    publicos: ['síndicos de condomínios no Rio de Janeiro', 'administradoras de condomínios no RJ']\n  },\n  3: { // Quarta\n    linha_dl: 'DL Fortress',\n    temas: [\n      'Controle de acesso: quando a tecnologia atual não atende mais',\n      'Portaria autônoma: como funciona e quando considerar',\n      'Biometria condominial: vantagens e cuidados na implementação',\n      'Interfones e videoporteiros: sinais de obsolescência'\n    ],\n    publicos: ['síndicos profissionais no Rio de Janeiro', 'condomínios de médio porte no RJ']\n  },\n  4: { // Quinta\n    linha_dl: 'DL Express',\n    temas: [\n      'Manutenção preventiva de chapas e grills em cozinhas profissionais',\n      'Fritadeiras industriais: cuidados elétricos e de segurança',\n      'Eficiência energética em cozinhas de restaurantes e lanchonetes',\n      'Fornos combinados: instalação elétrica correta para operação segura'\n    ],\n    publicos: ['restaurantes e lanchonetes no Rio de Janeiro', 'confeitarias e padarias no RJ']\n  },\n  5: { // Sexta\n    linha_dl: 'DL EcoVolt',\n    temas: [\n      'Energia solar em condomínios: o que muda com a Lei 14.300',\n      'Sistemas de backup com baterias: proteção contra apagões',\n      'Carregadores para veículos elétricos em condomínios: planejamento elétrico',\n      'Geração distribuída solar: economia real vs expectativa'\n    ],\n    publicos: ['síndicos de condomínios no Rio de Janeiro', 'pessoa física interessada em energia solar no RJ']\n  },\n  6: { // Sábado\n    linha_dl: 'DL Alerta',\n    temas: [\n      'Prevenção de incêndio em condomínios: checklist técnico',\n      'Bombas de água e cisternas: manutenção para garantir abastecimento',\n      'Sistemas de alarme condominial: quando revisar',\n      'Detecção de vazamentos e monitoramento de consumo hídrico'\n    ],\n    publicos: ['síndicos de condomínios pequenos e médios no Rio de Janeiro', 'administradoras de condomínios no RJ']\n  },\n  0: { // Domingo\n    linha_dl: 'DL Partner',\n    temas: [\n      'Manutenção continuada: por que contratos recorrentes reduzem chamados emergenciais',\n      'Tempo de resposta para chamados: o diferencial de ter um parceiro técnico',\n      'Checklist de manutenção predial mensal para síndicos',\n      'Como organizar a rotina de manutenções técnicas do condomínio'\n    ],\n    publicos: ['síndicos de condomínios no Rio de Janeiro', 'administradoras de condomínios no RJ']\n  }\n};\n\nconst config = matriz[diaSemana];\n\n// Selecionar tema baseado na hora (índice 0-3 para 08/12/18/20)\nconst horaIndices = { 8: 0, 12: 1, 18: 2, 20: 3 };\nconst temaIndex = horaIndices[hora] !== undefined ? horaIndices[hora] : Math.floor(Math.random() * config.temas.length);\nconst publicoIndex = Math.floor(Math.random() * config.publicos.length);\n\n// Decidir formato: ao menos 1 carrossel por dia (horário das 12:00)\nconst formato = (hora === 12) ? 'carrossel' : 'feed';\n\nreturn [{\n  json: {\n    origem: 'schedule',\n    linha_dl: config.linha_dl,\n    publico: config.publicos[publicoIndex],\n    canal: 'ambos',\n    formato: formato,\n    tema_base: config.temas[temaIndex],\n    prioridade: 'normal',\n    usar_noticia: false,\n    fonte_noticia: '',\n    horario: new Date().toISOString()\n  }\n}];"
+        },
+        "id": "node_definir_pauta",
+        "name": "Definir Pauta",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1104,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "resource": "chat"
+        },
+        "id": "node_gerador_conteudo",
+        "name": "IA Gerador Conteúdo Seguro",
+        "type": "@n8n/n8n-nodes-langchain.openAi",
+        "typeVersion": 1.8,
+        "position": [
+          -800,
+          320
+        ],
+        "credentials": {
+          "openAiApi": {
+            "id": "openai_credential",
+            "name": "OpenAI API"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const rawOutput = $input.first().json.message?.content || $input.first().json.text || JSON.stringify($input.first().json);\n\nlet parsed = null;\nlet tentativa = 0;\n\n// Tentativa 1: parse direto\ntry {\n  // Remover possíveis marcadores markdown\n  let cleaned = rawOutput.replace(/```json\\n?/g, '').replace(/```\\n?/g, '').trim();\n  parsed = JSON.parse(cleaned);\n  tentativa = 1;\n} catch (e1) {\n  // Tentativa 2: extrair JSON do texto\n  try {\n    const match = rawOutput.match(/\\{[\\s\\S]*\\}/);\n    if (match) {\n      parsed = JSON.parse(match[0]);\n      tentativa = 2;\n    }\n  } catch (e2) {\n    // Falha total\n  }\n}\n\nif (!parsed) {\n  return [{\n    json: {\n      erro: 'JSON inválido após 2 tentativas',\n      raw_output: rawOutput.substring(0, 500),\n      status_validacao: 'FALHA_JSON',\n      bloquear: true\n    }\n  }];\n}\n\n// Garantir campos obrigatórios\nconst camposObrigatorios = ['linha_dl', 'publico', 'canal', 'formato', 'tema', 'legenda_facebook', 'legenda_instagram', 'cta', 'hashtags', 'image_prompt_en'];\nconst faltando = camposObrigatorios.filter(c => !parsed[c]);\n\nif (faltando.length > 0) {\n  parsed.campos_faltando = faltando;\n  parsed.status_validacao = 'INCOMPLETO';\n  parsed.bloquear = true;\n} else {\n  parsed.status_validacao = 'OK';\n  parsed.bloquear = false;\n}\n\nparsed.tentativa_parse = tentativa;\nparsed.id_execucao_n8n = $execution.id;\n\nreturn [{ json: parsed }];"
+        },
+        "id": "node_validar_json",
+        "name": "Validar JSON IA",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -496,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "leftValue": "={{$json.bloquear}}",
+                "rightValue": false,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "equals"
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "node_if_json_valido",
+        "name": "IF JSON Válido",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          -256,
+          320
+        ]
+      },
+      {
+        "parameters": {
+          "chatId": "={{$env.TELEGRAM_CHAT_ID_DL}}",
+          "text": "🔴 MÁQUINA 151 - ERRO JSON\n\nO conteúdo gerado pela IA não retornou JSON válido.\nStatus: {{$json.status_validacao}}\nCampos faltando: {{$json.campos_faltando}}\nExecução: {{$json.id_execucao_n8n}}\n\nRevisão manual necessária.",
+          "additionalFields": {
+            "parse_mode": "HTML"
+          }
+        },
+        "id": "node_telegram_erro_json",
+        "name": "Telegram Erro JSON",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          0,
+          528
+        ],
+        "webhookId": "756eb410-0ee5-401d-bfdf-0009a00a0632",
+        "credentials": {
+          "telegramApi": {
+            "id": "telegram_credential",
+            "name": "Telegram Bot DL"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const post = $input.first().json;\nconst motivos = [];\nconst ajustes = [];\n\nconst legendaFB = (post.legenda_facebook || '').toLowerCase();\nconst legendaIG = (post.legenda_instagram || '').toLowerCase();\nconst cta = (post.cta || '').toLowerCase();\nconst allText = legendaFB + ' ' + legendaIG + ' ' + cta;\n\n// --- VERIFICAÇÕES DE TEXTO ---\n\n// 1. Acusação direta com pronome + atributo sensível\nconst padroesSensiveis = [\n  /\\b(seu|sua|seus|suas|voc[eê])\\b.{0,30}(insegur|risco|falha|problem|perigo|preju[ií]z|d[ií]vida|inadimpl|ameaç)/i,\n  /\\b(seu|sua)\\s+(condom[ií]nio|pr[eé]dio|empresa).{0,20}(est[aá]\\s+insegur|est[aá]\\s+em\\s+risco|pode\\s+sofrer)/i\n];\nfor (const p of padroesSensiveis) {\n  if (p.test(allText)) {\n    motivos.push('Texto usa pronome pessoal ligado a atributo sensível (risco/falha/insegurança)');\n    break;\n  }\n}\n\n// 2. Promessas proibidas\nconst promessas = [\n  /garant(e|imos|ia|ido)/i,\n  /nunca\\s+mais/i,\n  /blindado\\s+24/i,\n  /seguran[cç]a\\s+total/i,\n  /economia\\s+garantida/i,\n  /risco\\s+de\\s+morte/i,\n  /trag[eé]dia/i,\n  /perigo\\s+total/i,\n  /zero\\s+risco/i,\n  /100%\\s+segur/i,\n  /elimina(r|mos)?\\s+(todo|qualquer)\\s+(risco|problema)/i\n];\nfor (const p of promessas) {\n  if (p.test(allText)) {\n    motivos.push(`Texto contém promessa proibida: ${p.source}`);\n  }\n}\n\n// 3. Sensacionalismo\nconst sensacionalismo = [\n  /urg[eê]nt[eí]ssimo/i,\n  /alerta\\s+(m[aá]ximo|vermelho|total)/i,\n  /bomba!|exclusivo!/i,\n  /chocante/i,\n  /inacredit[aá]vel/i\n];\nfor (const p of sensacionalismo) {\n  if (p.test(allText)) {\n    motivos.push(`Texto contém sensacionalismo: ${p.source}`);\n  }\n}\n\n// 4. Termos proibidos\nconst proibidos = [\n  /\\bb2b\\b/i,\n  /visita\\s+t[eé]cnica/i,\n  /parceiro?\\s+(da\\s+)?meta/i,\n  /parceiro?\\s+(do\\s+)?facebook/i,\n  /parceiro?\\s+(do\\s+)?instagram/i,\n  /conv[eê]nio\\s+.{0,15}(guarda|pol[ií]cia|municipal|prefeitura)/i,\n  /integra[cç][aã]o\\s+oficial\\s+com\\s+[oó]rg[aã]o/i\n];\nfor (const p of proibidos) {\n  if (p.test(allText)) {\n    motivos.push(`Texto contém termo proibido: ${p.source}`);\n  }\n}\n\n// 5. CTA seguro\nconst ctasPermitidos = [\n  /avalia[cç][aã]o\\s+t[eé]cnica/i,\n  /chame?\\s+(no\\s+)?direct/i,\n  /envie?\\s+(uma\\s+)?mensagem/i,\n  /fale?\\s+com\\s+a\\s+dl/i,\n  /entre\\s+em\\s+contato/i,\n  /agende/i,\n  /solicite/i\n];\nconst ctaSeguro = ctasPermitidos.some(p => p.test(cta));\nif (!ctaSeguro && cta.length > 5) {\n  ajustes.push('CTA pode não estar alinhado com os padrões permitidos. Revisar.');\n}\n\n// 6. Image prompt check\nconst imgPrompt = (post.image_prompt_en || '').toLowerCase();\nconst imgProibido = [\n  /face\\b/i, /portrait/i, /panic/i, /fire.*real/i, /accident/i,\n  /victim/i, /tragedy/i, /blood/i, /weapon/i, /gun/i,\n  /license\\s*plate/i, /car\\s*plate/i, /apartment\\s*number/i,\n  /facebook\\s*logo/i, /instagram\\s*logo/i, /meta\\s*logo/i,\n  /whatsapp\\s*logo/i, /videogame/i, /3d\\s*render/i\n];\nfor (const p of imgProibido) {\n  if (p.test(imgPrompt)) {\n    motivos.push(`Image prompt contém elemento proibido: ${p.source}`);\n  }\n}\n\n// 7. Gramática básica (check para legenda vazia)\nif (legendaFB.length < 50) {\n  motivos.push('Legenda Facebook muito curta (< 50 caracteres)');\n}\nif (legendaIG.length < 50) {\n  motivos.push('Legenda Instagram muito curta (< 50 caracteres)');\n}\n\n// --- RESULTADO ---\nlet status_killcritic = 'APROVADO';\nlet aprovado = true;\nlet precisa_humano = false;\n\nif (motivos.length > 0) {\n  status_killcritic = 'BLOQUEADO';\n  aprovado = false;\n} else if (ajustes.length > 0) {\n  status_killcritic = 'APROVADO_COM_RESSALVAS';\n  aprovado = true;\n}\n\nconst resultado = {\n  ...post,\n  aprovado_killcritic: aprovado,\n  status_killcritic: status_killcritic,\n  motivos_bloqueio: motivos,\n  ajustes_recomendados: ajustes,\n  precisa_aprovacao_humana: precisa_humano\n};\n\nreturn [{ json: resultado }];"
+        },
+        "id": "node_killcritic",
+        "name": "KILLCRITIC Conteúdo Meta",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          0,
+          224
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "leftValue": "={{$json.aprovado_killcritic}}",
+                "rightValue": true,
+                "operator": {
+                  "type": "boolean",
+                  "operation": "equals"
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "node_if_killcritic_aprovado",
+        "name": "IF KILLCRITIC Aprovado",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          304,
+          224
+        ]
+      },
+      {
+        "parameters": {
+          "chatId": "={{$env.TELEGRAM_CHAT_ID_DL}}",
+          "text": "🔴 MÁQUINA 151 - BLOQUEADO PELO KILLCRITIC\n\nLinha: {{$json.linha_dl}}\nTema: {{$json.tema}}\nMotivos: {{$json.motivos_bloqueio}}\nExecução: {{$json.id_execucao_n8n}}",
+          "additionalFields": {
+            "parse_mode": "HTML"
+          }
+        },
+        "id": "node_telegram_bloqueado",
+        "name": "Telegram KILLCRITIC Bloqueou",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          544,
+          480
+        ],
+        "webhookId": "ea627a95-42b4-437a-8bdf-e93ca3f1ad2b",
+        "credentials": {
+          "telegramApi": {
+            "id": "telegram_credential",
+            "name": "Telegram Bot DL"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "appendOrUpdate",
+          "documentId": {
+            "__rl": true,
+            "mode": "id",
+            "value": "1EqT_yGjPUmxfzluX3bmzXxYu6XcT3J2F"
+          },
+          "sheetName": {
+            "__rl": true,
+            "mode": "list",
+            "value": "Bloqueados"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData"
+          },
+          "options": {}
+        },
+        "id": "node_registro_bloqueado",
+        "name": "Registro Bloqueado Sheets",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          800,
+          480
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "google_sheets_credential",
+            "name": "Google Sheets DL"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "={{$env.IMAGE_PROVIDER === 'openai' ? 'https://api.openai.com/v1/images/generations' : $env.IMAGE_PROVIDER === 'stability' ? 'https://api.stability.ai/v2beta/stable-image/generate/sd3' : 'https://api.openai.com/v1/images/generations'}}",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"model\": \"{{$env.IMAGE_MODEL || 'dall-e-3'}}\",\n  \"prompt\": \"{{$json.image_prompt_en}}\",\n  \"n\": 1,\n  \"size\": \"{{$json.formato === 'feed' || $json.formato === 'carrossel' ? '1024x1024' : '1024x1792'}}\",\n  \"quality\": \"standard\",\n  \"response_format\": \"url\"\n}",
+          "options": {
+            "timeout": 120000
+          }
+        },
+        "id": "node_gerar_imagem",
+        "name": "Gerar Imagem IA",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          544,
+          128
+        ],
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "image_api_credential",
+            "name": "Image API Key"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const imageResponse = $input.first().json;\nconst prevData = $('KILLCRITIC Conteúdo Meta').first().json;\n\nlet imageUrl = '';\n\n// OpenAI format\nif (imageResponse.data && imageResponse.data[0]) {\n  imageUrl = imageResponse.data[0].url || imageResponse.data[0].b64_json || '';\n}\n// Stability format\nelse if (imageResponse.artifacts && imageResponse.artifacts[0]) {\n  imageUrl = imageResponse.artifacts[0].base64 ? 'base64' : '';\n}\n// Direct URL\nelse if (imageResponse.url) {\n  imageUrl = imageResponse.url;\n}\n\nreturn [{\n  json: {\n    ...prevData,\n    image_url_temporaria: imageUrl,\n    image_gerada: imageUrl.length > 0,\n    provider: $env.IMAGE_PROVIDER || 'openai'\n  }\n}];"
+        },
+        "id": "node_extrair_image_url",
+        "name": "Extrair Image URL",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          800,
+          128
+        ]
+      },
+      {
+        "parameters": {
+          "url": "={{$json.image_url_temporaria}}",
+          "options": {
+            "response": {
+              "response": {
+                "responseFormat": "file"
+              }
+            },
+            "timeout": 60000
+          }
+        },
+        "id": "node_download_imagem",
+        "name": "Download Imagem",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1056,
+          128
+        ]
+      },
+      {
+        "parameters": {
+          "name": "=post_{{$('KILLCRITIC Conteúdo Meta').first().json.linha_dl.replace(/\\s/g,'_')}}_{{$now.format('yyyy-MM-dd_HH-mm')}}_{{$('KILLCRITIC Conteúdo Meta').first().json.publico.substring(0,20).replace(/\\s/g,'_')}}.jpg",
+          "driveId": {
+            "__rl": true,
+            "mode": "list",
+            "value": "My Drive"
+          },
+          "folderId": {
+            "__rl": true,
+            "mode": "id",
+            "value": "={{$env.GOOGLE_DRIVE_FOLDER_ACERVO_POSTS_N8N}}"
+          },
+          "options": {}
+        },
+        "id": "node_gdrive_upload",
+        "name": "Google Drive Upload Acervo",
+        "type": "n8n-nodes-base.googleDrive",
+        "typeVersion": 3,
+        "position": [
+          1360,
+          208
+        ],
+        "credentials": {
+          "googleDriveOAuth2Api": {
+            "id": "google_drive_credential",
+            "name": "Google Drive DL"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "jsCode": "const conteudo = $('KILLCRITIC Conteúdo Meta').first().json;\nconst gdrive = $input.first().json;\n\n// Montar URL pública do Google Drive\nconst gdriveFileId = gdrive.id || gdrive.fileId || '';\nlet imageUrlPublica = '';\nif (gdriveFileId) {\n  // Tentar URL pública direta do Google Drive\n  imageUrlPublica = `https://drive.google.com/uc?export=view&id=${gdriveFileId}`;\n}\n\nconst payload = {\n  canal: conteudo.canal || 'ambos',\n  linha_dl: conteudo.linha_dl,\n  publico: conteudo.publico,\n  formato: conteudo.formato,\n  tema: conteudo.tema,\n  objetivo: conteudo.objetivo || '',\n  legenda_facebook: conteudo.legenda_facebook,\n  legenda_instagram: conteudo.legenda_instagram,\n  cta: conteudo.cta,\n  hashtags: conteudo.hashtags || [],\n  image_prompt_en: conteudo.image_prompt_en,\n  alt_text: conteudo.alt_text || '',\n  image_url_publica_meta: imageUrlPublica,\n  google_drive_file_id: gdriveFileId,\n  google_drive_web_view_link: gdrive.webViewLink || '',\n  tem_direito_uso_midia: true,\n  aprovado_killcritic: conteudo.aprovado_killcritic,\n  status_killcritic: conteudo.status_killcritic,\n  precisa_aprovacao_humana: false,\n  aprovador: 'KILLCRITIC_AUTO',\n  status_publicacao: 'pendente',\n  fonte_noticia: conteudo.fonte_noticia || '',\n  post_id: '',\n  media_id: '',\n  permalink: '',\n  erro_meta: '',\n  id_execucao_n8n: $execution.id,\n  carrossel_slides: conteudo.carrossel_slides || [],\n  data_hora: new Date().toISOString()\n};\n\nreturn [{ json: payload }];"
+        },
+        "id": "node_montar_payload",
+        "name": "Montar Payload Publicação",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1616,
+          208
+        ]
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "combinator": "or",
+                  "conditions": [
+                    {
+                      "leftValue": "={{$json.canal}}",
+                      "rightValue": "facebook",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    },
+                    {
+                      "leftValue": "={{$json.canal}}",
+                      "rightValue": "ambos",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "conditions": {
+                  "combinator": "or",
+                  "conditions": [
+                    {
+                      "leftValue": "={{$json.canal}}",
+                      "rightValue": "instagram",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    },
+                    {
+                      "leftValue": "={{$json.canal}}",
+                      "rightValue": "ambos",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "options": {
+            "allMatchingOutputs": true
+          }
+        },
+        "id": "node_switch_canal",
+        "name": "Switch Canal Publicação",
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3,
+        "position": [
+          1872,
+          208
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://graph.facebook.com/v25.0/{{$env.META_PAGE_ID_DL || '100166804716824'}}/feed",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "message",
+                "value": "={{$json.legenda_facebook + '\\n\\n' + $json.cta + '\\n\\n' + $json.hashtags.join(' ')}}"
+              },
+              {
+                "name": "access_token",
+                "value": "={{$env.META_PAGE_ACCESS_TOKEN_DL}}"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 30000
+          }
+        },
+        "id": "node_publicar_facebook",
+        "name": "Publicar Facebook 082",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2160,
+          112
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const fbResult = $input.first().json;\nconst payload = $('Montar Payload Publicação').first().json;\n\nconst postId = fbResult.id || '';\nlet permalink = '';\nif (postId && postId.includes('_')) {\n  const parts = postId.split('_');\n  permalink = `https://www.facebook.com/${parts[0]}/posts/${parts[1]}`;\n}\n\nreturn [{\n  json: {\n    ...payload,\n    canal_executado: 'facebook',\n    post_id: postId,\n    permalink: permalink,\n    status_publicacao: postId ? 'publicado' : 'falha',\n    erro_meta: postId ? '' : JSON.stringify(fbResult).substring(0, 300)\n  }\n}];"
+        },
+        "id": "node_salvar_facebook_result",
+        "name": "Salvar Resultado Facebook",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2416,
+          112
+        ]
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true
+            },
+            "combinator": "and",
+            "conditions": [
+              {
+                "leftValue": "={{$json.image_url_publica_meta}}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEquals"
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "node_if_instagram_image_valida",
+        "name": "IF Instagram Tem Image URL",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          2160,
+          352
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://graph.facebook.com/v25.0/{{$env.META_IG_BUSINESS_ID_DL || '17841403185822108'}}/media",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "image_url",
+                "value": "={{$json.image_url_publica_meta}}"
+              },
+              {
+                "name": "caption",
+                "value": "={{$json.legenda_instagram + '\\n\\n' + $json.cta + '\\n\\n' + $json.hashtags.join(' ')}}"
+              },
+              {
+                "name": "access_token",
+                "value": "={{$env.META_PAGE_ACCESS_TOKEN_DL}}"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 60000
+          }
+        },
+        "id": "node_publicar_instagram_media",
+        "name": "Instagram Criar Media Container",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2416,
+          304
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "=https://graph.facebook.com/v25.0/{{$env.META_IG_BUSINESS_ID_DL || '17841403185822108'}}/media_publish",
+          "sendBody": true,
+          "bodyParameters": {
+            "parameters": [
+              {
+                "name": "creation_id",
+                "value": "={{$json.id}}"
+              },
+              {
+                "name": "access_token",
+                "value": "={{$env.META_PAGE_ACCESS_TOKEN_DL}}"
+              }
+            ]
+          },
+          "options": {
+            "timeout": 30000
+          }
+        },
+        "id": "node_publicar_instagram_publish",
+        "name": "Instagram Publicar Media",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2672,
+          304
+        ]
+      },
+      {
+        "parameters": {
+          "jsCode": "const igResult = $input.first().json;\nconst payload = $('Montar Payload Publicação').first().json;\n\nconst mediaId = igResult.id || '';\n\nreturn [{\n  json: {\n    ...payload,\n    canal_executado: 'instagram',\n    media_id: mediaId,\n    status_publicacao: mediaId ? 'publicado' : 'falha',\n    erro_meta: mediaId ? '' : JSON.stringify(igResult).substring(0, 300)\n  }\n}];"
+        },
+        "id": "node_salvar_instagram_result",
+        "name": "Salvar Resultado Instagram",
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          2912,
+          304
+        ]
+      },
+      {
+        "parameters": {
+          "chatId": "={{$env.TELEGRAM_CHAT_ID_DL}}",
+          "text": "⚠️ MÁQUINA 151 - Instagram BLOQUEADO\n\nMotivo: Sem image_url pública HTTPS válida.\nLinha: {{$json.linha_dl}}\nTema: {{$json.tema}}\nFacebook pode ter publicado normalmente.\nExecução: {{$json.id_execucao_n8n}}",
+          "additionalFields": {
+            "parse_mode": "HTML"
+          }
+        },
+        "id": "node_telegram_ig_bloqueado",
+        "name": "Telegram IG Sem Image URL",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          2416,
+          512
+        ],
+        "webhookId": "84d253bf-355f-45fc-86e5-fa616b03c4bd",
+        "credentials": {
+          "telegramApi": {
+            "id": "telegram_credential",
+            "name": "Telegram Bot DL"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "chooseBranch",
+          "output": "empty"
+        },
+        "id": "node_merge_resultados",
+        "name": "Merge Resultados",
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3,
+        "position": [
+          3168,
+          208
+        ]
+      },
+      {
+        "parameters": {
+          "operation": "appendOrUpdate",
+          "documentId": {
+            "__rl": true,
+            "mode": "id",
+            "value": "1EqT_yGjPUmxfzluX3bmzXxYu6XcT3J2F"
+          },
+          "sheetName": {
+            "__rl": true,
+            "mode": "list",
+            "value": "Publicações"
+          },
+          "columns": {
+            "mappingMode": "autoMapInputData"
+          },
+          "options": {}
+        },
+        "id": "node_registro_final",
+        "name": "Registro Final Google Sheets",
+        "type": "n8n-nodes-base.googleSheets",
+        "typeVersion": 4.5,
+        "position": [
+          3408,
+          208
+        ],
+        "credentials": {
+          "googleSheetsOAuth2Api": {
+            "id": "google_sheets_credential",
+            "name": "Google Sheets DL"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "chatId": "={{$env.TELEGRAM_CHAT_ID_DL}}",
+          "text": "={{$json.status_publicacao === 'publicado' ? '✅' : '🔴'}} MÁQUINA 151 - {{$json.canal_executado?.toUpperCase()}}\n\nLinha: {{$json.linha_dl}}\nTema: {{$json.tema}}\nStatus: {{$json.status_publicacao}}\n{{$json.post_id ? 'Post ID: ' + $json.post_id : ''}}{{$json.media_id ? 'Media ID: ' + $json.media_id : ''}}\n{{$json.permalink ? 'Link: ' + $json.permalink : ''}}\n{{$json.erro_meta ? 'Erro: ' + $json.erro_meta : ''}}\nExecução: {{$json.id_execucao_n8n}}",
+          "additionalFields": {
+            "parse_mode": "HTML"
+          }
+        },
+        "id": "node_telegram_sucesso",
+        "name": "Telegram Resultado Final",
+        "type": "n8n-nodes-base.telegram",
+        "typeVersion": 1.2,
+        "position": [
+          3664,
+          208
+        ],
+        "webhookId": "1c5eb379-e472-4c59-81db-942857346202",
+        "credentials": {
+          "telegramApi": {
+            "id": "telegram_credential",
+            "name": "Telegram Bot DL"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": false
+            },
+            "combinator": "or",
+            "conditions": [
+              {
+                "leftValue": "={{ $json.canal }}",
+                "rightValue": "ambos",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              },
+              {
+                "leftValue": "={{ $json.canal }}",
+                "rightValue": "google_business",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals"
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "id": "node_if_gmb",
+        "name": "IF: Postar no GMB?",
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2,
+        "position": [
+          2900,
+          208
+        ]
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://n8n.dlsolucoescondominiais.com.br/webhook/publicar-google-business-dl-nexus",
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"approved\": true,\n  \"texto\": \"{{ ($json.legenda_facebook || $json.legenda_instagram || '').replace(/#[a-zA-Z0-9_]+/g, '').trim() }}\",\n  \"image_url\": \"{{ $json.image_url_publica_meta }}\",\n  \"url_cta\": \"{{ $json.cta || 'https://www.dlsolucoescondominiais.com.br' }}\"\n}",
+          "options": {}
+        },
+        "id": "node_http_gbp_webhook",
+        "name": "HTTP: Publicar Google Business",
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          3150,
+          100
+        ]
+      }
+    ],
+    "connections": {
+      "Schedule 4x Dia": {
+        "main": [
+          [
+            {
+              "node": "Merge Triggers",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook Manual": {
+        "main": [
+          [
+            {
+              "node": "Merge Triggers",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Merge Triggers": {
+        "main": [
+          [
+            {
+              "node": "Definir Pauta",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Definir Pauta": {
+        "main": [
+          [
+            {
+              "node": "IA Gerador Conteúdo Seguro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IA Gerador Conteúdo Seguro": {
+        "main": [
+          [
+            {
+              "node": "Validar JSON IA",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Validar JSON IA": {
+        "main": [
+          [
+            {
+              "node": "IF JSON Válido",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF JSON Válido": {
+        "main": [
+          [
+            {
+              "node": "KILLCRITIC Conteúdo Meta",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Telegram Erro JSON",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "KILLCRITIC Conteúdo Meta": {
+        "main": [
+          [
+            {
+              "node": "IF KILLCRITIC Aprovado",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF KILLCRITIC Aprovado": {
+        "main": [
+          [
+            {
+              "node": "Gerar Imagem IA",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Telegram KILLCRITIC Bloqueou",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Telegram KILLCRITIC Bloqueou": {
+        "main": [
+          [
+            {
+              "node": "Registro Bloqueado Sheets",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gerar Imagem IA": {
+        "main": [
+          [
+            {
+              "node": "Extrair Image URL",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Extrair Image URL": {
+        "main": [
+          [
+            {
+              "node": "Download Imagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Download Imagem": {
+        "main": [
+          [
+            {
+              "node": "Google Drive Upload Acervo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Google Drive Upload Acervo": {
+        "main": [
+          [
+            {
+              "node": "Montar Payload Publicação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Montar Payload Publicação": {
+        "main": [
+          [
+            {
+              "node": "Switch Canal Publicação",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Switch Canal Publicação": {
+        "main": [
+          [
+            {
+              "node": "Publicar Facebook 082",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "IF Instagram Tem Image URL",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Publicar Facebook 082": {
+        "main": [
+          [
+            {
+              "node": "Salvar Resultado Facebook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Salvar Resultado Facebook": {
+        "main": [
+          [
+            {
+              "node": "Merge Resultados",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF Instagram Tem Image URL": {
+        "main": [
+          [
+            {
+              "node": "Instagram Criar Media Container",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Telegram IG Sem Image URL",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Instagram Criar Media Container": {
+        "main": [
+          [
+            {
+              "node": "Instagram Publicar Media",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Instagram Publicar Media": {
+        "main": [
+          [
+            {
+              "node": "Salvar Resultado Instagram",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Salvar Resultado Instagram": {
+        "main": [
+          [
+            {
+              "node": "Merge Resultados",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Merge Resultados": {
+        "main": [
+          [
+            {
+              "node": "IF: Postar no GMB?",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Registro Final Google Sheets": {
+        "main": [
+          [
+            {
+              "node": "Telegram Resultado Final",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "IF: Postar no GMB?": {
+        "main": [
+          [
+            {
+              "node": "HTTP: Publicar Google Business",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Registro Final Google Sheets",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "HTTP: Publicar Google Business": {
+        "main": [
+          [
+            {
+              "node": "Registro Final Google Sheets",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "authors": "Diogo Oliveira",
+    "name": null,
+    "description": null,
+    "autosaved": false,
+    "workflowPublishHistory": [
+      {
+        "createdAt": "2026-07-13T14:10:12.284Z",
+        "id": 2855,
+        "workflowId": "B9XUWs7kT21FVQeo",
+        "versionId": "6fda3651-0594-4857-8878-6467b688cd4f",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-07-13T14:10:12.310Z",
+        "id": 2856,
+        "workflowId": "B9XUWs7kT21FVQeo",
+        "versionId": "6fda3651-0594-4857-8878-6467b688cd4f",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-07-13T14:10:29.236Z",
+        "id": 2859,
+        "workflowId": "B9XUWs7kT21FVQeo",
+        "versionId": "6fda3651-0594-4857-8878-6467b688cd4f",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-07-13T14:10:31.404Z",
+        "id": 2860,
+        "workflowId": "B9XUWs7kT21FVQeo",
+        "versionId": "6fda3651-0594-4857-8878-6467b688cd4f",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-07-13T14:10:28.814Z",
+        "id": 2857,
+        "workflowId": "B9XUWs7kT21FVQeo",
+        "versionId": "6fda3651-0594-4857-8878-6467b688cd4f",
+        "event": "deactivated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      },
+      {
+        "createdAt": "2026-07-13T14:10:28.853Z",
+        "id": 2858,
+        "workflowId": "B9XUWs7kT21FVQeo",
+        "versionId": "6fda3651-0594-4857-8878-6467b688cd4f",
+        "event": "activated",
+        "userId": "077f62aa-c5dd-431c-a397-3eb08745d539"
+      }
+    ]
+  }
 }

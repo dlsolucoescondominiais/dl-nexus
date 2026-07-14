@@ -1,0 +1,537 @@
+{
+  "name": "DL_UTIL_PDF_TO_MARKDOWN_GOOGLE_DOCS",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "dl-util-pdf-to-markdown",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "node_webhook",
+      "name": "Webhook (Receber PDF ID)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ],
+      "webhookId": "dl-util-pdf-to-markdown"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "fileId": {
+          "__rl": true,
+          "mode": "expression",
+          "value": "={{ $json.body.drive_file_id }}"
+        },
+        "options": {
+          "fields": "id,name,mimeType,modifiedTime,size"
+        }
+      },
+      "id": "node_get_file",
+      "name": "Drive: Buscar Metadados do PDF",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        460,
+        300
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "GOOGLE_DRIVE_CREDENTIAL_ID",
+          "name": "DL Nexus — Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nconst file = $input.first().json;\nconst allowedMimes = ['application/pdf','image/jpeg','image/png','image/tiff'];\nconst mimeType = file.mimeType || '';\nif (!allowedMimes.includes(mimeType)) throw new Error(`MIME type inválido: ${mimeType}`);\nconst useOcr = mimeType !== 'application/pdf' || ($('Webhook (Receber PDF ID)').first().json.body?.use_ocr === true);\nconst hashInput = `${file.id}::${file.modifiedTime || ''}`;\nconst fileHash = crypto.createHash('sha256').update(hashInput).digest('hex');\nreturn [{ json: { source_file_id: file.id, source_file_name: file.name, mime_type: mimeType, file_hash: fileHash, use_ocr: useOcr, ocr_language: 'pt-BR', output_folder_id: $('Webhook (Receber PDF ID)').first().json.body?.output_folder_id || 'FOLDER_ID_06_RAG_MARKDOWN', document_title: file.name.replace(/\\.pdf$/i, ''), drive_file_url: `https://drive.google.com/file/d/${file.id}/view` } }];"
+      },
+      "id": "node_validate",
+      "name": "Code: Validar MIME + Calcular Hash",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        680,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, markdown_file_id, conversion_status FROM dl_nexus_pdf_to_markdown WHERE file_hash = '{{ $json.file_hash }}' LIMIT 1;"
+      },
+      "id": "node_check_idem",
+      "name": "Supabase: Checar Idempotência",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.1,
+      "position": [
+        900,
+        300
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "SUPABASE_CREDENTIAL_ID",
+          "name": "DL Nexus — Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json[0]?.conversion_status }}",
+              "operation": "equals",
+              "value2": "success"
+            }
+          ]
+        }
+      },
+      "id": "node_if_already",
+      "name": "IF: Já Convertido?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://www.googleapis.com/drive/v3/files/{{ $('Code: Validar MIME + Calcular Hash').first().json.source_file_id }}/copy",
+        "authentication": "oAuth2",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "ocr",
+              "value": "={{ $('Code: Validar MIME + Calcular Hash').first().json.use_ocr ? 'true' : 'false' }}"
+            },
+            {
+              "name": "ocrLanguage",
+              "value": "pt-BR"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "name",
+              "value": "=[TEMP] {{ $('Code: Validar MIME + Calcular Hash').first().json.document_title }}"
+            },
+            {
+              "name": "mimeType",
+              "value": "application/vnd.google-apps.document"
+            },
+            {
+              "name": "parents",
+              "value": "=[\"root\"]"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "node_copy_as_doc",
+      "name": "Drive API: Copiar PDF como Google Docs",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1340,
+        420
+      ],
+      "credentials": {
+        "oAuth2Api": {
+          "id": "GOOGLE_DRIVE_CREDENTIAL_ID",
+          "name": "DL Nexus — Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 5,
+        "unit": "seconds"
+      },
+      "id": "node_wait_ocr",
+      "name": "Aguardar OCR (5s)",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1560,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://docs.googleapis.com/v1/documents/{{ $('Drive API: Copiar PDF como Google Docs').first().json.id }}",
+        "authentication": "oAuth2",
+        "method": "GET",
+        "options": {}
+      },
+      "id": "node_read_doc",
+      "name": "Docs API: Ler Estrutura do Documento",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1780,
+        420
+      ],
+      "credentials": {
+        "oAuth2Api": {
+          "id": "GOOGLE_DRIVE_CREDENTIAL_ID",
+          "name": "DL Nexus — Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const doc = $input.first().json;\nfunction extractTextRun(run) {\n  if (!run.textRun) return '';\n  let text = run.textRun.content || '';\n  const style = run.textRun.textStyle || {};\n  if (style.link?.url) return `[${text.trim()}](${style.link.url})`;\n  if (style.bold && style.italic) return `***${text}***`;\n  if (style.bold) return `**${text}**`;\n  if (style.italic) return `*${text}*`;\n  if (style.weightedFontFamily?.fontFamily === 'Courier New') return `\\`${text}\\``;\n  return text;\n}\nfunction paragraphToMd(p) {\n  const style = p.paragraphStyle?.namedStyleType || 'NORMAL_TEXT';\n  const text = (p.elements||[]).map(extractTextRun).join('').trimEnd();\n  if (!text.replace(/\\s/g,'')) return '';\n  const map = { HEADING_1:'# ', HEADING_2:'## ', HEADING_3:'### ', HEADING_4:'#### ', HEADING_5:'##### ', HEADING_6:'###### ' };\n  return (map[style]||'') + text;\n}\nfunction tableToMd(table) {\n  try {\n    const rows = (table.tableRows||[]).map(row => '| ' + (row.tableCells||[]).map(cell => (cell.content||[]).map(c => (c.paragraph?.elements||[]).map(extractTextRun).join('')).join(' ').trim().replace(/\\n/g,' ')).join(' | ') + ' |');\n    const cols = (table.tableRows?.[0]?.tableCells||[]).length;\n    const sep = '| ' + Array(cols).fill('---').join(' | ') + ' |';\n    return [rows[0], sep, ...rows.slice(1)].join('\\n');\n  } catch(e) { return '> TABELA ORIGINAL — conversão parcial'; }\n}\nconst content = doc.body?.content || [];\nconst lines = [];\nlet lastEmpty = false;\nfor (const block of content) {\n  if (block.paragraph) {\n    const p = block.paragraph;\n    const line = p.bullet ? `${'  '.repeat(p.bullet.nestingLevel||0)}- ${(p.elements||[]).map(extractTextRun).join('').trimEnd()}` : paragraphToMd(p);\n    if (!line) { if (!lastEmpty) lines.push(''); lastEmpty = true; } else { lines.push(line); lastEmpty = false; }\n  }\n  if (block.table) { lines.push(''); lines.push(tableToMd(block.table)); lines.push(''); lastEmpty = false; }\n}\nconst raw = lines.join('\\n');\nconst md = raw.replace(/^\\s*\\d+\\s*$/gm,'').replace(/ {2,}/g,' ').replace(/\\n{3,}/g,'\\n\\n').trim();\nconst prev = $('Code: Validar MIME + Calcular Hash').first().json;\nreturn [{ json: { markdown_content: md, char_count: md.length, line_count: md.split('\\n').length, document_title: doc.title || prev.document_title, source_file_id: prev.source_file_id, source_file_name: prev.source_file_name, google_doc_temp_id: $('Drive API: Copiar PDF como Google Docs').first().json.id, ocr_used: prev.use_ocr, output_folder_id: prev.output_folder_id, file_hash: prev.file_hash } }];"
+      },
+      "id": "node_convert_md",
+      "name": "Code: Converter Docs → Markdown",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2000,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "name": "={{ $json.document_title }}.md",
+        "parents": [
+          {
+            "__rl": true,
+            "mode": "expression",
+            "value": "={{ $json.output_folder_id }}"
+          }
+        ],
+        "binaryData": false,
+        "content": "={{ $json.markdown_content }}",
+        "mimeType": "text/markdown",
+        "options": {}
+      },
+      "id": "node_upload_md",
+      "name": "Drive: Salvar Arquivo .md",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2220,
+        420
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "GOOGLE_DRIVE_CREDENTIAL_ID",
+          "name": "DL Nexus — Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": "public",
+        "table": "dl_nexus_pdf_to_markdown",
+        "conflictColumns": "file_hash",
+        "additionalFields": {
+          "values": [
+            {
+              "column": "source_file_id",
+              "value": "={{ $('Code: Converter Docs → Markdown').first().json.source_file_id }}"
+            },
+            {
+              "column": "source_file_name",
+              "value": "={{ $('Code: Converter Docs → Markdown').first().json.source_file_name }}"
+            },
+            {
+              "column": "file_hash",
+              "value": "={{ $('Code: Converter Docs → Markdown').first().json.file_hash }}"
+            },
+            {
+              "column": "google_doc_id",
+              "value": "={{ $('Code: Converter Docs → Markdown').first().json.google_doc_temp_id }}"
+            },
+            {
+              "column": "markdown_file_id",
+              "value": "={{ $json.id }}"
+            },
+            {
+              "column": "output_path",
+              "value": "=/DL Nexus/06_RAG/Markdown/{{ $('Code: Converter Docs → Markdown').first().json.document_title }}.md"
+            },
+            {
+              "column": "ocr_used",
+              "value": "={{ $('Code: Converter Docs → Markdown').first().json.ocr_used }}"
+            },
+            {
+              "column": "conversion_status",
+              "value": "success"
+            }
+          ]
+        }
+      },
+      "id": "node_log_supabase",
+      "name": "Supabase: Registrar Conversão",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [
+        2440,
+        420
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "SUPABASE_CREDENTIAL_ID",
+          "name": "DL Nexus — Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteFile",
+        "fileId": {
+          "__rl": true,
+          "mode": "expression",
+          "value": "={{ $('Code: Converter Docs → Markdown').first().json.google_doc_temp_id }}"
+        }
+      },
+      "id": "node_delete_temp",
+      "name": "Drive: Excluir Google Doc Temporário",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2660,
+        420
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "GOOGLE_DRIVE_CREDENTIAL_ID",
+          "name": "DL Nexus — Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "TELEGRAM_CHAT_ID",
+        "text": "=✅ *PDF → Markdown concluído*\n\n📄 Arquivo: `{{ $('Code: Converter Docs → Markdown').first().json.document_title }}.md`\n🔗 Drive ID: `{{ $('Drive: Salvar Arquivo .md').first().json.id }}`\n📊 Linhas: {{ $('Code: Converter Docs → Markdown').first().json.line_count }}\n🔍 OCR: {{ $('Code: Converter Docs → Markdown').first().json.ocr_used ? 'Sim' : 'Não' }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "node_telegram_ok",
+      "name": "Telegram: Sucesso",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        2880,
+        420
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "TELEGRAM_CREDENTIAL_ID",
+          "name": "DL Nexus — Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"source_pdf_id\": \"{{ $('Code: Validar MIME + Calcular Hash').first().json.source_file_id }}\",\n  \"google_doc_temp_id\": \"{{ $('Code: Converter Docs → Markdown').first().json.google_doc_temp_id }}\",\n  \"markdown_file_id\": \"{{ $('Drive: Salvar Arquivo .md').first().json.id }}\",\n  \"markdown_path\": \"/DL Nexus/06_RAG/Markdown/{{ $('Code: Converter Docs → Markdown').first().json.document_title }}.md\",\n  \"ocr_used\": {{ $('Code: Converter Docs → Markdown').first().json.ocr_used }}\n}"
+      },
+      "id": "node_respond",
+      "name": "Resposta: JSON Final",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        3100,
+        420
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\"success\": false, \"reason\": \"already_converted\", \"markdown_file_id\": \"{{ $json[0]?.markdown_file_id }}\"}"
+      },
+      "id": "node_already_done",
+      "name": "Resposta: Já Convertido",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        200
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook (Receber PDF ID)": {
+      "main": [
+        [
+          {
+            "node": "Drive: Buscar Metadados do PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drive: Buscar Metadados do PDF": {
+      "main": [
+        [
+          {
+            "node": "Code: Validar MIME + Calcular Hash",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Validar MIME + Calcular Hash": {
+      "main": [
+        [
+          {
+            "node": "Supabase: Checar Idempotência",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase: Checar Idempotência": {
+      "main": [
+        [
+          {
+            "node": "IF: Já Convertido?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: Já Convertido?": {
+      "main": [
+        [
+          {
+            "node": "Resposta: Já Convertido",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Drive API: Copiar PDF como Google Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drive API: Copiar PDF como Google Docs": {
+      "main": [
+        [
+          {
+            "node": "Aguardar OCR (5s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aguardar OCR (5s)": {
+      "main": [
+        [
+          {
+            "node": "Docs API: Ler Estrutura do Documento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Docs API: Ler Estrutura do Documento": {
+      "main": [
+        [
+          {
+            "node": "Code: Converter Docs → Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code: Converter Docs → Markdown": {
+      "main": [
+        [
+          {
+            "node": "Drive: Salvar Arquivo .md",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drive: Salvar Arquivo .md": {
+      "main": [
+        [
+          {
+            "node": "Supabase: Registrar Conversão",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase: Registrar Conversão": {
+      "main": [
+        [
+          {
+            "node": "Drive: Excluir Google Doc Temporário",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Drive: Excluir Google Doc Temporário": {
+      "main": [
+        [
+          {
+            "node": "Telegram: Sucesso",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram: Sucesso": {
+      "main": [
+        [
+          {
+            "node": "Resposta: JSON Final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "saveExecutionProgress": true,
+    "saveManualExecutions": true,
+    "errorWorkflow": "n8KRGJ4JU6pksXPX",
+    "callerPolicy": "workflowsFromSameOwner"
+  }
+}

@@ -1,0 +1,129 @@
+EAF4obsfkqY4BRwZBX9SDxJ5VYCl41qmFr0kmTWfvRxMBzUNZB05j8xVEAUPGFP52sph2YqhHZCCU1MLaI9ExZAG6pwzxL2NM7WQcKH3UbpAOdTgdg8vEigBpH4nWKrwjJeZBMOjftYuxPyHP1aAX2aXRZCqmihXVOrLccvTwPPjrsz5loXZCxAgyBZABk0lmLNLtvQZDZD
+
+
+EAF4obsfkqY4BRwZBX9SDxJ5VYCl41qmFr0kmTWfvRxMBzUNZB05j8xVEAUPGFP52sph2YqhHZCCU1MLaI9ExZAG6pwzxL2NM7WQcKH3UbpAOdTgdg8vEigBpH4nWKrwjJeZBMOjftYuxPyHP1aAX2aXRZCqmihXVOrLccvTwPPjrsz5loXZCxAgyBZABk0lmLNLtvQZDZD
+
+curl -i -G \
+  'https://graph.facebook.com/v25.0/1783259002838364?fields=id,name,product_count' \
+  -d 'access_token=EAF4obsfkqY4BRwZBX9SDxJ5VYCl41qmFr0kmTWfvRxMBzUNZB05j8xVEAUPGFP52sph2YqhHZCCU1MLaI9ExZAG6pwzxL2NM7WQcKH3UbpAOdTgdg8vEigBpH4nWKrwjJeZBMOjftYuxPyHP1aAX2aXRZCqmihXVOrLccvTwPPjrsz5loXZCxAgyBZABk0lmLNLtvQZDZD'
+
+{
+  "name": "Product Catalog Name",
+  "product_count": "<product_count>",
+  "id": "<catalog_id>"
+}
+
+
+
+EAF4obsfkqY4BRzz8AaC528Bo4W4GtxcvZCCD4GahVoUnbQmXCTPPRy5FT95uRVoC1SUunET23fUN5VTnm2sfZBLPh4DWYdIjlNZAMLkZBvItHeZBt9rw6qCVdBW6lgeo5FkfgiNJRcQ6ZApkrCeZBDiYBkf6tQT3YnjBlm1wWk6HaGbh8rycsnexQSi3w4ZA0ZAYZAHcMZD
+
+
+curl -i -X POST \
+  'https://graph.facebook.com/v25.0/1783259002838364/items_batch' \
+  -d 'item_type=PRODUCT_ITEM' \
+  -d 'requests=[
+  {
+    "method": "CREATE",
+    "data": {
+      "id": "test_product_retailer_id_1",
+      "title": "Product 1 Title",
+      "description": "HTML <b>Description</b> of the Product 1",
+      "price": "100.4 USD",
+      "image_link": "image_url_for_product_1",
+      "link": "website_url_for_product_1",
+      "availability": "in stock",
+      "condition": "new",
+      "brand": "brand_name"
+    }
+  },
+  {
+    "method": "CREATE",
+    "data": {
+      "id": "test_product_retailer_id_2",
+      "title": "Product 2 Title",
+      "description": "HTML <b>Description</b> of the Product 2",
+      "price": "120.4 USD",
+      "image_link": "image_url_for_product_2",
+      "link": "website_url_for_product_2",
+      "availability": "in stock",
+      "condition": "new",
+      "brand": "brand_name_for_product_2"
+    }
+  }
+]' \
+  -d 'access_token=EAF4obsfkqY4BRwZBX9SDxJ5VYCl41qmFr0kmTWfvRxMBzUNZB05j8xVEAUPGFP52sph2YqhHZCCU1MLaI9ExZAG6pwzxL2NM7WQcKH3UbpAOdTgdg8vEigBpH4nWKrwjJeZBMOjftYuxPyHP1aAX2aXRZCqmihXVOrLccvTwPPjrsz5loXZCxAgyBZABk0lmLNLtvQZDZD'
+
+
+{
+  "handles": [
+    "{HANDLE_ID}"
+  ]
+}
+
+
+
+curl -i -G \
+ 'https://graph.facebook.com/v25.0/1783259002838364/products' \
+ -d 'filter={"name":{"i_contains":"title"}}' \
+ -d 'fields=retailer_id,id,name,category,errors' \
+ -d 'access_token=EAF4obsfkqY4BRwZBX9SDxJ5VYCl41qmFr0kmTWfvRxMBzUNZB05j8xVEAUPGFP52sph2YqhHZCCU1MLaI9ExZAG6pwzxL2NM7WQcKH3UbpAOdTgdg8vEigBpH4nWKrwjJeZBMOjftYuxPyHP1aAX2aXRZCqmihXVOrLccvTwPPjrsz5loXZCxAgyBZABk0lmLNLtvQZDZD'
+
+
+
+{
+  "data": [
+    {
+      "retailer_id": "test_product_retailer_id_2",
+      "id": "<PRODUCT_ID>",
+      "name": "Product 2 Title"
+    },
+    {
+      "retailer_id": "test_product_retailer_id_1",
+      "id": "<PRODUCT_ID>",
+      "name": "Product 1 Title"
+    }
+  ],
+  "paging": {
+    "cursors": {
+      "before": "<prev_page_cursor>",
+      "after": "<next_page_cursor>"
+    },
+    "next": "https://graph.intern.facebook.com/v22.0/{CATALOG_ID}/products?access_token={ACCESS_TOKEN}&fields=retailer_id,id,name,category,errors&filter={\"name\":{\"i_contains\":\"title\"}}&after={next_page_cursor}",
+    "previous": "https://graph.intern.facebook.com/v22.0/{CATALOG_ID}/products?access_token={ACCESS_TOKEN}&fields=retailer_id,id,name,category,errors&filter={\"name\":{\"i_contains\":\"title\"}}&after={prev_page_cursor}"
+  }
+}
+
+
+
+
+Congratulations! You’ve started using Catalog API.
+It’s time to dive deeper and explore different resources to help you get the most out of your integration.
+Developer docs
+Get in-depth information on how to use our API with Developer Docs for Catalog API.
+Our documentation includes:
+Detailed API references
+Step-by-step guides for common use cases
+Best practices for implementation
+SDKs for Catalog API
+
+Python
+
+Java
+
+NodeJS
+
+PHP
+Learn more about Catalog API integration using SDK.
+
+
+
+1783259002838364?fields=id,name,product_count
+
+EAF4obsfkqY4BR81H8tcq4lQfZAb04ZAQwmqY1YBfA2JvNAec1Y25LAH0I0ESVQIuYl0ZCRJFfZCWE6qZA28UJSxbX040LiCu81C9To06OZBYt7xp4WLDlALgT8TNMTxQvq2Nyt2OXkMbbcJodqXMtl9jZA0hZBn09ZCL7CxirZCRl5oZCAGGFufKfb61LZBXcSGwYmuGxAZDZD
+
+
+Este novo token de acesso de vida longa nunca expirará:
+EAF4obsfkqY4BRZBhoON47HF15BHX9m7Dajh4ZCmzVnd7UpZCScMdO7efyZCMZB07KWTk1iHahUZAFP9ZCITfSe1TfkomU0wiMUn9xUXI0KxDE0s2NbM8VQViEkQxym4H1pMM1j9m102uP295u0MdKFa2oiInZC6OfEGgGS1mRxdfK9VY5ohKr4MDl2ZBCZCKXxqybHai40fzFmvtIP
+
+
+EAATZCKfKMNgsBR6cK3SvV6IrWjA16OCmZAhorQVQMxHaZAM3dH4MmjlBoWZB8K9jfd2tzx8jE7PkV1tpZA6mrayNSxv7tDIc6DnIi55uhtVCZCxWnKdZAZCaZAZAXsIBWZBUXmBFSZAgJCKz6NwyZAabEXpfWiiJxctZB6FfVer758IQnyzrZAj9cngEB32DnMyCewlOrOaCAZDZD

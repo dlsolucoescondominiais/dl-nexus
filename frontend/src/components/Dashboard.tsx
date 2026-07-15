@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 
@@ -17,12 +17,21 @@ interface Lead {
 export default function Dashboard() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
-  const [kpis, setKpis] = useState({
-    total_leads: 0,
-    em_negociacao: 0,
-    fechado_ganho: 0,
-    contratos_ativos: 0
-  });
+
+  // ⚡ Bolt: Derived state instead of double synchronization to avoid redundant re-renders
+  const kpis = useMemo(() => {
+    const total = leads.length;
+    const negociando = leads.filter(l => l.pipeline_stage === 'negociacao').length;
+    const ganhos = leads.filter(l => l.pipeline_stage === 'fechado_ganho').length;
+    const recorrentes = leads.filter(l => l.pipeline_stage === 'contrato_recorrente').length;
+
+    return {
+      total_leads: total,
+      em_negociacao: negociando,
+      fechado_ganho: ganhos,
+      contratos_ativos: recorrentes
+    };
+  }, [leads]);
 
   const navigate = useNavigate();
 
@@ -54,20 +63,6 @@ export default function Dashboard() {
     if (leadsError) console.error('Erro ao buscar leads:', leadsError);
 
     setLeads(leadsData || []);
-
-    // Calcula KPIs do Funil
-    const total = leadsData?.length || 0;
-    const negociando = leadsData?.filter(l => l.pipeline_stage === 'negociacao').length || 0;
-    const ganhos = leadsData?.filter(l => l.pipeline_stage === 'fechado_ganho').length || 0;
-    const recorrentes = leadsData?.filter(l => l.pipeline_stage === 'contrato_recorrente').length || 0;
-
-    setKpis({
-      total_leads: total,
-      em_negociacao: negociando,
-      fechado_ganho: ganhos,
-      contratos_ativos: recorrentes
-    });
-
     setLoading(false);
   };
 

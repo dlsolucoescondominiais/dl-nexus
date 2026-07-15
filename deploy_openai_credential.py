@@ -1,12 +1,18 @@
 import os
+import sys
 import requests
 import json
 import glob
 import time
 
 N8N_HOST = "https://n8n.dlsolucoescondominiais.com.br/api/v1"
-N8N_API_KEY = "N8N_API_KEY_HERE"
-OPENAI_API_KEY = "OPENAI_API_KEY_HERE"
+N8N_API_KEY = os.environ.get("N8N_API_KEY")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+
+if not N8N_API_KEY or not OPENAI_API_KEY:
+    print("[-] Erro: As variáveis de ambiente N8N_API_KEY e OPENAI_API_KEY devem ser configuradas.")
+    sys.exit(1)
+
 
 headers = {
     'X-N8N-API-KEY': N8N_API_KEY,

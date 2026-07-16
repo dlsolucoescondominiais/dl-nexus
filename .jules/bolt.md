@@ -1,0 +1,3 @@
+## 2024-07-16 - Derived State Optimization for Real-Time Websockets
+**Learning:** In React components consuming real-time data (like Supabase websockets), calculating derived metrics using manual `useState` synchronization (e.g., `setKpis` after `setLeads`) is an anti-pattern. It creates redundant re-renders and can lead to desynchronization if updates happen quickly or if dependencies are missed.
+**Action:** Always use `useMemo` to calculate derived metrics dependent on the primary dataset. This establishes a single source of truth, prevents double re-renders, and ensures the UI always perfectly reflects the underlying data state.

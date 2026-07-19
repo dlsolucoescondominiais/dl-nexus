@@ -1,0 +1,3 @@
+## 2024-05-24 - Derived Metrics in Real-time Supabase Components
+**Learning:** In React components consuming real-time data (e.g., Supabase websockets), maintaining a secondary `useState` for derived metrics (like KPIs) that synchronizes with the primary dataset causes redundant re-renders and risks state desynchronization. Additionally, multiple chained `O(N)` `.filter().length` calls re-evaluate the array multiple times unnecessarily.
+**Action:** Always calculate derived metrics using `useMemo` dependent strictly on the primary dataset instead of manually synchronizing a secondary `useState`. Combine multiple array evaluations into a single `O(N)` pass (like a `for...of` loop or `reduce`) when computing multiple related metrics.

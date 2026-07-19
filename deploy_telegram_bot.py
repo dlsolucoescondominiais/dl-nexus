@@ -2,14 +2,14 @@ import os
 import requests
 import json
 N8N_HOST = "https://n8n.dlsolucoescondominiais.com.br/api/v1"
-N8N_API_KEY = "N8N_API_KEY_HERE"
+N8N_API_KEY = os.environ.get("N8N_API_KEY")
 
 headers = {
     'X-N8N-API-KEY': N8N_API_KEY,
     'Content-Type': 'application/json'
 }
 
-BOT_TOKEN = "TELEGRAM_BOT_TOKEN_HERE"
+BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 CRED_NAME = "Aninha Telegram Bot (DL Nexus)"
 
 def create_telegram_credential():

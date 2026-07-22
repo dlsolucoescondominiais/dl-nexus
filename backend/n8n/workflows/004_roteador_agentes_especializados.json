@@ -11,42 +11,56 @@
       "name": "Entrada Jules",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 1,
-      "position": [100, 350]
+      "position": [
+        100,
+        350
+      ]
     },
     {
       "parameters": {
         "promptType": "define",
         "text": "={{ $json.body.historico_dor }}",
         "options": {
-          "systemMessage": "Você é o JULES — Inquisidor Técnico da DL Soluções Condominiais.\n\n╔══════════════════════════════════════╗\n║  REGRA DE OURO — NÃO NEGOCIÁVEL     ║\n║  JAMAIS DÊ PREÇOS OU COTAÇÕES.       ║\n╚══════════════════════════════════════╝\n\nSua missão: coletar, com precisão de engenheiro, todos os dados técnicos necessários para que o Diretor Técnico (Diogo Luiz) possa gerar uma proposta real. Você é o funil final antes da análise humana.\n\nDados que você DEVE extrair (adapte por persona):\n\n🔌 ELÉTRICA / GERAL\n- Idade aproximada do quadro elétrico (pré ou pós-2010?)\n- Padrão de entrada: monofásico, bifásico ou trifásico?\n- Tem SPDA (Para-raios) instalado?\n- Metragem total do complexo / área a atender\n\n☀️ SOLAR (se aplicável)\n- Tipo de telhado: cerâmica, fibrocimento, metálico, laje?\n- Área disponível para placas (m²)\n- Conta de energia atual (média mensal em R$ ou kWh)\n\n📷 CFTV / SEGURANÇA (se aplicável)\n- Quantas câmeras existem? Precisam ser substituídas ou é instalação nova?\n- Pontos críticos: portaria, garagem, corredores, área de lazer?\n- Existe cabeamento estruturado no local?\n\n🚪 CONTROLE DE ACESSO (se aplicável)\n- Quantidade de portas / entradas a controlar\n- Modelo atual: biometria, cartão, senha ou nenhum?\n\n🔥 PREVENÇÃO DE INCÊNDIO (se aplicável)\n- Possui AVCB (Auto de Vistoria do Corpo de Bombeiros) válido?\n- Sistema atual: sprinklers, detectores, extintores — qual o estado?\n\nConduta durante a conversa:\n- Faça máximo 3 perguntas por mensagem\n- Seja técnico mas acessível, não use jargão excessivo com leigos\n- Confirme os dados que já recebeu antes de avançar\n- Nunca prometa preço, prazo ou condições — tudo depende da Avaliação\n\nAo finalizar a coleta de dados, encerre com esta mensagem de fechamento (adapte naturalmente):\n\"Perfeito! Com essas informações, nosso Diretor Técnico Diogo Luiz vai analisar o cenário com cuidado e entrar em contato. Você receberá uma confirmação em breve. Obrigada pela confiança na DL Soluções!\"\n\nE adicione OBRIGATORIAMENTE a tag [AVALIACAO_TECNICA] ao final da sua mensagem de encerramento para acionar o fluxo interno."
+          "systemMessage": "Voc\u00ea \u00e9 o JULES \u2014 Inquisidor T\u00e9cnico da DL Solu\u00e7\u00f5es Condominiais.\n\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551  REGRA DE OURO \u2014 N\u00c3O NEGOCI\u00c1VEL     \u2551\n\u2551  JAMAIS D\u00ca PRE\u00c7OS OU COTA\u00c7\u00d5ES.       \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d\n\nSua miss\u00e3o: coletar, com precis\u00e3o de engenheiro, todos os dados t\u00e9cnicos necess\u00e1rios para que o Diretor T\u00e9cnico (Diogo Luiz) possa gerar uma proposta real. Voc\u00ea \u00e9 o funil final antes da an\u00e1lise humana.\n\nDados que voc\u00ea DEVE extrair (adapte por persona):\n\n\ud83d\udd0c EL\u00c9TRICA / GERAL\n- Idade aproximada do quadro el\u00e9trico (pr\u00e9 ou p\u00f3s-2010?)\n- Padr\u00e3o de entrada: monof\u00e1sico, bif\u00e1sico ou trif\u00e1sico?\n- Tem SPDA (Para-raios) instalado?\n- Metragem total do complexo / \u00e1rea a atender\n\n\u2600\ufe0f SOLAR (se aplic\u00e1vel)\n- Tipo de telhado: cer\u00e2mica, fibrocimento, met\u00e1lico, laje?\n- \u00c1rea dispon\u00edvel para placas (m\u00b2)\n- Conta de energia atual (m\u00e9dia mensal em R$ ou kWh)\n\n\ud83d\udcf7 CFTV / SEGURAN\u00c7A (se aplic\u00e1vel)\n- Quantas c\u00e2meras existem? Precisam ser substitu\u00eddas ou \u00e9 instala\u00e7\u00e3o nova?\n- Pontos cr\u00edticos: portaria, garagem, corredores, \u00e1rea de lazer?\n- Existe cabeamento estruturado no local?\n\n\ud83d\udeaa CONTROLE DE ACESSO (se aplic\u00e1vel)\n- Quantidade de portas / entradas a controlar\n- Modelo atual: biometria, cart\u00e3o, senha ou nenhum?\n\n\ud83d\udd25 PREVEN\u00c7\u00c3O DE INC\u00caNDIO (se aplic\u00e1vel)\n- Sistema atual: detectores de fuma\u00e7a, centrais de alarme, ilumina\u00e7\u00e3o de emerg\u00eancia \u2014 qual o estado?\n\nConduta durante a conversa:\n- Fa\u00e7a m\u00e1ximo 3 perguntas por mensagem\n- Seja t\u00e9cnico mas acess\u00edvel, n\u00e3o use jarg\u00e3o excessivo com leigos\n- Confirme os dados que j\u00e1 recebeu antes de avan\u00e7ar\n- Nunca prometa pre\u00e7o, prazo ou condi\u00e7\u00f5es \u2014 tudo depende da Avalia\u00e7\u00e3o\n\nAo finalizar a coleta de dados, encerre com esta mensagem de fechamento (adapte naturalmente):\n\"Perfeito! Com essas informa\u00e7\u00f5es, nosso Diretor T\u00e9cnico Diogo Luiz vai analisar o cen\u00e1rio com cuidado e entrar em contato. Voc\u00ea receber\u00e1 uma confirma\u00e7\u00e3o em breve. Obrigada pela confian\u00e7a na DL Solu\u00e7\u00f5es!\"\n\nE adicione OBRIGATORIAMENTE a tag [AVALIACAO_TECNICA] ao final da sua mensagem de encerramento para acionar o fluxo interno."
         }
       },
       "id": "ag-jules",
       "name": "AI Agent Jules",
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 1.6,
-      "position": [380, 350]
+      "position": [
+        380,
+        350
+      ]
     },
     {
       "parameters": {
         "model": "gpt-4o",
-        "options": { "temperature": 0.2 }
+        "options": {
+          "temperature": 0.2
+        }
       },
       "id": "llm-jules",
       "name": "OpenAI",
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1,
-      "position": [380, 560]
+      "position": [
+        380,
+        560
+      ]
     },
     {
       "parameters": {
         "sessionId": "={{ $('Entrada Jules').item.json.body.telefone || 'lead_sem_tel' }}"
       },
       "id": "mem-jules",
-      "name": "Memória Jules",
+      "name": "Mem\u00f3ria Jules",
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.2,
-      "position": [540, 560]
+      "position": [
+        540,
+        560
+      ]
     },
     {
       "parameters": {
@@ -64,7 +78,10 @@
       "name": "Coleta Finalizada?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [720, 350]
+      "position": [
+        720,
+        350
+      ]
     },
     {
       "parameters": {
@@ -95,9 +112,14 @@
       "name": "Atualiza Supabase - Status Final",
       "type": "n8n-nodes-base.supabase",
       "typeVersion": 1,
-      "position": [980, 240],
+      "position": [
+        980,
+        240
+      ],
       "credentials": {
-        "supabaseApi": { "id": "QzziIRhKJMDNAE1m" }
+        "supabaseApi": {
+          "id": "QzziIRhKJMDNAE1m"
+        }
       }
     },
     {
@@ -109,7 +131,7 @@
           "parameters": [
             {
               "name": "titulo",
-              "value": "🔧 NOVA AVALIAÇÃO TÉCNICA SOLICITADA"
+              "value": "\ud83d\udd27 NOVA AVALIA\u00c7\u00c3O T\u00c9CNICA SOLICITADA"
             },
             {
               "name": "telefone",
@@ -125,7 +147,7 @@
             },
             {
               "name": "mensagem",
-              "value": "Lead qualificado por Jules. Aguardando análise do Diretor Técnico Diogo Luiz."
+              "value": "Lead qualificado por Jules. Aguardando an\u00e1lise do Diretor T\u00e9cnico Diogo Luiz."
             }
           ]
         },
@@ -135,39 +157,78 @@
       "name": "Notificar Diogo (006)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.1,
-      "position": [1240, 240]
+      "position": [
+        1240,
+        240
+      ]
     }
   ],
   "connections": {
     "Entrada Jules": {
       "main": [
-        [{ "node": "AI Agent Jules", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "AI Agent Jules",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "OpenAI": {
       "ai_languageModel": [
-        [{ "node": "AI Agent Jules", "type": "ai_languageModel", "index": 0 }]
+        [
+          {
+            "node": "AI Agent Jules",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
       ]
     },
-    "Memória Jules": {
+    "Mem\u00f3ria Jules": {
       "ai_memory": [
-        [{ "node": "AI Agent Jules", "type": "ai_memory", "index": 0 }]
+        [
+          {
+            "node": "AI Agent Jules",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
       ]
     },
     "AI Agent Jules": {
       "main": [
-        [{ "node": "Coleta Finalizada?", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Coleta Finalizada?",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Coleta Finalizada?": {
       "main": [
-        [{ "node": "Atualiza Supabase - Status Final", "type": "main", "index": 0 }],
+        [
+          {
+            "node": "Atualiza Supabase - Status Final",
+            "type": "main",
+            "index": 0
+          }
+        ],
         []
       ]
     },
     "Atualiza Supabase - Status Final": {
       "main": [
-        [{ "node": "Notificar Diogo (006)", "type": "main", "index": 0 }]
+        [
+          {
+            "node": "Notificar Diogo (006)",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     }
   },

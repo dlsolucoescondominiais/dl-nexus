@@ -1,0 +1,3 @@
+## 2024-05-19 - Using useMemo for derived state with Real-time Subscriptions
+**Learning:** In React components that consume real-time datasets (like Supabase websockets), calculating derived metrics using `useMemo` dependent on the primary dataset is more performant than manually synchronizing a secondary `useState`. The previous pattern of manual state synchronization caused redundant re-renders and potential out-of-sync states between the primary dataset (leads) and the derived data (kpis).
+**Action:** When working with real-time data or any primary dataset in React, always derive secondary metrics using `useMemo` based on the primary dataset instead of maintaining separate state variables.

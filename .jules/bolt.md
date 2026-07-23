@@ -1,0 +1,3 @@
+## 2023-11-20 - Derived State vs UseState Syncing
+**Learning:** In React components that receive frequent realtime updates (like the Dashboard receiving Supabase websocket events), syncing a secondary `useState` (`setKpis`) manually inside a fetch function leads to double-rendering and potential race conditions.
+**Action:** Always prefer calculating derived metrics using `useMemo` dependent on the primary dataset. This provides a single source of truth and automatically re-calculates the derived metrics without causing an extra React re-render, creating a safer and more performant update cycle for real-time dashboards.
